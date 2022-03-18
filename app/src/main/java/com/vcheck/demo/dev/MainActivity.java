@@ -3,8 +3,14 @@ package com.vcheck.demo.dev;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
+import android.widget.Spinner;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.mediapipe.formats.proto.LandmarkProto.NormalizedLandmark;
 import com.google.mediapipe.solutioncore.CameraInput;
 import com.google.mediapipe.solutioncore.SolutionGlSurfaceView;
@@ -12,168 +18,196 @@ import com.google.mediapipe.solutions.facemesh.FaceMesh;
 import com.google.mediapipe.solutions.facemesh.FaceMeshOptions;
 import com.google.mediapipe.solutions.facemesh.FaceMeshResult;
 
-/** Main activity of MediaPipe Face Mesh app. */
-public class MainActivity extends AppCompatActivity {
-  private static final String TAG = "MainActivity";
+/**
+ * Main activity of MediaPipe Face Mesh app.
+ */
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+    private static final String TAG = "MainActivity";
 
-  private FaceMesh facemesh;
-  // Run the pipeline and the model inference on GPU or CPU.
-  private static final boolean RUN_ON_GPU = true;
+    private FaceMesh facemesh;
+    // Run the pipeline and the model inference on GPU or CPU.
+    private static final boolean RUN_ON_GPU = true;
 
-  private CameraInput cameraInput;
+    private CameraInput cameraInput;
 
-  private SolutionGlSurfaceView<FaceMeshResult> glSurfaceView;
+    private SolutionGlSurfaceView<FaceMeshResult> glSurfaceView;
 
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_main);
-    // TODO: Add a toggle to switch between the original face mesh and attention mesh.
-    //setupStaticImageDemoUiComponents();
-    //setupVideoDemoUiComponents();
-    //setupLiveDemoUiComponents();
-    setupStreamingModePipeline();
-  }
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        // TODO: Add a toggle to switch between the original face mesh and attention mesh.
+        //setupStaticImageDemoUiComponents();
+        //setupVideoDemoUiComponents();
+        //setupLiveDemoUiComponents();
+        setupStreamingModePipeline();
 
-  @Override
-  protected void onResume() {
-    super.onResume();
-    //if (inputSource == InputSource.CAMERA) {
-      // Restarts the camera and the opengl surface rendering.
-      cameraInput = new CameraInput(this);
-      cameraInput.setNewFrameListener(textureFrame -> facemesh.send(textureFrame));
-      glSurfaceView.post(this::startCamera);
-      glSurfaceView.setVisibility(View.VISIBLE);
+        Spinner spinner = findViewById(R.id.lang_spinner);
+        spinner.setOnItemSelectedListener(this);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.language,
+                android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinner.setAdapter(adapter);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //if (inputSource == InputSource.CAMERA) {
+        // Restarts the camera and the opengl surface rendering.
+        cameraInput = new CameraInput(this);
+        cameraInput.setNewFrameListener(textureFrame -> facemesh.send(textureFrame));
+        glSurfaceView.post(this::startCamera);
+        glSurfaceView.setVisibility(View.VISIBLE);
 //    } else if (inputSource == InputSource.VIDEO) {
 //      videoInput.resume();
 //    }
-  }
+    }
 
-  @Override
-  protected void onPause() {
-    super.onPause();
-    //if (inputSource == InputSource.CAMERA) {
-      glSurfaceView.setVisibility(View.GONE);
-      cameraInput.close();
-    //}
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //if (inputSource == InputSource.CAMERA) {
+        glSurfaceView.setVisibility(View.GONE);
+        cameraInput.close();
+        //}
 //    else if (inputSource == InputSource.VIDEO) {
 //      videoInput.pause();
 //    }
-  }
+    }
 
-  /** Sets up core workflow for streaming mode. */
-  private void setupStreamingModePipeline() {
-    Log.i("PIPELINE", "setupStreamingModePipeline START");
-    //this.inputSource = inputSource;
-    // Initializes a new MediaPipe Face Mesh solution instance in the streaming mode.
-    facemesh =
-        new FaceMesh(
-            this,
-            FaceMeshOptions.builder()
-                .setStaticImageMode(false)
-                .setRefineLandmarks(true)
-                .setRunOnGpu(RUN_ON_GPU)
-                .build());
-    facemesh.setErrorListener((message, e) -> Log.e(TAG, "MediaPipe Face Mesh error:" + message));
+    /**
+     * Sets up core workflow for streaming mode.
+     */
+    private void setupStreamingModePipeline() {
+        Log.i("PIPELINE", "setupStreamingModePipeline START");
+        //this.inputSource = inputSource;
+        // Initializes a new MediaPipe Face Mesh solution instance in the streaming mode.
+        facemesh =
+                new FaceMesh(
+                        this,
+                        FaceMeshOptions.builder()
+                                .setStaticImageMode(false)
+                                .setRefineLandmarks(true)
+                                .setRunOnGpu(RUN_ON_GPU)
+                                .build());
+        facemesh.setErrorListener((message, e) -> Log.e(TAG, "MediaPipe Face Mesh error:" + message));
 
 //   if (inputSource == InputSource.CAMERA) {
-    cameraInput = new CameraInput(this);
-    cameraInput.setNewFrameListener(textureFrame -> facemesh.send(textureFrame));
+        cameraInput = new CameraInput(this);
+        cameraInput.setNewFrameListener(textureFrame -> facemesh.send(textureFrame));
 //    } else if (inputSource == InputSource.VIDEO) {
 //      videoInput = new VideoInput(this);
 //      videoInput.setNewFrameListener(textureFrame -> facemesh.send(textureFrame));
 //    }
 
-    // Initializes a new Gl surface view with a user-defined FaceMeshResultGlRenderer.
-    glSurfaceView =
-        new SolutionGlSurfaceView<>(this, facemesh.getGlContext(), facemesh.getGlMajorVersion());
-    glSurfaceView.setSolutionResultRenderer(new FaceMeshResultGlRenderer());
-    glSurfaceView.setRenderInputImage(true);
-    facemesh.setResultListener(
-        faceMeshResult -> {
-          logNoseLandmark(faceMeshResult, /*showPixelValues=*/ false);
-          glSurfaceView.setRenderData(faceMeshResult);
-          glSurfaceView.requestRender();
-        });
+        // Initializes a new Gl surface view with a user-defined FaceMeshResultGlRenderer.
+        glSurfaceView =
+                new SolutionGlSurfaceView<>(this, facemesh.getGlContext(), facemesh.getGlMajorVersion());
+        glSurfaceView.setSolutionResultRenderer(new FaceMeshResultGlRenderer());
+        glSurfaceView.setRenderInputImage(true);
+        facemesh.setResultListener(
+                faceMeshResult -> {
+                    logNoseLandmark(faceMeshResult, /*showPixelValues=*/ false);
+                    glSurfaceView.setRenderData(faceMeshResult);
+                    glSurfaceView.requestRender();
+                });
 
-    // The runnable to start camera after the gl surface view is attached.
-    // For video input source, videoInput.start() will be called when the video uri is available.
-    //if (inputSource == InputSource.CAMERA) {
-      glSurfaceView.post(this::startCamera);
-    //}
+        // The runnable to start camera after the gl surface view is attached.
+        // For video input source, videoInput.start() will be called when the video uri is available.
+        //if (inputSource == InputSource.CAMERA) {
+        glSurfaceView.post(this::startCamera);
+        //}
 
-    // Updates the preview layout.
-    FrameLayout frameLayout = findViewById(R.id.preview_display_layout);
-    //imageView.setVisibility(View.GONE);
-    frameLayout.removeAllViewsInLayout();
-    frameLayout.addView(glSurfaceView);
-    glSurfaceView.setVisibility(View.VISIBLE);
-    frameLayout.requestLayout();
-  }
-
-  private void startCamera() {
-    cameraInput.start(
-        this,
-        facemesh.getGlContext(),
-        CameraInput.CameraFacing.FRONT,
-        glSurfaceView.getWidth(),
-        glSurfaceView.getHeight());
-  }
-
-  private void stopCurrentPipeline() {
-    if (cameraInput != null) {
-      cameraInput.setNewFrameListener(null);
-      cameraInput.close();
+//     Updates the preview layout.
+//        FrameLayout frameLayout = findViewById(R.id.preview_display_layout);
+//        //imageView.setVisibility(View.GONE);
+//        frameLayout.removeAllViewsInLayout();
+//        frameLayout.addView(glSurfaceView);
+//        glSurfaceView.setVisibility(View.VISIBLE);
+//        frameLayout.requestLayout();
     }
+
+    private void startCamera() {
+        cameraInput.start(
+                this,
+                facemesh.getGlContext(),
+                CameraInput.CameraFacing.FRONT,
+                glSurfaceView.getWidth(),
+                glSurfaceView.getHeight());
+    }
+
+    private void stopCurrentPipeline() {
+        if (cameraInput != null) {
+            cameraInput.setNewFrameListener(null);
+            cameraInput.close();
+        }
 //    if (videoInput != null) {
 //      videoInput.setNewFrameListener(null);
 //      videoInput.close();
 //    }
-    if (glSurfaceView != null) {
-      glSurfaceView.setVisibility(View.GONE);
+        if (glSurfaceView != null) {
+            glSurfaceView.setVisibility(View.GONE);
+        }
+        if (facemesh != null) {
+            facemesh.close();
+        }
     }
-    if (facemesh != null) {
-      facemesh.close();
-    }
-  }
 
-  private void logNoseLandmark(FaceMeshResult result, boolean showPixelValues) {
-    if (result == null || result.multiFaceLandmarks().isEmpty()) {
-      return;
+    private void logNoseLandmark(FaceMeshResult result, boolean showPixelValues) {
+        if (result == null || result.multiFaceLandmarks().isEmpty()) {
+            return;
+        }
+        NormalizedLandmark noseLandmark = result.multiFaceLandmarks().get(0).getLandmarkList().get(1);
+        // For Bitmaps, show the pixel values. For texture inputs, show the normalized coordinates.
+        if (showPixelValues) {
+            int width = result.inputBitmap().getWidth();
+            int height = result.inputBitmap().getHeight();
+            Log.i(
+                    TAG,
+                    String.format(
+                            "MediaPipe Face Mesh nose coordinates (pixel values): x=%f, y=%f",
+                            noseLandmark.getX() * width, noseLandmark.getY() * height));
+        } else {
+            Log.i(
+                    TAG,
+                    String.format(
+                            "MediaPipe Face Mesh nose normalized coordinates (value range: [0, 1]): x=%f, y=%f",
+                            noseLandmark.getX(), noseLandmark.getY()));
+        }
     }
-    NormalizedLandmark noseLandmark = result.multiFaceLandmarks().get(0).getLandmarkList().get(1);
-    // For Bitmaps, show the pixel values. For texture inputs, show the normalized coordinates.
-    if (showPixelValues) {
-      int width = result.inputBitmap().getWidth();
-      int height = result.inputBitmap().getHeight();
-      Log.i(
-          TAG,
-          String.format(
-              "MediaPipe Face Mesh nose coordinates (pixel values): x=%f, y=%f",
-              noseLandmark.getX() * width, noseLandmark.getY() * height));
-    } else {
-      Log.i(
-          TAG,
-          String.format(
-              "MediaPipe Face Mesh nose normalized coordinates (value range: [0, 1]): x=%f, y=%f",
-              noseLandmark.getX(), noseLandmark.getY()));
-    }
-  }
 
-  private enum InputSource {
-    //    UNKNOWN,
-    //    IMAGE,
-    //    VIDEO,
-    //    CAMERA,
-  }
-  //private InputSource inputSource = InputSource.CAMERA;
-  // Image demo UI and image loader components.
-  //private ActivityResultLauncher<Intent> imageGetter;
-  //private FaceMeshResultImageView imageView;
-  // Video demo UI and video loader components.
-  //private VideoInput videoInput;
-  //private ActivityResultLauncher<Intent> videoGetter;
-  // Live camera demo UI and camera components.
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        if (i == 0) {
+            Toast.makeText(this, "Русский", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "English", Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
+
+    private enum InputSource {
+        //    UNKNOWN,
+        //    IMAGE,
+        //    VIDEO,
+        //    CAMERA,
+    }
+    //private InputSource inputSource = InputSource.CAMERA;
+    // Image demo UI and image loader components.
+    //private ActivityResultLauncher<Intent> imageGetter;
+    //private FaceMeshResultImageView imageView;
+    // Video demo UI and video loader components.
+    //private VideoInput videoInput;
+    //private ActivityResultLauncher<Intent> videoGetter;
+    // Live camera demo UI and camera components.
 
 
 //  private Bitmap downscaleBitmap(Bitmap originalBitmap) {
@@ -214,7 +248,7 @@ public class MainActivity extends AppCompatActivity {
 //  }
 
 
-  /** Sets up the UI components for the live demo with camera input. */
+    /** Sets up the UI components for the live demo with camera input. */
 //  private void setupLiveDemoUiComponents() {
 //    Button startCameraButton = findViewById(R.id.button_start_camera);
 //    startCameraButton.setOnClickListener(
@@ -222,13 +256,13 @@ public class MainActivity extends AppCompatActivity {
 //          if (inputSource == InputSource.CAMERA) {
 //            return;
 //          }
-  //stopCurrentPipeline();
-  //setupStreamingModePipeline(InputSource.CAMERA);
-  //});
+    //stopCurrentPipeline();
+    //setupStreamingModePipeline(InputSource.CAMERA);
+    //});
 //  }
-  /** Sets up the UI components for the static image demo. */
+    /** Sets up the UI components for the static image demo. */
 //  private void setupStaticImageDemoUiComponents() {
-  // The Intent to access gallery and read images as bitmap.
+    // The Intent to access gallery and read images as bitmap.
 //    imageGetter =
 //        registerForActivityResult(
 //            new ActivityResultContracts.StartActivityForResult(),
@@ -271,7 +305,7 @@ public class MainActivity extends AppCompatActivity {
 //          pickImageIntent.setDataAndType(MediaStore.Images.Media.INTERNAL_CONTENT_URI, "image/*");
 //          imageGetter.launch(pickImageIntent);
 //        });
-  //imageView = new FaceMeshResultImageView(this);
+    //imageView = new FaceMeshResultImageView(this);
 //  }
 
 //  private void setupStaticImageModePipeline() {

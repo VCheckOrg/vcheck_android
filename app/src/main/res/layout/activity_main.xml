@@ -1,40 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-<!--    <LinearLayout-->
-<!--        android:id="@+id/buttons"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        style="?android:attr/buttonBarStyle" android:gravity="center"-->
-<!--        android:orientation="horizontal">-->
-<!--        <Button-->
-<!--            android:id="@+id/button_load_picture"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            style="?android:attr/buttonBarButtonStyle" android:layout_height="wrap_content"-->
-<!--            android:text="@string/load_picture" />-->
-<!--        <Button-->
-<!--            android:id="@+id/button_load_video"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            style="?android:attr/buttonBarButtonStyle" android:layout_height="wrap_content"-->
-<!--            android:text="@string/load_video" />-->
-<!--        <Button-->
-<!--            android:id="@+id/button_start_camera"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            style="?android:attr/buttonBarButtonStyle" android:layout_height="wrap_content"-->
-<!--            android:text="@string/start_camera" />-->
-<!--    </LinearLayout>-->
-    <FrameLayout
-        android:id="@+id/preview_display_layout"
+    android:background="#2A2A2A"
+    tools:context=".MainActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/appBar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-<!--        <TextView-->
-<!--            android:id="@+id/no_view"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:gravity="center"-->
-<!--            android:text="@string/instruction" />-->
-    </FrameLayout>
-</LinearLayout>
+        android:layout_height="70dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="137dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="24dp"
+            android:src="@drawable/logo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/lang_icon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="24dp"
+            android:src="@drawable/lang_icon"
+            app:layout_constraintBottom_toBottomOf="@+id/lang_spinner"
+            app:layout_constraintEnd_toStartOf="@+id/lang_spinner"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
+
+        <Spinner
+            android:id="@+id/lang_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/nav_host_fragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:defaultNavHost="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBar"
+        app:navGraph="@navigation/main_nav_graph" />
+
+
+    <!--    <FrameLayout-->
+    <!--        android:id="@+id/preview_display_layout"-->
+    <!--        android:layout_width="300dp"-->
+    <!--        android:layout_height="300dp"-->
+    <!--        android:background="@drawable/rounded_shape"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent">-->
+    <!--    </FrameLayout>-->
+
+    <!--    <FrameLayout-->
+    <!--        android:id="@+id/preview_display_layout"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        android:background="@drawable/rounded_shape">-->
+    <!--        &lt;!&ndash;        <TextView&ndash;&gt;-->
+    <!--        &lt;!&ndash;            android:id="@+id/no_view"&ndash;&gt;-->
+    <!--        &lt;!&ndash;            android:layout_width="match_parent"&ndash;&gt;-->
+    <!--        &lt;!&ndash;            android:layout_height="wrap_content"&ndash;&gt;-->
+    <!--        &lt;!&ndash;            android:gravity="center"&ndash;&gt;-->
+    <!--        &lt;!&ndash;            android:text="@string/instruction" />&ndash;&gt;-->
+    <!--    </FrameLayout>-->
+</androidx.constraintlayout.widget.ConstraintLayout>

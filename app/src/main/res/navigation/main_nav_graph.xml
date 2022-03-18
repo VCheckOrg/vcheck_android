@@ -1,6 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main_nav_graph">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav_graph"
+    app:startDestination="@id/mainFragment">
 
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.vcheck.demo.dev.screens.MainScreen"
+        android:label="fragment_main"
+        tools:layout="@layout/fragment_main" >
+        <action
+            android:id="@+id/action_mainFragment_to_faceCheckFragment"
+            app:destination="@id/faceCheckFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/faceCheckFragment"
+        android:name="com.vcheck.demo.dev.screens.FaceCheckScreen"
+        android:label="fragment_face_check"
+        tools:layout="@layout/fragment_face_check" >
+        <action
+            android:id="@+id/action_faceCheckFragment_to_successFragment"
+            app:destination="@id/successFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/successFragment"
+        android:name="com.vcheck.demo.dev.screens.SuccessScreen"
+        android:label="fragment_success"
+        tools:layout="@layout/fragment_success" />
 </navigation>

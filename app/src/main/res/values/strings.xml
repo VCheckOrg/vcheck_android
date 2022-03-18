@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">VCheckAndroidSDKDemo</string>
+    <string name="check_face_text">Проверка лица</string>
+    <string name="description_text">
+        Сначала разместите лицо по центру кадра, затем двигайте
+        головой в заданом направлении, как на примере ниже, чтобы
+        показать свое лицо со всех углов.
+    </string>
+    <string name="good_light_text">
+        найдите место с хорошим освещением\n(светло, но без ярких засветов)
+    </string>
+    <string name="fixed_camera_text">зафиксированная камера\n(старайтесь не двигать камерой)</string>
+    <string-array name="language">
+        <item>Русский</item>
+        <item>English</item>
+    </string-array>
 </resources>
