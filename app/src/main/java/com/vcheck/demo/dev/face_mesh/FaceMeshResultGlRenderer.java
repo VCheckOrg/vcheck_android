@@ -1,5 +1,5 @@
 
-package com.vcheck.demo.dev;
+package com.vcheck.demo.dev.face_mesh;
 
 import android.opengl.GLES20;
 
@@ -19,6 +19,7 @@ import java.util.List;
 public class FaceMeshResultGlRenderer implements ResultGlRenderer<FaceMeshResult> {
   private static final String TAG = "FaceMeshResultGlRenderer";
 
+  //TODO remove cosmetic mask (by removing/setting params to 0)
   private static final float[] TESSELATION_COLOR = new float[] {0.75f, 0.75f, 0.75f, 0.5f};
   private static final int TESSELATION_THICKNESS = 5;
   private static final float[] RIGHT_EYE_COLOR = new float[] {1f, 0.2f, 0.2f, 1f};

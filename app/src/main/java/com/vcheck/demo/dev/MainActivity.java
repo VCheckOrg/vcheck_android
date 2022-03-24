@@ -11,6 +11,7 @@ import com.google.mediapipe.solutioncore.SolutionGlSurfaceView;
 import com.google.mediapipe.solutions.facemesh.FaceMesh;
 import com.google.mediapipe.solutions.facemesh.FaceMeshOptions;
 import com.google.mediapipe.solutions.facemesh.FaceMeshResult;
+import com.vcheck.demo.dev.face_mesh.FaceMeshResultGlRenderer;
 
 /** Main activity of MediaPipe Face Mesh app. */
 public class MainActivity extends AppCompatActivity {
@@ -187,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
 //    }
 //    return Bitmap.createScaledBitmap(originalBitmap, width, height, false);
 //  }
-//
+
 //  private Bitmap rotateBitmap(Bitmap inputBitmap, InputStream imageData) throws IOException {
 //    int orientation =
 //            new ExifInterface(imageData)
