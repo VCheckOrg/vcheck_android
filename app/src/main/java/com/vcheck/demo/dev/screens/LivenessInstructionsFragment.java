@@ -11,21 +11,21 @@ import androidx.navigation.Navigation;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.widget.ImageView;
 
 import com.vcheck.demo.dev.R;
 
 
-public class FaceCheckScreen extends Fragment implements AdapterView.OnItemSelectedListener {
+public class LivenessInstructionsFragment extends Fragment {
 
-    public FaceCheckScreen() {
+    public LivenessInstructionsFragment() {
 
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_face_check, container, false);
+        return inflater.inflate(R.layout.liveness_instructions_fragment, container, false);
     }
 
     @Override
@@ -34,18 +34,12 @@ public class FaceCheckScreen extends Fragment implements AdapterView.OnItemSelec
 
         NavController navController = Navigation.findNavController(view);
 
-        View preview = view.findViewById(R.id.preview_display_layout);
-        preview.setOnClickListener(previewFrame ->
-                navController.navigate(R.id.action_faceCheckFragment_to_successFragment));
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-
+        ImageView checkButton = view.findViewById(R.id.check_button);
+        checkButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                navController.navigate(R.id.action_mainFragment_to_faceCheckFragment);
+            }
+        });
     }
 }

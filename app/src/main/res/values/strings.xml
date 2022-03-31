@@ -1,17 +1,70 @@
 <resources>
-    <string name="app_name">VCheckAndroidSDKDemo</string>
-    <string name="check_face_text">Проверка лица</string>
-    <string name="description_text">
-        Сначала разместите лицо по центру кадра, затем двигайте
-        головой в заданом направлении, как на примере ниже, чтобы
-        показать свое лицо со всех углов.
-    </string>
-    <string name="good_light_text">
-        найдите место с хорошим освещением\n(светло, но без ярких засветов)
-    </string>
-    <string name="fixed_camera_text">зафиксированная камера\n(старайтесь не двигать камерой)</string>
     <string-array name="language">
         <item>Русский</item>
         <item>English</item>
     </string-array>
+    <string name="app_name">VCheckAndroidSDKDemo</string>
+    <string name="wrong_move_title">Неверное движение</string>
+    <string name="wrong_move_description">Движение, которое запрашивалось не было выполнено корректно. Старайтесь делать именно те движения, которые запрашиваются. Движения должны быть плавными и своевременными.</string>
+    <string name="wrong_move_correct_text">Все было пройдено корректно, отправить на проверку</string>
+    <string name="wrong_move_repeat_button">Попробовать снова</string>
+    <string name="success_button">Отлично</string>
+    <string name="success_description">Таким образом постоянное информационно-пропагандистское обеспечение нашей деятельности играет важную роль в формировании существенных финансовых и административных условий.</string>
+    <string name="success_title">Верификация успешна</string>
+    <string name="photo_upload_continue_button">Продолжить</string>
+    <string name="make_photo_button">Сделать фото</string>
+    <string name="photo_upload_button">Загрузить фото</string>
+    <string name="passport_title">Загрузите фото лицевого разворота (разворот с вашим фото).</string>
+    <string name="photo_upload_description">Допустимый формат изображения: JPG, JPEG</string>
+    <string name="photo_upload_title">Загрузите фото документа</string>
+    <string name="photo_instructions_description">Фото вашего документа должно отвечать следующим требованиям:</string>
+    <string name="photo_instructions_title">Требования к фото</string>
+    <string name="photo_instructions_button">Продолжить</string>
+    <string name="image_color_text">изображение должно быть цветным</string>
+    <string name="seen_all_text">видны все защитные элементы</string>
+    <string name="seen_four_corners_text">полностью видны все 4 угла документа</string>
+    <string name="valid_dispatch_text">действительны на момент отправки</string>
+    <string name="no_foreign_objects_text">нет посторонних объектов: обложки, пальцев, скрепок и т.п.</string>
+    <string name="original_doc_text">сфотографированы или отсканированы с оригиналов</string>
+    <string name="os_not_support_title">Операционная система не поддерживается</string>
+    <string name="os_not_support_description">К сожалению, данная мобильная ОС не поддерживаеться. Для успешного прохождения процедуры верификации рекомендуем вам скопировать ссылку ниже и продолжить на персональном компьютере</string>
+    <string name="os_not_support_copy_button">Скопировать ссылку</string>
+    <string name="os_not_support_back_button">Вернуться</string>
+    <string name="not_found_title">Мы не нашли страницы с таким адресом :(</string>
+    <string name="not_found_button">На главную</string>
+    <string name="no_time_title">Время на выполнение движения истекло</string>
+    <string name="no_time_subtitle">Вы не успели выполнить корректное движение. Старайтесь четко придерживаться инструкций в момент прохождения проверки</string>
+    <string name="no_time_button">Попробовать снова</string>
+    <string name="no_time_correct_text">Все было пройдено корректно, отправить на проверку</string>
+    <string name="no_camera_title">Камера не доступна</string>
+    <string name="no_camera_subtitle">Камера не найдена, либо вы отказали в доступе к ней. Если камера работает исправно - нажмите на кнопку ниже и в появившемся окне дайте доступ на ее использование. Если проблема не решилась попробуйте скопировать ссылку на верефикацию продолжить на другом устройстве</string>
+    <string name="no_camera_permission_button">Дать доступ к камере</string>
+    <string name="no_camera_link_button">Скопировать ссылку</string>
+    <string name="look_stratight_error_send_text">Все было пройдено корректно, отправить на проверку</string>
+    <string name="look_stratight_error_subtitle">Лицо не было зафиксировано прямо в кадре в необходимый для этого момент. Старайтесь четко придерживаться инструкций в момент прохождения проверки. Попробуйте снова.</string>
+    <string name="look_stratight_error_title">Вы не смотрели прямо</string>
+    <string name="look_stratight_error_button">Попробовать снова</string>
+    <string name="in_process_title">Заявка отправлена на проверку</string>
+    <string name="in_process_subtitle">Заявка на верификацию отправлена на проверку. Очень скоро Вас уведомят о результате.</string>
+    <string name="in_process_button">Отлично</string>
+    <string name="frame_interference_description">В кадре могло быть несколько людей, либо посторонние предметы. При повторной проверке постарайтесь, что бы в кадре было только ваше лицо и его было видно как можно четче.</string>
+    <string name="frame_interference_title">В кадре много помех</string>
+    <string name="frame_interference_send_text">Все было пройдено корректно, отправить на проверку</string>
+    <string name="frame_interference_button">Попробовать снова</string>
+    <string name="fail_verification_title">Верификация неуспешна</string>
+    <string name="fail_verification_description">К сожалению, нам не удалось верифицировать вашу заявку. Если вы не согласны с данным решением, просьба обратиться в службу поддержки</string>
+    <string name="fail_verification_support_button">Обратиться в службу поддер...</string>
+    <string name="fail_verification_close_button">Закрыть</string>
+    <string name="error_title">Что-то пошло не так :(</string>
+    <string name="error_description">По какой-то причине мы не смогли загрузить контент данной страницы. Попробуйте перезагрузить страницу</string>
+    <string name="error_button">Перезагрузить страницу</string>
+    <string name="check_photo_description">Проверьте читаемость информации на фото. Убедитесь, что на фото видны все 4 угла документа</string>
+    <string name="check_photo_title">Проверьте свое фото</string>
+    <string name="check_photo_title_2">Каким способом заполнены данные в документе?</string>
+    <string name="machine_print_text">Машинная печать</string>
+    <string name="hand_print_text">Рукописный текст</string>
+    <string name="replace_photo_button">Заменить фото</string>
+    <string name="confirm_photo_button">Подтвердить</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

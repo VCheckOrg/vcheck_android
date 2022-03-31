@@ -3,11 +3,46 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/drawable/border_shape.xml" value="0.1745" />
+        <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/drawable/inactive_button.xml" value="0.1745" />
+        <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/drawable/outlined_button_shape.xml" value="0.1745" />
         <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/drawable/rounded_shape.xml" value="0.192" />
+        <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/drawable/shape_choose_country.xml" value="0.179" />
+        <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/drawable/shape_for_blue_button.xml" value="0.22" />
+        <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/drawable/shape_for_text_field.xml" value="0.1745" />
+        <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/drawable/shape_search_field.xml" value="0.1745" />
         <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/layout/activity_main.xml" value="0.3333333333333333" />
+        <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/layout/check_info_fragment.xml" value="0.32083333333333336" />
+        <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/layout/check_photo_fragment.xml" value="0.32083333333333336" />
+        <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/layout/choose_country_fragment.xml" value="0.32083333333333336" />
+        <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/layout/choose_country_screen.xml" value="0.3134057971014493" />
+        <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/layout/choose_doc_method_fragment.xml" value="0.32083333333333336" />
+        <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/layout/choose_doc_method_screen.xml" value="0.32083333333333336" />
+        <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/layout/choose_method_fragment.xml" value="0.32083333333333336" />
+        <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/layout/choose_method_screen.xml" value="0.32083333333333336" />
+        <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/layout/country_list_fragment.xml" value="0.28055555555555556" />
+        <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/layout/country_row.xml" value="0.31927083333333334" />
+        <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/layout/error_fragment.xml" value="0.32083333333333336" />
+        <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/layout/face_check_fragment.xml" value="0.32083333333333336" />
+        <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/layout/fail_verification_fragment.xml" value="0.32083333333333336" />
         <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/layout/fragment_face_check.xml" value="0.3104166666666667" />
         <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/layout/fragment_main.xml" value="0.3333333333333333" />
         <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/layout/fragment_success.xml" value="0.3104166666666667" />
+        <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/layout/frame_interference_fragment.xml" value="0.32083333333333336" />
+        <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/layout/id_card_photo_fragment.xml" value="0.3104166666666667" />
+        <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/layout/in_process_fragment.xml" value="0.32083333333333336" />
+        <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/layout/liveness_instructions_fragment.xml" value="0.32083333333333336" />
+        <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/layout/look_straight_error_fragment.xml" value="0.32083333333333336" />
+        <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/layout/no_camera_fragment.xml" value="0.22" />
+        <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/layout/no_time_fragment.xml" value="0.3333333333333333" />
+        <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/layout/not_found_fragment.xml" value="0.3104166666666667" />
+        <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/layout/os_not_support_fragment.xml" value="0.3104166666666667" />
+        <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/layout/photo_instructions_fragment.xml" value="0.32083333333333336" />
+        <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/layout/photo_instructions_screen.xml" value="0.32083333333333336" />
+        <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/layout/photo_upload_fragment.xml" value="0.32083333333333336" />
+        <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/layout/photo_upload_screen.xml" value="0.32083333333333336" />
+        <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/layout/success_fragment.xml" value="0.3333333333333333" />
+        <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/layout/wrong_move_fragment.xml" value="0.32083333333333336" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.29791666666666666" />
       </map>
     </option>

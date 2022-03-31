@@ -181,11 +181,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        if (i == 0) {
-            Toast.makeText(this, "Русский", Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(this, "English", Toast.LENGTH_LONG).show();
-        }
 
     }
 

@@ -12,16 +12,16 @@ import android.widget.AdapterView;
 import com.vcheck.demo.dev.R;
 
 
-public class SuccessScreen extends Fragment implements AdapterView.OnItemSelectedListener {
+public class SuccessFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
-    public SuccessScreen() {
+    public SuccessFragment() {
 
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_success, container, false);
+        return inflater.inflate(R.layout.success_fragment, container, false);
     }
 
     @Override
