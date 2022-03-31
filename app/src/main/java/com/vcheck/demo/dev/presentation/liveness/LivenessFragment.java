@@ -1,180 +1,186 @@
-package com.vcheck.demo.dev;
+package com.vcheck.demo.dev.presentation.liveness;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import androidx.appcompat.app.AppCompatActivity;
-import com.google.mediapipe.formats.proto.LandmarkProto.NormalizedLandmark;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import com.google.mediapipe.formats.proto.LandmarkProto;
 import com.google.mediapipe.solutioncore.CameraInput;
 import com.google.mediapipe.solutioncore.SolutionGlSurfaceView;
 import com.google.mediapipe.solutions.facemesh.FaceMesh;
 import com.google.mediapipe.solutions.facemesh.FaceMeshOptions;
 import com.google.mediapipe.solutions.facemesh.FaceMeshResult;
+import com.vcheck.demo.dev.R;
 import com.vcheck.demo.dev.face_mesh.FaceMeshResultGlRenderer;
 
-/** Main activity of MediaPipe Face Mesh app. */
-public class MainActivity extends AppCompatActivity {
-  private static final String TAG = "MainActivity";
+public class LivenessFragment extends Fragment {
 
-  private FaceMesh facemesh;
-  // Run the pipeline and the model inference on GPU or CPU.
-  private static final boolean RUN_ON_GPU = true;
+    private static final String TAG = "LivenessFragment";
 
-  private CameraInput cameraInput;
+    private FaceMesh facemesh;
+    // Run the pipeline and the model inference on GPU or CPU.
+    private static final boolean RUN_ON_GPU = true;
 
-  private SolutionGlSurfaceView<FaceMeshResult> glSurfaceView;
+    private CameraInput cameraInput;
 
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_main);
-    // TODO: Add a toggle to switch between the original face mesh and attention mesh.
-    //setupStaticImageDemoUiComponents();
-    //setupVideoDemoUiComponents();
-    //setupLiveDemoUiComponents();
-    setupStreamingModePipeline();
-  }
+    private SolutionGlSurfaceView<FaceMeshResult> glSurfaceView;
 
-  @Override
-  protected void onResume() {
-    super.onResume();
-    //if (inputSource == InputSource.CAMERA) {
-      // Restarts the camera and the opengl surface rendering.
-      cameraInput = new CameraInput(this);
-      cameraInput.setNewFrameListener(textureFrame -> facemesh.send(textureFrame));
-      glSurfaceView.post(this::startCamera);
-      glSurfaceView.setVisibility(View.VISIBLE);
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_liveness, container, false);
+
+        setupStreamingModePipeline(rootView);
+
+        return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //if (inputSource == InputSource.CAMERA) {
+        // Restarts the camera and the opengl surface rendering.
+        cameraInput = new CameraInput(getActivity());
+        cameraInput.setNewFrameListener(textureFrame -> facemesh.send(textureFrame));
+        glSurfaceView.post(this::startCamera);
+        glSurfaceView.setVisibility(View.VISIBLE);
 //    } else if (inputSource == InputSource.VIDEO) {
 //      videoInput.resume();
 //    }
-  }
+    }
 
-  @Override
-  protected void onPause() {
-    super.onPause();
-    //if (inputSource == InputSource.CAMERA) {
-      glSurfaceView.setVisibility(View.GONE);
-      cameraInput.close();
-    //}
+    @Override
+    public void onPause() {
+        super.onPause();
+        //if (inputSource == InputSource.CAMERA) {
+        glSurfaceView.setVisibility(View.GONE);
+        cameraInput.close();
+        //}
 //    else if (inputSource == InputSource.VIDEO) {
 //      videoInput.pause();
 //    }
-  }
+    }
 
-  /** Sets up core workflow for streaming mode. */
-  private void setupStreamingModePipeline() {
-    Log.i("PIPELINE", "setupStreamingModePipeline START");
-    //this.inputSource = inputSource;
-    // Initializes a new MediaPipe Face Mesh solution instance in the streaming mode.
-    facemesh =
-        new FaceMesh(
-            this,
-            FaceMeshOptions.builder()
-                .setStaticImageMode(false)
-                .setRefineLandmarks(true)
-                .setRunOnGpu(RUN_ON_GPU)
-                .build());
-    facemesh.setErrorListener((message, e) -> Log.e(TAG, "MediaPipe Face Mesh error:" + message));
+    /** Sets up core workflow for streaming mode. */
+    private void setupStreamingModePipeline(View view) {
+        Log.i("PIPELINE", "setupStreamingModePipeline START");
+        //this.inputSource = inputSource;
+        // Initializes a new MediaPipe Face Mesh solution instance in the streaming mode.
+        facemesh =
+                new FaceMesh(
+                        getActivity(),
+                        FaceMeshOptions.builder()
+                                .setStaticImageMode(false)
+                                .setRefineLandmarks(true)
+                                .setRunOnGpu(RUN_ON_GPU)
+                                .build());
+        facemesh.setErrorListener((message, e) -> Log.e(TAG, "MediaPipe Face Mesh error:" + message));
 
 //   if (inputSource == InputSource.CAMERA) {
-    cameraInput = new CameraInput(this);
-    cameraInput.setNewFrameListener(textureFrame -> facemesh.send(textureFrame));
+        cameraInput = new CameraInput(getActivity());
+        cameraInput.setNewFrameListener(textureFrame -> facemesh.send(textureFrame));
 //    } else if (inputSource == InputSource.VIDEO) {
 //      videoInput = new VideoInput(this);
 //      videoInput.setNewFrameListener(textureFrame -> facemesh.send(textureFrame));
 //    }
 
-    // Initializes a new Gl surface view with a user-defined FaceMeshResultGlRenderer.
-    glSurfaceView =
-        new SolutionGlSurfaceView<>(this, facemesh.getGlContext(), facemesh.getGlMajorVersion());
-    glSurfaceView.setSolutionResultRenderer(new FaceMeshResultGlRenderer());
-    glSurfaceView.setRenderInputImage(true);
-    facemesh.setResultListener(
-        faceMeshResult -> {
-          logNoseLandmark(faceMeshResult, /*showPixelValues=*/ false);
-          glSurfaceView.setRenderData(faceMeshResult);
-          glSurfaceView.requestRender();
-        });
+        // Initializes a new Gl surface view with a user-defined FaceMeshResultGlRenderer.
+        glSurfaceView =
+                new SolutionGlSurfaceView<FaceMeshResult>(getActivity(), facemesh.getGlContext(), facemesh.getGlMajorVersion());
+        glSurfaceView.setSolutionResultRenderer(new FaceMeshResultGlRenderer());
+        glSurfaceView.setRenderInputImage(true);
+        facemesh.setResultListener(
+                faceMeshResult -> {
+                    logNoseLandmark(faceMeshResult, /*showPixelValues=*/ false);
+                    glSurfaceView.setRenderData(faceMeshResult);
+                    glSurfaceView.requestRender();
+                });
 
-    // The runnable to start camera after the gl surface view is attached.
-    // For video input source, videoInput.start() will be called when the video uri is available.
-    //if (inputSource == InputSource.CAMERA) {
-      glSurfaceView.post(this::startCamera);
-    //}
+        // The runnable to start camera after the gl surface view is attached.
+        // For video input source, videoInput.start() will be called when the video uri is available.
+        //if (inputSource == InputSource.CAMERA) {
+        glSurfaceView.post(this::startCamera);
+        //}
 
-    // Updates the preview layout.
-    FrameLayout frameLayout = findViewById(R.id.preview_display_layout);
-    //imageView.setVisibility(View.GONE);
-    frameLayout.removeAllViewsInLayout();
-    frameLayout.addView(glSurfaceView);
-    glSurfaceView.setVisibility(View.VISIBLE);
-    frameLayout.requestLayout();
-  }
-
-  private void startCamera() {
-    cameraInput.start(
-        this,
-        facemesh.getGlContext(),
-        CameraInput.CameraFacing.FRONT,
-        glSurfaceView.getWidth(),
-        glSurfaceView.getHeight());
-  }
-
-  private void stopCurrentPipeline() {
-    if (cameraInput != null) {
-      cameraInput.setNewFrameListener(null);
-      cameraInput.close();
+        // Updates the preview layout.
+        FrameLayout frameLayout = view.findViewById(R.id.preview_display_layout);
+        //imageView.setVisibility(View.GONE);
+        frameLayout.removeAllViewsInLayout();
+        frameLayout.addView(glSurfaceView);
+        glSurfaceView.setVisibility(View.VISIBLE);
+        frameLayout.requestLayout();
     }
+
+    private void startCamera() {
+        cameraInput.start(
+                getActivity(),
+                facemesh.getGlContext(),
+                CameraInput.CameraFacing.FRONT,
+                glSurfaceView.getWidth(),
+                glSurfaceView.getHeight());
+    }
+
+    private void stopCurrentPipeline() {
+        if (cameraInput != null) {
+            cameraInput.setNewFrameListener(null);
+            cameraInput.close();
+        }
 //    if (videoInput != null) {
 //      videoInput.setNewFrameListener(null);
 //      videoInput.close();
 //    }
-    if (glSurfaceView != null) {
-      glSurfaceView.setVisibility(View.GONE);
+        if (glSurfaceView != null) {
+            glSurfaceView.setVisibility(View.GONE);
+        }
+        if (facemesh != null) {
+            facemesh.close();
+        }
     }
-    if (facemesh != null) {
-      facemesh.close();
-    }
-  }
 
-  private void logNoseLandmark(FaceMeshResult result, boolean showPixelValues) {
-    if (result == null || result.multiFaceLandmarks().isEmpty()) {
-      return;
+    private void logNoseLandmark(FaceMeshResult result, boolean showPixelValues) {
+        if (result == null || result.multiFaceLandmarks().isEmpty()) {
+            return;
+        }
+        LandmarkProto.NormalizedLandmark noseLandmark = result.multiFaceLandmarks().get(0).getLandmarkList().get(1);
+        // For Bitmaps, show the pixel values. For texture inputs, show the normalized coordinates.
+        if (showPixelValues) {
+            int width = result.inputBitmap().getWidth();
+            int height = result.inputBitmap().getHeight();
+            Log.i(
+                    TAG,
+                    String.format(
+                            "MediaPipe Face Mesh nose coordinates (pixel values): x=%f, y=%f",
+                            noseLandmark.getX() * width, noseLandmark.getY() * height));
+        } else {
+            Log.i(
+                    TAG,
+                    String.format(
+                            "MediaPipe Face Mesh nose normalized coordinates (value range: [0, 1]): x=%f, y=%f",
+                            noseLandmark.getX(), noseLandmark.getY()));
+        }
     }
-    NormalizedLandmark noseLandmark = result.multiFaceLandmarks().get(0).getLandmarkList().get(1);
-    // For Bitmaps, show the pixel values. For texture inputs, show the normalized coordinates.
-    if (showPixelValues) {
-      int width = result.inputBitmap().getWidth();
-      int height = result.inputBitmap().getHeight();
-      Log.i(
-          TAG,
-          String.format(
-              "MediaPipe Face Mesh nose coordinates (pixel values): x=%f, y=%f",
-              noseLandmark.getX() * width, noseLandmark.getY() * height));
-    } else {
-      Log.i(
-          TAG,
-          String.format(
-              "MediaPipe Face Mesh nose normalized coordinates (value range: [0, 1]): x=%f, y=%f",
-              noseLandmark.getX(), noseLandmark.getY()));
-    }
-  }
 
-  private enum InputSource {
-    //    UNKNOWN,
-    //    IMAGE,
-    //    VIDEO,
-    //    CAMERA,
-  }
-  //private InputSource inputSource = InputSource.CAMERA;
-  // Image demo UI and image loader components.
-  //private ActivityResultLauncher<Intent> imageGetter;
-  //private FaceMeshResultImageView imageView;
-  // Video demo UI and video loader components.
-  //private VideoInput videoInput;
-  //private ActivityResultLauncher<Intent> videoGetter;
-  // Live camera demo UI and camera components.
+    private enum InputSource {
+        //    UNKNOWN,
+        //    IMAGE,
+        //    VIDEO,
+        //    CAMERA,
+    }
+    //private InputSource inputSource = InputSource.CAMERA;
+    // Image demo UI and image loader components.
+    //private ActivityResultLauncher<Intent> imageGetter;
+    //private FaceMeshResultImageView imageView;
+    // Video demo UI and video loader components.
+    //private VideoInput videoInput;
+    //private ActivityResultLauncher<Intent> videoGetter;
+    // Live camera demo UI and camera components.
 
 
 //  private Bitmap downscaleBitmap(Bitmap originalBitmap) {
@@ -215,7 +221,7 @@ public class MainActivity extends AppCompatActivity {
 //  }
 
 
-  /** Sets up the UI components for the live demo with camera input. */
+    /** Sets up the UI components for the live demo with camera input. */
 //  private void setupLiveDemoUiComponents() {
 //    Button startCameraButton = findViewById(R.id.button_start_camera);
 //    startCameraButton.setOnClickListener(
@@ -223,13 +229,13 @@ public class MainActivity extends AppCompatActivity {
 //          if (inputSource == InputSource.CAMERA) {
 //            return;
 //          }
-  //stopCurrentPipeline();
-  //setupStreamingModePipeline(InputSource.CAMERA);
-  //});
+    //stopCurrentPipeline();
+    //setupStreamingModePipeline(InputSource.CAMERA);
+    //});
 //  }
-  /** Sets up the UI components for the static image demo. */
+    /** Sets up the UI components for the static image demo. */
 //  private void setupStaticImageDemoUiComponents() {
-  // The Intent to access gallery and read images as bitmap.
+    // The Intent to access gallery and read images as bitmap.
 //    imageGetter =
 //        registerForActivityResult(
 //            new ActivityResultContracts.StartActivityForResult(),
@@ -272,7 +278,7 @@ public class MainActivity extends AppCompatActivity {
 //          pickImageIntent.setDataAndType(MediaStore.Images.Media.INTERNAL_CONTENT_URI, "image/*");
 //          imageGetter.launch(pickImageIntent);
 //        });
-  //imageView = new FaceMeshResultImageView(this);
+    //imageView = new FaceMeshResultImageView(this);
 //  }
 
 //  private void setupStaticImageModePipeline() {

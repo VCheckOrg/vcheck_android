@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main_nav_graph">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav_graph"
+    app:startDestination="@id/demoStartFragment">
 
+    <fragment
+        android:id="@+id/demoStartFragment"
+        android:name="com.vcheck.demo.dev.presentation.start.DemoStartFragment"
+        android:label="fragment_demo_start"
+        tools:layout="@layout/fragment_demo_start" />
 </navigation>
