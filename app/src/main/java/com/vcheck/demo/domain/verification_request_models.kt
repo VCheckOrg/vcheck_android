@@ -17,5 +17,6 @@ data class CreateVerificationRequestBody(
     val locale: String = "ru",
     val sign: String = generateSHA256Hash(
         partner_application_id + "$partner_id" +
-            partner_user_id + "$timestamp" + "DWBnN7LbeTaqG9vE")) //client secret key at the end
+            partner_user_id + "$timestamp" + "DWBnN7LbeTaqG9vE"))
+            //client secret key at the end; currently hardcoded for tests!
 

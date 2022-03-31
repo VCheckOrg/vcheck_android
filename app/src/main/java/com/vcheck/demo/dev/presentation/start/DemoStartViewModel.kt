@@ -1,20 +1,19 @@
 package com.vcheck.demo.dev.presentation.start
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.vcheck.demo.data.MainRepository
 import com.vcheck.demo.data.Resource
 import com.vcheck.demo.domain.CreateVerificationAttemptResponse
 
-class DemoStartViewModel (val repository: MainRepository) : ViewModel() {
+class DemoStartViewModel (private val repository: MainRepository) : ViewModel() {
 
     private val isLoading: MutableLiveData<Boolean> = MutableLiveData()
     private val isError: MutableLiveData<Boolean> = MutableLiveData()
     private val isSuccess: MutableLiveData<Boolean> = MutableLiveData()
 
-    //private val callObserver: Observer<Resource<CreateVerificationAttemptResponse>> = Observer { t -> processResponse(t) }
-
     var verifResponse: MutableLiveData<Resource<CreateVerificationAttemptResponse>> = MutableLiveData()
+
+    //private val callObserver: Observer<Resource<CreateVerificationAttemptResponse>> = Observer { t -> processResponse(t) }
 
     fun createTestVerificationRequest() {
         repository.createTestVerificationRequest().observeForever {
@@ -41,7 +40,6 @@ class DemoStartViewModel (val repository: MainRepository) : ViewModel() {
     }
 
     private fun setSuccess(response: Resource<CreateVerificationAttemptResponse>){
-        Log.d("CLIENT", "SUCCESS === DATA: ${response.data?.data?.applicationId}")
         isLoading.value = false
         isSuccess.value = true
         isError.value = false

@@ -26,7 +26,6 @@ open class NetworkCall<T>{
         }
 
         override fun onResponse(call: Call<T>, response: Response<T>) {
-            Log.d("CLIENT", "RESPONSE IS SUCCESSFUL? ${response.isSuccessful}")
             if(response.isSuccessful)
                 result.value = Resource.success(response.body())
             else{
