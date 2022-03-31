@@ -1,28 +1,28 @@
-package com.vcheck.demo.dev;
+package com.vcheck.demo.dev.presentation.liveness;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.Spinner;
-import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
-import com.google.mediapipe.formats.proto.LandmarkProto.NormalizedLandmark;
+import com.google.mediapipe.formats.proto.LandmarkProto;
 import com.google.mediapipe.solutioncore.CameraInput;
 import com.google.mediapipe.solutioncore.SolutionGlSurfaceView;
 import com.google.mediapipe.solutions.facemesh.FaceMesh;
 import com.google.mediapipe.solutions.facemesh.FaceMeshOptions;
 import com.google.mediapipe.solutions.facemesh.FaceMeshResult;
+import com.vcheck.demo.dev.R;
+import com.vcheck.demo.dev.face_mesh.FaceMeshResultGlRenderer;
 
-/**
- * Main activity of MediaPipe Face Mesh app.
- */
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
-    private static final String TAG = "MainActivity";
+public class LivenessFragment extends Fragment {
+
+    private static final String TAG = "LivenessFragment";
 
     private FaceMesh facemesh;
     // Run the pipeline and the model inference on GPU or CPU.
@@ -32,32 +32,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private SolutionGlSurfaceView<FaceMeshResult> glSurfaceView;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        // TODO: Add a toggle to switch between the original face mesh and attention mesh.
-        //setupStaticImageDemoUiComponents();
-        //setupVideoDemoUiComponents();
-        //setupLiveDemoUiComponents();
-        setupStreamingModePipeline();
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_liveness, container, false);
 
-        Spinner spinner = findViewById(R.id.lang_spinner);
-        spinner.setOnItemSelectedListener(this);
+        setupStreamingModePipeline(rootView);
 
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.language,
-                android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        spinner.setAdapter(adapter);
+        return rootView;
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         //if (inputSource == InputSource.CAMERA) {
         // Restarts the camera and the opengl surface rendering.
-        cameraInput = new CameraInput(this);
+        cameraInput = new CameraInput(getActivity());
         cameraInput.setNewFrameListener(textureFrame -> facemesh.send(textureFrame));
         glSurfaceView.post(this::startCamera);
         glSurfaceView.setVisibility(View.VISIBLE);
@@ -67,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
         //if (inputSource == InputSource.CAMERA) {
         glSurfaceView.setVisibility(View.GONE);
@@ -78,16 +68,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 //    }
     }
 
-    /**
-     * Sets up core workflow for streaming mode.
-     */
-    private void setupStreamingModePipeline() {
+    /** Sets up core workflow for streaming mode. */
+    private void setupStreamingModePipeline(View view) {
         Log.i("PIPELINE", "setupStreamingModePipeline START");
         //this.inputSource = inputSource;
         // Initializes a new MediaPipe Face Mesh solution instance in the streaming mode.
         facemesh =
                 new FaceMesh(
-                        this,
+                        getActivity(),
                         FaceMeshOptions.builder()
                                 .setStaticImageMode(false)
                                 .setRefineLandmarks(true)
@@ -96,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         facemesh.setErrorListener((message, e) -> Log.e(TAG, "MediaPipe Face Mesh error:" + message));
 
 //   if (inputSource == InputSource.CAMERA) {
-        cameraInput = new CameraInput(this);
+        cameraInput = new CameraInput(getActivity());
         cameraInput.setNewFrameListener(textureFrame -> facemesh.send(textureFrame));
 //    } else if (inputSource == InputSource.VIDEO) {
 //      videoInput = new VideoInput(this);
@@ -105,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         // Initializes a new Gl surface view with a user-defined FaceMeshResultGlRenderer.
         glSurfaceView =
-                new SolutionGlSurfaceView<>(this, facemesh.getGlContext(), facemesh.getGlMajorVersion());
+                new SolutionGlSurfaceView<FaceMeshResult>(getActivity(), facemesh.getGlContext(), facemesh.getGlMajorVersion());
         glSurfaceView.setSolutionResultRenderer(new FaceMeshResultGlRenderer());
         glSurfaceView.setRenderInputImage(true);
         facemesh.setResultListener(
@@ -121,18 +109,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         glSurfaceView.post(this::startCamera);
         //}
 
-//     Updates the preview layout.
-//        FrameLayout frameLayout = findViewById(R.id.preview_display_layout);
-//        //imageView.setVisibility(View.GONE);
-//        frameLayout.removeAllViewsInLayout();
-//        frameLayout.addView(glSurfaceView);
-//        glSurfaceView.setVisibility(View.VISIBLE);
-//        frameLayout.requestLayout();
+        // Updates the preview layout.
+        FrameLayout frameLayout = view.findViewById(R.id.preview_display_layout);
+        //imageView.setVisibility(View.GONE);
+        frameLayout.removeAllViewsInLayout();
+        frameLayout.addView(glSurfaceView);
+        glSurfaceView.setVisibility(View.VISIBLE);
+        frameLayout.requestLayout();
     }
 
     private void startCamera() {
         cameraInput.start(
-                this,
+                getActivity(),
                 facemesh.getGlContext(),
                 CameraInput.CameraFacing.FRONT,
                 glSurfaceView.getWidth(),
@@ -160,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (result == null || result.multiFaceLandmarks().isEmpty()) {
             return;
         }
-        NormalizedLandmark noseLandmark = result.multiFaceLandmarks().get(0).getLandmarkList().get(1);
+        LandmarkProto.NormalizedLandmark noseLandmark = result.multiFaceLandmarks().get(0).getLandmarkList().get(1);
         // For Bitmaps, show the pixel values. For texture inputs, show the normalized coordinates.
         if (showPixelValues) {
             int width = result.inputBitmap().getWidth();
@@ -177,16 +165,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             "MediaPipe Face Mesh nose normalized coordinates (value range: [0, 1]): x=%f, y=%f",
                             noseLandmark.getX(), noseLandmark.getY()));
         }
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-
     }
 
     private enum InputSource {
@@ -216,7 +194,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 //    }
 //    return Bitmap.createScaledBitmap(originalBitmap, width, height, false);
 //  }
-//
+
 //  private Bitmap rotateBitmap(Bitmap inputBitmap, InputStream imageData) throws IOException {
 //    int orientation =
 //            new ExifInterface(imageData)
