@@ -2,26 +2,22 @@ package com.vcheck.demo.dev.screens
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.navigation.Navigation
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.adapters.CountryListAdapter
+import com.vcheck.demo.dev.databinding.CountryListFragmentBinding
 import com.vcheck.demo.dev.models.Country
-import kotlinx.android.synthetic.main.country_list_fragment.*
+
 
 class CountryListFragment : Fragment() {
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.country_list_fragment, container, false)
-    }
+    private lateinit var binding: CountryListFragmentBinding
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding = CountryListFragmentBinding.bind(view)
 
         val countryList = arrayListOf<Country>(
             Country("Украина", R.drawable.ic_flag_ukraine),
@@ -35,7 +31,7 @@ class CountryListFragment : Fragment() {
         )
 
         val countryListAdapter = CountryListAdapter(countryList)
-        countries_list.adapter = countryListAdapter
+        binding.countriesList.adapter = countryListAdapter
 
         val navController = Navigation.findNavController(view)
 
