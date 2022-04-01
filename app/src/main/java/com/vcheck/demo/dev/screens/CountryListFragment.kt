@@ -1,8 +1,10 @@
 package com.vcheck.demo.dev.screens
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import androidx.navigation.Navigation
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.adapters.CountryListAdapter
@@ -13,6 +15,13 @@ import com.vcheck.demo.dev.models.Country
 class CountryListFragment : Fragment() {
 
     private lateinit var binding: CountryListFragmentBinding
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.country_list_fragment, container, false)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

@@ -7,7 +7,7 @@ import org.jetbrains.kotlinx.multik.ndarray.operations.map
 import org.jetbrains.kotlinx.multik.ndarray.operations.toFloatArray
 import kotlin.math.*
 
-import org.opencv.core.Mat
+//import org.opencv.core.Mat
 
 data class FaceError(val exception: Exception)
 
@@ -39,16 +39,16 @@ fun faceRectToPoints(image: Any, rect: Rect, scale: Double = 0.8): Pair<Array<Do
             floor(center.second + dimensions.second / 2)))
 }
 
-fun cutRectangle(image: Mat, p0: Double, p1: Double) {
-    //h, w = image.shape[:2] //!
-    //val h: Double = image.
-    //val w: Double = image.
-
-//    return image[
-//            max(p0[1], 0) : min(p1[1], h),
-//    max(p0[0], 0) : min(p1[0], w),
-//    ]
-}
+//fun cutRectangle(image: Mat, p0: Double, p1: Double) {
+//    //h, w = image.shape[:2] //!
+//    //val h: Double = image.
+//    //val w: Double = image.
+//
+////    return image[
+////            max(p0[1], 0) : min(p1[1], h),
+////    max(p0[0], 0) : min(p1[0], w),
+////    ]
+//}
 
 
 class Face(private val landmarks: NDArray<Float, D3> = mk.d3array(0, 0, 0) { it.toFloat() * it },
