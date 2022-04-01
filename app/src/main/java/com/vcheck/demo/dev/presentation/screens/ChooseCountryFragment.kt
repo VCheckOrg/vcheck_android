@@ -24,7 +24,7 @@ class ChooseCountryFragment : Fragment() {
 
         val chooseCard = view.findViewById<View>(R.id.choose_country_card)
         chooseCard.setOnClickListener {
-            navController.navigate(R.id.action_chooseCountryFragment_to_countryListFragment)
+            //navController.navigate(R.id.action_chooseCountryFragment_to_countryListFragment)
         }
     }
 }

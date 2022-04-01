@@ -46,7 +46,15 @@
         android:id="@+id/chooseDocMethodScreen"
         android:name="com.vcheck.demo.dev.presentation.screens.ChooseDocMethodFragment"
         android:label="choose_doc_method_screen"
-        tools:layout="@layout/choose_doc_method_fragment" />
+        tools:layout="@layout/choose_doc_method_fragment" >
+        <action
+            android:id="@+id/action_chooseDocMethodScreen_to_photoInstructionsFragment"
+            app:destination="@id/photoInstructionsFragment">
+            <argument
+                android:name="docMethodTO"
+                app:argType="com.vcheck.demo.dev.domain.DocMethodTO" />
+        </action>
+    </fragment>
     <fragment
         android:id="@+id/photoUploadScreen"
         android:name="com.vcheck.demo.dev.presentation.screens.PhotoUploadFragment"
@@ -76,7 +84,11 @@
         android:id="@+id/photoInstructionsFragment"
         android:name="com.vcheck.demo.dev.presentation.screens.PhotoInstructionsFragment"
         android:label="photo_instructions_fragment"
-        tools:layout="@layout/photo_instructions_fragment" />
+        tools:layout="@layout/photo_instructions_fragment">
+        <argument
+            android:name="docMethodTO"
+            app:argType="com.vcheck.demo.dev.domain.DocMethodTO" />
+    </fragment>
     <fragment
         android:id="@+id/wrongMoveFragment"
         android:name="com.vcheck.demo.dev.presentation.screens.WrongMoveFragment"
@@ -126,11 +138,7 @@
         android:id="@+id/countryListFragment"
         android:name="com.vcheck.demo.dev.presentation.screens.CountryListFragment"
         android:label="country_list_fragment"
-        tools:layout="@layout/country_list_fragment" >
-        <action
-            android:id="@+id/action_countryListFragment_to_chooseCountryFragment"
-            app:destination="@id/chooseCountryFragment" />
-    </fragment>
+        tools:layout="@layout/country_list_fragment" />
 
     <fragment
         android:id="@+id/demoStartFragment"

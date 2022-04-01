@@ -21,7 +21,9 @@ class FaceCheckFragment : Fragment(), AdapterView.OnItemSelectedListener {
         super.onViewCreated(view, savedInstanceState)
         val navController = findNavController(view)
         val preview = view.findViewById<View>(R.id.preview_display_layout)
-        preview.setOnClickListener { previewFrame: View? -> navController.navigate(R.id.action_faceCheckFragment_to_successFragment) }
+        preview.setOnClickListener {
+            //navController.navigate(R.id.action_faceCheckFragment_to_successFragment)
+        }
     }
 
     override fun onItemSelected(adapterView: AdapterView<*>?, view: View, i: Int, l: Long) {}

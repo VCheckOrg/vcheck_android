@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.vcheck.demo.dev.databinding.CountryRowBinding
-import com.vcheck.demo.dev.models.Country
+import com.vcheck.demo.dev.domain.Country
 
 
 class CountryListAdapter(private val countryList: ArrayList<Country>) :

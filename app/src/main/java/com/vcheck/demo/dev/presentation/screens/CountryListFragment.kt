@@ -7,7 +7,7 @@ import androidx.navigation.Navigation
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.presentation.adapters.CountryListAdapter
 import com.vcheck.demo.dev.databinding.CountryListFragmentBinding
-import com.vcheck.demo.dev.models.Country
+import com.vcheck.demo.dev.domain.Country
 
 
 class CountryListFragment : Fragment() {
@@ -37,7 +37,7 @@ class CountryListFragment : Fragment() {
 
         val chooseCard = view.findViewById<View>(R.id.country_list_back_arrow)
         chooseCard.setOnClickListener {
-            navController.navigate(R.id.action_countryListFragment_to_chooseCountryFragment)
+            //navController.navigate(R.id.action_countryListFragment_to_chooseCountryFragment)
         }
     }
 }

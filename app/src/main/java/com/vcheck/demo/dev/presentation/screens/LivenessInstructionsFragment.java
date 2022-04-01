@@ -38,7 +38,7 @@ public class LivenessInstructionsFragment extends Fragment {
         checkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                navController.navigate(R.id.action_mainFragment_to_faceCheckFragment);
+                //navController.navigate(R.id.action_mainFragment_to_faceCheckFragment);
             }
         });
     }
