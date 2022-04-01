@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_nav_graph"
-    app:startDestination="@id/chooseCountryFragment">
+    app:startDestination="@id/demoStartFragment">
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.vcheck.demo.dev.screens.LivenessInstructionsFragment"
+        android:name="com.vcheck.demo.dev.presentation.screens.LivenessInstructionsFragment"
         android:label="fragment_main"
         tools:layout="@layout/liveness_instructions_fragment">
         <action
@@ -17,7 +17,7 @@
 
     <fragment
         android:id="@+id/faceCheckFragment"
-        android:name="com.vcheck.demo.dev.screens.FaceCheckFragment"
+        android:name="com.vcheck.demo.dev.presentation.screens.FaceCheckFragment"
         android:label="fragment_face_check"
         tools:layout="@layout/face_check_fragment">
         <action
@@ -27,13 +27,13 @@
 
     <fragment
         android:id="@+id/successFragment"
-        android:name="com.vcheck.demo.dev.screens.SuccessFragment"
+        android:name="com.vcheck.demo.dev.presentation.screens.SuccessFragment"
         android:label="fragment_success"
         tools:layout="@layout/success_fragment" />
 
     <fragment
         android:id="@+id/chooseCountryFragment"
-        android:name="com.vcheck.demo.dev.screens.ChooseCountryFragment"
+        android:name="com.vcheck.demo.dev.presentation.screens.ChooseCountryFragment"
         android:label="choose_country_fragment"
         tools:layout="@layout/choose_country_fragment">
         <action
@@ -43,120 +43,137 @@
 
     <fragment
         android:id="@+id/chooseMethodScreen"
-        android:name="com.vcheck.demo.dev.screens.ChooseMethodFragment"
+        android:name="com.vcheck.demo.dev.presentation.screens.ChooseMethodFragment"
         android:label="choose_method_screen"
         tools:layout="@layout/choose_method_fragment" />
 
     <fragment
         android:id="@+id/chooseDocMethodScreen"
-        android:name="com.vcheck.demo.dev.screens.ChooseDocMethodFragment"
+        android:name="com.vcheck.demo.dev.presentation.screens.ChooseDocMethodFragment"
         android:label="choose_doc_method_screen"
-        tools:layout="@layout/choose_doc_method_fragment" />
-
+        tools:layout="@layout/choose_doc_method_fragment" >
+        <action
+            android:id="@+id/action_chooseDocMethodScreen_to_photoInstructionsFragment"
+            app:destination="@id/photoInstructionsFragment">
+            <argument
+                android:name="docMethodTO"
+                app:argType="com.vcheck.demo.dev.domain.DocMethodTO" />
+        </action>
+    </fragment>
+    
     <fragment
         android:id="@+id/photoUploadScreen"
-        android:name="com.vcheck.demo.dev.screens.PhotoUploadFragment"
+        android:name="com.vcheck.demo.dev.presentation.screens.PhotoUploadFragment"
         android:label="photo_upload_screen"
         tools:layout="@layout/photo_upload_fragment" />
 
     <fragment
         android:id="@+id/inProcessFragment"
-        android:name="com.vcheck.demo.dev.screens.InProcessFragment"
+        android:name="com.vcheck.demo.dev.presentation.screens.InProcessFragment"
         android:label="in_process_fragment"
         tools:layout="@layout/in_process_fragment" />
 
     <fragment
         android:id="@+id/frameInterferenceFragment"
-        android:name="com.vcheck.demo.dev.screens.FrameInterferenceFragment"
+        android:name="com.vcheck.demo.dev.presentation.screens.FrameInterferenceFragment"
         android:label="frame_interference_fragment"
         tools:layout="@layout/frame_interference_fragment" />
 
     <fragment
         android:id="@+id/lookStraightErrorFragment"
-        android:name="com.vcheck.demo.dev.screens.LookStraightErrorFragment"
+        android:name="com.vcheck.demo.dev.presentation.screens.LookStraightErrorFragment"
         android:label="look_straight_error_fragment"
         tools:layout="@layout/look_straight_error_fragment" />
 
     <fragment
         android:id="@+id/noTimeFragment"
-        android:name="com.vcheck.demo.dev.screens.NoTimeFragment"
+        android:name="com.vcheck.demo.dev.presentation.screens.NoTimeFragment"
         android:label="no_time_fragment"
         tools:layout="@layout/no_time_fragment" />
 
     <fragment
         android:id="@+id/photoInstructionsFragment"
-        android:name="com.vcheck.demo.dev.screens.PhotoInstructionsFragment"
+        android:name="com.vcheck.demo.dev.presentation.screens.PhotoInstructionsFragment"
         android:label="photo_instructions_fragment"
-        tools:layout="@layout/photo_instructions_fragment" />
-
+        tools:layout="@layout/photo_instructions_fragment">
+        <argument
+            android:name="docMethodTO"
+            app:argType="com.vcheck.demo.dev.domain.DocMethodTO" />
+    </fragment>
+    
     <fragment
         android:id="@+id/wrongMoveFragment"
-        android:name="com.vcheck.demo.dev.screens.WrongMoveFragment"
+        android:name="com.vcheck.demo.dev.presentation.screens.WrongMoveFragment"
         android:label="wrong_move_fragment"
         tools:layout="@layout/wrong_move_fragment" />
 
     <fragment
         android:id="@+id/errorFragment"
-        android:name="com.vcheck.demo.dev.screens.ErrorFragment"
+        android:name="com.vcheck.demo.dev.presentation.screens.ErrorFragment"
         android:label="error_fragment"
         tools:layout="@layout/error_fragment" />
 
     <fragment
         android:id="@+id/failVerificationFragment"
-        android:name="com.vcheck.demo.dev.screens.FailVerificationFragment"
+        android:name="com.vcheck.demo.dev.presentation.screens.FailVerificationFragment"
         android:label="fail_verification_fragment"
         tools:layout="@layout/fail_verification_fragment" />
 
     <fragment
         android:id="@+id/noCameraFragment"
-        android:name="com.vcheck.demo.dev.screens.NoCameraFragment"
+        android:name="com.vcheck.demo.dev.presentation.screens.NoCameraFragment"
         android:label="no_camera_fragment"
         tools:layout="@layout/no_camera_fragment" />
 
     <fragment
         android:id="@+id/osNotSupportFragment"
-        android:name="com.vcheck.demo.dev.screens.OsNotSupportFragment"
+        android:name="com.vcheck.demo.dev.presentation.screens.OsNotSupportFragment"
         android:label="os_not_support_fragment"
         tools:layout="@layout/os_not_support_fragment" />
 
     <fragment
         android:id="@+id/notFoundFragment"
-        android:name="com.vcheck.demo.dev.screens.NotFoundFragment"
+        android:name="com.vcheck.demo.dev.presentation.screens.NotFoundFragment"
         android:label="not_found_fragment"
         tools:layout="@layout/not_found_fragment" />
 
     <fragment
         android:id="@+id/IDCardPhotoFragment"
-        android:name="com.vcheck.demo.dev.screens.IDCardPhotoFragment"
+        android:name="com.vcheck.demo.dev.presentation.screens.IDCardPhotoFragment"
         android:label="id_card_photo_fragment"
         tools:layout="@layout/id_card_photo_fragment" />
 
     <fragment
         android:id="@+id/checkPhotoFragment"
-        android:name="com.vcheck.demo.dev.screens.CheckPhotoFragment"
+        android:name="com.vcheck.demo.dev.presentation.screens.CheckPhotoFragment"
         android:label="check_photo_fragment"
         tools:layout="@layout/check_photo_fragment" />
 
     <fragment
         android:id="@+id/checkInfoFragment"
-        android:name="com.vcheck.demo.dev.screens.CheckInfoFragment"
+        android:name="com.vcheck.demo.dev.presentation.screens.CheckInfoFragment"
         android:label="check_info_fragment"
         tools:layout="@layout/check_info_fragment" />
 
     <fragment
         android:id="@+id/countryListFragment"
-        android:name="com.vcheck.demo.dev.screens.CountryListFragment"
+        android:name="com.vcheck.demo.dev.presentation.screens.CountryListFragment"
         android:label="country_list_fragment"
-        tools:layout="@layout/country_list_fragment">
-        <action
-            android:id="@+id/action_countryListFragment_to_chooseCountryFragment"
-            app:destination="@id/chooseCountryFragment" />
-    </fragment>
+        tools:layout="@layout/country_list_fragment" />
 
     <fragment
         android:id="@+id/demoStartFragment"
         android:name="com.vcheck.demo.dev.presentation.start.DemoStartFragment"
         android:label="fragment_demo_start"
-        tools:layout="@layout/fragment_demo_start" />
+        tools:layout="@layout/fragment_demo_start" >
+        <action
+            android:id="@+id/action_demoStartFragment_to_livenessFragment2"
+            app:destination="@id/livenessFragment2" />
+    </fragment>
 
+    <fragment
+        android:id="@+id/livenessFragment2"
+        android:name="com.vcheck.demo.dev.presentation.liveness.LivenessFragment"
+        android:label="LivenessFragment" />
+        
 </navigation>

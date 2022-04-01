@@ -6,7 +6,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.vcheck.demo.VcheckDemoApp
+import androidx.navigation.fragment.findNavController
+import com.vcheck.demo.dev.VcheckDemoApp
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.databinding.FragmentDemoStartBinding
 
@@ -44,6 +45,11 @@ class DemoStartFragment : Fragment() {
         _binding!!.btnStartDemoFlow.setOnClickListener {
             _viewModel.createTestVerificationRequest()
         }
+
+        _binding!!.btnLaunchMediaPipeDemo.setOnClickListener {
+            findNavController().navigate(R.id.action_demoStartFragment_to_livenessFragment2)
+        }
+
     }
 
 }

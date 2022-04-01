@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#2A2A2A"
-    tools:context=".screens.ChooseMethodFragment">
+    tools:context=".presentation.screens.ChooseMethodFragment">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card"
