@@ -15,18 +15,34 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:text="@string/start_demo_flow"
-        android:layout_margin="60dp"/>
+        android:layout_marginBottom="60dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginStart="60dp"/>
 
     <TextView
         android:id="@+id/tvCreateVerificationResultInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginTop="160dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginStart="60dp"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnLaunchMediaPipeDemo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="Launch MediaPipe Demo"
+        android:layout_marginTop="260dp"
         android:layout_marginEnd="60dp"
         android:layout_marginStart="60dp"/>
 

@@ -63,9 +63,9 @@ public class LivenessFragment extends Fragment {
         glSurfaceView.setVisibility(View.GONE);
         cameraInput.close();
         //}
-//    else if (inputSource == InputSource.VIDEO) {
-//      videoInput.pause();
-//    }
+        //    else if (inputSource == InputSource.VIDEO) {
+        //      videoInput.pause();
+        //    }
     }
 
     /** Sets up core workflow for streaming mode. */
