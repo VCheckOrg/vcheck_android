@@ -6,7 +6,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class DocMethodTO(
     val docMethod: DocMethod
-): Parcelable
+) : Parcelable
 
 enum class DocMethod {
     INNER_PASSPORT,

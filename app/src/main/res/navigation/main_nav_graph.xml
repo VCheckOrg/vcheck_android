@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_nav_graph"
-    app:startDestination="@id/demoStartFragment">
+    app:startDestination="@id/chooseDocMethodScreen">
 
     <fragment
         android:id="@+id/mainFragment"
@@ -51,7 +51,7 @@
         android:id="@+id/chooseDocMethodScreen"
         android:name="com.vcheck.demo.dev.presentation.screens.ChooseDocMethodFragment"
         android:label="choose_doc_method_screen"
-        tools:layout="@layout/choose_doc_method_fragment" >
+        tools:layout="@layout/choose_doc_method_fragment">
         <action
             android:id="@+id/action_chooseDocMethodScreen_to_photoInstructionsFragment"
             app:destination="@id/photoInstructionsFragment">
@@ -60,7 +60,7 @@
                 app:argType="com.vcheck.demo.dev.domain.DocMethodTO" />
         </action>
     </fragment>
-    
+
     <fragment
         android:id="@+id/photoUploadScreen"
         android:name="com.vcheck.demo.dev.presentation.screens.PhotoUploadFragment"
@@ -99,8 +99,14 @@
         <argument
             android:name="docMethodTO"
             app:argType="com.vcheck.demo.dev.domain.DocMethodTO" />
+        <action
+            android:id="@+id/action_photoInstructionsFragment_to_photoUploadScreen"
+            app:destination="@id/photoUploadScreen" />
+        <action
+            android:id="@+id/action_photoInstructionsFragment_to_IDCardPhotoUploadFragment"
+            app:destination="@id/IDCardPhotoUploadFragment" />
     </fragment>
-    
+
     <fragment
         android:id="@+id/wrongMoveFragment"
         android:name="com.vcheck.demo.dev.presentation.screens.WrongMoveFragment"
@@ -138,10 +144,10 @@
         tools:layout="@layout/not_found_fragment" />
 
     <fragment
-        android:id="@+id/IDCardPhotoFragment"
-        android:name="com.vcheck.demo.dev.presentation.screens.IDCardPhotoFragment"
-        android:label="id_card_photo_fragment"
-        tools:layout="@layout/id_card_photo_fragment" />
+        android:id="@+id/IDCardPhotoUploadFragment"
+        android:name="com.vcheck.demo.dev.presentation.screens.IDCardPhotoUploadFragment"
+        android:label="id_card_photo_upload_fragment"
+        tools:layout="@layout/id_card_photo_upload_fragment" />
 
     <fragment
         android:id="@+id/checkPhotoFragment"
@@ -165,7 +171,7 @@
         android:id="@+id/demoStartFragment"
         android:name="com.vcheck.demo.dev.presentation.start.DemoStartFragment"
         android:label="fragment_demo_start"
-        tools:layout="@layout/fragment_demo_start" >
+        tools:layout="@layout/fragment_demo_start">
         <action
             android:id="@+id/action_demoStartFragment_to_livenessFragment2"
             app:destination="@id/livenessFragment2" />
@@ -175,5 +181,5 @@
         android:id="@+id/livenessFragment2"
         android:name="com.vcheck.demo.dev.presentation.liveness.LivenessFragment"
         android:label="LivenessFragment" />
-        
+
 </navigation>

@@ -34,7 +34,7 @@
                     android:id="@+id/back_arrow"
                     android:layout_width="10dp"
                     android:layout_height="16dp"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="23dp"
                     android:layout_marginTop="28dp"
                     android:src="@drawable/back_arrow"
                     app:layout_constraintStart_toStartOf="parent"
@@ -46,7 +46,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="12dp"
                     android:text="@string/photo_upload_title"
                     android:textColor="@color/white"
                     android:textSize="18sp"
@@ -73,7 +73,9 @@
                     android:id="@+id/photo_upload_card"
                     android:layout_width="264dp"
                     android:layout_height="250dp"
+                    android:layout_marginStart="16dp"
                     android:layout_marginTop="28dp"
+                    android:layout_marginEnd="16dp"
                     app:cardBackgroundColor="#7F7F7F"
                     app:cardCornerRadius="12dp"
                     app:contentPadding="1dp"
@@ -90,6 +92,11 @@
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent">
+
+                            <ImageView
+                                android:id="@+id/passport_full_image"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent" />
 
                             <ImageView
                                 android:id="@+id/passport_image"
@@ -120,35 +127,17 @@
                                 app:layout_constraintTop_toTopOf="parent" />
 
                             <androidx.appcompat.widget.AppCompatButton
-                                android:id="@+id/photo_upload_button"
-                                android:layout_width="232dp"
-                                android:layout_height="40dp"
-                                android:layout_marginStart="16dp"
-                                android:layout_marginTop="40dp"
-                                android:layout_marginEnd="16dp"
-                                android:background="@drawable/outlined_button_shape"
-                                android:drawableStart="@drawable/upload_photo_icon"
-                                android:paddingStart="10dp"
-                                android:text="@string/photo_upload_button"
-                                android:textSize="14sp"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/passport_title" />
-
-                            <androidx.appcompat.widget.AppCompatButton
                                 android:id="@+id/make_photo_button"
                                 android:layout_width="232dp"
                                 android:layout_height="40dp"
                                 android:layout_marginStart="16dp"
-                                android:layout_marginTop="10dp"
                                 android:layout_marginEnd="16dp"
                                 android:layout_marginBottom="24dp"
                                 android:background="@drawable/outlined_button_shape"
                                 android:text="@string/make_photo_button"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/photo_upload_button" />
+                                app:layout_constraintStart_toStartOf="parent" />
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -5,13 +5,14 @@ import com.vcheck.demo.dev.data.MainRepository
 import com.vcheck.demo.dev.data.Resource
 import com.vcheck.demo.dev.domain.CreateVerificationAttemptResponse
 
-class DemoStartViewModel (private val repository: MainRepository) : ViewModel() {
+class DemoStartViewModel(private val repository: MainRepository) : ViewModel() {
 
     private val isLoading: MutableLiveData<Boolean> = MutableLiveData()
     private val isError: MutableLiveData<Boolean> = MutableLiveData()
     private val isSuccess: MutableLiveData<Boolean> = MutableLiveData()
 
-    var verifResponse: MutableLiveData<Resource<CreateVerificationAttemptResponse>> = MutableLiveData()
+    var verifResponse: MutableLiveData<Resource<CreateVerificationAttemptResponse>> =
+        MutableLiveData()
 
     //private val callObserver: Observer<Resource<CreateVerificationAttemptResponse>> = Observer { t -> processResponse(t) }
 
@@ -21,8 +22,8 @@ class DemoStartViewModel (private val repository: MainRepository) : ViewModel() 
         }
     }
 
-    private fun processResponse(response: Resource<CreateVerificationAttemptResponse>){
-        when(response.status){
+    private fun processResponse(response: Resource<CreateVerificationAttemptResponse>) {
+        when (response.status) {
             Resource.Status.LOADING -> {
                 setLoading()
             }
@@ -39,20 +40,20 @@ class DemoStartViewModel (private val repository: MainRepository) : ViewModel() 
         }
     }
 
-    private fun setSuccess(response: Resource<CreateVerificationAttemptResponse>){
+    private fun setSuccess(response: Resource<CreateVerificationAttemptResponse>) {
         isLoading.value = false
         isSuccess.value = true
         isError.value = false
         verifResponse.value = response
     }
 
-    private fun setError(){
+    private fun setError() {
         isLoading.value = false
         isSuccess.value = false
         isError.value = true
     }
 
-    private fun setLoading(){
+    private fun setLoading() {
         isLoading.value = true
         isSuccess.value = false
         isError.value = false

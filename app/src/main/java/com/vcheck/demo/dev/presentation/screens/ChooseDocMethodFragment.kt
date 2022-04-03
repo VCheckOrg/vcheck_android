@@ -27,9 +27,26 @@ class ChooseDocMethodFragment : Fragment() {
         _binding = ChooseDocMethodFragmentBinding.bind(view)
 
         _binding!!.docMethodInnerPassport.setOnClickListener {
-            val action = ChooseDocMethodFragmentDirections.actionChooseDocMethodScreenToPhotoInstructionsFragment(
-                DocMethodTO(DocMethod.INNER_PASSPORT)
-            )
+            val action =
+                ChooseDocMethodFragmentDirections.actionChooseDocMethodScreenToPhotoInstructionsFragment(
+                    DocMethodTO(DocMethod.INNER_PASSPORT)
+                )
+            findNavController().navigate(action)
+        }
+
+        _binding!!.docMethodForeignPassport.setOnClickListener {
+            val action =
+                ChooseDocMethodFragmentDirections.actionChooseDocMethodScreenToPhotoInstructionsFragment(
+                    DocMethodTO(DocMethod.FOREIGN_PASSPORT)
+                )
+            findNavController().navigate(action)
+        }
+
+        _binding!!.docMethodIdCard.setOnClickListener {
+            val action =
+                ChooseDocMethodFragmentDirections.actionChooseDocMethodScreenToPhotoInstructionsFragment(
+                    DocMethodTO(DocMethod.ID_CARD)
+                )
             findNavController().navigate(action)
         }
         //TODO: Pasha - add another 2 doc methods choosing logic + nav
