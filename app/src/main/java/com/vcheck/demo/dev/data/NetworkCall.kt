@@ -1,6 +1,7 @@
 package com.vcheck.demo.dev.data
 
 import androidx.lifecycle.MutableLiveData
+import com.vcheck.demo.dev.domain.ApiError
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

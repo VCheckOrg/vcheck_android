@@ -1,3 +1,3 @@
-package com.vcheck.demo.dev.data
+package com.vcheck.demo.dev.domain
 
 class ApiError (val errorText: String)
