@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.vcheck.demo.dev.VcheckDemoApp
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.databinding.FragmentDemoStartBinding
+import com.vcheck.demo.dev.presentation.MainActivity
 
 class DemoStartFragment : Fragment() {
 
@@ -21,7 +22,7 @@ class DemoStartFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         val appContainer = (activity?.application as VcheckDemoApp).appContainer
-        _viewModel = DemoStartViewModel(appContainer.mainRepository)
+        _viewModel = DemoStartViewModel(appContainer.mainRepository, appContainer.localDatasource)
     }
 
     override fun onCreateView(
@@ -37,9 +38,23 @@ class DemoStartFragment : Fragment() {
         _binding = FragmentDemoStartBinding.bind(view)
 
         _viewModel.verifResponse.observe(viewLifecycleOwner) {
-            _binding!!.tvCreateVerificationResultInfo.text =
-                "application_id : ${it.data!!.data.applicationId} |" +
-                        "redirect_url : ${it.data.data.redirectUrl} | create_time: ${it.data.data.createTime}"
+            if (it.data?.data != null) {
+                _binding!!.tvCreateVerificationResultInfo.text =
+                    "CREATED VERIFICATION REQUEST: application_id : ${it.data.data.applicationId} |" +
+                            "redirect_url : ${it.data.data.redirectUrl}" //+create_time
+
+                _viewModel.localDatasource.storeVerifToken((activity as MainActivity),
+                    it.data.data.redirectUrl.substringAfterLast("/", "").substringBefore("?id"))
+                _viewModel.initVerification(_viewModel.localDatasource.getVerifToken((activity as MainActivity)))
+            }
+        }
+
+        _viewModel.initResponse.observe(viewLifecycleOwner) {
+            if (it.data?.data != null) {
+                _binding!!.tvInitVerificationResultInfo.text =
+                    "INITIALIZED VERIFICATION: document : ${it.data.data.document} |" +
+                            "return_url : ${it.data.data.returnUrl} | stage: ${it.data.data.stage}" //+locale
+            }
         }
 
         _binding!!.btnStartDemoFlow.setOnClickListener {

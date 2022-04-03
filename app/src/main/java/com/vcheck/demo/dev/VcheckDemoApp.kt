@@ -5,5 +5,6 @@ import com.vcheck.demo.dev.di.AppContainer
 
 class VcheckDemoApp : Application() {
 
-    val appContainer = AppContainer()
+    var appContainer: AppContainer = AppContainer(this)
+
 }

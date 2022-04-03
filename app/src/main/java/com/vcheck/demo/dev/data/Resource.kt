@@ -1,10 +1,8 @@
 package com.vcheck.demo.dev.data
 
-class Resource<T> private constructor(
-    val status: Resource.Status,
-    val data: T?,
-    val apiError: ApiError?
-) {
+import com.vcheck.demo.dev.domain.ApiError
+
+class Resource<T> private constructor(val status: Resource.Status, val data: T?, val apiError: ApiError?) {
     enum class Status {
         SUCCESS, ERROR, LOADING
     }

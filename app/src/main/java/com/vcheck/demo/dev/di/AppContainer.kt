@@ -1,6 +1,8 @@
 package com.vcheck.demo.dev.di
 
+import com.vcheck.demo.dev.VcheckDemoApp
 import com.vcheck.demo.dev.data.ApiClient
+import com.vcheck.demo.dev.data.LocalDatasource
 import com.vcheck.demo.dev.data.MainRepository
 import com.vcheck.demo.dev.data.RemoteDatasource
 import okhttp3.OkHttpClient
@@ -8,7 +10,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class AppContainer {
+class AppContainer(val app: VcheckDemoApp) {
 
     private var retrofit: Retrofit
 
@@ -29,5 +31,7 @@ class AppContainer {
 
     private val remoteDataSource = RemoteDatasource(retrofit.create(ApiClient::class.java))
 
-    val mainRepository = MainRepository(remoteDataSource)
+    val localDatasource = LocalDatasource()
+
+    val mainRepository = MainRepository(remoteDataSource, localDatasource)
 }
