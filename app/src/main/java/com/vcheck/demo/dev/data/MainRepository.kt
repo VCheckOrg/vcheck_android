@@ -22,4 +22,6 @@ class MainRepository(private val remoteDatasource : RemoteDatasource,
             remoteDatasource.initVerification(token)
         } else MutableLiveData(Resource.error(ApiError("No token available!")))
     }
+
+
 }
