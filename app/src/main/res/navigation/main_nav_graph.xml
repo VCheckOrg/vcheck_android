@@ -56,8 +56,8 @@
             android:id="@+id/action_chooseDocMethodScreen_to_photoInstructionsFragment"
             app:destination="@id/photoInstructionsFragment">
             <argument
-                android:name="docMethodTO"
-                app:argType="com.vcheck.demo.dev.domain.DocMethodTO" />
+                android:name="docTypeTO"
+                app:argType="com.vcheck.demo.dev.domain.DocTypeTO" />
         </action>
     </fragment>
 
@@ -96,15 +96,15 @@
         android:name="com.vcheck.demo.dev.presentation.screens.PhotoInstructionsFragment"
         android:label="photo_instructions_fragment"
         tools:layout="@layout/photo_instructions_fragment">
-        <argument
-            android:name="docMethodTO"
-            app:argType="com.vcheck.demo.dev.domain.DocMethodTO" />
         <action
             android:id="@+id/action_photoInstructionsFragment_to_photoUploadScreen"
             app:destination="@id/photoUploadScreen" />
         <action
             android:id="@+id/action_photoInstructionsFragment_to_IDCardPhotoUploadFragment"
             app:destination="@id/IDCardPhotoUploadFragment" />
+        <argument
+            android:name="docTypeTO"
+            app:argType="com.vcheck.demo.dev.domain.DocTypeTO" />
     </fragment>
 
     <fragment

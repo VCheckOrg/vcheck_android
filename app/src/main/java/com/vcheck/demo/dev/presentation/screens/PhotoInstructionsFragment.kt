@@ -9,8 +9,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.databinding.PhotoInstructionsFragmentBinding
-import com.vcheck.demo.dev.domain.DocMethod
-import com.vcheck.demo.dev.domain.DocMethodTO
+import com.vcheck.demo.dev.domain.DocType
 
 class PhotoInstructionsFragment : Fragment() {
 
@@ -31,9 +30,9 @@ class PhotoInstructionsFragment : Fragment() {
 
         _binding!!.photoInstructionsButton.setOnClickListener {
 
-            val docMethod = args.docMethodTO.docMethod
+            val docMethod = args.docTypeTO.docType
 
-            if (docMethod == DocMethod.INNER_PASSPORT || docMethod == DocMethod.FOREIGN_PASSPORT) {
+            if (docMethod == DocType.INNER_PASSPORT || docMethod == DocType.FOREIGN_PASSPORT) {
                 val action =
                     PhotoInstructionsFragmentDirections.actionPhotoInstructionsFragmentToPhotoUploadScreen()
                 findNavController().navigate(action)

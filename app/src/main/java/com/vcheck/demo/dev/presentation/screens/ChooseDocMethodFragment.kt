@@ -8,8 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.databinding.ChooseDocMethodFragmentBinding
-import com.vcheck.demo.dev.domain.DocMethod
-import com.vcheck.demo.dev.domain.DocMethodTO
+import com.vcheck.demo.dev.domain.DocType
+import com.vcheck.demo.dev.domain.DocTypeTO
 
 class ChooseDocMethodFragment : Fragment() {
 
@@ -29,7 +29,7 @@ class ChooseDocMethodFragment : Fragment() {
         _binding!!.docMethodInnerPassport.setOnClickListener {
             val action =
                 ChooseDocMethodFragmentDirections.actionChooseDocMethodScreenToPhotoInstructionsFragment(
-                    DocMethodTO(DocMethod.INNER_PASSPORT)
+                    DocTypeTO(DocType.INNER_PASSPORT)
                 )
             findNavController().navigate(action)
         }
@@ -37,7 +37,7 @@ class ChooseDocMethodFragment : Fragment() {
         _binding!!.docMethodForeignPassport.setOnClickListener {
             val action =
                 ChooseDocMethodFragmentDirections.actionChooseDocMethodScreenToPhotoInstructionsFragment(
-                    DocMethodTO(DocMethod.FOREIGN_PASSPORT)
+                    DocTypeTO(DocType.FOREIGN_PASSPORT)
                 )
             findNavController().navigate(action)
         }
@@ -45,7 +45,7 @@ class ChooseDocMethodFragment : Fragment() {
         _binding!!.docMethodIdCard.setOnClickListener {
             val action =
                 ChooseDocMethodFragmentDirections.actionChooseDocMethodScreenToPhotoInstructionsFragment(
-                    DocMethodTO(DocMethod.ID_CARD)
+                    DocTypeTO(DocType.ID_CARD)
                 )
             findNavController().navigate(action)
         }
