@@ -1,20 +1,24 @@
 package com.vcheck.demo.dev.data
 
-import com.vcheck.demo.dev.domain.CreateVerificationAttemptResponse
-import com.vcheck.demo.dev.domain.CreateVerificationRequestBody
-import com.vcheck.demo.dev.domain.VerificationInitResponse
+import com.vcheck.demo.dev.domain.*
+import okhttp3.MultipartBody
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.Header
-import retrofit2.http.POST
-import retrofit2.http.PUT
+import retrofit2.http.*
 
 interface ApiClient {
 
     @POST("verifications")
     fun createVerificationRequest(@Body verificationRequestBody: CreateVerificationRequestBody)
-        : Call<CreateVerificationAttemptResponse>
+            : Call<CreateVerificationAttemptResponse>
 
     @PUT("verifications/init")
-    fun initVerification(@Header("Authorization") verifToken: String) : Call<VerificationInitResponse>
+    fun initVerification(@Header("Authorization") verifToken: String): Call<VerificationInitResponse>
+
+    @Multipart
+    @POST("documents")
+    fun uploadVerificationDocument(
+        @Header("Authorization") verifToken: String,
+        @Body documentUploadRequestBody: DocumentUploadRequestBody,
+        @Part image: MultipartBody.Part
+    ): Call<DocumentUploadResponse>
 }
