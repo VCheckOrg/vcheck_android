@@ -1,4 +1,4 @@
-package com.vcheck.demo.dev.presentation.screens
+package com.vcheck.demo.dev.presentation.photo_upload_stage
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -33,12 +33,10 @@ class PhotoInstructionsFragment : Fragment() {
             val docMethod = args.docTypeTO.docType
 
             if (docMethod == DocType.INNER_PASSPORT || docMethod == DocType.FOREIGN_PASSPORT) {
-                val action =
-                    PhotoInstructionsFragmentDirections.actionPhotoInstructionsFragmentToPhotoUploadScreen()
+                val action = PhotoInstructionsFragmentDirections.actionPhotoInstructionsFragmentToPhotoUploadScreen()
                 findNavController().navigate(action)
             } else {
-                val action =
-                    PhotoInstructionsFragmentDirections.actionPhotoInstructionsFragmentToIDCardPhotoUploadFragment()
+                val action = PhotoInstructionsFragmentDirections.actionPhotoInstructionsFragmentToIDCardPhotoUploadFragment()
                 findNavController().navigate(action)
             }
         }

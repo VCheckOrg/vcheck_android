@@ -1,11 +1,11 @@
-package com.vcheck.demo.dev.presentation.screens
+package com.vcheck.demo.dev.presentation.country_stage
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import com.vcheck.demo.dev.R
 
 class ChooseCountryFragment : Fragment() {
@@ -20,11 +20,9 @@ class ChooseCountryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val navController = Navigation.findNavController(view)
-
         val chooseCard = view.findViewById<View>(R.id.choose_country_card)
         chooseCard.setOnClickListener {
-            //navController.navigate(R.id.action_chooseCountryFragment_to_countryListFragment)
+            findNavController().navigate(R.id.action_chooseCountryFragment_to_countryListFragment)
         }
     }
 }

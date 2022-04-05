@@ -33,7 +33,7 @@
 
     <fragment
         android:id="@+id/chooseCountryFragment"
-        android:name="com.vcheck.demo.dev.presentation.screens.ChooseCountryFragment"
+        android:name="com.vcheck.demo.dev.presentation.country_stage.ChooseCountryFragment"
         android:label="choose_country_fragment"
         tools:layout="@layout/choose_country_fragment">
         <action
@@ -63,7 +63,7 @@
 
     <fragment
         android:id="@+id/photoUploadScreen"
-        android:name="com.vcheck.demo.dev.presentation.screens.PhotoUploadFragment"
+        android:name="com.vcheck.demo.dev.presentation.photo_upload_stage.PhotoUploadFragment"
         android:label="photo_upload_screen"
         tools:layout="@layout/photo_upload_fragment" />
 
@@ -93,7 +93,7 @@
 
     <fragment
         android:id="@+id/photoInstructionsFragment"
-        android:name="com.vcheck.demo.dev.presentation.screens.PhotoInstructionsFragment"
+        android:name="com.vcheck.demo.dev.presentation.photo_upload_stage.PhotoInstructionsFragment"
         android:label="photo_instructions_fragment"
         tools:layout="@layout/photo_instructions_fragment">
         <action
@@ -163,7 +163,7 @@
 
     <fragment
         android:id="@+id/countryListFragment"
-        android:name="com.vcheck.demo.dev.presentation.screens.CountryListFragment"
+        android:name="com.vcheck.demo.dev.presentation.country_stage.CountryListFragment"
         android:label="country_list_fragment"
         tools:layout="@layout/country_list_fragment" />
 

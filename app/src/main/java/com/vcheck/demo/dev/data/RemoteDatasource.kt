@@ -2,6 +2,7 @@ package com.vcheck.demo.dev.data
 
 import androidx.lifecycle.MutableLiveData
 import com.vcheck.demo.dev.domain.*
+import okhttp3.MultipartBody
 
 class RemoteDatasource(private val apiClient: ApiClient) {
 
@@ -33,5 +34,20 @@ class RemoteDatasource(private val apiClient: ApiClient) {
             apiClient.getCountryAvailableDocTypeInfo(verifToken, countryId)
         )
     }
+
+    fun uploadVerificationDocument(
+        verifToken: String,
+        documentUploadRequestBody: DocumentUploadRequestBody,
+        image: MultipartBody.Part
+    ): MutableLiveData<Resource<DocumentUploadResponse>> {
+        return NetworkCall<DocumentUploadResponse>().makeCall(
+            apiClient.uploadVerificationDocument(
+                verifToken,
+                documentUploadRequestBody,
+                image
+            )
+        )
+    }
+
 
 }

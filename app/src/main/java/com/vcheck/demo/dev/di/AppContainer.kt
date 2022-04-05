@@ -33,5 +33,5 @@ class AppContainer(val app: VcheckDemoApp) {
 
     val localDatasource = LocalDatasource()
 
-    val mainRepository = MainRepository(remoteDataSource, localDatasource)
+    val mainRepository = MainRepository(remoteDataSource)
 }

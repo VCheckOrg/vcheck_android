@@ -2,10 +2,12 @@ package com.vcheck.demo.dev.presentation.start
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.vcheck.demo.dev.VcheckDemoApp
 import com.vcheck.demo.dev.R
@@ -45,7 +47,8 @@ class DemoStartFragment : Fragment() {
 
                 _viewModel.localDatasource.storeVerifToken((activity as MainActivity),
                     it.data.data.redirectUrl.substringAfterLast("/", "").substringBefore("?id"))
-                _viewModel.initVerification(_viewModel.localDatasource.getVerifToken((activity as MainActivity)))
+                _viewModel.setVerifToken(_viewModel.localDatasource.getVerifToken((activity as MainActivity)))
+                _viewModel.initVerification()
             }
         }
 
@@ -54,7 +57,18 @@ class DemoStartFragment : Fragment() {
                 _binding!!.tvInitVerificationResultInfo.text =
                     "INITIALIZED VERIFICATION: document : ${it.data.data.document} |" +
                             "return_url : ${it.data.data.returnUrl} | stage: ${it.data.data.stage}" //+locale
+                _viewModel.getCountriesList()
             }
+        }
+
+        _viewModel.countriesResponse.observe(viewLifecycleOwner) {
+            if (it.data?.data != null) {
+                Log.d("COUNTRIES", "GOT COUNTRIES: ${it.data.data.map { country -> country.code }.toList()}")
+            }
+        }
+
+        _viewModel.clientError.observe(viewLifecycleOwner) {
+            Toast.makeText(activity, it, Toast.LENGTH_LONG).show()
         }
 
         _binding!!.btnStartDemoFlow.setOnClickListener {

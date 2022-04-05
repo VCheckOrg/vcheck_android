@@ -1,6 +1,7 @@
 package com.vcheck.demo.dev.data
 
 import com.vcheck.demo.dev.domain.*
+import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -20,4 +21,13 @@ interface ApiClient {
     fun getCountryAvailableDocTypeInfo(@Header("Authorization") verifToken: String,
                                        @Path("country") countryId: Int)
                                         : Call<DocumentTypesForCountryResponse>
+
+    @Multipart
+    @POST("documents")
+    fun uploadVerificationDocument(
+        @Header("Authorization") verifToken: String,
+        @Body documentUploadRequestBody: DocumentUploadRequestBody,
+        @Part image: MultipartBody.Part
+    ): Call<DocumentUploadResponse>
+
 }
