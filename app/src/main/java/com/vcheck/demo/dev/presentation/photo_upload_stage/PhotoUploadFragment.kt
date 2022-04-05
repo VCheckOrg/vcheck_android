@@ -1,4 +1,4 @@
-package com.vcheck.demo.dev.presentation.screens
+package com.vcheck.demo.dev.presentation.photo_upload_stage
 
 import android.app.Activity
 import android.content.Intent
@@ -16,8 +16,6 @@ import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VcheckDemoApp
 import com.vcheck.demo.dev.databinding.PhotoUploadFragmentBinding
 import com.vcheck.demo.dev.presentation.MainActivity
-import com.vcheck.demo.dev.presentation.view_models.PhotoUploadViewModel
-import okhttp3.MediaType
 import okhttp3.MultipartBody
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -106,3 +104,4 @@ class PhotoUploadFragment : Fragment() {
         }
     }
 }
+

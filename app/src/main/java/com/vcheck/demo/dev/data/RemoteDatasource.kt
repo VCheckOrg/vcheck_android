@@ -37,4 +37,33 @@ class RemoteDatasource(private val apiClient: ApiClient) {
             )
         )
     }
+
+    fun getCountries(verifToken: String): MutableLiveData<Resource<CountriesResponse>> {
+        return NetworkCall<CountriesResponse>().makeCall(apiClient.getCountries(
+            verifToken
+        ))
+    }
+
+    fun getCountryAvailableDocTypeInfo(verifToken: String, countryId: Int)
+        : MutableLiveData<Resource<DocumentTypesForCountryResponse>> {
+        return NetworkCall<DocumentTypesForCountryResponse>().makeCall(
+            apiClient.getCountryAvailableDocTypeInfo(verifToken, countryId)
+        )
+    }
+
+    fun uploadVerificationDocument(
+        verifToken: String,
+        documentUploadRequestBody: DocumentUploadRequestBody,
+        image: MultipartBody.Part
+    ): MutableLiveData<Resource<DocumentUploadResponse>> {
+        return NetworkCall<DocumentUploadResponse>().makeCall(
+            apiClient.uploadVerificationDocument(
+                verifToken,
+                documentUploadRequestBody,
+                image
+            )
+        )
+    }
+
+
 }

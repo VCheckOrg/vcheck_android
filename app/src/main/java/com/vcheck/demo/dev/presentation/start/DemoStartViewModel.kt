@@ -1,24 +1,29 @@
 package com.vcheck.demo.dev.presentation.start
 
 import androidx.lifecycle.*
-import com.vcheck.demo.dev.VcheckDemoApp
 import com.vcheck.demo.dev.data.LocalDatasource
 import com.vcheck.demo.dev.data.MainRepository
 import com.vcheck.demo.dev.data.Resource
+import com.vcheck.demo.dev.domain.CountriesResponse
 import com.vcheck.demo.dev.domain.CreateVerificationAttemptResponse
 import com.vcheck.demo.dev.domain.VerificationInitResponse
 
 class DemoStartViewModel (private val repository: MainRepository,
     val localDatasource: LocalDatasource) : ViewModel() {
 
-    private val isLoading: MutableLiveData<Boolean> = MutableLiveData()
-    private val isError: MutableLiveData<Boolean> = MutableLiveData()
-    private val isSuccess: MutableLiveData<Boolean> = MutableLiveData()
+    val clientError: MutableLiveData<String> = MutableLiveData()
+//    private val isSuccess: MutableLiveData<Boolean> = MutableLiveData()
+//    private val isLoading: MutableLiveData<Boolean> = MutableLiveData()
 
     var verifResponse: MutableLiveData<Resource<CreateVerificationAttemptResponse>> = MutableLiveData()
     var initResponse: MutableLiveData<Resource<VerificationInitResponse>> = MutableLiveData()
+    var countriesResponse: MutableLiveData<Resource<CountriesResponse>> = MutableLiveData()
 
-    //private val callObserver: Observer<Resource<CreateVerificationAttemptResponse>> = Observer { t -> processResponse(t) }
+    private lateinit var verifToken: String
+
+    fun setVerifToken(token: String) {
+        verifToken = token
+    }
 
     fun createTestVerificationRequest() {
         repository.createTestVerificationRequest().observeForever {
@@ -26,22 +31,29 @@ class DemoStartViewModel (private val repository: MainRepository,
         }
     }
 
-    fun initVerification(token: String) {
-        repository.initVerification(token).observeForever {
+    fun initVerification() {
+        repository.initVerification(verifToken).observeForever {
             processInitVerifResponse(it)
+        }
+    }
+
+    fun getCountriesList() {
+        repository.getCountries(verifToken).observeForever {
+            processGetCountriesResponse(it)
         }
     }
 
     private fun processCreateVerifResponse(response: Resource<CreateVerificationAttemptResponse>){
         when(response.status) {
             Resource.Status.LOADING -> {
-                setLoading()
+                //setLoading()
             }
             Resource.Status.SUCCESS -> {
-                setCreateVerifResponseSuccess(response)
+                //setSuccess()
+                verifResponse.value = response
             }
             Resource.Status.ERROR -> {
-                setError()
+                setError(response.apiError!!.errorText)
                 //error.value = response.resourceError
             }
         }
@@ -50,43 +62,48 @@ class DemoStartViewModel (private val repository: MainRepository,
     private fun processInitVerifResponse(response: Resource<VerificationInitResponse>){
         when(response.status) {
             Resource.Status.LOADING -> {
-                setLoading()
+                //setLoading()
             }
             Resource.Status.SUCCESS -> {
-                setInitVerifResponseSuccess(response)
+                //setSuccess()
+                initResponse.value = response
             }
             Resource.Status.ERROR -> {
-                setError()
+                setError(response.apiError!!.errorText)
                 //error.value = response.resourceError
             }
         }
     }
 
-    private fun setInitVerifResponseSuccess(response: Resource<VerificationInitResponse>){
-        setSuccess()
-        initResponse.value = response
+    private fun processGetCountriesResponse(response: Resource<CountriesResponse>){
+        when(response.status) {
+            Resource.Status.LOADING -> {
+                //setLoading()
+            }
+            Resource.Status.SUCCESS -> {
+                //setSuccess()
+                countriesResponse.value = response
+            }
+            Resource.Status.ERROR -> {
+                setError(response.apiError!!.errorText)
+                //error.value = response.resourceError
+            }
+        }
     }
 
-    private fun setCreateVerifResponseSuccess(response: Resource<CreateVerificationAttemptResponse>){
-        setSuccess()
-        verifResponse.value = response
+    private fun setError(message: String) {
+        clientError.value = message
     }
 
-    private fun setSuccess() {
-        isLoading.value = false
-        isSuccess.value = true
-        isError.value = false
-    }
-
-    private fun setError() {
-        isLoading.value = false
-        isSuccess.value = false
-        isError.value = true
-    }
-
-    private fun setLoading() {
-        isLoading.value = true
-        isSuccess.value = false
-        isError.value = false
-    }
+//    private fun setSuccess() {
+//        isLoading.value = false
+//        isSuccess.value = true
+//        isError.value = false
+//    }
+//
+//    private fun setLoading() {
+//        isLoading.value = true
+//        isSuccess.value = false
+//        isError.value = false
+//    }
 }

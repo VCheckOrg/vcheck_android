@@ -6,8 +6,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.vcheck.demo.dev.databinding.CountryRowBinding
 import com.vcheck.demo.dev.domain.Country
+import com.vcheck.demo.dev.domain.CountryTO
 
-class CountryListAdapter(private val countryList: ArrayList<Country>) :
+class CountryListAdapter(private val countryList: ArrayList<CountryTO>) :
     RecyclerView.Adapter<CountryListAdapter.ViewHolder>() {
 
     private lateinit var binding: CountryRowBinding
@@ -30,7 +31,7 @@ class CountryListAdapter(private val countryList: ArrayList<Country>) :
 
     class ViewHolder(private val binding: CountryRowBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(country: Country) {
+        fun bind(country: CountryTO) {
 
             binding.countryName.text = country.name
             binding.flagImage.setImageResource(country.flag)

@@ -1,4 +1,4 @@
-package com.vcheck.demo.dev.presentation.screens
+package com.vcheck.demo.dev.presentation.photo_upload_stage
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,8 +9,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.databinding.PhotoInstructionsFragmentBinding
-import com.vcheck.demo.dev.domain.DocMethod
-import com.vcheck.demo.dev.domain.DocMethodTO
+import com.vcheck.demo.dev.domain.DocType
 
 class PhotoInstructionsFragment : Fragment() {
 
@@ -31,15 +30,13 @@ class PhotoInstructionsFragment : Fragment() {
 
         _binding!!.photoInstructionsButton.setOnClickListener {
 
-            val docMethod = args.docMethodTO.docMethod
+            val docMethod = args.docTypeTO.docType
 
-            if (docMethod == DocMethod.INNER_PASSPORT || docMethod == DocMethod.FOREIGN_PASSPORT) {
-                val action =
-                    PhotoInstructionsFragmentDirections.actionPhotoInstructionsFragmentToPhotoUploadScreen()
+            if (docMethod == DocType.INNER_PASSPORT || docMethod == DocType.FOREIGN_PASSPORT) {
+                val action = PhotoInstructionsFragmentDirections.actionPhotoInstructionsFragmentToPhotoUploadScreen()
                 findNavController().navigate(action)
             } else {
-                val action =
-                    PhotoInstructionsFragmentDirections.actionPhotoInstructionsFragmentToIDCardPhotoUploadFragment()
+                val action = PhotoInstructionsFragmentDirections.actionPhotoInstructionsFragmentToIDCardPhotoUploadFragment()
                 findNavController().navigate(action)
             }
         }

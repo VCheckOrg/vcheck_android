@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 rootProject.name = "VCheckAndroidSDKDemo"
 include ':app'
 
+include ':opencv'

@@ -12,7 +12,15 @@ interface ApiClient {
             : Call<CreateVerificationAttemptResponse>
 
     @PUT("verifications/init")
-    fun initVerification(@Header("Authorization") verifToken: String): Call<VerificationInitResponse>
+    fun initVerification(@Header("Authorization") verifToken: String) : Call<VerificationInitResponse>
+
+    @GET("countries")
+    fun getCountries(@Header("Authorization") verifToken: String) : Call<CountriesResponse>
+
+    @GET("countries/{country}/documents")
+    fun getCountryAvailableDocTypeInfo(@Header("Authorization") verifToken: String,
+                                       @Path("country") countryId: Int)
+                                        : Call<DocumentTypesForCountryResponse>
 
     @Multipart
     @POST("documents")

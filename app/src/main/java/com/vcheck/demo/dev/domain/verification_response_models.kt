@@ -1,10 +1,14 @@
 package com.vcheck.demo.dev.domain
 
 import com.google.gson.annotations.SerializedName
-import com.google.protobuf.Api
 
 data class CreateVerificationAttemptResponse(
-    val data: CreateVerificationAttemptData
+    @SerializedName("data")
+    val data: CreateVerificationAttemptData,
+    @SerializedName("error_code")
+    var errorCode: Int = 0,
+    @SerializedName("message")
+    var message: String = ""
 )
 
 data class CreateVerificationAttemptData(
@@ -17,7 +21,12 @@ data class CreateVerificationAttemptData(
 
 
 data class VerificationInitResponse(
-    val data: VerificationInitResponseData
+    @SerializedName("data")
+    val data: VerificationInitResponseData,
+    @SerializedName("error_code")
+    var errorCode: Int = 0,
+    @SerializedName("message")
+    var message: String = ""
 )
 
 data class VerificationInitResponseData(

@@ -1,4 +1,4 @@
-package com.vcheck.demo.dev.presentation.screens
+package com.vcheck.demo.dev.presentation.country_stage
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,6 +10,7 @@ import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.presentation.adapters.CountryListAdapter
 import com.vcheck.demo.dev.databinding.CountryListFragmentBinding
 import com.vcheck.demo.dev.domain.Country
+import com.vcheck.demo.dev.domain.CountryTO
 
 
 class CountryListFragment : Fragment() {
@@ -28,16 +29,18 @@ class CountryListFragment : Fragment() {
 
         binding = CountryListFragmentBinding.bind(view)
 
-        val countryList = arrayListOf<Country>(
-            Country("Украина", R.drawable.ic_flag_ukraine),
-            Country("Великобритания", R.drawable.ic_flag_united_kingdom),
-            Country("Монголия", R.drawable.ic_flag_mongolia),
-            Country("Тайланд", R.drawable.ic_flag_thailand),
-            Country("Мексика", R.drawable.ic_flag_mexico),
-            Country("Бразилия", R.drawable.ic_flag_brazil),
-            Country("Германия", R.drawable.ic_flag_germany),
-            Country("Израиль", R.drawable.ic_flag_israel),
-        )
+//        val countryList = arrayListOf<Country>(
+//            Country("Украина", R.drawable.ic_flag_ukraine),
+//            Country("Великобритания", R.drawable.ic_flag_united_kingdom),
+//            Country("Монголия", R.drawable.ic_flag_mongolia),
+//            Country("Тайланд", R.drawable.ic_flag_thailand),
+//            Country("Мексика", R.drawable.ic_flag_mexico),
+//            Country("Бразилия", R.drawable.ic_flag_brazil),
+//            Country("Германия", R.drawable.ic_flag_germany),
+//            Country("Израиль", R.drawable.ic_flag_israel),
+//        )
+
+        var countryList = ArrayList<CountryTO>()
 
         val countryListAdapter = CountryListAdapter(countryList)
         binding.countriesList.adapter = countryListAdapter
