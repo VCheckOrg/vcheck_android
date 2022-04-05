@@ -1,9 +1,8 @@
 package com.vcheck.demo.dev.util
 
 import android.util.Log
-import com.vcheck.demo.dev.util.StringFormatter.convertStringToUTF8
 import java.security.MessageDigest
-
+import java.util.*
 
 fun generateSHA256Hash(strToHash: String): String {
 
@@ -17,21 +16,34 @@ fun generateSHA256Hash(strToHash: String): String {
     Log.d("VERIF_ATTEMPT", "FIRST HASH : $result")
 
     return result
+}
 
-//    try {
-//        //val md = MessageDigest.getInstance("SHA-256")
-//        val hashedBytes = md.digest(strToHash.toByteArray())
-//        val output = StringBuilder(hashedBytes.size)
-//        for (i in hashedBytes.indices) {
-//            var hex = Integer.toHexString(0xFF and hashedBytes[i].toInt())
-//            if (hex.length == 1) hex = "0$hex"
-//            output.append(hex)
-//        }
-//        Log.d("VERIF_ATTEMPT", "SECOND HASH : $output")
-//        return output.toString()
-//    } catch (e: NoSuchAlgorithmException) {
-//        e.printStackTrace()
-//    }
-//
-//    return ""
+/**
+ * This method is to change the country code like "us" into flag emoji.
+ * Stolen from https://stackoverflow.com/a/35849652/75579
+ * 1. It first checks if the string consists of only 2 characters:
+ * ISO 3166-1 alpha-2 two-letter country codes (https://en.wikipedia.org/wiki/Regional_Indicator_Symbol).
+ * 2. It then checks if both characters are alphabet
+ * do nothing if it doesn't fulfil the 2 checks
+ * caveat: if you enter an invalid 2 letter country code, say "XX",
+ * it will pass the 2 checks, and it will return unknown result
+ */
+fun String.toFlagEmoji(): String {
+    // 1. It first checks if the string consists of only 2 characters: ISO 3166-1
+    // alpha-2 two-letter country codes (https://en.wikipedia.org/wiki/Regional_Indicator_Symbol).
+    if (this.length != 2) {
+        return this
+    }
+
+    val countryCodeCaps =
+        this.uppercase(Locale.getDefault()) // upper case is important because we are calculating offset
+    val firstLetter = Character.codePointAt(countryCodeCaps, 0) - 0x41 + 0x1F1E6
+    val secondLetter = Character.codePointAt(countryCodeCaps, 1) - 0x41 + 0x1F1E6
+
+    // 2. It then checks if both characters are alphabet
+    if (!countryCodeCaps[0].isLetter() || !countryCodeCaps[1].isLetter()) {
+        return this
+    }
+
+    return String(Character.toChars(firstLetter)) + String(Character.toChars(secondLetter))
 }
