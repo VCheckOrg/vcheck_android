@@ -32,7 +32,7 @@ class PhotoUploadFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         val appContainer = (activity?.application as VcheckDemoApp).appContainer
-        _viewModel = PhotoUploadViewModel(appContainer.mainRepository, appContainer.localDatasource)
+        _viewModel = PhotoUploadViewModel(appContainer.mainRepository)
     }
 
     override fun onCreateView(
@@ -53,7 +53,7 @@ class PhotoUploadFragment : Fragment() {
 
         _binding!!.photoUploadContinueButton.setOnClickListener {
             _viewModel.uploadVerificationDocument(
-                _viewModel.localDatasource.getVerifToken(activity as MainActivity),
+                _viewModel.repository.getVerifToken(activity as MainActivity),
                 _image
             )
         }

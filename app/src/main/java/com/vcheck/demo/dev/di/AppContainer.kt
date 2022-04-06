@@ -31,7 +31,7 @@ class AppContainer(val app: VcheckDemoApp) {
 
     private val remoteDataSource = RemoteDatasource(retrofit.create(ApiClient::class.java))
 
-    val localDatasource = LocalDatasource()
+    private val localDatasource = LocalDatasource()
 
-    val mainRepository = MainRepository(remoteDataSource)
+    val mainRepository = MainRepository(remoteDataSource, localDatasource)
 }

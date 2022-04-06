@@ -19,7 +19,7 @@ interface ApiClient {
 
     @GET("countries/{country}/documents")
     fun getCountryAvailableDocTypeInfo(@Header("Authorization") verifToken: String,
-                                       @Path("country") countryId: Int)
+                                       @Path("country") countryCode: String)
                                         : Call<DocumentTypesForCountryResponse>
 
     @Multipart

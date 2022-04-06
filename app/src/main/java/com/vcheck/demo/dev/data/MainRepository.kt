@@ -1,12 +1,13 @@
 package com.vcheck.demo.dev.data
 
+import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.vcheck.demo.dev.domain.*
 import okhttp3.MultipartBody
 
-class MainRepository(private val remoteDatasource : RemoteDatasource) {
+class MainRepository(private val remoteDatasource : RemoteDatasource, private val localDatasource: LocalDatasource) {
 
-//    suspend fun createVerificationRequest(verificationRequestBody: CreateVerificationRequestBody): CreateVerificationAttemptResponse
+//  fun createVerificationRequest(verificationRequestBody: CreateVerificationRequestBody): CreateVerificationAttemptResponse
 //        = remoteData.createVerificationRequest(verificationRequestBody)
 
     fun createTestVerificationRequest() : MutableLiveData<Resource<CreateVerificationAttemptResponse>>
@@ -25,9 +26,9 @@ class MainRepository(private val remoteDatasource : RemoteDatasource) {
         } else MutableLiveData(Resource.error(ApiError("No token available!")))
     }
 
-    fun getCountryAvailableDocTypeInfo(verifToken: String, countryId: Int)
+    fun getCountryAvailableDocTypeInfo(verifToken: String, countryCode: String)
         : MutableLiveData<Resource<DocumentTypesForCountryResponse>> {
-        return remoteDatasource.getCountryAvailableDocTypeInfo(verifToken, countryId)
+        return remoteDatasource.getCountryAvailableDocTypeInfo(verifToken, countryCode)
     }
 
     fun uploadVerificationDocument(
@@ -37,5 +38,29 @@ class MainRepository(private val remoteDatasource : RemoteDatasource) {
         return if (token.isNotEmpty()) {
             remoteDatasource.uploadVerificationDocument(token, DocumentUploadRequestBody(), image)
         } else MutableLiveData(Resource.error(ApiError("No token available!")))
+    }
+
+    fun storeVerifToken(ctx: Context, verifToken: String) {
+        localDatasource.storeVerifToken(ctx, verifToken)
+    }
+
+    fun getVerifToken(ctx: Context) : String {
+        return localDatasource.getVerifToken(ctx)
+    }
+
+    fun storeSelectedCountryCode(ctx: Context, countryCode: String) {
+        localDatasource.storeSelectedCountryCode(ctx, countryCode)
+    }
+
+    fun getSelectedCountryCode(ctx: Context) : String {
+        return localDatasource.getSelectedCountryCode(ctx)
+    }
+
+    fun setSelectedDocTypeWithData(data: DocTypeData) {
+        localDatasource.setSelectedDocTypeWithData(data)
+    }
+
+    fun getSelectedDocTypeWithData(): DocTypeData {
+        return localDatasource.getSelectedDocTypeWithData()
     }
 }

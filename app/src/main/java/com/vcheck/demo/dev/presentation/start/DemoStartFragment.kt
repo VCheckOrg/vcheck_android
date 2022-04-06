@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.vcheck.demo.dev.VcheckDemoApp
 import com.vcheck.demo.dev.R
@@ -24,7 +25,7 @@ class DemoStartFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         val appContainer = (activity?.application as VcheckDemoApp).appContainer
-        _viewModel = DemoStartViewModel(appContainer.mainRepository, appContainer.localDatasource)
+        _viewModel = DemoStartViewModel(appContainer.mainRepository)
     }
 
     override fun onCreateView(
@@ -39,15 +40,18 @@ class DemoStartFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentDemoStartBinding.bind(view)
 
-        _viewModel.verifResponse.observe(viewLifecycleOwner) {
+        _binding!!.startCallChainLoadingIndicator.isVisible = false
+
+            _viewModel.verifResponse.observe(viewLifecycleOwner) {
             if (it.data?.data != null) {
+                _binding!!.startCallChainLoadingIndicator.isVisible = true
                 _binding!!.tvCreateVerificationResultInfo.text =
                     "CREATED VERIFICATION REQUEST: application_id : ${it.data.data.applicationId} |" +
                             "redirect_url : ${it.data.data.redirectUrl}" //+create_time
 
-                _viewModel.localDatasource.storeVerifToken((activity as MainActivity),
+                _viewModel.repository.storeVerifToken((activity as MainActivity),
                     it.data.data.redirectUrl.substringAfterLast("/", "").substringBefore("?id"))
-                _viewModel.setVerifToken(_viewModel.localDatasource.getVerifToken((activity as MainActivity)))
+                _viewModel.setVerifToken(_viewModel.repository.getVerifToken((activity as MainActivity)))
                 _viewModel.initVerification()
             }
         }
@@ -63,12 +67,14 @@ class DemoStartFragment : Fragment() {
 
         _viewModel.countriesResponse.observe(viewLifecycleOwner) {
             if (it.data?.data != null) {
+                _binding!!.startCallChainLoadingIndicator.isVisible = false
                 Log.d("COUNTRIES", "GOT COUNTRIES: ${it.data.data.map { country -> country.code }.toList()}")
+                findNavController().navigate(R.id.action_demoStartFragment_to_chooseDocMethodScreen)
             }
         }
 
         _viewModel.clientError.observe(viewLifecycleOwner) {
-            Toast.makeText(activity, it, Toast.LENGTH_LONG).show()
+            if (it != null) Toast.makeText(activity, it, Toast.LENGTH_LONG).show()
         }
 
         _binding!!.btnStartDemoFlow.setOnClickListener {

@@ -28,10 +28,10 @@ class RemoteDatasource(private val apiClient: ApiClient) {
         ))
     }
 
-    fun getCountryAvailableDocTypeInfo(verifToken: String, countryId: Int)
+    fun getCountryAvailableDocTypeInfo(verifToken: String, countryCode: String)
         : MutableLiveData<Resource<DocumentTypesForCountryResponse>> {
         return NetworkCall<DocumentTypesForCountryResponse>().makeCall(
-            apiClient.getCountryAvailableDocTypeInfo(verifToken, countryId)
+            apiClient.getCountryAvailableDocTypeInfo(verifToken, countryCode)
         )
     }
 
