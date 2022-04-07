@@ -1,26 +1,17 @@
 package com.vcheck.demo.dev.presentation.country_stage
 
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
-import android.view.ViewGroup
-import android.widget.SearchView
-import android.widget.Toast
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.google.android.material.snackbar.Snackbar
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VcheckDemoApp
 import com.vcheck.demo.dev.presentation.adapters.CountryListAdapter
 import com.vcheck.demo.dev.databinding.CountryListFragmentBinding
 import com.vcheck.demo.dev.di.AppContainer
-import com.vcheck.demo.dev.domain.Country
 import com.vcheck.demo.dev.domain.CountryTO
 import com.vcheck.demo.dev.presentation.MainActivity
-import com.vcheck.demo.dev.presentation.photo_upload_stage.PhotoInstructionsFragmentArgs
 
 
 class CountryListFragment : Fragment(R.layout.country_list_fragment),
@@ -43,7 +34,10 @@ class CountryListFragment : Fragment(R.layout.country_list_fragment),
 
         binding = CountryListFragmentBinding.bind(view)
 
-        val countryListAdapter = CountryListAdapter(countriesList, this)
+        val countryListAdapter = CountryListAdapter(
+            countriesList,
+            this
+        )
         binding.countriesList.adapter = countryListAdapter
 
         binding.searchCountry.setOnQueryTextListener(object :
@@ -64,10 +58,8 @@ class CountryListFragment : Fragment(R.layout.country_list_fragment),
         }
     }
 
-    override fun onClick(position: Int) {
-        val country = countriesList[position].code
-        appContainer.localDatasource.storeChosenCountry(activity as MainActivity, country)
-
+    override fun onClick(country: String) {
+        appContainer.mainRepository.storeSelectedCountryCode(activity as MainActivity, country)
         findNavController().popBackStack()
     }
 }

@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VcheckDemoApp
 import com.vcheck.demo.dev.databinding.ChooseCountryFragmentBinding
@@ -17,24 +18,18 @@ import java.util.*
 class ChooseCountryFragment : Fragment(R.layout.choose_country_fragment) {
 
     private lateinit var binding: ChooseCountryFragmentBinding
-    private lateinit var viewModel: ChooseCountryViewModel
     lateinit var country: String
     private lateinit var appContainer: AppContainer
+    private val args: ChooseCountryFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         appContainer = (activity?.application as VcheckDemoApp).appContainer
-        viewModel =
-            ChooseCountryViewModel(appContainer.mainRepository)
-        viewModel.setVerifToken(appContainer.localDatasource.getVerifToken(activity as MainActivity))
-        viewModel.getCountriesList()
-
     }
 
     override fun onResume() {
         super.onResume()
-        country = appContainer.localDatasource.getChosenCountry(activity as MainActivity)
+        country = appContainer.mainRepository.getSelectedCountryCode(activity as MainActivity)
 
         val locale = Locale("", country)
         val firstLetter: Int = Character.codePointAt(locale.country, 0) - 0x41 + 0x1F1E6
@@ -51,26 +46,7 @@ class ChooseCountryFragment : Fragment(R.layout.choose_country_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        var countryList = ArrayList<CountryTO>()
-
-        viewModel.countriesResponse.observe(viewLifecycleOwner) {
-            if (it.data?.data != null) {
-                countryList = it.data.data.map { country ->
-                    val locale = Locale("", country.code)
-                    val firstLetter: Int = Character.codePointAt(locale.country, 0) - 0x41 + 0x1F1E6
-                    val secondLetter: Int =
-                        Character.codePointAt(locale.country, 1) - 0x41 + 0x1F1E6
-                    val flag = String(Character.toChars(firstLetter)) + String(
-                        Character.toChars(secondLetter)
-                    )
-                    CountryTO(locale.displayCountry, country.code, flag)
-                }.toList() as ArrayList<CountryTO>
-            }
-        }
-
-        viewModel.clientError.observe(viewLifecycleOwner) {
-            Toast.makeText(activity, it, Toast.LENGTH_LONG).show()
-        }
+        val countryList = args.countriesListTO.countriesList
 
         binding = ChooseCountryFragmentBinding.bind(view)
 

@@ -13,7 +13,10 @@ import androidx.navigation.fragment.findNavController
 import com.vcheck.demo.dev.VcheckDemoApp
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.databinding.FragmentDemoStartBinding
+import com.vcheck.demo.dev.domain.CountriesListTO
+import com.vcheck.demo.dev.domain.CountryTO
 import com.vcheck.demo.dev.presentation.MainActivity
+import java.util.*
 
 class DemoStartFragment : Fragment() {
 
@@ -42,15 +45,17 @@ class DemoStartFragment : Fragment() {
 
         _binding!!.startCallChainLoadingIndicator.isVisible = false
 
-            _viewModel.verifResponse.observe(viewLifecycleOwner) {
+        _viewModel.verifResponse.observe(viewLifecycleOwner) {
             if (it.data?.data != null) {
                 _binding!!.startCallChainLoadingIndicator.isVisible = true
                 _binding!!.tvCreateVerificationResultInfo.text =
                     "CREATED VERIFICATION REQUEST: application_id : ${it.data.data.applicationId} |" +
                             "redirect_url : ${it.data.data.redirectUrl}" //+create_time
 
-                _viewModel.repository.storeVerifToken((activity as MainActivity),
-                    it.data.data.redirectUrl.substringAfterLast("/", "").substringBefore("?id"))
+                _viewModel.repository.storeVerifToken(
+                    (activity as MainActivity),
+                    it.data.data.redirectUrl.substringAfterLast("/", "").substringBefore("?id")
+                )
                 _viewModel.setVerifToken(_viewModel.repository.getVerifToken((activity as MainActivity)))
                 _viewModel.initVerification()
             }
@@ -68,8 +73,27 @@ class DemoStartFragment : Fragment() {
         _viewModel.countriesResponse.observe(viewLifecycleOwner) {
             if (it.data?.data != null) {
                 _binding!!.startCallChainLoadingIndicator.isVisible = false
-                Log.d("COUNTRIES", "GOT COUNTRIES: ${it.data.data.map { country -> country.code }.toList()}")
-                findNavController().navigate(R.id.action_demoStartFragment_to_chooseDocMethodScreen)
+                Log.d(
+                    "COUNTRIES",
+                    "GOT COUNTRIES: ${it.data.data.map { country -> country.code }.toList()}"
+                )
+
+                val countryList = it.data.data.map { country ->
+                    val locale = Locale("", country.code)
+                    val firstLetter: Int = Character.codePointAt(locale.country, 0) - 0x41 + 0x1F1E6
+                    val secondLetter: Int =
+                        Character.codePointAt(locale.country, 1) - 0x41 + 0x1F1E6
+                    val flag = String(Character.toChars(firstLetter)) + String(
+                        Character.toChars(secondLetter)
+                    )
+                    CountryTO(locale.displayCountry, country.code, flag)
+                }.toList() as ArrayList<CountryTO>
+
+                val action =
+                    DemoStartFragmentDirections.actionDemoStartFragmentToChooseCountryFragment(
+                        CountriesListTO(countryList)
+                    )
+                findNavController().navigate(action)
             }
         }
 
@@ -79,7 +103,6 @@ class DemoStartFragment : Fragment() {
 
         _binding!!.btnStartDemoFlow.setOnClickListener {
             _viewModel.createTestVerificationRequest()
-            findNavController().navigate(R.id.action_demoStartFragment_to_chooseCountryFragment)
         }
 
         _binding!!.btnLaunchMediaPipeDemo.setOnClickListener {

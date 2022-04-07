@@ -1,12 +1,14 @@
 package com.vcheck.demo.dev.presentation.adapters
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import com.vcheck.demo.dev.data.MainRepository
 import com.vcheck.demo.dev.databinding.CountryRowBinding
 import com.vcheck.demo.dev.domain.Country
 import com.vcheck.demo.dev.domain.CountryTO
@@ -16,11 +18,12 @@ import kotlin.collections.ArrayList
 
 class CountryListAdapter(
     private val countryList: ArrayList<CountryTO>,
-    private val onCountryItemClick: OnCountryItemClick
+    private val onCountryItemClick: OnCountryItemClick,
 ) :
     RecyclerView.Adapter<CountryListAdapter.ViewHolder>(), Filterable {
 
     private lateinit var binding: CountryRowBinding
+    private val mainCountryList = ArrayList<CountryTO>(countryList)
     private val searchCountryList = ArrayList<CountryTO>(countryList)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -32,30 +35,30 @@ class CountryListAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val country = countryList[position]
-        holder.bind(country, position)
+        val country = mainCountryList[position]
+        holder.bind(country)
     }
 
-    override fun getItemCount(): Int = countryList.size
+    override fun getItemCount(): Int = mainCountryList.size
 
 
     class ViewHolder(
         private val binding: CountryRowBinding,
-        private val onCountryItemClick: OnCountryItemClick
+        private val onCountryItemClick: OnCountryItemClick,
     ) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(country: CountryTO, position: Int) {
+        fun bind(country: CountryTO) {
             binding.countryName.text = country.name
             binding.flagEmoji.text = country.flag
             binding.countryItem.setOnClickListener {
-                onCountryItemClick.onClick(position)
+                onCountryItemClick.onClick(country.code)
             }
         }
     }
 
     interface OnCountryItemClick {
-        fun onClick(position: Int)
+        fun onClick(country: String)
     }
 
     override fun getFilter(): Filter {
@@ -79,8 +82,8 @@ class CountryListAdapter(
 
             @SuppressLint("NotifyDataSetChanged")
             override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-                countryList.clear()
-                countryList.addAll(results?.values as ArrayList<CountryTO>)
+                mainCountryList.clear()
+                mainCountryList.addAll(results?.values as ArrayList<CountryTO>)
                 notifyDataSetChanged()
             }
         }
