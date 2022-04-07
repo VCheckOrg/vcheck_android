@@ -73,6 +73,7 @@ class DemoStartFragment : Fragment() {
 
         _binding!!.btnStartDemoFlow.setOnClickListener {
             _viewModel.createTestVerificationRequest()
+            findNavController().navigate(R.id.action_demoStartFragment_to_chooseCountryFragment)
         }
 
         _binding!!.btnLaunchMediaPipeDemo.setOnClickListener {

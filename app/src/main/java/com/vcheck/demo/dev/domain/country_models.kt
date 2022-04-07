@@ -18,4 +18,4 @@ data class Country(
     val code: String)
 
 @Parcelize
-data class CountryTO(val name: String, val code: String, val flag: Int): Parcelable
+data class CountryTO(val name: String, val code: String, val flag: String): Parcelable

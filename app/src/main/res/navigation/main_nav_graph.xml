@@ -38,7 +38,14 @@
         tools:layout="@layout/choose_country_fragment">
         <action
             android:id="@+id/action_chooseCountryFragment_to_countryListFragment"
-            app:destination="@id/countryListFragment" />
+            app:destination="@id/countryListFragment">
+            <argument
+                android:name="countriesListTO"
+                app:argType="com.vcheck.demo.dev.domain.CountriesListTO" />
+        </action>
+        <action
+            android:id="@+id/action_chooseCountryFragment_to_chooseDocMethodScreen"
+            app:destination="@id/chooseDocMethodScreen" />
     </fragment>
 
     <fragment
@@ -165,7 +172,14 @@
         android:id="@+id/countryListFragment"
         android:name="com.vcheck.demo.dev.presentation.country_stage.CountryListFragment"
         android:label="country_list_fragment"
-        tools:layout="@layout/country_list_fragment" />
+        tools:layout="@layout/country_list_fragment">
+        <argument
+            android:name="countriesListTO"
+            app:argType="com.vcheck.demo.dev.domain.CountriesListTO" />
+        <action
+            android:id="@+id/action_countryListFragment_to_chooseCountryFragment"
+            app:destination="@id/chooseCountryFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/demoStartFragment"
@@ -175,6 +189,9 @@
         <action
             android:id="@+id/action_demoStartFragment_to_livenessFragment2"
             app:destination="@id/livenessFragment2" />
+        <action
+            android:id="@+id/action_demoStartFragment_to_chooseCountryFragment"
+            app:destination="@id/chooseCountryFragment" />
     </fragment>
 
     <fragment

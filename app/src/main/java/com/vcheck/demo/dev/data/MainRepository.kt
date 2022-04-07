@@ -38,13 +38,4 @@ class MainRepository(private val remoteDatasource : RemoteDatasource) {
             remoteDatasource.uploadVerificationDocument(token, DocumentUploadRequestBody(), image)
         } else MutableLiveData(Resource.error(ApiError("No token available!")))
     }
-
-    fun uploadVerificationDocument(
-        token: String,
-        image: MultipartBody.Part
-    ): MutableLiveData<Resource<DocumentUploadResponse>> {
-        return if (token.isNotEmpty()) {
-            remoteDatasource.uploadVerificationDocument(token, DocumentUploadRequestBody(), image)
-        } else MutableLiveData(Resource.error(ApiError("No token available!")))
-    }
 }

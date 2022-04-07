@@ -51,19 +51,4 @@ class RemoteDatasource(private val apiClient: ApiClient) {
         )
     }
 
-    fun uploadVerificationDocument(
-        verifToken: String,
-        documentUploadRequestBody: DocumentUploadRequestBody,
-        image: MultipartBody.Part
-    ): MutableLiveData<Resource<DocumentUploadResponse>> {
-        return NetworkCall<DocumentUploadResponse>().makeCall(
-            apiClient.uploadVerificationDocument(
-                verifToken,
-                documentUploadRequestBody,
-                image
-            )
-        )
-    }
-
-
 }
