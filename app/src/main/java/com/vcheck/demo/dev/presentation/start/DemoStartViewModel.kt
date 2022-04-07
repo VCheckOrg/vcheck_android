@@ -1,19 +1,17 @@
 package com.vcheck.demo.dev.presentation.start
 
 import androidx.lifecycle.*
-import com.vcheck.demo.dev.data.LocalDatasource
 import com.vcheck.demo.dev.data.MainRepository
 import com.vcheck.demo.dev.data.Resource
 import com.vcheck.demo.dev.domain.CountriesResponse
 import com.vcheck.demo.dev.domain.CreateVerificationAttemptResponse
 import com.vcheck.demo.dev.domain.VerificationInitResponse
 
-class DemoStartViewModel (private val repository: MainRepository,
-    val localDatasource: LocalDatasource) : ViewModel() {
+class DemoStartViewModel (val repository: MainRepository) : ViewModel() {
 
-    val clientError: MutableLiveData<String> = MutableLiveData()
-//    private val isSuccess: MutableLiveData<Boolean> = MutableLiveData()
-//    private val isLoading: MutableLiveData<Boolean> = MutableLiveData()
+    val clientError: MutableLiveData<String?> = MutableLiveData(null)
+    //    private val isSuccess: MutableLiveData<Boolean> = MutableLiveData()
+    //    private val isLoading: MutableLiveData<Boolean> = MutableLiveData()
 
     var verifResponse: MutableLiveData<Resource<CreateVerificationAttemptResponse>> = MutableLiveData()
     var initResponse: MutableLiveData<Resource<VerificationInitResponse>> = MutableLiveData()

@@ -56,15 +56,12 @@
 
     <fragment
         android:id="@+id/chooseDocMethodScreen"
-        android:name="com.vcheck.demo.dev.presentation.screens.ChooseDocMethodFragment"
+        android:name="com.vcheck.demo.dev.presentation.doc_type_stage.ChooseDocMethodFragment"
         android:label="choose_doc_method_screen"
         tools:layout="@layout/choose_doc_method_fragment">
         <action
             android:id="@+id/action_chooseDocMethodScreen_to_photoInstructionsFragment"
             app:destination="@id/photoInstructionsFragment">
-            <argument
-                android:name="docTypeTO"
-                app:argType="com.vcheck.demo.dev.domain.DocTypeTO" />
         </action>
     </fragment>
 
@@ -72,7 +69,11 @@
         android:id="@+id/photoUploadScreen"
         android:name="com.vcheck.demo.dev.presentation.photo_upload_stage.PhotoUploadFragment"
         android:label="photo_upload_screen"
-        tools:layout="@layout/photo_upload_fragment" />
+        tools:layout="@layout/photo_upload_fragment" >
+        <action
+            android:id="@+id/action_photoUploadScreen_to_checkPhotoFragment"
+            app:destination="@id/checkPhotoFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/inProcessFragment"
@@ -109,9 +110,6 @@
         <action
             android:id="@+id/action_photoInstructionsFragment_to_IDCardPhotoUploadFragment"
             app:destination="@id/IDCardPhotoUploadFragment" />
-        <argument
-            android:name="docTypeTO"
-            app:argType="com.vcheck.demo.dev.domain.DocTypeTO" />
     </fragment>
 
     <fragment
@@ -158,7 +156,7 @@
 
     <fragment
         android:id="@+id/checkPhotoFragment"
-        android:name="com.vcheck.demo.dev.presentation.screens.CheckPhotoFragment"
+        android:name="com.vcheck.demo.dev.presentation.photo_upload_stage.CheckPhotoFragment"
         android:label="check_photo_fragment"
         tools:layout="@layout/check_photo_fragment" />
 
@@ -190,8 +188,8 @@
             android:id="@+id/action_demoStartFragment_to_livenessFragment2"
             app:destination="@id/livenessFragment2" />
         <action
-            android:id="@+id/action_demoStartFragment_to_chooseCountryFragment"
-            app:destination="@id/chooseCountryFragment" />
+            android:id="@+id/action_demoStartFragment_to_chooseDocMethodScreen"
+            app:destination="@id/chooseDocMethodScreen" />
     </fragment>
 
     <fragment

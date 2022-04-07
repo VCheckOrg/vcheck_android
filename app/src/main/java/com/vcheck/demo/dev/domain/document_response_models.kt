@@ -13,6 +13,14 @@ data class DocumentUploadResponseData(
     val document: Int
 )
 
+data class PreProcessedDocumentResponse(
+    @SerializedName("data")
+    val data: DocTypeData,
+    @SerializedName("error_code")
+    var errorCode: Int = 0,
+    @SerializedName("message")
+    var message: String = ""
+)
 
 data class DocumentTypesForCountryResponse(
     @SerializedName("data")
@@ -52,5 +60,8 @@ data class DocField(
 )
 
 data class DocTitle(
-    val en: String //!
+    @SerializedName("eng")
+    val en: String,
+    @SerializedName("ru")
+    val ru: String?
 )

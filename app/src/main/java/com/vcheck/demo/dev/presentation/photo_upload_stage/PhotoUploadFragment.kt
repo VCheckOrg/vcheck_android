@@ -13,10 +13,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.vcheck.demo.dev.R
-import com.vcheck.demo.dev.VcheckDemoApp
 import com.vcheck.demo.dev.databinding.PhotoUploadFragmentBinding
-import com.vcheck.demo.dev.presentation.MainActivity
-import okhttp3.MultipartBody
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -25,15 +22,6 @@ import java.io.FileOutputStream
 class PhotoUploadFragment : Fragment() {
 
     private var _binding: PhotoUploadFragmentBinding? = null
-    private lateinit var _viewModel: PhotoUploadViewModel
-    private lateinit var _image: MultipartBody.Part
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        val appContainer = (activity?.application as VcheckDemoApp).appContainer
-        _viewModel = PhotoUploadViewModel(appContainer.mainRepository, appContainer.localDatasource)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,10 +40,7 @@ class PhotoUploadFragment : Fragment() {
         }
 
         _binding!!.photoUploadContinueButton.setOnClickListener {
-            _viewModel.uploadVerificationDocument(
-                _viewModel.localDatasource.getVerifToken(activity as MainActivity),
-                _image
-            )
+            //TODO
         }
     }
 
@@ -65,9 +50,9 @@ class PhotoUploadFragment : Fragment() {
 
             val passportImageBitmap: Bitmap? = data?.getParcelableExtra("data")
 
-            val file = passportImageBitmap?.let { bitmapToFile(it) }
+            //val file = passportImageBitmap?.let { bitmapToFile(it) }
 
-            //Multipart
+            //TODO Multipart
 
             _binding!!.apply {
                 passportFullImage.setImageBitmap(passportImageBitmap)

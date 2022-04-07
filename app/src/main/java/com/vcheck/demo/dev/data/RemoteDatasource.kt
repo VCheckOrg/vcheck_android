@@ -17,10 +17,21 @@ class RemoteDatasource(private val apiClient: ApiClient) {
     }
 
     fun initVerification(verifToken: String): MutableLiveData<Resource<VerificationInitResponse>> {
-        return NetworkCall<VerificationInitResponse>().makeCall(
-            apiClient.initVerification(
-                verifToken
-            )
+        return NetworkCall<VerificationInitResponse>().makeCall(apiClient.initVerification(
+            verifToken
+        ))
+    }
+
+    fun getCountries(verifToken: String): MutableLiveData<Resource<CountriesResponse>> {
+        return NetworkCall<CountriesResponse>().makeCall(apiClient.getCountries(
+            verifToken
+        ))
+    }
+
+    fun getCountryAvailableDocTypeInfo(verifToken: String, countryCode: String)
+        : MutableLiveData<Resource<DocumentTypesForCountryResponse>> {
+        return NetworkCall<DocumentTypesForCountryResponse>().makeCall(
+            apiClient.getCountryAvailableDocTypeInfo(verifToken, countryCode)
         )
     }
 
@@ -38,17 +49,10 @@ class RemoteDatasource(private val apiClient: ApiClient) {
         )
     }
 
-    fun getCountries(verifToken: String): MutableLiveData<Resource<CountriesResponse>> {
-        return NetworkCall<CountriesResponse>().makeCall(apiClient.getCountries(
-            verifToken
-        ))
-    }
-
-    fun getCountryAvailableDocTypeInfo(verifToken: String, countryId: Int)
-        : MutableLiveData<Resource<DocumentTypesForCountryResponse>> {
-        return NetworkCall<DocumentTypesForCountryResponse>().makeCall(
-            apiClient.getCountryAvailableDocTypeInfo(verifToken, countryId)
+    fun getDocumentInfo(verifToken: String, docId: Int)
+        : MutableLiveData<Resource<PreProcessedDocumentResponse>> {
+        return NetworkCall<PreProcessedDocumentResponse>().makeCall(
+            apiClient.getDocumentInfo(verifToken, docId)
         )
     }
-
 }

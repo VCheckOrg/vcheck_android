@@ -6,15 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.vcheck.demo.dev.R
+import com.vcheck.demo.dev.VcheckDemoApp
 import com.vcheck.demo.dev.databinding.PhotoInstructionsFragmentBinding
 import com.vcheck.demo.dev.domain.DocType
+import com.vcheck.demo.dev.domain.docCategoryIdxToType
 
 class PhotoInstructionsFragment : Fragment() {
 
     private var _binding: PhotoInstructionsFragmentBinding? = null
-    private val args: PhotoInstructionsFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,11 +28,13 @@ class PhotoInstructionsFragment : Fragment() {
 
         _binding = PhotoInstructionsFragmentBinding.bind(view)
 
+        val appContainer = (activity?.application as VcheckDemoApp).appContainer
+        val selectedDocType = docCategoryIdxToType(
+            appContainer.mainRepository.getSelectedDocTypeWithData().category)
+
         _binding!!.photoInstructionsButton.setOnClickListener {
 
-            val docMethod = args.docTypeTO.docType
-
-            if (docMethod == DocType.INNER_PASSPORT || docMethod == DocType.FOREIGN_PASSPORT) {
+            if (selectedDocType == DocType.INNER_PASSPORT || selectedDocType == DocType.FOREIGN_PASSPORT) {
                 val action = PhotoInstructionsFragmentDirections.actionPhotoInstructionsFragmentToPhotoUploadScreen()
                 findNavController().navigate(action)
             } else {

@@ -19,7 +19,7 @@ interface ApiClient {
 
     @GET("countries/{country}/documents")
     fun getCountryAvailableDocTypeInfo(@Header("Authorization") verifToken: String,
-                                       @Path("country") countryId: Int)
+                                       @Path("country") countryCode: String)
                                         : Call<DocumentTypesForCountryResponse>
 
     @Multipart
@@ -29,4 +29,8 @@ interface ApiClient {
         @Body documentUploadRequestBody: DocumentUploadRequestBody,
         @Part image: MultipartBody.Part
     ): Call<DocumentUploadResponse>
+
+    @GET("documents/{document}")
+    fun getDocumentInfo(@Header("Authorization") verifToken: String,
+                        @Path("document") docId: Int) : Call<PreProcessedDocumentResponse>
 }
