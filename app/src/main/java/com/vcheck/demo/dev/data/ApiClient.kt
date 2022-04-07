@@ -30,4 +30,7 @@ interface ApiClient {
         @Part image: MultipartBody.Part
     ): Call<DocumentUploadResponse>
 
+    @GET("documents/{document}")
+    fun getDocumentInfo(@Header("Authorization") verifToken: String,
+                        @Path("document") docId: Int) : Call<PreProcessedDocumentResponse>
 }

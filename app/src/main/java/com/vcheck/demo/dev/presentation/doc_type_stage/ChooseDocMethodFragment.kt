@@ -1,6 +1,7 @@
 package com.vcheck.demo.dev.presentation.doc_type_stage
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VcheckDemoApp
 import com.vcheck.demo.dev.databinding.ChooseDocMethodFragmentBinding
 import com.vcheck.demo.dev.domain.DocType
+import com.vcheck.demo.dev.domain.DocTypeData
 import com.vcheck.demo.dev.domain.docCategoryIdxToType
 import com.vcheck.demo.dev.presentation.MainActivity
 
@@ -55,22 +57,19 @@ class ChooseDocMethodFragment : Fragment() {
                         DocType.INNER_PASSPORT -> {
                             _binding!!.docMethodInnerPassport.isVisible = true
                             _binding!!.docMethodInnerPassport.setOnClickListener {
-                                _viewModel.repository.setSelectedDocTypeWithData(docTypeData)
-                                findNavController().navigate(R.id.action_chooseDocMethodScreen_to_photoInstructionsFragment)
+                                selectDocTypeDataAndNavigateForward(docTypeData)
                             }
                         }
                         DocType.FOREIGN_PASSPORT -> {
                             _binding!!.docMethodForeignPassport.isVisible = true
                             _binding!!.docMethodForeignPassport.setOnClickListener {
-                                _viewModel.repository.setSelectedDocTypeWithData(docTypeData)
-                                findNavController().navigate(R.id.action_chooseDocMethodScreen_to_photoInstructionsFragment)
+                                selectDocTypeDataAndNavigateForward(docTypeData)
                             }
                         }
                         DocType.ID_CARD -> {
                             _binding!!.docMethodIdCard.isVisible = true
                             _binding!!.docMethodIdCard.setOnClickListener {
-                                _viewModel.repository.setSelectedDocTypeWithData(docTypeData)
-                                findNavController().navigate(R.id.action_chooseDocMethodScreen_to_photoInstructionsFragment)
+                                selectDocTypeDataAndNavigateForward(docTypeData)
                             }
                         }
                     }
@@ -79,5 +78,11 @@ class ChooseDocMethodFragment : Fragment() {
         }
 
         _viewModel.getAvailableDocTypes(selectedCountryCode)
+    }
+
+    fun selectDocTypeDataAndNavigateForward(docTypeData: DocTypeData) {
+        Log.d("DOC_TYPE_DATA", docTypeData.toString())
+        _viewModel.repository.setSelectedDocTypeWithData(docTypeData)
+        findNavController().navigate(R.id.action_chooseDocMethodScreen_to_photoInstructionsFragment)
     }
 }

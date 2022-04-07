@@ -62,7 +62,11 @@
         android:id="@+id/photoUploadScreen"
         android:name="com.vcheck.demo.dev.presentation.photo_upload_stage.PhotoUploadFragment"
         android:label="photo_upload_screen"
-        tools:layout="@layout/photo_upload_fragment" />
+        tools:layout="@layout/photo_upload_fragment" >
+        <action
+            android:id="@+id/action_photoUploadScreen_to_checkPhotoFragment"
+            app:destination="@id/checkPhotoFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/inProcessFragment"
@@ -145,7 +149,7 @@
 
     <fragment
         android:id="@+id/checkPhotoFragment"
-        android:name="com.vcheck.demo.dev.presentation.screens.CheckPhotoFragment"
+        android:name="com.vcheck.demo.dev.presentation.photo_upload_stage.CheckPhotoFragment"
         android:label="check_photo_fragment"
         tools:layout="@layout/check_photo_fragment" />
 

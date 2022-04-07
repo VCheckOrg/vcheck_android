@@ -49,5 +49,10 @@ class RemoteDatasource(private val apiClient: ApiClient) {
         )
     }
 
-
+    fun getDocumentInfo(verifToken: String, docId: Int)
+        : MutableLiveData<Resource<PreProcessedDocumentResponse>> {
+        return NetworkCall<PreProcessedDocumentResponse>().makeCall(
+            apiClient.getDocumentInfo(verifToken, docId)
+        )
+    }
 }
