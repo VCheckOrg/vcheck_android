@@ -38,11 +38,11 @@ class CheckPhotoFragment : Fragment() {
 
         _binding = CheckPhotoFragmentBinding.bind(view)
 
-        _binding!!.confirmPhotoButton.setOnClickListener {
-            _viewModel.uploadVerificationDocument(
-                _viewModel.repository.getVerifToken(activity as MainActivity),
-                _image
-            )
-        }
+//        _binding!!.confirmPhotoButton.setOnClickListener {
+//            _viewModel.uploadVerificationDocument(
+//                _viewModel.repository.getVerifToken(activity as MainActivity),
+//                _image
+//            )
+//        }
     }
 }

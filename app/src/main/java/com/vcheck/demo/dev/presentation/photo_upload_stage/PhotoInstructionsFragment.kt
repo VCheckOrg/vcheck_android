@@ -34,12 +34,12 @@ class PhotoInstructionsFragment : Fragment() {
 
         _binding!!.photoInstructionsButton.setOnClickListener {
 
-            if (selectedDocType == DocType.INNER_PASSPORT || selectedDocType == DocType.FOREIGN_PASSPORT) {
+            if (selectedDocType == DocType.INNER_PASSPORT_OR_COMMON || selectedDocType == DocType.FOREIGN_PASSPORT) {
                 val action = PhotoInstructionsFragmentDirections.actionPhotoInstructionsFragmentToPhotoUploadScreen()
                 findNavController().navigate(action)
             } else {
-                val action = PhotoInstructionsFragmentDirections.actionPhotoInstructionsFragmentToIDCardPhotoUploadFragment()
-                findNavController().navigate(action)
+//                val action = PhotoInstructionsFragmentDirections.actionPhotoInstructionsFragmentToIDCardPhotoUploadFragment()
+//                findNavController().navigate(action)
             }
         }
     }

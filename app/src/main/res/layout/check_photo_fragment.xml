@@ -256,7 +256,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="44dp"
                     android:layout_marginEnd="16dp"
-                    android:background="@drawable/border_shape"
+                    android:background="@drawable/shape_for_border"
                     android:text="@string/replace_photo_button"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

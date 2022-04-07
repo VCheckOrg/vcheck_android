@@ -10,10 +10,16 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.vcheck.demo.dev.R
+import com.vcheck.demo.dev.VcheckDemoApp
 import com.vcheck.demo.dev.databinding.PhotoUploadFragmentBinding
+import com.vcheck.demo.dev.domain.DocType
+import com.vcheck.demo.dev.domain.docCategoryIdxToType
+import com.vcheck.demo.dev.presentation.transferrable_objects.CheckPhotoDataTO
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -22,6 +28,21 @@ import java.io.FileOutputStream
 class PhotoUploadFragment : Fragment() {
 
     private var _binding: PhotoUploadFragmentBinding? = null
+
+    private lateinit var _viewModel: PhotoUploadViewModel
+
+    private lateinit var _docType: DocType
+
+    private var _photo1Path: String? = null
+    private var _photo2Path: String? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val appContainer = (activity?.application as VcheckDemoApp).appContainer
+        _viewModel =
+            PhotoUploadViewModel(appContainer.mainRepository)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,39 +56,125 @@ class PhotoUploadFragment : Fragment() {
 
         _binding = PhotoUploadFragmentBinding.bind(view)
 
-        _binding!!.makePhotoButton.setOnClickListener {
-            startActivityForResult(Intent(MediaStore.ACTION_IMAGE_CAPTURE), 1)
-        }
+        _docType = docCategoryIdxToType(_viewModel.repository.getSelectedDocTypeWithData().category)
 
-        _binding!!.photoUploadContinueButton.setOnClickListener {
-            //TODO
+        _binding!!.apply {
+
+            photoUploadContinueButton.setBackgroundResource(R.drawable.shape_for_inactive_button)
+            methodCard1.isVisible = false
+            methodCard2.isVisible = false
+            imgPhoto1.isVisible = false
+            imgPhoto2.isVisible = false
+
+            when (_docType) {
+                DocType.FOREIGN_PASSPORT -> {
+                    methodCard1.isVisible = true
+                    methodCard2.isVisible = false
+                    verifMethodTitle1.text =
+                        getString(R.string.photo_upload_title_foreign)
+                    makePhotoButton1.setOnClickListener {
+                        startActivityForResult(Intent(MediaStore.ACTION_IMAGE_CAPTURE), 1)
+                    }
+                }
+                DocType.INNER_PASSPORT_OR_COMMON -> {
+                    methodCard1.isVisible = true
+                    methodCard2.isVisible = true
+                    verifMethodTitle1.text =
+                        getString(R.string.photo_upload_title_common_forward)
+                    verifMethodTitle2.text =
+                        getString(R.string.photo_upload_title_common_back)
+                    makePhotoButton1.setOnClickListener {
+                        startActivityForResult(Intent(MediaStore.ACTION_IMAGE_CAPTURE), 1)
+                    }
+                    makePhotoButton2.setOnClickListener {
+                        startActivityForResult(Intent(MediaStore.ACTION_IMAGE_CAPTURE), 2)
+                    }
+                }
+                DocType.ID_CARD -> {
+                    methodCard1.isVisible = true
+                    methodCard2.isVisible = true
+                    verifMethodTitle1.text =
+                        getString(R.string.photo_upload_title_id_card_forward)
+                    verifMethodTitle2.text =
+                        getString(R.string.photo_upload_title_id_card_back)
+                    makePhotoButton1.setOnClickListener {
+                        startActivityForResult(Intent(MediaStore.ACTION_IMAGE_CAPTURE), 1)
+                    }
+                    makePhotoButton1.setOnClickListener {
+                        startActivityForResult(Intent(MediaStore.ACTION_IMAGE_CAPTURE), 2)
+                    }
+                }
+            }
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
-        if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
+        if (resultCode == Activity.RESULT_OK) {
 
-            val passportImageBitmap: Bitmap? = data?.getParcelableExtra("data")
-
-            //val file = passportImageBitmap?.let { bitmapToFile(it) }
+            val docPhotoBitmap: Bitmap? = data?.getParcelableExtra("data")
 
             //TODO Multipart
 
             _binding!!.apply {
-                passportFullImage.setImageBitmap(passportImageBitmap)
-                passportImage.isVisible = false
-                passportTitle.isVisible = false
-                makePhotoButton.isVisible = false
-                photoUploadContinueButton.setBackgroundResource(R.drawable.shape_for_blue_button)
-                photoUploadContinueButton.setTextColor(Color.WHITE)
+                if (requestCode == 1) {
+                    imgPhoto1.isVisible = true
+                    verifMethodTitle1.isVisible = false
+                    verifMethodIcon1.isVisible = false
+                    makePhotoButton1.isVisible = false
+                    imgPhoto1.setImageBitmap(docPhotoBitmap)
+                }
+                if (requestCode == 2) {
+                    imgPhoto2.isVisible = true
+                    verifMethodTitle2.isVisible = false
+                    verifMethodIcon2.isVisible = false
+                    makePhotoButton2.isVisible = false
+                    imgPhoto2.setImageBitmap(docPhotoBitmap)
+                } else {
+                    //Stub
+                }
+                val file = docPhotoBitmap?.let { bitmapToFile(it, requestCode) }
+                if (file != null) {
+                    checkPhotoCompletenessAndSetProceedClickListener()
+                }
             }
         }
     }
 
-    private fun bitmapToFile(bitmap: Bitmap): File? {
+    private fun checkPhotoCompletenessAndSetProceedClickListener() {
+        if (_docType == DocType.FOREIGN_PASSPORT) {
+            if (_photo1Path != null) {
+                _binding!!.photoUploadContinueButton.setBackgroundResource(R.drawable.shape_for_blue_button)
+                _binding!!.photoUploadContinueButton.setTextColor(Color.WHITE)
+                _binding!!.photoUploadContinueButton.setOnClickListener {
+                    val action = PhotoUploadFragmentDirections
+                        .actionPhotoUploadScreenToCheckPhotoFragment(
+                            CheckPhotoDataTO(_docType, _photo1Path!!, null))
+                    findNavController().navigate(action)
+                }
+            } else {
+                Toast.makeText(activity, "Please make the photo first", Toast.LENGTH_LONG).show()
+            }
+        } else {
+            if (_photo1Path != null && _photo2Path != null) {
+                _binding!!.photoUploadContinueButton.setBackgroundResource(R.drawable.shape_for_blue_button)
+                _binding!!.photoUploadContinueButton.setTextColor(Color.WHITE)
+                _binding!!.photoUploadContinueButton.setOnClickListener {
+                    val action = PhotoUploadFragmentDirections
+                        .actionPhotoUploadScreenToCheckPhotoFragment(
+                            CheckPhotoDataTO(_docType, _photo1Path!!, _photo2Path!!)
+                        )
+                    findNavController().navigate(action)
+                }
+            } else {
+                Toast.makeText(activity, "Please make all photos first", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun bitmapToFile(bitmap: Bitmap, requestCode: Int): File? {
         var file: File? = null
-        return try {
+        try {
             file = File(
                 Environment.getDataDirectory()
                     .toString() + File.separator + "documentPhoto"
@@ -82,11 +189,18 @@ class PhotoUploadFragment : Fragment() {
             fos.write(byteArray)
             fos.flush()
             fos.close()
-            file
+
+            if (requestCode == 1) {
+                _photo1Path = file.path
+            }
+            if (requestCode == 2) {
+                _photo2Path = file.path
+            }
+
+            return file
         } catch (e: Exception) {
             e.printStackTrace()
-            file
+            return null
         }
     }
 }
-
