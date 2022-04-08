@@ -168,7 +168,7 @@
         tools:layout="@layout/check_info_fragment" >
         <argument
             android:name="checkPhotoDataTO"
-            app:argType="com.vcheck.demo.dev.presentation.photo_upload_stage.CheckPhotoDataTO" />
+            app:argType="com.vcheck.demo.dev.presentation.transferrable_objects.CheckPhotoDataTO" />
     </fragment>
 
     <fragment

@@ -44,15 +44,12 @@ class DemoStartViewModel (val repository: MainRepository) : ViewModel() {
     private fun processCreateVerifResponse(response: Resource<CreateVerificationAttemptResponse>){
         when(response.status) {
             Resource.Status.LOADING -> {
-                //setLoading()
             }
             Resource.Status.SUCCESS -> {
-                //setSuccess()
                 verifResponse.value = response
             }
             Resource.Status.ERROR -> {
-                setError(response.apiError!!.errorText)
-                //error.value = response.resourceError
+                clientError.value = response.apiError!!.errorText
             }
         }
     }
@@ -60,15 +57,12 @@ class DemoStartViewModel (val repository: MainRepository) : ViewModel() {
     private fun processInitVerifResponse(response: Resource<VerificationInitResponse>){
         when(response.status) {
             Resource.Status.LOADING -> {
-                //setLoading()
             }
             Resource.Status.SUCCESS -> {
-                //setSuccess()
                 initResponse.value = response
             }
             Resource.Status.ERROR -> {
-                setError(response.apiError!!.errorText)
-                //error.value = response.resourceError
+                clientError.value = response.apiError!!.errorText
             }
         }
     }
@@ -83,25 +77,8 @@ class DemoStartViewModel (val repository: MainRepository) : ViewModel() {
                 countriesResponse.value = response
             }
             Resource.Status.ERROR -> {
-                setError(response.apiError!!.errorText)
-                //error.value = response.resourceError
+                clientError.value = response.apiError!!.errorText
             }
         }
     }
-
-    private fun setError(message: String) {
-        clientError.value = message
-    }
-
-//    private fun setSuccess() {
-//        isLoading.value = false
-//        isSuccess.value = true
-//        isError.value = false
-//    }
-//
-//    private fun setLoading() {
-//        isLoading.value = true
-//        isSuccess.value = false
-//        isError.value = false
-//    }
 }

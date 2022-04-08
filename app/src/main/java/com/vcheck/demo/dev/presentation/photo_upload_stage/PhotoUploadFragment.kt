@@ -1,12 +1,14 @@
 package com.vcheck.demo.dev.presentation.photo_upload_stage
 
 import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -118,6 +120,7 @@ class PhotoUploadFragment : Fragment() {
 
             _binding!!.apply {
                 if (requestCode == 1) {
+                    Log.i("PHOTO", "---------------- REQUEST CODE 1")
                     imgPhoto1.isVisible = true
                     verifMethodTitle1.isVisible = false
                     verifMethodIcon1.isVisible = false
@@ -125,6 +128,7 @@ class PhotoUploadFragment : Fragment() {
                     imgPhoto1.setImageBitmap(docPhotoBitmap)
                 }
                 if (requestCode == 2) {
+                    Log.i("PHOTO", "---------------- REQUEST CODE 2")
                     imgPhoto2.isVisible = true
                     verifMethodTitle2.isVisible = false
                     verifMethodIcon2.isVisible = false
@@ -136,6 +140,8 @@ class PhotoUploadFragment : Fragment() {
                 val file = docPhotoBitmap?.let { bitmapToFile(it, requestCode) }
                 if (file != null) {
                     checkPhotoCompletenessAndSetProceedClickListener()
+                } else {
+                    Log.i("PHOTO", "BITMAP FILE IS NULL!")
                 }
             }
         }
@@ -175,9 +181,12 @@ class PhotoUploadFragment : Fragment() {
     private fun bitmapToFile(bitmap: Bitmap, requestCode: Int): File? {
         var file: File? = null
         try {
-            file = File(
-                Environment.getDataDirectory()
-                    .toString() + File.separator + "documentPhoto"
+            val cw = ContextWrapper(activity?.application as VcheckDemoApp)
+            val directory: File = cw.getDir("imageDir", Context.MODE_PRIVATE)
+            file = File(directory,
+                //Environment.getDataDirectory()
+                    //.toString() + File.separator +
+                        "documentPhoto${requestCode}"
             )
             file.createNewFile()
 
