@@ -186,7 +186,7 @@ class PhotoUploadFragment : Fragment() {
             file = File(directory,
                 //Environment.getDataDirectory()
                     //.toString() + File.separator +
-                        "documentPhoto${requestCode}"
+                        "documentPhoto${requestCode}.jpg"
             )
             file.createNewFile()
 

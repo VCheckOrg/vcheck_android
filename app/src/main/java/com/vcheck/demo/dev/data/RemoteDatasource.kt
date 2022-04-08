@@ -43,8 +43,11 @@ class RemoteDatasource(private val apiClient: ApiClient) {
         return NetworkCall<DocumentUploadResponse>().makeCall(
             apiClient.uploadVerificationDocuments(
                 verifToken,
-                documentUploadRequestBody,
-                images))
+                images[0],
+                images.getOrNull(1),
+                MultipartBody.Part.createFormData("country", documentUploadRequestBody.country),
+                MultipartBody.Part.createFormData("document_type", documentUploadRequestBody.document_type.toString()),
+                MultipartBody.Part.createFormData("is_handwritten", documentUploadRequestBody.is_handwritten.toString())))
     }
 
     fun getDocumentInfo(verifToken: String, docId: Int)

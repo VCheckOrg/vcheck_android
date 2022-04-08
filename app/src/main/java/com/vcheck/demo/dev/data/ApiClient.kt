@@ -26,8 +26,12 @@ interface ApiClient {
     @POST("documents")
     fun uploadVerificationDocuments(
         @Header("Authorization") verifToken: String,
-        @Body documentUploadRequestBody: DocumentUploadRequestBody,
-        @Part photos: List<MultipartBody.Part>
+        //@Body documentUploadRequestBody: DocumentUploadRequestBody,
+        @Part photo1: MultipartBody.Part,
+        @Part photo2: MultipartBody.Part?,
+        @Part country: MultipartBody.Part,
+        @Part document_type: MultipartBody.Part,
+        @Part is_handwritten: MultipartBody.Part
     ): Call<DocumentUploadResponse>
 
     @GET("documents/{document}")
