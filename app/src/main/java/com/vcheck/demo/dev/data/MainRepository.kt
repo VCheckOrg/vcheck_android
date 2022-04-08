@@ -5,29 +5,32 @@ import androidx.lifecycle.MutableLiveData
 import com.vcheck.demo.dev.domain.*
 import okhttp3.MultipartBody
 
-class MainRepository(private val remoteDatasource : RemoteDatasource, private val localDatasource: LocalDatasource) {
+class MainRepository(
+    private val remoteDatasource: RemoteDatasource,
+    private val localDatasource: LocalDatasource
+) {
 
 //  fun createVerificationRequest(verificationRequestBody: CreateVerificationRequestBody): CreateVerificationAttemptResponse
 //        = remoteData.createVerificationRequest(verificationRequestBody)
 
-    fun createTestVerificationRequest() : MutableLiveData<Resource<CreateVerificationAttemptResponse>>
-            = remoteDatasource.createVerificationRequest(CreateVerificationRequestBody())
+    fun createTestVerificationRequest(): MutableLiveData<Resource<CreateVerificationAttemptResponse>> =
+        remoteDatasource.createVerificationRequest(CreateVerificationRequestBody())
 
-    fun initVerification(verifToken: String) : MutableLiveData<Resource<VerificationInitResponse>> {
+    fun initVerification(verifToken: String): MutableLiveData<Resource<VerificationInitResponse>> {
         //val token = localDatasource.getVerifToken(context)
         return if (verifToken.isNotEmpty()) {
             remoteDatasource.initVerification(verifToken)
         } else MutableLiveData(Resource.error(ApiError("No token available!")))
     }
 
-    fun getCountries(verifToken: String) : MutableLiveData<Resource<CountriesResponse>> {
+    fun getCountries(verifToken: String): MutableLiveData<Resource<CountriesResponse>> {
         return if (verifToken.isNotEmpty()) {
             remoteDatasource.getCountries(verifToken)
         } else MutableLiveData(Resource.error(ApiError("No token available!")))
     }
 
     fun getCountryAvailableDocTypeInfo(verifToken: String, countryCode: String)
-        : MutableLiveData<Resource<DocumentTypesForCountryResponse>> {
+            : MutableLiveData<Resource<DocumentTypesForCountryResponse>> {
         return remoteDatasource.getCountryAvailableDocTypeInfo(verifToken, countryCode)
     }
 
@@ -44,7 +47,7 @@ class MainRepository(private val remoteDatasource : RemoteDatasource, private va
         localDatasource.storeVerifToken(ctx, verifToken)
     }
 
-    fun getVerifToken(ctx: Context) : String {
+    fun getVerifToken(ctx: Context): String {
         return localDatasource.getVerifToken(ctx)
     }
 
@@ -52,7 +55,7 @@ class MainRepository(private val remoteDatasource : RemoteDatasource, private va
         localDatasource.storeSelectedCountryCode(ctx, countryCode)
     }
 
-    fun getSelectedCountryCode(ctx: Context) : String {
+    fun getSelectedCountryCode(ctx: Context): String {
         return localDatasource.getSelectedCountryCode(ctx)
     }
 

@@ -9,7 +9,7 @@ interface ApiClient {
 
     @POST("verifications")
     fun createVerificationRequest(@Body verificationRequestBody: CreateVerificationRequestBody)
-        : Call<CreateVerificationAttemptResponse>
+            : Call<CreateVerificationAttemptResponse>
 
     @PUT("verifications/init")
     fun initVerification(@Header("Authorization") verifToken: String) : Call<VerificationInitResponse>
