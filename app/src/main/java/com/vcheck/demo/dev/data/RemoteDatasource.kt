@@ -3,6 +3,7 @@ package com.vcheck.demo.dev.data
 import androidx.lifecycle.MutableLiveData
 import com.vcheck.demo.dev.domain.*
 import okhttp3.MultipartBody
+import retrofit2.Response
 
 class RemoteDatasource(private val apiClient: ApiClient) {
 
@@ -54,5 +55,12 @@ class RemoteDatasource(private val apiClient: ApiClient) {
         return NetworkCall<PreProcessedDocumentResponse>().makeCall(
             apiClient.getDocumentInfo(verifToken, docId)
         )
+    }
+
+    fun updateAndConfirmDocInfo(verifToken: String,
+                                docId: Int,
+                                docData: ParsedDocFieldsData): MutableLiveData<Resource<Response<Void>>> {
+        return NetworkCall<Response<Void>>().makeCall(
+            apiClient.updateAndConfirmDocInfo(verifToken, docId, docData))
     }
 }

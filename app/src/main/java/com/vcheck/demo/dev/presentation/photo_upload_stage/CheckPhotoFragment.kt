@@ -55,6 +55,8 @@ class CheckPhotoFragment : Fragment() {
 
         _binding!!.apply {
 
+            uploadDocPhotosLoadingIndicator.isVisible = false
+
             photoCard2.isVisible = false
 
             val docImage1File = BitmapFactory.decodeFile(args.checkPhotoDataTO.photo1Path)
@@ -89,8 +91,7 @@ class CheckPhotoFragment : Fragment() {
                 val body = DocumentUploadRequestBody(
                     _viewModel.repository.getSelectedCountryCode(activity as MainActivity),
                     args.checkPhotoDataTO.selectedDocType.toCategoryIdx(),
-                    _isDocHandwritten
-                )
+                    _isDocHandwritten)
 
                 val multipartList: ArrayList<MultipartBody.Part> = ArrayList()
                 val photoFile1 = File(args.checkPhotoDataTO.photo1Path)
@@ -104,6 +105,12 @@ class CheckPhotoFragment : Fragment() {
                         "jpeg", photoFile2.name, photoFile2.asRequestBody("image/*".toMediaType()))
                     multipartList.add(filePartPhoto2)
                 }
+
+                handPrintCard.isVisible = false
+                machinePrintCard.isVisible = false
+                replacePhotoButton.isVisible = false
+                uploadDocPhotosLoadingIndicator.isVisible = true
+                checkPhotoTitle2.setText(R.string.photo_upload_wait_disclaimer)
 
                 _viewModel.uploadVerificationDocuments(
                     _viewModel.repository.getVerifToken(activity as MainActivity), body, multipartList)
@@ -123,6 +130,11 @@ class CheckPhotoFragment : Fragment() {
             }
 
             _viewModel.clientError.observe(viewLifecycleOwner) {
+                handPrintCard.isVisible = true
+                machinePrintCard.isVisible = true
+                replacePhotoButton.isVisible = true
+                uploadDocPhotosLoadingIndicator.isVisible = false
+                checkPhotoTitle2.setText(R.string.check_photo_title_2)
                 if (it != null) Toast.makeText(activity, it, Toast.LENGTH_LONG).show()
             }
         }
