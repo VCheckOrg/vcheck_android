@@ -43,6 +43,17 @@ class MainRepository(
         } else MutableLiveData(Resource.error(ApiError("No token available!")))
     }
 
+    fun getDocumentInfo(
+        token: String,
+        docId: Int
+    ): MutableLiveData<Resource<PreProcessedDocumentResponse>> {
+        return if (token.isNotEmpty()) {
+            remoteDatasource.getDocumentInfo(token, docId)
+        } else {
+            MutableLiveData(Resource.error(ApiError("No token available!")))
+        }
+    }
+
     fun storeVerifToken(ctx: Context, verifToken: String) {
         localDatasource.storeVerifToken(ctx, verifToken)
     }

@@ -36,14 +36,4 @@ class LocalDatasource() {
     fun getSelectedDocTypeWithData(): DocTypeData {
         return _selectedDocTypeWithData
     }
-
-    fun storeChosenCountry(ctx: Context, country: String) {
-        val sharedPreferences = ctx.getSharedPreferences("vcheck_private_prefs", MODE_PRIVATE)
-        sharedPreferences.edit().putString("chosen_country", country).apply()
-    }
-
-    fun getChosenCountry(ctx: Context): String {
-        val sharedPreferences = ctx.getSharedPreferences("vcheck_private_prefs", MODE_PRIVATE)
-        return sharedPreferences.getString("chosen_country", "ua")!!
-    }
 }

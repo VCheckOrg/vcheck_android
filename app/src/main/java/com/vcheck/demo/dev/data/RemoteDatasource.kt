@@ -8,7 +8,6 @@ class RemoteDatasource(private val apiClient: ApiClient) {
 
     fun createVerificationRequest(verificationRequestBody: CreateVerificationRequestBody):
             MutableLiveData<Resource<CreateVerificationAttemptResponse>> {
-
         return NetworkCall<CreateVerificationAttemptResponse>().makeCall(
             apiClient.createVerificationRequest(
                 verificationRequestBody

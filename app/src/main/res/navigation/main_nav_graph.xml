@@ -49,6 +49,9 @@
         <action
             android:id="@+id/action_chooseCountryFragment_to_chooseDocMethodScreen"
             app:destination="@id/chooseDocMethodScreen" />
+        <action
+            android:id="@+id/action_chooseCountryFragment_to_checkInfoFragment"
+            app:destination="@id/checkInfoFragment" />
     </fragment>
 
     <fragment
@@ -164,9 +167,9 @@
 
     <fragment
         android:id="@+id/checkInfoFragment"
-        android:name="com.vcheck.demo.dev.presentation.screens.CheckInfoFragment"
+        android:name="com.vcheck.demo.dev.presentation.check_doc_info_stage.CheckDocInfoFragment"
         android:label="check_info_fragment"
-        tools:layout="@layout/check_info_fragment" />
+        tools:layout="@layout/check_doc_info_fragment" />
 
     <fragment
         android:id="@+id/countryListFragment"
