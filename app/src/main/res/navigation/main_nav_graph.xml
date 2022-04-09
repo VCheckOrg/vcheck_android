@@ -170,8 +170,8 @@
         android:label="check_doc_info_fragment"
         tools:layout="@layout/check_doc_info_fragment">
         <argument
-            android:name="checkPhotoDataTO"
-            app:argType="com.vcheck.demo.dev.presentation.transferrable_objects.CheckPhotoDataTO" />
+            android:name="checkDocInfoDataTO"
+            app:argType="com.vcheck.demo.dev.presentation.transferrable_objects.CheckDocInfoDataTO" />
     </fragment>
 
     <fragment
