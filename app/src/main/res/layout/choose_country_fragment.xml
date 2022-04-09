@@ -45,7 +45,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:text="Значимость этих проблем настолько очевидна, что новая модель организационной деятельности требуют определения и уточнения направлений прогрессивного развития. "
+                android:text="Выберите страну, которой соответствует ваш документ:"
                 android:textColor="#EAEAEA"
                 android:textSize="14sp"
                 android:textStyle="normal"

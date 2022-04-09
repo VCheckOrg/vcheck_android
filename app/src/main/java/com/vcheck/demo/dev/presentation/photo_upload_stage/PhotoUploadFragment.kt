@@ -184,8 +184,7 @@ class PhotoUploadFragment : Fragment() {
             val cw = ContextWrapper(activity?.application as VcheckDemoApp)
             val directory: File = cw.getDir("imageDir", Context.MODE_PRIVATE)
             file = File(directory,
-                //Environment.getDataDirectory()
-                    //.toString() + File.separator +
+                //Environment.getDataDirectory().toString() + File.separator +
                         "documentPhoto${requestCode}.jpg"
             )
             file.createNewFile()
