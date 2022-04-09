@@ -59,7 +59,7 @@ class ChooseCountryFragment : Fragment(R.layout.choose_country_fragment) {
         }
 
         binding.chooseCountryContinueButton.setOnClickListener {
-            findNavController().navigate(R.id.action_chooseCountryFragment_to_checkInfoFragment)
+            findNavController().navigate(R.id.action_chooseCountryFragment_to_chooseDocMethodScreen)
         }
 
     }

@@ -49,9 +49,6 @@
         <action
             android:id="@+id/action_chooseCountryFragment_to_chooseDocMethodScreen"
             app:destination="@id/chooseDocMethodScreen" />
-        <action
-            android:id="@+id/action_chooseCountryFragment_to_checkInfoFragment"
-            app:destination="@id/checkInfoFragment" />
     </fragment>
 
     <fragment
@@ -67,7 +64,7 @@
         tools:layout="@layout/choose_doc_method_fragment">
         <action
             android:id="@+id/action_chooseDocMethodScreen_to_photoInstructionsFragment"
-            app:destination="@id/photoInstructionsFragment"/>
+            app:destination="@id/photoInstructionsFragment" />
     </fragment>
 
     <fragment
@@ -158,20 +155,20 @@
         android:id="@+id/checkPhotoFragment"
         android:name="com.vcheck.demo.dev.presentation.photo_upload_stage.CheckPhotoFragment"
         android:label="check_photo_fragment"
-        tools:layout="@layout/check_photo_fragment" >
+        tools:layout="@layout/check_photo_fragment">
         <argument
             android:name="checkPhotoDataTO"
             app:argType="com.vcheck.demo.dev.presentation.transferrable_objects.CheckPhotoDataTO" />
         <action
             android:id="@+id/action_checkPhotoFragment_to_checkInfoFragment"
-            app:destination="@id/checkInfoFragment" />
+            app:destination="@id/checkDocInfoFragment" />
     </fragment>
 
     <fragment
-        android:id="@+id/checkInfoFragment"
+        android:id="@+id/checkDocInfoFragment"
         android:name="com.vcheck.demo.dev.presentation.check_doc_info_stage.CheckDocInfoFragment"
-        android:label="check_info_fragment"
-        tools:layout="@layout/check_info_fragment" >
+        android:label="check_doc_info_fragment"
+        tools:layout="@layout/check_doc_info_fragment">
         <argument
             android:name="checkPhotoDataTO"
             app:argType="com.vcheck.demo.dev.presentation.transferrable_objects.CheckPhotoDataTO" />

@@ -116,7 +116,6 @@
                 android:layout_marginBottom="24dp"
                 android:text="@string/proceed"
                 android:background="@drawable/shape_for_blue_button"
-                android:text="@string/choose_country_continue_button"
                 android:textAllCaps="false"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
