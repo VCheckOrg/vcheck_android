@@ -7,7 +7,7 @@ import com.vcheck.demo.dev.data.MainRepository
 import com.vcheck.demo.dev.data.Resource
 import com.vcheck.demo.dev.domain.PreProcessedDocumentResponse
 
-class CheckDocInfoViewModel(private val repository: MainRepository) : ViewModel() {
+class CheckDocInfoViewModel(val repository: MainRepository) : ViewModel() {
 
     var documentInfoResponse: MutableLiveData<Resource<PreProcessedDocumentResponse>> =
         MutableLiveData()

@@ -16,7 +16,7 @@ import com.vcheck.demo.dev.databinding.CheckPhotoFragmentBinding
 import com.vcheck.demo.dev.domain.DocumentUploadRequestBody
 import com.vcheck.demo.dev.domain.toCategoryIdx
 import com.vcheck.demo.dev.presentation.MainActivity
-import com.vcheck.demo.dev.presentation.transferrable_objects.CheckPhotoDataTO
+import com.vcheck.demo.dev.presentation.transferrable_objects.CheckDocInfoDataTO
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.MultipartBody.Part.Companion.createFormData
@@ -101,7 +101,7 @@ class CheckPhotoFragment : Fragment() {
                 if (args.checkPhotoDataTO.photo2Path != null) {
                     val photoFile2 = File(args.checkPhotoDataTO.photo2Path!!)
                     val filePartPhoto2: MultipartBody.Part = createFormData(
-                        "jpeg", photoFile2.name, photoFile1.asRequestBody("image/*".toMediaType()))
+                        "jpeg", photoFile2.name, photoFile2.asRequestBody("image/*".toMediaType()))
                     multipartList.add(filePartPhoto2)
                 }
 
@@ -113,8 +113,11 @@ class CheckPhotoFragment : Fragment() {
                 if (it.data?.data != null) {
                     val action = CheckPhotoFragmentDirections
                         .actionCheckPhotoFragmentToCheckInfoFragment(
-                            CheckPhotoDataTO(args.checkPhotoDataTO.selectedDocType,
-                                args.checkPhotoDataTO.photo1Path, args.checkPhotoDataTO.photo2Path))
+                            CheckDocInfoDataTO(args.checkPhotoDataTO.selectedDocType,
+                                it.data.data.document,
+                                args.checkPhotoDataTO.photo1Path,
+                                args.checkPhotoDataTO.photo2Path)
+                        )
                     findNavController().navigate(action)
                 }
             }

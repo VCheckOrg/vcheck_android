@@ -10,3 +10,11 @@ data class CheckPhotoDataTO(
     val photo1Path: String,
     val photo2Path: String?
 ): Parcelable
+
+@Parcelize
+data class CheckDocInfoDataTO(
+    val selectedDocType: DocType,
+    val docId: Int,
+    val photo1Path: String,
+    val photo2Path: String?
+): Parcelable

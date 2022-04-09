@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../layout/custom_preview.xml" value="0.22592592592592592" />
         <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/drawable/border_shape.xml" value="0.1745" />
         <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/drawable/inactive_button.xml" value="0.1745" />
         <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/drawable/outlined_button_shape.xml" value="0.1745" />
@@ -72,6 +73,7 @@
         <entry key="app/src/main/res/layout/photo_instructions_fragment.xml" value="0.290625" />
         <entry key="app/src/main/res/layout/photo_upload_common_fragment.xml" value="0.321875" />
         <entry key="app/src/main/res/layout/photo_upload_fragment.xml" value="0.290625" />
+        <entry key="app/src/main/res/xml/file_paths.xml" value="0.27219202898550726" />
       </map>
     </option>
   </component>

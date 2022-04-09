@@ -1,18 +1,21 @@
 package com.vcheck.demo.dev.presentation.photo_upload_stage
 
+import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
-import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -21,10 +24,10 @@ import com.vcheck.demo.dev.VcheckDemoApp
 import com.vcheck.demo.dev.databinding.PhotoUploadFragmentBinding
 import com.vcheck.demo.dev.domain.DocType
 import com.vcheck.demo.dev.domain.docCategoryIdxToType
+import com.vcheck.demo.dev.presentation.MainActivity
 import com.vcheck.demo.dev.presentation.transferrable_objects.CheckPhotoDataTO
-import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.FileOutputStream
+import java.io.IOException
 
 
 class PhotoUploadFragment : Fragment() {
@@ -82,7 +85,7 @@ class PhotoUploadFragment : Fragment() {
                     verifMethodTitle1.text =
                         getString(R.string.photo_upload_title_foreign)
                     makePhotoButton1.setOnClickListener {
-                        startActivityForResult(Intent(MediaStore.ACTION_IMAGE_CAPTURE), 1)
+                        dispatchTakePictureIntent(1)
                     }
                 }
                 DocType.INNER_PASSPORT_OR_COMMON -> {
@@ -93,10 +96,10 @@ class PhotoUploadFragment : Fragment() {
                     verifMethodTitle2.text =
                         getString(R.string.photo_upload_title_common_back)
                     makePhotoButton1.setOnClickListener {
-                        startActivityForResult(Intent(MediaStore.ACTION_IMAGE_CAPTURE), 1)
+                        dispatchTakePictureIntent(1)
                     }
                     makePhotoButton2.setOnClickListener {
-                        startActivityForResult(Intent(MediaStore.ACTION_IMAGE_CAPTURE), 2)
+                        dispatchTakePictureIntent(2)
                     }
                 }
                 DocType.ID_CARD -> {
@@ -107,10 +110,10 @@ class PhotoUploadFragment : Fragment() {
                     verifMethodTitle2.text =
                         getString(R.string.photo_upload_title_id_card_back)
                     makePhotoButton1.setOnClickListener {
-                        startActivityForResult(Intent(MediaStore.ACTION_IMAGE_CAPTURE), 1)
+                        dispatchTakePictureIntent(1)
                     }
                     makePhotoButton2.setOnClickListener {
-                        startActivityForResult(Intent(MediaStore.ACTION_IMAGE_CAPTURE), 2)
+                        dispatchTakePictureIntent(2)
                     }
                 }
             }
@@ -121,9 +124,7 @@ class PhotoUploadFragment : Fragment() {
 
         if (resultCode == Activity.RESULT_OK) {
 
-            val docPhotoBitmap: Bitmap? = data?.getParcelableExtra("data")
-
-            //TODO Multipart
+            var docPhotoBitmap: Bitmap? = null
 
             _binding!!.apply {
                 if (requestCode == 1) {
@@ -132,6 +133,8 @@ class PhotoUploadFragment : Fragment() {
                     verifMethodTitle1.isVisible = false
                     verifMethodIcon1.isVisible = false
                     makePhotoButton1.isVisible = false
+
+                    docPhotoBitmap = BitmapFactory.decodeFile(_photo1Path!!)
                     imgPhoto1.setImageBitmap(docPhotoBitmap)
                     deletePhotoButton1.isVisible = true
                     deletePhotoButton1.setOnClickListener {
@@ -151,6 +154,8 @@ class PhotoUploadFragment : Fragment() {
                     verifMethodTitle2.isVisible = false
                     verifMethodIcon2.isVisible = false
                     makePhotoButton2.isVisible = false
+
+                    docPhotoBitmap = BitmapFactory.decodeFile(_photo2Path!!)
                     imgPhoto2.setImageBitmap(docPhotoBitmap)
                     deletePhotoButton2.isVisible = true
                     deletePhotoButton2.setOnClickListener {
@@ -166,8 +171,8 @@ class PhotoUploadFragment : Fragment() {
                 } else {
                     //Stub
                 }
-                val file = docPhotoBitmap?.let { bitmapToFile(it, requestCode) }
-                if (file != null) {
+
+                if (docPhotoBitmap != null) {
                     checkPhotoCompletenessAndSetProceedClickListener()
                 } else {
                     Log.i("PHOTO", "BITMAP FILE IS NULL!")
@@ -201,8 +206,7 @@ class PhotoUploadFragment : Fragment() {
                 _binding!!.photoUploadContinueButton.setOnClickListener {
                     val action = PhotoUploadFragmentDirections
                         .actionPhotoUploadScreenToCheckPhotoFragment(
-                            CheckPhotoDataTO(_docType, _photo1Path!!, _photo2Path!!)
-                        )
+                            CheckPhotoDataTO(_docType, _photo1Path!!, _photo2Path!!))
                     findNavController().navigate(action)
 
                     _photo1Path = null
@@ -214,38 +218,81 @@ class PhotoUploadFragment : Fragment() {
         }
     }
 
-    private fun bitmapToFile(bitmap: Bitmap, requestCode: Int): File? {
-        var file: File? = null
-        try {
-            val cw = ContextWrapper(activity?.application as VcheckDemoApp)
-            val directory: File = cw.getDir("imageDir", Context.MODE_PRIVATE)
-            file = File(
-                directory,
-                //Environment.getDataDirectory().toString() + File.separator +
-                "documentPhoto${requestCode}.jpg"
-            )
-            file.createNewFile()
-
-            val bos = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos)
-            val byteArray = bos.toByteArray()
-
-            val fos = FileOutputStream(file)
-            fos.write(byteArray)
-            fos.flush()
-            fos.close()
-
-            if (requestCode == 1) {
-                _photo1Path = file.path
+    @SuppressLint("QueryPermissionsNeeded")
+    private fun dispatchTakePictureIntent(photoIdx: Int) {
+        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+            // Ensure that there's a camera activity to handle the intent
+            //startActivity(takePictureIntent)
+            takePictureIntent.resolveActivity((activity as MainActivity).packageManager)?.also {
+                // Create the File where the photo should go
+                val photoFile: File? = try {
+                    createImageFile(photoIdx)
+                } catch (ex: IOException) {
+                    // Error occurred while creating the File
+                    Log.d("PHOTO", ex.stackTraceToString())
+                    null
+                }
+                // Continue only if the File was successfully created
+                photoFile?.also {
+                    val photoURI: Uri = FileProvider.getUriForFile(
+                        (activity as MainActivity),
+                        "com.vcheck.demo.dev",
+                        it
+                    )
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                    startActivityForResult(takePictureIntent, photoIdx)
+                }
             }
-            if (requestCode == 2) {
-                _photo2Path = file.path
-            }
-
-            return file
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return null
         }
     }
+
+    @Throws(IOException::class)
+    private fun createImageFile(photoIdx: Int): File {
+        val storageDir: File =  (activity as MainActivity).getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
+        return File.createTempFile(
+            "documentPhoto${photoIdx}", ".jpg", storageDir
+        ).apply {
+            if (photoIdx == 1) {
+                _photo1Path = this.path
+            } else {
+                _photo2Path = this.path
+            }
+            Log.d("PHOTO" , "SAVING A FILE: ${this.path}")
+        }
+    }
+
+// may be used later for optional compressing (in case of very big photos > 10 mb)
+//    private fun bitmapToFile(bitmap: Bitmap, requestCode: Int): File? {
+//        var file: File? = null
+//        try {
+//            val cw = ContextWrapper(activity?.application as VcheckDemoApp)
+//            val directory: File = cw.getDir("imageDir", Context.MODE_PRIVATE)
+//            file = File(directory,
+//                //Environment.getDataDirectory().toString() + File.separator +
+//                        "documentPhoto${requestCode}.jpg"
+//            )
+//            file.createNewFile()
+//
+//            val bos = ByteArrayOutputStream()
+//            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos)
+//            val byteArray = bos.toByteArray()
+//
+//            val fos = FileOutputStream(file)
+//            fos.write(byteArray)
+//            fos.flush()
+//            fos.close()
+//
+//            if (requestCode == 1) {
+//                _photo1Path = file.path
+//            }
+//            if (requestCode == 2) {
+//                _photo2Path = file.path
+//            }
+//
+//            return file
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//            return null
+//        }
+//    }
 }
