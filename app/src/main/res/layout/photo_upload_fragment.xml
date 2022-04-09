@@ -73,8 +73,8 @@
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/method_card_1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="28dp"
                     android:layout_marginEnd="16dp"
@@ -265,8 +265,8 @@
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/method_card_2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="28dp"
                     android:layout_marginEnd="16dp"

@@ -26,7 +26,6 @@ interface ApiClient {
     @POST("documents")
     fun uploadVerificationDocuments(
         @Header("Authorization") verifToken: String,
-        //@Body documentUploadRequestBody: DocumentUploadRequestBody,
         @Part photo1: MultipartBody.Part,
         @Part photo2: MultipartBody.Part?,
         @Part country: MultipartBody.Part,

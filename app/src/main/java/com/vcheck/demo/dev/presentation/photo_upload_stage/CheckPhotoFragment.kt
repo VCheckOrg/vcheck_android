@@ -6,7 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VcheckDemoApp
@@ -14,6 +16,7 @@ import com.vcheck.demo.dev.databinding.CheckPhotoFragmentBinding
 import com.vcheck.demo.dev.domain.DocumentUploadRequestBody
 import com.vcheck.demo.dev.domain.toCategoryIdx
 import com.vcheck.demo.dev.presentation.MainActivity
+import com.vcheck.demo.dev.presentation.transferrable_objects.CheckPhotoDataTO
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.MultipartBody.Part.Companion.createFormData
@@ -52,12 +55,17 @@ class CheckPhotoFragment : Fragment() {
 
         _binding!!.apply {
 
+            photoCard2.isVisible = false
+
             val docImage1File = BitmapFactory.decodeFile(args.checkPhotoDataTO.photo1Path)
             passportImage1.setImageBitmap(docImage1File)
 
             if (args.checkPhotoDataTO.photo2Path != null) {
+                photoCard2.isVisible = true
                 val docImage2File = BitmapFactory.decodeFile(args.checkPhotoDataTO.photo2Path)
                 passportImage2.setImageBitmap(docImage2File)
+            } else {
+                photoCard2.isVisible = false
             }
 
             radioBtnHandwrittenDoc.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -103,7 +111,11 @@ class CheckPhotoFragment : Fragment() {
 
             _viewModel.uploadResponse.observe(viewLifecycleOwner) {
                 if (it.data?.data != null) {
-                    //TODO
+                    val action = CheckPhotoFragmentDirections
+                        .actionCheckPhotoFragmentToCheckInfoFragment(
+                            CheckPhotoDataTO(args.checkPhotoDataTO.selectedDocType,
+                                args.checkPhotoDataTO.photo1Path, args.checkPhotoDataTO.photo2Path))
+                    findNavController().navigate(action)
                 }
             }
 

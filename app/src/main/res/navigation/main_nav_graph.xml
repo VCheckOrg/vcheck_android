@@ -64,7 +64,7 @@
         tools:layout="@layout/choose_doc_method_fragment">
         <action
             android:id="@+id/action_chooseDocMethodScreen_to_photoInstructionsFragment"
-            app:destination="@id/photoInstructionsFragment"></action>
+            app:destination="@id/photoInstructionsFragment"/>
     </fragment>
 
     <fragment
@@ -159,6 +159,9 @@
         <argument
             android:name="checkPhotoDataTO"
             app:argType="com.vcheck.demo.dev.presentation.transferrable_objects.CheckPhotoDataTO" />
+        <action
+            android:id="@+id/action_checkPhotoFragment_to_checkInfoFragment"
+            app:destination="@id/checkInfoFragment" />
     </fragment>
 
     <fragment
