@@ -41,6 +41,10 @@ class ChooseDocMethodFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         _binding = ChooseDocMethodFragmentBinding.bind(view)
 
+        _binding!!.backArrow.setOnClickListener {
+            findNavController().popBackStack()
+        }
+
         _binding!!.docMethodInnerPassport.isVisible = false
         _binding!!.docMethodForeignPassport.isVisible = false
         _binding!!.docMethodIdCard.isVisible = false

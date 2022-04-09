@@ -67,6 +67,13 @@ class PhotoUploadFragment : Fragment() {
             methodCard2.isVisible = false
             imgPhoto1.isVisible = false
             imgPhoto2.isVisible = false
+            deletePhotoButton1.isVisible = false
+            deletePhotoButton2.isVisible = false
+
+            backArrow.setOnClickListener {
+                findNavController().popBackStack()
+            }
+
 
             when (_docType) {
                 DocType.FOREIGN_PASSPORT -> {
@@ -102,7 +109,7 @@ class PhotoUploadFragment : Fragment() {
                     makePhotoButton1.setOnClickListener {
                         startActivityForResult(Intent(MediaStore.ACTION_IMAGE_CAPTURE), 1)
                     }
-                    makePhotoButton1.setOnClickListener {
+                    makePhotoButton2.setOnClickListener {
                         startActivityForResult(Intent(MediaStore.ACTION_IMAGE_CAPTURE), 2)
                     }
                 }
@@ -126,6 +133,17 @@ class PhotoUploadFragment : Fragment() {
                     verifMethodIcon1.isVisible = false
                     makePhotoButton1.isVisible = false
                     imgPhoto1.setImageBitmap(docPhotoBitmap)
+                    deletePhotoButton1.isVisible = true
+                    deletePhotoButton1.setOnClickListener {
+                        imgPhoto1.isVisible = false
+                        _photo1Path = null
+                        deletePhotoButton1.isVisible = false
+                        verifMethodTitle1.isVisible = true
+                        verifMethodIcon1.isVisible = true
+                        makePhotoButton1.isVisible = true
+                        photoUploadContinueButton.setBackgroundResource(R.drawable.shape_for_inactive_button)
+                        photoUploadContinueButton.setOnClickListener {}
+                    }
                 }
                 if (requestCode == 2) {
                     Log.i("PHOTO", "---------------- REQUEST CODE 2")
@@ -134,6 +152,17 @@ class PhotoUploadFragment : Fragment() {
                     verifMethodIcon2.isVisible = false
                     makePhotoButton2.isVisible = false
                     imgPhoto2.setImageBitmap(docPhotoBitmap)
+                    deletePhotoButton2.isVisible = true
+                    deletePhotoButton2.setOnClickListener {
+                        imgPhoto2.isVisible = false
+                        _photo2Path = null
+                        deletePhotoButton2.isVisible = false
+                        verifMethodTitle2.isVisible = true
+                        verifMethodIcon2.isVisible = true
+                        makePhotoButton2.isVisible = true
+                        photoUploadContinueButton.setBackgroundResource(R.drawable.shape_for_inactive_button)
+                        photoUploadContinueButton.setOnClickListener {}
+                    }
                 } else {
                     //Stub
                 }
@@ -155,8 +184,12 @@ class PhotoUploadFragment : Fragment() {
                 _binding!!.photoUploadContinueButton.setOnClickListener {
                     val action = PhotoUploadFragmentDirections
                         .actionPhotoUploadScreenToCheckPhotoFragment(
-                            CheckPhotoDataTO(_docType, _photo1Path!!, null))
+                            CheckPhotoDataTO(_docType, _photo1Path!!, null)
+                        )
                     findNavController().navigate(action)
+
+                    _photo1Path = null
+
                 }
             } else {
                 Toast.makeText(activity, "Please make the photo first", Toast.LENGTH_LONG).show()
@@ -171,6 +204,9 @@ class PhotoUploadFragment : Fragment() {
                             CheckPhotoDataTO(_docType, _photo1Path!!, _photo2Path!!)
                         )
                     findNavController().navigate(action)
+
+                    _photo1Path = null
+                    _photo2Path = null
                 }
             } else {
                 Toast.makeText(activity, "Please make all photos first", Toast.LENGTH_LONG).show()
@@ -183,9 +219,10 @@ class PhotoUploadFragment : Fragment() {
         try {
             val cw = ContextWrapper(activity?.application as VcheckDemoApp)
             val directory: File = cw.getDir("imageDir", Context.MODE_PRIVATE)
-            file = File(directory,
+            file = File(
+                directory,
                 //Environment.getDataDirectory().toString() + File.separator +
-                        "documentPhoto${requestCode}.jpg"
+                "documentPhoto${requestCode}.jpg"
             )
             file.createNewFile()
 
