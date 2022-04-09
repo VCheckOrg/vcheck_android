@@ -31,15 +31,18 @@ class MainRepository(
 
     fun getCountryAvailableDocTypeInfo(verifToken: String, countryCode: String)
             : MutableLiveData<Resource<DocumentTypesForCountryResponse>> {
-        return remoteDatasource.getCountryAvailableDocTypeInfo(verifToken, countryCode)
+        return if (verifToken.isNotEmpty()) {
+            return remoteDatasource.getCountryAvailableDocTypeInfo(verifToken, countryCode)
+        } else MutableLiveData(Resource.error(ApiError("No token available!")))
     }
 
-    fun uploadVerificationDocument(
-        token: String,
-        image: MultipartBody.Part
+    fun uploadVerificationDocuments(
+        verifToken: String,
+        documentUploadRequestBody: DocumentUploadRequestBody,
+        images: List<MultipartBody.Part>
     ): MutableLiveData<Resource<DocumentUploadResponse>> {
-        return if (token.isNotEmpty()) {
-            remoteDatasource.uploadVerificationDocument(token, DocumentUploadRequestBody(), image)
+        return if (verifToken.isNotEmpty()) {
+            remoteDatasource.uploadVerificationDocuments(verifToken, documentUploadRequestBody, images)
         } else MutableLiveData(Resource.error(ApiError("No token available!")))
     }
 

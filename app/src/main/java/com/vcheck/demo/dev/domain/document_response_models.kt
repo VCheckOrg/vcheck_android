@@ -3,7 +3,12 @@ package com.vcheck.demo.dev.domain
 import com.google.gson.annotations.SerializedName
 
 data class DocumentUploadResponse(
-    val data: DocumentUploadResponseData
+    @SerializedName("data")
+    val data: DocumentUploadResponseData,
+    @SerializedName("error_code")
+    var errorCode: Int = 0,
+    @SerializedName("message")
+    var message: String = ""
 )
 
 data class DocumentUploadResponseData(

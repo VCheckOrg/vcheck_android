@@ -34,18 +34,19 @@ class RemoteDatasource(private val apiClient: ApiClient) {
         )
     }
 
-    fun uploadVerificationDocument(
+    fun uploadVerificationDocuments(
         verifToken: String,
         documentUploadRequestBody: DocumentUploadRequestBody,
-        image: MultipartBody.Part
+        images: List<MultipartBody.Part>
     ): MutableLiveData<Resource<DocumentUploadResponse>> {
         return NetworkCall<DocumentUploadResponse>().makeCall(
-            apiClient.uploadVerificationDocument(
+            apiClient.uploadVerificationDocuments(
                 verifToken,
-                documentUploadRequestBody,
-                image
-            )
-        )
+                images[0],
+                images.getOrNull(1),
+                MultipartBody.Part.createFormData("country", documentUploadRequestBody.country),
+                MultipartBody.Part.createFormData("document_type", documentUploadRequestBody.document_type.toString()),
+                MultipartBody.Part.createFormData("is_handwritten", documentUploadRequestBody.is_handwritten.toString())))
     }
 
     fun getDocumentInfo(verifToken: String, docId: Int)

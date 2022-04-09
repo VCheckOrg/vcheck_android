@@ -54,7 +54,7 @@ class ChooseDocMethodFragment : Fragment() {
             if (it.data?.data != null) {
                 it.data.data.forEach { docTypeData ->
                     when (docCategoryIdxToType(docTypeData.category)) {
-                        DocType.INNER_PASSPORT -> {
+                        DocType.INNER_PASSPORT_OR_COMMON -> {
                             _binding!!.docMethodInnerPassport.isVisible = true
                             _binding!!.docMethodInnerPassport.setOnClickListener {
                                 selectDocTypeDataAndNavigateForward(docTypeData)
@@ -76,11 +76,10 @@ class ChooseDocMethodFragment : Fragment() {
                 }
             }
         }
-
         _viewModel.getAvailableDocTypes(selectedCountryCode)
     }
 
-    fun selectDocTypeDataAndNavigateForward(docTypeData: DocTypeData) {
+    private fun selectDocTypeDataAndNavigateForward(docTypeData: DocTypeData) {
         Log.d("DOC_TYPE_DATA", docTypeData.toString())
         _viewModel.repository.setSelectedDocTypeWithData(docTypeData)
         findNavController().navigate(R.id.action_chooseDocMethodScreen_to_photoInstructionsFragment)

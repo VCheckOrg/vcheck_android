@@ -8,12 +8,7 @@ import com.vcheck.demo.dev.data.Resource
 import com.vcheck.demo.dev.domain.DocumentUploadResponse
 import okhttp3.MultipartBody
 
-class PhotoUploadViewModel(val repository: MainRepository
-) : ViewModel() {
+class PhotoUploadViewModel(val repository: MainRepository) : ViewModel() {
 
-    private var uploadResponse: MutableLiveData<Resource<DocumentUploadResponse>> = MutableLiveData()
 
-    fun uploadVerificationDocument(token: String, image: MultipartBody.Part) {
-        uploadResponse = repository.uploadVerificationDocument(token, image)
-    }
 }

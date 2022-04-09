@@ -7,10 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.vcheck.demo.dev.R
-import com.vcheck.demo.dev.VcheckDemoApp
 import com.vcheck.demo.dev.databinding.PhotoInstructionsFragmentBinding
-import com.vcheck.demo.dev.domain.DocType
-import com.vcheck.demo.dev.domain.docCategoryIdxToType
 
 class PhotoInstructionsFragment : Fragment() {
 
@@ -28,19 +25,9 @@ class PhotoInstructionsFragment : Fragment() {
 
         _binding = PhotoInstructionsFragmentBinding.bind(view)
 
-        val appContainer = (activity?.application as VcheckDemoApp).appContainer
-        val selectedDocType = docCategoryIdxToType(
-            appContainer.mainRepository.getSelectedDocTypeWithData().category)
-
         _binding!!.photoInstructionsButton.setOnClickListener {
-
-            if (selectedDocType == DocType.INNER_PASSPORT || selectedDocType == DocType.FOREIGN_PASSPORT) {
-                val action = PhotoInstructionsFragmentDirections.actionPhotoInstructionsFragmentToPhotoUploadScreen()
-                findNavController().navigate(action)
-            } else {
-                val action = PhotoInstructionsFragmentDirections.actionPhotoInstructionsFragmentToIDCardPhotoUploadFragment()
-                findNavController().navigate(action)
-            }
+            val action = PhotoInstructionsFragmentDirections.actionPhotoInstructionsFragmentToPhotoUploadScreen()
+            findNavController().navigate(action)
         }
     }
 }

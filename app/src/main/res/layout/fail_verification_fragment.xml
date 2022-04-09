@@ -81,7 +81,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="20dp"
-                    android:background="@drawable/outlined_button_shape"
+                    android:background="@drawable/shape_for_outlined_button"
                     android:text="@string/fail_verification_support_button"
                     app:layout_constraintBottom_toTopOf="@+id/fail_verification_close_button"
                     app:layout_constraintEnd_toEndOf="parent"
