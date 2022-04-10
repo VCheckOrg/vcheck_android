@@ -19,6 +19,7 @@ import com.vcheck.demo.dev.domain.DocumentUploadRequestBody
 import com.vcheck.demo.dev.domain.toCategoryIdx
 import com.vcheck.demo.dev.presentation.MainActivity
 import com.vcheck.demo.dev.presentation.transferrable_objects.CheckDocInfoDataTO
+import com.vcheck.demo.dev.presentation.transferrable_objects.ZoomPhotoTO
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -86,6 +87,19 @@ class CheckPhotoFragment : Fragment() {
                     _isDocHandwritten = false
                     radioBtnHandwrittenDoc.isChecked = false
                 }
+            }
+
+            zoomIcon1.setOnClickListener {
+                val action =
+                    CheckPhotoFragmentDirections.actionCheckPhotoFragmentToZoomedPhotoScreen(
+                        ZoomPhotoTO(args.checkPhotoDataTO.photo1Path, null))
+                findNavController().navigate(action)
+            }
+            zoomIcon2.setOnClickListener {
+                val action =
+                    CheckPhotoFragmentDirections.actionCheckPhotoFragmentToZoomedPhotoScreen(
+                        ZoomPhotoTO(null, args.checkPhotoDataTO.photo2Path))
+                findNavController().navigate(action)
             }
 
             replacePhotoButton.setOnClickListener {

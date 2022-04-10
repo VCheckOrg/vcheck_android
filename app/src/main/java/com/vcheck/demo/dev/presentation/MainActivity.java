@@ -25,8 +25,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         langSpinner.setAdapter(adapter);
         langSpinner.setOnItemSelectedListener(this);
-
-
     }
 
     @Override
