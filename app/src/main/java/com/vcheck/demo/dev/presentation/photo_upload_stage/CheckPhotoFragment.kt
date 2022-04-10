@@ -81,8 +81,15 @@ class CheckPhotoFragment : Fragment() {
                 }
             }
 
+            zoomIcon1.setOnClickListener {
+                Toast.makeText(activity, "fhjfjjf", Toast.LENGTH_LONG).show()
+            }
+
+            zoomIcon2.setOnClickListener {  }
+
+
             replacePhotoButton.setOnClickListener {
-                //TODO
+                findNavController().popBackStack()
             }
 
             confirmPhotoButton.setOnClickListener {
@@ -95,28 +102,35 @@ class CheckPhotoFragment : Fragment() {
                 val multipartList: ArrayList<MultipartBody.Part> = ArrayList()
                 val photoFile1 = File(args.checkPhotoDataTO.photo1Path)
                 val filePartPhoto1: MultipartBody.Part = createFormData(
-                    "jpeg", photoFile1.name, photoFile1.asRequestBody("image/*".toMediaType()))
+                    "jpeg", photoFile1.name, photoFile1.asRequestBody("image/*".toMediaType())
+                )
                 multipartList.add(filePartPhoto1)
 
                 if (args.checkPhotoDataTO.photo2Path != null) {
                     val photoFile2 = File(args.checkPhotoDataTO.photo2Path!!)
                     val filePartPhoto2: MultipartBody.Part = createFormData(
-                        "jpeg", photoFile2.name, photoFile2.asRequestBody("image/*".toMediaType()))
+                        "jpeg", photoFile2.name, photoFile2.asRequestBody("image/*".toMediaType())
+                    )
                     multipartList.add(filePartPhoto2)
                 }
 
                 _viewModel.uploadVerificationDocuments(
-                    _viewModel.repository.getVerifToken(activity as MainActivity), body, multipartList)
+                    _viewModel.repository.getVerifToken(activity as MainActivity),
+                    body,
+                    multipartList
+                )
             }
 
             _viewModel.uploadResponse.observe(viewLifecycleOwner) {
                 if (it.data?.data != null) {
                     val action = CheckPhotoFragmentDirections
                         .actionCheckPhotoFragmentToCheckInfoFragment(
-                            CheckDocInfoDataTO(args.checkPhotoDataTO.selectedDocType,
+                            CheckDocInfoDataTO(
+                                args.checkPhotoDataTO.selectedDocType,
                                 it.data.data.document,
                                 args.checkPhotoDataTO.photo1Path,
-                                args.checkPhotoDataTO.photo2Path)
+                                args.checkPhotoDataTO.photo2Path
+                            )
                         )
                     findNavController().navigate(action)
                 }

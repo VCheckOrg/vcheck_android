@@ -206,7 +206,8 @@ class PhotoUploadFragment : Fragment() {
                 _binding!!.photoUploadContinueButton.setOnClickListener {
                     val action = PhotoUploadFragmentDirections
                         .actionPhotoUploadScreenToCheckPhotoFragment(
-                            CheckPhotoDataTO(_docType, _photo1Path!!, _photo2Path!!))
+                            CheckPhotoDataTO(_docType, _photo1Path!!, _photo2Path!!)
+                        )
                     findNavController().navigate(action)
 
                     _photo1Path = null
@@ -248,7 +249,8 @@ class PhotoUploadFragment : Fragment() {
 
     @Throws(IOException::class)
     private fun createImageFile(photoIdx: Int): File {
-        val storageDir: File =  (activity as MainActivity).getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
+        val storageDir: File =
+            (activity as MainActivity).getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
         return File.createTempFile(
             "documentPhoto${photoIdx}", ".jpg", storageDir
         ).apply {
@@ -257,7 +259,7 @@ class PhotoUploadFragment : Fragment() {
             } else {
                 _photo2Path = this.path
             }
-            Log.d("PHOTO" , "SAVING A FILE: ${this.path}")
+            Log.d("PHOTO", "SAVING A FILE: ${this.path}")
         }
     }
 
