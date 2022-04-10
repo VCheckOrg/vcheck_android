@@ -222,39 +222,4 @@ class PhotoUploadFragment : Fragment() {
             Log.d("PHOTO" , "SAVING A FILE: ${this.path}")
         }
     }
-
-// may be used later for optional compressing (in case of very big photos > 10 mb)
-//    private fun bitmapToFile(bitmap: Bitmap, requestCode: Int): File? {
-//        var file: File? = null
-//        try {
-//            val cw = ContextWrapper(activity?.application as VcheckDemoApp)
-//            val directory: File = cw.getDir("imageDir", Context.MODE_PRIVATE)
-//            file = File(directory,
-//                //Environment.getDataDirectory().toString() + File.separator +
-//                        "documentPhoto${requestCode}.jpg"
-//            )
-//            file.createNewFile()
-//
-//            val bos = ByteArrayOutputStream()
-//            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos)
-//            val byteArray = bos.toByteArray()
-//
-//            val fos = FileOutputStream(file)
-//            fos.write(byteArray)
-//            fos.flush()
-//            fos.close()
-//
-//            if (requestCode == 1) {
-//                _photo1Path = file.path
-//            }
-//            if (requestCode == 2) {
-//                _photo2Path = file.path
-//            }
-//
-//            return file
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//            return null
-//        }
-//    }
 }

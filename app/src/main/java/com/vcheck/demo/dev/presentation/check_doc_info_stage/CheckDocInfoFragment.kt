@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VcheckDemoApp
@@ -66,6 +67,12 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
                 val updatedAdapter = CheckInfoAdapter(ArrayList(dataList),
                     this@CheckDocInfoFragment)
                 binding.docInfoList.adapter = updatedAdapter
+            }
+        }
+
+        viewModel.confirmedDocResponse.observe(viewLifecycleOwner) {
+            if (it) {
+                findNavController().navigate(R.id.livenessInstructionsFragment)
             }
         }
 

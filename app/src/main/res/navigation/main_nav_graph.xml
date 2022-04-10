@@ -6,7 +6,7 @@
     app:startDestination="@id/demoStartFragment">
 
     <fragment
-        android:id="@+id/mainFragment"
+        android:id="@+id/livenessInstructionsFragment"
         android:name="com.vcheck.demo.dev.presentation.screens.LivenessInstructionsFragment"
         android:label="fragment_main"
         tools:layout="@layout/liveness_instructions_fragment">
@@ -172,6 +172,9 @@
         <argument
             android:name="checkDocInfoDataTO"
             app:argType="com.vcheck.demo.dev.presentation.transferrable_objects.CheckDocInfoDataTO" />
+        <action
+            android:id="@+id/action_checkDocInfoFragment_to_livenessInstructionsFragment"
+            app:destination="@id/livenessInstructionsFragment" />
     </fragment>
 
     <fragment

@@ -40,14 +40,30 @@ class RemoteDatasource(private val apiClient: ApiClient) {
         documentUploadRequestBody: DocumentUploadRequestBody,
         images: List<MultipartBody.Part>
     ): MutableLiveData<Resource<DocumentUploadResponse>> {
-        return NetworkCall<DocumentUploadResponse>().makeCall(
-            apiClient.uploadVerificationDocuments(
+        if (images.size == 1) {
+            return NetworkCall<DocumentUploadResponse>().makeCall(
+                apiClient.uploadVerificationDocumentsForOnePage(
+                    verifToken,
+//                    "multipart/form-data",
+//                    "gzip, deflate, br",
+//                    "application/json, text/plain, */*",
+                    images[0],
+                    MultipartBody.Part.createFormData("country", documentUploadRequestBody.country),
+                    MultipartBody.Part.createFormData("document_type", documentUploadRequestBody.document_type.toString()),
+                    MultipartBody.Part.createFormData("is_handwritten", documentUploadRequestBody.is_handwritten.toString())))
+        }
+        else {
+            return NetworkCall<DocumentUploadResponse>().makeCall(apiClient.uploadVerificationDocumentsForTwoPages(
                 verifToken,
+//                "multipart/form-data",
+//                "gzip, deflate, br",
+//                "application/json, text/plain, */*",
                 images[0],
-                images.getOrNull(1),
+                images[1],
                 MultipartBody.Part.createFormData("country", documentUploadRequestBody.country),
                 MultipartBody.Part.createFormData("document_type", documentUploadRequestBody.document_type.toString()),
                 MultipartBody.Part.createFormData("is_handwritten", documentUploadRequestBody.is_handwritten.toString())))
+        }
     }
 
     fun getDocumentInfo(verifToken: String, docId: Int)

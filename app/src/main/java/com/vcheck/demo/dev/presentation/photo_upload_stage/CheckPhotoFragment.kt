@@ -2,6 +2,8 @@ package com.vcheck.demo.dev.presentation.photo_upload_stage
 
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.os.FileUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,9 +19,12 @@ import com.vcheck.demo.dev.domain.DocumentUploadRequestBody
 import com.vcheck.demo.dev.domain.toCategoryIdx
 import com.vcheck.demo.dev.presentation.MainActivity
 import com.vcheck.demo.dev.presentation.transferrable_objects.CheckDocInfoDataTO
+import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
+import okhttp3.MultipartBody.Part.Companion.create
 import okhttp3.MultipartBody.Part.Companion.createFormData
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 
@@ -96,15 +101,19 @@ class CheckPhotoFragment : Fragment() {
                 val multipartList: ArrayList<MultipartBody.Part> = ArrayList()
                 val photoFile1 = File(args.checkPhotoDataTO.photo1Path)
                 val filePartPhoto1: MultipartBody.Part = createFormData(
-                    "jpeg", photoFile1.name, photoFile1.asRequestBody("image/*".toMediaType()))
+                    "1.jpg", photoFile1.name, photoFile1.asRequestBody("image/jpeg".toMediaType())) // image/*
                 multipartList.add(filePartPhoto1)
 
                 if (args.checkPhotoDataTO.photo2Path != null) {
                     val photoFile2 = File(args.checkPhotoDataTO.photo2Path!!)
                     val filePartPhoto2: MultipartBody.Part = createFormData(
-                        "jpeg", photoFile2.name, photoFile2.asRequestBody("image/*".toMediaType()))
+                        "2.jpg", photoFile2.name, photoFile2.asRequestBody("image/jpeg".toMediaType())) // image/*
                     multipartList.add(filePartPhoto2)
                 }
+
+                Log.i("PHOTOS", "----------------- MULTIPART LIST: ${multipartList.map { it.body.contentLength() }} | " +
+                        "${multipartList.map { it.body.contentType() }}")
+                Log.i("PHOTOS", "----------------- MULTIPART LIST: ${multipartList.size}")
 
                 handPrintCard.isVisible = false
                 machinePrintCard.isVisible = false
@@ -138,6 +147,5 @@ class CheckPhotoFragment : Fragment() {
                 if (it != null) Toast.makeText(activity, it, Toast.LENGTH_LONG).show()
             }
         }
-
     }
 }
