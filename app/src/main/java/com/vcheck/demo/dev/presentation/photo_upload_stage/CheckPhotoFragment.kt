@@ -17,6 +17,8 @@ import com.vcheck.demo.dev.domain.DocumentUploadRequestBody
 import com.vcheck.demo.dev.domain.toCategoryIdx
 import com.vcheck.demo.dev.presentation.MainActivity
 import com.vcheck.demo.dev.presentation.transferrable_objects.CheckDocInfoDataTO
+import com.vcheck.demo.dev.presentation.transferrable_objects.CheckPhotoDataTO
+import com.vcheck.demo.dev.presentation.transferrable_objects.ZoomPhotoTO
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.MultipartBody.Part.Companion.createFormData
@@ -84,10 +86,20 @@ class CheckPhotoFragment : Fragment() {
             }
 
             zoomIcon1.setOnClickListener {
-                Toast.makeText(activity, "fhjfjjf", Toast.LENGTH_LONG).show()
+                val action =
+                    CheckPhotoFragmentDirections.actionCheckPhotoFragmentToZoomedPhotoScreen(
+                        ZoomPhotoTO(args.checkPhotoDataTO.photo1Path, null)
+                    )
+                findNavController().navigate(action)
             }
 
-            zoomIcon2.setOnClickListener {  }
+            zoomIcon2.setOnClickListener {
+                val action =
+                    CheckPhotoFragmentDirections.actionCheckPhotoFragmentToZoomedPhotoScreen(
+                        ZoomPhotoTO(null, args.checkPhotoDataTO.photo2Path)
+                    )
+                findNavController().navigate(action)
+            }
 
 
             replacePhotoButton.setOnClickListener {
@@ -98,7 +110,8 @@ class CheckPhotoFragment : Fragment() {
                 val body = DocumentUploadRequestBody(
                     _viewModel.repository.getSelectedCountryCode(activity as MainActivity),
                     args.checkPhotoDataTO.selectedDocType.toCategoryIdx(),
-                    _isDocHandwritten)
+                    _isDocHandwritten
+                )
 
                 val multipartList: ArrayList<MultipartBody.Part> = ArrayList()
                 val photoFile1 = File(args.checkPhotoDataTO.photo1Path)

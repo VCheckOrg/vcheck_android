@@ -162,6 +162,13 @@
         <action
             android:id="@+id/action_checkPhotoFragment_to_checkInfoFragment"
             app:destination="@id/checkDocInfoFragment" />
+        <action
+            android:id="@+id/action_checkPhotoFragment_to_zoomedPhotoScreen"
+            app:destination="@id/zoomedPhotoFragment">
+            <argument
+                android:name="zoomPhotoTO"
+                app:argType="com.vcheck.demo.dev.presentation.transferrable_objects.ZoomPhotoTO" />
+        </action>
     </fragment>
 
     <fragment
@@ -205,5 +212,15 @@
         android:id="@+id/livenessFragment2"
         android:name="com.vcheck.demo.dev.presentation.liveness.LivenessFragment"
         android:label="LivenessFragment" />
+
+    <fragment
+        android:id="@+id/zoomedPhotoFragment"
+        android:name="com.vcheck.demo.dev.presentation.photo_upload_stage.ZoomedPhotoFragment"
+        android:label="zoomed_photo_fragment"
+        tools:layout="@layout/zoomed_photo_fragment">
+        <argument
+            android:name="zoomPhotoTO"
+            app:argType="com.vcheck.demo.dev.presentation.transferrable_objects.ZoomPhotoTO" />
+    </fragment>
 
 </navigation>
