@@ -81,4 +81,9 @@
     <string name="photo_upload_title_id_card_back">Задняя сторона ID карты</string>
     <string name="photo_upload_title_common_forward">Фотография первой страницы/стороны документа (с вашим фото).</string>
     <string name="photo_upload_title_common_back">Фотография последней страницы/стороны с вашей фотографией (если у вас несколько фотографий в документе).</string>
+
+    <string name="photo_upload_wait_disclaimer">Пожалуйста, подождите. Идет загрузка и обработка фото вашего документа. Это может занять от нескольких секунд до минуты.</string>
+    <string name="make_document_photo_title">Сфотографируйте документ</string>
+    <string name="document_photo_initial_description">Убедитесь, что каждое сделанное фото читабельно (видны все 4 угла документа, пальцы не закрывают данные)</string>
+
 </resources>

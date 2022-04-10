@@ -2,11 +2,14 @@ package com.vcheck.demo.dev.presentation.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.RecyclerView
 import com.vcheck.demo.dev.databinding.DocInfoRowBinding
-import com.vcheck.demo.dev.domain.DocField
+import com.vcheck.demo.dev.domain.DocFieldWitOptPreFilledData
+import com.vcheck.demo.dev.util.CustomInputFilter
 
-class CheckInfoAdapter(private val documentInfoList: ArrayList<DocField>) :
+class CheckInfoAdapter(private val documentInfoList: ArrayList<DocFieldWitOptPreFilledData>,
+                       private val docInfoEditCallback: DocInfoEditCallback) :
     RecyclerView.Adapter<CheckInfoAdapter.ViewHolder>() {
 
     private lateinit var binding: DocInfoRowBinding
@@ -14,7 +17,7 @@ class CheckInfoAdapter(private val documentInfoList: ArrayList<DocField>) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         binding = DocInfoRowBinding.inflate(layoutInflater, parent, false)
-        return ViewHolder(binding)
+        return ViewHolder(binding, docInfoEditCallback)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -24,12 +27,27 @@ class CheckInfoAdapter(private val documentInfoList: ArrayList<DocField>) :
 
     override fun getItemCount(): Int = documentInfoList.size
 
-    class ViewHolder(private val binding: DocInfoRowBinding) :
+    class ViewHolder(private val binding: DocInfoRowBinding, private val docInfoEditCallback: DocInfoEditCallback) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(documentInfo: DocField) {
-            binding.title.text = documentInfo.name
-            binding.infoField.setText(documentInfo.type)
+        fun bind(documentInfo: DocFieldWitOptPreFilledData) {
+            //TODO: check for locale: if device locale is ua/ru, set title.ru
+            // (until we have more locales)
+            // Else, set title.en:
+            binding.title.text = documentInfo.title.ru
+            binding.infoField.setText(documentInfo.autoParsedValue)
+
+            //TODO test!
+            if (documentInfo.regex != null) {
+                val filter = CustomInputFilter()
+                filter.setRegex(documentInfo.regex)
+
+                binding.infoField.filters += filter
+            }
+
+            binding.infoField.doOnTextChanged { text, start, before, count ->
+                docInfoEditCallback.onFieldInfoEdited(documentInfo.name, text.toString())
+            }
         }
     }
 }

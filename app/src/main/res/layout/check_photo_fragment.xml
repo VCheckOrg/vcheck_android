@@ -60,7 +60,7 @@
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/photo_card_1"
-                    android:layout_width="264dp"
+                    android:layout_width="match_parent"
                     android:layout_height="249dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="28dp"
@@ -106,7 +106,7 @@
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/photo_card_2"
-                    android:layout_width="264dp"
+                    android:layout_width="match_parent"
                     android:layout_height="249dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="5dp"
@@ -296,6 +296,17 @@
                     </androidx.cardview.widget.CardView>
 
                 </androidx.cardview.widget.CardView>
+
+                <com.google.android.material.progressindicator.CircularProgressIndicator
+                    android:id="@+id/uploadDocPhotosLoadingIndicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/check_photo_title_2"
+                    android:layout_marginTop="45dp"
+                    app:indicatorColor="@color/white"
+                    android:indeterminate="true" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/replace_photo_button"

@@ -18,15 +18,6 @@ data class DocumentUploadResponseData(
     val document: Int
 )
 
-data class PreProcessedDocumentResponse(
-    @SerializedName("data")
-    val data: DocTypeData,
-    @SerializedName("error_code")
-    var errorCode: Int = 0,
-    @SerializedName("message")
-    var message: String = ""
-)
-
 data class DocumentTypesForCountryResponse(
     @SerializedName("data")
     val data: List<DocTypeData>,
@@ -61,7 +52,15 @@ data class DocField(
     @SerializedName("type")
     val type: String,
     @SerializedName("regex")
-    val regex: String
+    val regex: String? = null
+)
+
+data class DocFieldWitOptPreFilledData(
+    val name: String,
+    val title: DocTitle,
+    val type: String,
+    val regex: String?,
+    var autoParsedValue: String = ""
 )
 
 data class DocTitle(
@@ -69,4 +68,47 @@ data class DocTitle(
     val en: String,
     @SerializedName("ru")
     val ru: String?
+)
+
+// --- PRE-PROCESSED DOC
+
+data class PreProcessedDocumentResponse(
+    @SerializedName("data")
+    val data: PreProcessedDocData,
+    @SerializedName("error_code")
+    var errorCode: Int = 0,
+    @SerializedName("message")
+    var message: String = ""
+)
+
+data class PreProcessedDocData(
+    @SerializedName("id")
+    val id: Int,
+    @SerializedName("images")
+    val images: ArrayList<String> = arrayListOf(),
+    @SerializedName("is_primary")
+    val isPrimary: Boolean,
+    @SerializedName("parsed_data")
+    val parsedData: ParsedDocFieldsData,
+    @SerializedName("status")
+    val status: Int,
+    @SerializedName("type")
+    val type: DocTypeData
+)
+
+data class ParsedDocFieldsData(
+    @SerializedName("date_of_birth")
+    var dateOfBirth: String? = null,
+    @SerializedName("date_of_expiry")
+    var dateOfExpiry: String? = null,
+    @SerializedName("name")
+    var name: String? = null,
+    @SerializedName("number")
+    var number: String? = null,
+    @SerializedName("og_name")
+    var ogName: String? = null,
+    @SerializedName("og_surname")
+    var ogSurname: String? = null,
+    @SerializedName("surname")
+    var surname: String? = null
 )

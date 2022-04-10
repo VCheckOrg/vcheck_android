@@ -32,6 +32,9 @@ class ChooseCountryFragment : Fragment(R.layout.choose_country_fragment) {
         country = appContainer.mainRepository.getSelectedCountryCode(activity as MainActivity)
 
         val locale = Locale("", country)
+
+        //iso codes to flag emojis:
+        //TODO move to extension function (extensions.kt)
         val firstLetter: Int = Character.codePointAt(locale.country, 0) - 0x41 + 0x1F1E6
         val secondLetter: Int =
             Character.codePointAt(locale.country, 1) - 0x41 + 0x1F1E6

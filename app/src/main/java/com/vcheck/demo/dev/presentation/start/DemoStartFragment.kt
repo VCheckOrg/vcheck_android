@@ -47,7 +47,6 @@ class DemoStartFragment : Fragment() {
 
         _viewModel.verifResponse.observe(viewLifecycleOwner) {
             if (it.data?.data != null) {
-                _binding!!.startCallChainLoadingIndicator.isVisible = true
                 _binding!!.tvCreateVerificationResultInfo.text =
                     "CREATED VERIFICATION REQUEST: application_id : ${it.data.data.applicationId} |" +
                             "redirect_url : ${it.data.data.redirectUrl}" //+create_time
@@ -75,8 +74,7 @@ class DemoStartFragment : Fragment() {
                 _binding!!.startCallChainLoadingIndicator.isVisible = false
                 Log.d(
                     "COUNTRIES",
-                    "GOT COUNTRIES: ${it.data.data.map { country -> country.code }.toList()}"
-                )
+                    "GOT COUNTRIES: ${it.data.data.map { country -> country.code }.toList()}")
 
                 val countryList = it.data.data.map { country ->
                     val locale = Locale("", country.code)
@@ -91,8 +89,7 @@ class DemoStartFragment : Fragment() {
 
                 val action =
                     DemoStartFragmentDirections.actionDemoStartFragmentToChooseCountryFragment(
-                        CountriesListTO(countryList)
-                    )
+                        CountriesListTO(countryList))
                 findNavController().navigate(action)
             }
         }
@@ -102,13 +99,13 @@ class DemoStartFragment : Fragment() {
         }
 
         _binding!!.btnStartDemoFlow.setOnClickListener {
+            _binding!!.startCallChainLoadingIndicator.isVisible = true
             _viewModel.createTestVerificationRequest()
         }
 
         _binding!!.btnLaunchMediaPipeDemo.setOnClickListener {
             findNavController().navigate(R.id.action_demoStartFragment_to_livenessFragment2)
         }
-
     }
 
 }

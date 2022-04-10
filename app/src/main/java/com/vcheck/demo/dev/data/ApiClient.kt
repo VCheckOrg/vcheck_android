@@ -3,6 +3,7 @@ package com.vcheck.demo.dev.data
 import com.vcheck.demo.dev.domain.*
 import okhttp3.MultipartBody
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.*
 
 interface ApiClient {
@@ -36,4 +37,9 @@ interface ApiClient {
     @GET("documents/{document}")
     fun getDocumentInfo(@Header("Authorization") verifToken: String,
                         @Path("document") docId: Int) : Call<PreProcessedDocumentResponse>
+
+    @PUT("documents/{document}")
+    fun updateAndConfirmDocInfo(@Header("Authorization") verifToken: String,
+                                @Path("document") docId: Int,
+                                @Body parsedDocFieldsData: ParsedDocFieldsData): Call<Response<Void>>
 }

@@ -4,11 +4,17 @@ import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.vcheck.demo.dev.domain.*
 import okhttp3.MultipartBody
+import retrofit2.Response
+import retrofit2.http.Body
+import retrofit2.http.Header
+import retrofit2.http.Path
 
 class MainRepository(
     private val remoteDatasource: RemoteDatasource,
     private val localDatasource: LocalDatasource
 ) {
+
+    //---- REMOTE SOURCE DATA OPS:
 
 //  fun createVerificationRequest(verificationRequestBody: CreateVerificationRequestBody): CreateVerificationAttemptResponse
 //        = remoteData.createVerificationRequest(verificationRequestBody)
@@ -56,6 +62,18 @@ class MainRepository(
             MutableLiveData(Resource.error(ApiError("No token available!")))
         }
     }
+
+    fun updateAndConfirmDocInfo(token: String,
+                                docId: Int,
+                                docData: ParsedDocFieldsData) : MutableLiveData<Resource<Response<Void>>> {
+        return if (token.isNotEmpty()) {
+            remoteDatasource.updateAndConfirmDocInfo(token, docId, docData)
+        } else {
+            MutableLiveData(Resource.error(ApiError("No token available!")))
+        }
+    }
+
+    //---- LOCAL SOURCE DATA OPS:
 
     fun storeVerifToken(ctx: Context, verifToken: String) {
         localDatasource.storeVerifToken(ctx, verifToken)
