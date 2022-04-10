@@ -25,6 +25,10 @@ class PhotoInstructionsFragment : Fragment() {
 
         _binding = PhotoInstructionsFragmentBinding.bind(view)
 
+        _binding!!.backArrow.setOnClickListener {
+            findNavController().popBackStack()
+        }
+
         _binding!!.photoInstructionsButton.setOnClickListener {
             val action = PhotoInstructionsFragmentDirections.actionPhotoInstructionsFragmentToPhotoUploadScreen()
             findNavController().navigate(action)

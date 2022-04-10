@@ -70,6 +70,13 @@ class PhotoUploadFragment : Fragment() {
             methodCard2.isVisible = false
             imgPhoto1.isVisible = false
             imgPhoto2.isVisible = false
+            deletePhotoButton1.isVisible = false
+            deletePhotoButton2.isVisible = false
+
+            backArrow.setOnClickListener {
+                findNavController().popBackStack()
+            }
+
 
             when (_docType) {
                 DocType.FOREIGN_PASSPORT -> {
@@ -129,6 +136,17 @@ class PhotoUploadFragment : Fragment() {
 
                     docPhotoBitmap = BitmapFactory.decodeFile(_photo1Path!!)
                     imgPhoto1.setImageBitmap(docPhotoBitmap)
+                    deletePhotoButton1.isVisible = true
+                    deletePhotoButton1.setOnClickListener {
+                        imgPhoto1.isVisible = false
+                        _photo1Path = null
+                        deletePhotoButton1.isVisible = false
+                        verifMethodTitle1.isVisible = true
+                        verifMethodIcon1.isVisible = true
+                        makePhotoButton1.isVisible = true
+                        photoUploadContinueButton.setBackgroundResource(R.drawable.shape_for_inactive_button)
+                        photoUploadContinueButton.setOnClickListener {}
+                    }
                 }
                 if (requestCode == 2) {
                     Log.i("PHOTO", "---------------- REQUEST CODE 2")
@@ -139,6 +157,19 @@ class PhotoUploadFragment : Fragment() {
 
                     docPhotoBitmap = BitmapFactory.decodeFile(_photo2Path!!)
                     imgPhoto2.setImageBitmap(docPhotoBitmap)
+                    deletePhotoButton2.isVisible = true
+                    deletePhotoButton2.setOnClickListener {
+                        imgPhoto2.isVisible = false
+                        _photo2Path = null
+                        deletePhotoButton2.isVisible = false
+                        verifMethodTitle2.isVisible = true
+                        verifMethodIcon2.isVisible = true
+                        makePhotoButton2.isVisible = true
+                        photoUploadContinueButton.setBackgroundResource(R.drawable.shape_for_inactive_button)
+                        photoUploadContinueButton.setOnClickListener {}
+                    }
+                } else {
+                    //Stub
                 }
 
                 if (docPhotoBitmap != null) {
@@ -158,8 +189,12 @@ class PhotoUploadFragment : Fragment() {
                 _binding!!.photoUploadContinueButton.setOnClickListener {
                     val action = PhotoUploadFragmentDirections
                         .actionPhotoUploadScreenToCheckPhotoFragment(
-                            CheckPhotoDataTO(_docType, _photo1Path!!, null))
+                            CheckPhotoDataTO(_docType, _photo1Path!!, null)
+                        )
                     findNavController().navigate(action)
+
+                    _photo1Path = null
+
                 }
             } else {
                 Toast.makeText(activity, "Please make the photo first", Toast.LENGTH_LONG).show()
@@ -171,8 +206,12 @@ class PhotoUploadFragment : Fragment() {
                 _binding!!.photoUploadContinueButton.setOnClickListener {
                     val action = PhotoUploadFragmentDirections
                         .actionPhotoUploadScreenToCheckPhotoFragment(
-                            CheckPhotoDataTO(_docType, _photo1Path!!, _photo2Path!!))
+                            CheckPhotoDataTO(_docType, _photo1Path!!, _photo2Path!!)
+                        )
                     findNavController().navigate(action)
+
+                    _photo1Path = null
+                    _photo2Path = null
                 }
             } else {
                 Toast.makeText(activity, "Please make all photos first", Toast.LENGTH_LONG).show()
@@ -210,7 +249,8 @@ class PhotoUploadFragment : Fragment() {
 
     @Throws(IOException::class)
     private fun createImageFile(photoIdx: Int): File {
-        val storageDir: File =  (activity as MainActivity).getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
+        val storageDir: File =
+            (activity as MainActivity).getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
         return File.createTempFile(
             "documentPhoto${photoIdx}", ".jpg", storageDir
         ).apply {
@@ -219,7 +259,7 @@ class PhotoUploadFragment : Fragment() {
             } else {
                 _photo2Path = this.path
             }
-            Log.d("PHOTO" , "SAVING A FILE: ${this.path}")
+            Log.d("PHOTO", "SAVING A FILE: ${this.path}")
         }
     }
 }
