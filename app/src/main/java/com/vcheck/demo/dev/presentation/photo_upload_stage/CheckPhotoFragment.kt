@@ -2,6 +2,7 @@ package com.vcheck.demo.dev.presentation.photo_upload_stage
 
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +18,6 @@ import com.vcheck.demo.dev.domain.DocumentUploadRequestBody
 import com.vcheck.demo.dev.domain.toCategoryIdx
 import com.vcheck.demo.dev.presentation.MainActivity
 import com.vcheck.demo.dev.presentation.transferrable_objects.CheckDocInfoDataTO
-import com.vcheck.demo.dev.presentation.transferrable_objects.CheckPhotoDataTO
 import com.vcheck.demo.dev.presentation.transferrable_objects.ZoomPhotoTO
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -72,6 +72,13 @@ class CheckPhotoFragment : Fragment() {
                 photoCard2.isVisible = false
             }
 
+            machinePrintCard.setOnClickListener {
+                radioBtnMachineFilledDoc.isChecked = true
+            }
+            handPrintCard.setOnClickListener {
+                radioBtnHandwrittenDoc.isChecked = true
+            }
+
             radioBtnHandwrittenDoc.setOnCheckedChangeListener { buttonView, isChecked ->
                 if (isChecked) {
                     _isDocHandwritten = true
@@ -88,69 +95,63 @@ class CheckPhotoFragment : Fragment() {
             zoomIcon1.setOnClickListener {
                 val action =
                     CheckPhotoFragmentDirections.actionCheckPhotoFragmentToZoomedPhotoScreen(
-                        ZoomPhotoTO(args.checkPhotoDataTO.photo1Path, null)
-                    )
+                        ZoomPhotoTO(args.checkPhotoDataTO.photo1Path, null))
                 findNavController().navigate(action)
             }
-
             zoomIcon2.setOnClickListener {
                 val action =
                     CheckPhotoFragmentDirections.actionCheckPhotoFragmentToZoomedPhotoScreen(
-                        ZoomPhotoTO(null, args.checkPhotoDataTO.photo2Path)
-                    )
+                        ZoomPhotoTO(null, args.checkPhotoDataTO.photo2Path))
                 findNavController().navigate(action)
             }
 
-
             replacePhotoButton.setOnClickListener {
                 findNavController().popBackStack()
+                findNavController().navigate(R.id.action_global_photoUploadScreen)
             }
 
             confirmPhotoButton.setOnClickListener {
                 val body = DocumentUploadRequestBody(
                     _viewModel.repository.getSelectedCountryCode(activity as MainActivity),
                     args.checkPhotoDataTO.selectedDocType.toCategoryIdx(),
-                    _isDocHandwritten
-                )
+                    _isDocHandwritten)
 
                 val multipartList: ArrayList<MultipartBody.Part> = ArrayList()
                 val photoFile1 = File(args.checkPhotoDataTO.photo1Path)
                 val filePartPhoto1: MultipartBody.Part = createFormData(
-                    "jpeg", photoFile1.name, photoFile1.asRequestBody("image/*".toMediaType())
-                )
+                    "1.jpg", photoFile1.name, photoFile1.asRequestBody("image/jpeg".toMediaType())) // image/*
                 multipartList.add(filePartPhoto1)
 
                 if (args.checkPhotoDataTO.photo2Path != null) {
                     val photoFile2 = File(args.checkPhotoDataTO.photo2Path!!)
                     val filePartPhoto2: MultipartBody.Part = createFormData(
-                        "jpeg", photoFile2.name, photoFile2.asRequestBody("image/*".toMediaType())
-                    )
+                        "2.jpg", photoFile2.name, photoFile2.asRequestBody("image/jpeg".toMediaType())) // image/*
                     multipartList.add(filePartPhoto2)
                 }
+
+//                Log.i("PHOTOS", "----------------- MULTIPART LIST: ${multipartList.map { it.body.contentLength() }} | " +
+//                        "${multipartList.map { it.body.contentType() }}")
+//                Log.i("PHOTOS", "----------------- MULTIPART LIST: ${multipartList.size}")
 
                 handPrintCard.isVisible = false
                 machinePrintCard.isVisible = false
                 replacePhotoButton.isVisible = false
                 uploadDocPhotosLoadingIndicator.isVisible = true
+                confirmPhotoButton.isVisible = false
                 checkPhotoTitle2.setText(R.string.photo_upload_wait_disclaimer)
 
                 _viewModel.uploadVerificationDocuments(
-                    _viewModel.repository.getVerifToken(activity as MainActivity),
-                    body,
-                    multipartList
-                )
+                    _viewModel.repository.getVerifToken(activity as MainActivity), body, multipartList)
             }
 
             _viewModel.uploadResponse.observe(viewLifecycleOwner) {
                 if (it.data?.data != null) {
                     val action = CheckPhotoFragmentDirections
                         .actionCheckPhotoFragmentToCheckInfoFragment(
-                            CheckDocInfoDataTO(
-                                args.checkPhotoDataTO.selectedDocType,
+                            CheckDocInfoDataTO(args.checkPhotoDataTO.selectedDocType,
                                 it.data.data.document,
                                 args.checkPhotoDataTO.photo1Path,
-                                args.checkPhotoDataTO.photo2Path
-                            )
+                                args.checkPhotoDataTO.photo2Path)
                         )
                     findNavController().navigate(action)
                 }
@@ -160,11 +161,11 @@ class CheckPhotoFragment : Fragment() {
                 handPrintCard.isVisible = true
                 machinePrintCard.isVisible = true
                 replacePhotoButton.isVisible = true
+                confirmPhotoButton.isVisible = true
                 uploadDocPhotosLoadingIndicator.isVisible = false
                 checkPhotoTitle2.setText(R.string.check_photo_title_2)
                 if (it != null) Toast.makeText(activity, it, Toast.LENGTH_LONG).show()
             }
         }
-
     }
 }

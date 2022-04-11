@@ -76,6 +76,7 @@
         <entry key="app/src/main/res/layout/fragment_start.xml" value="0.33469202898550726" />
         <entry key="app/src/main/res/layout/frame_interference_fragment.xml" value="0.290625" />
         <entry key="app/src/main/res/layout/id_card_photo_upload_fragment.xml" value="0.24211730957031252" />
+        <entry key="app/src/main/res/layout/liveness_instructions_fragment.xml" value="0.27219202898550726" />
         <entry key="app/src/main/res/layout/photo_instructions_fragment.xml" value="0.290625" />
         <entry key="app/src/main/res/layout/photo_upload_common_fragment.xml" value="0.321875" />
         <entry key="app/src/main/res/layout/photo_upload_fragment.xml" value="0.290625" />

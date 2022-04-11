@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.vcheck.demo.dev">
 
     <!-- For loading images from gallery -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" tools:remove="android:maxSdkVersion"/>
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
     <!-- For using the camera -->
-    <uses-permission android:name="android.permission.CAMERA" android:required="true" />
-    <uses-feature android:name="android.hardware.camera" />
+    <!-- <uses-permission android:name="android.permission.CAMERA" android:required="true" />-->
+    <!--    <uses-feature android:name="android.hardware.camera" android:required="true" />-->
+    <uses-permission android:name="android.permission.CAMERA" tools:remove="android:maxSdkVersion"/>
     <!-- For logging solution events -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".VcheckDemoApp"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -27,7 +29,6 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

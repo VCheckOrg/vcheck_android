@@ -11,6 +11,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
+
 class AppContainer(val app: VcheckDemoApp) {
 
     private var retrofit: Retrofit
@@ -18,17 +19,17 @@ class AppContainer(val app: VcheckDemoApp) {
     init {
         val logging = HttpLoggingInterceptor()
 
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY)
+        logging.setLevel(HttpLoggingInterceptor.Level.HEADERS) //when having debug issue change to BODY
         val httpClient = OkHttpClient.Builder()
 
         httpClient.addInterceptor(logging)
-        httpClient.readTimeout(30, TimeUnit.SECONDS)
-        httpClient.connectTimeout(30, TimeUnit.SECONDS)
+        httpClient.readTimeout(180, TimeUnit.SECONDS) //3min
+        httpClient.connectTimeout(180, TimeUnit.SECONDS) //3min
 
         retrofit = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .client(httpClient.build())
-            .baseUrl("https://test-verification.vycheck.com/api/") //TEST/DEV
+            .baseUrl("https://test-verification.vycheck.com/api/") //TEST(DEV)
             .build()
     }
 

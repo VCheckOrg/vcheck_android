@@ -24,12 +24,30 @@ interface ApiClient {
         @Path("country") countryCode: String
     ): Call<DocumentTypesForCountryResponse>
 
+    @Headers("multipart: true")
     @Multipart
     @POST("documents")
-    fun uploadVerificationDocuments(
+    fun uploadVerificationDocumentsForOnePage(
         @Header("Authorization") verifToken: String,
+//        @Header("Content-Type") contentType: String = "multipart/form-data",
+//        @Header( "Accept-Encoding") acceptEncoding: String = "gzip, deflate, br",
+//        @Header("Accept") accept: String = "application/json, text/plain, */*",
         @Part photo1: MultipartBody.Part,
-        @Part photo2: MultipartBody.Part?,
+        @Part country: MultipartBody.Part,
+        @Part document_type: MultipartBody.Part,
+        @Part is_handwritten: MultipartBody.Part
+    ): Call<DocumentUploadResponse>
+
+    @Headers("multipart: true")
+    @Multipart
+    @POST("documents")
+    fun uploadVerificationDocumentsForTwoPages(
+        @Header("Authorization") verifToken: String,
+//        @Header("Content-Type") contentType: String = "multipart/form-data",
+//        @Header( "Accept-Encoding") acceptEncoding: String = "gzip, deflate, br",
+//        @Header("Accept") accept: String = "application/json, text/plain, */*",
+        @Part photo1: MultipartBody.Part,
+        @Part photo2: MultipartBody.Part,
         @Part country: MultipartBody.Part,
         @Part document_type: MultipartBody.Part,
         @Part is_handwritten: MultipartBody.Part

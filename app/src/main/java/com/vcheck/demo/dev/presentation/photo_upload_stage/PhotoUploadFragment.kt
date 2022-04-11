@@ -206,16 +206,16 @@ class PhotoUploadFragment : Fragment() {
                 _binding!!.photoUploadContinueButton.setOnClickListener {
                     val action = PhotoUploadFragmentDirections
                         .actionPhotoUploadScreenToCheckPhotoFragment(
-                            CheckPhotoDataTO(_docType, _photo1Path!!, _photo2Path!!)
-                        )
+                            CheckPhotoDataTO(_docType, _photo1Path!!, _photo2Path!!))
                     findNavController().navigate(action)
 
                     _photo1Path = null
                     _photo2Path = null
                 }
-            } else {
-                Toast.makeText(activity, "Please make all photos first", Toast.LENGTH_LONG).show()
             }
+//            if (_photo1Path == null || _photo2Path == null) {
+//                Toast.makeText(activity, "Требуется сдедать оба фото документа", Toast.LENGTH_LONG).show()
+//            }
         }
     }
 
@@ -262,39 +262,4 @@ class PhotoUploadFragment : Fragment() {
             Log.d("PHOTO", "SAVING A FILE: ${this.path}")
         }
     }
-
-// may be used later for optional compressing (in case of very big photos > 10 mb)
-//    private fun bitmapToFile(bitmap: Bitmap, requestCode: Int): File? {
-//        var file: File? = null
-//        try {
-//            val cw = ContextWrapper(activity?.application as VcheckDemoApp)
-//            val directory: File = cw.getDir("imageDir", Context.MODE_PRIVATE)
-//            file = File(directory,
-//                //Environment.getDataDirectory().toString() + File.separator +
-//                        "documentPhoto${requestCode}.jpg"
-//            )
-//            file.createNewFile()
-//
-//            val bos = ByteArrayOutputStream()
-//            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos)
-//            val byteArray = bos.toByteArray()
-//
-//            val fos = FileOutputStream(file)
-//            fos.write(byteArray)
-//            fos.flush()
-//            fos.close()
-//
-//            if (requestCode == 1) {
-//                _photo1Path = file.path
-//            }
-//            if (requestCode == 2) {
-//                _photo2Path = file.path
-//            }
-//
-//            return file
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//            return null
-//        }
-//    }
 }

@@ -1,5 +1,6 @@
 package com.vcheck.demo.dev.presentation.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.widget.doOnTextChanged
@@ -31,8 +32,8 @@ class CheckInfoAdapter(private val documentInfoList: ArrayList<DocFieldWitOptPre
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(documentInfo: DocFieldWitOptPreFilledData) {
-            //TODO: check for locale: if device locale is ua/ru, set title.ru
-            // (until we have more locales)
+            //TODO: check for locale: if device locale corresponds to one of localized titles,
+            // set appropriate title (until we have more locales)
             // Else, set title.en:
             binding.title.text = documentInfo.title.ru
             binding.infoField.setText(documentInfo.autoParsedValue)
@@ -41,6 +42,8 @@ class CheckInfoAdapter(private val documentInfoList: ArrayList<DocFieldWitOptPre
             if (documentInfo.regex != null) {
                 val filter = CustomInputFilter()
                 filter.setRegex(documentInfo.regex)
+
+                //Log.d("DOC_FILED", "-------- name: ${documentInfo.name} | regex: ${documentInfo.regex}")
 
                 binding.infoField.filters += filter
             }
