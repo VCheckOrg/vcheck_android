@@ -9,21 +9,24 @@ import com.vcheck.demo.dev.domain.DocumentUploadRequestBody
 import com.vcheck.demo.dev.domain.DocumentUploadResponse
 import okhttp3.MultipartBody
 
-class CheckPhotoViewModel(val repository: MainRepository): ViewModel() {
+class CheckPhotoViewModel(val repository: MainRepository) : ViewModel() {
 
     val clientError: MutableLiveData<String?> = MutableLiveData(null)
 
     var uploadResponse: MutableLiveData<Resource<DocumentUploadResponse>> = MutableLiveData()
 
-    fun uploadVerificationDocuments(token: String, documentUploadRequestBody: DocumentUploadRequestBody,
-                                    images: List<MultipartBody.Part>) {
-        repository.uploadVerificationDocuments(token, documentUploadRequestBody, images).observeForever {
-            processCreateVerifResponse(it)
-        }
+    fun uploadVerificationDocuments(
+        token: String, documentUploadRequestBody: DocumentUploadRequestBody,
+        images: List<MultipartBody.Part>
+    ) {
+        repository.uploadVerificationDocuments(token, documentUploadRequestBody, images)
+            .observeForever {
+                processCreateVerifResponse(it)
+            }
     }
 
-    private fun processCreateVerifResponse(response: Resource<DocumentUploadResponse>){
-        when(response.status) {
+    private fun processCreateVerifResponse(response: Resource<DocumentUploadResponse>) {
+        when (response.status) {
             Resource.Status.LOADING -> {
                 //setLoading()
             }
