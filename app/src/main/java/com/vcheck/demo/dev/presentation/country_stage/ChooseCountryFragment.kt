@@ -2,7 +2,6 @@ package com.vcheck.demo.dev.presentation.country_stage
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -11,7 +10,6 @@ import com.vcheck.demo.dev.VcheckDemoApp
 import com.vcheck.demo.dev.databinding.ChooseCountryFragmentBinding
 import com.vcheck.demo.dev.di.AppContainer
 import com.vcheck.demo.dev.domain.CountriesListTO
-import com.vcheck.demo.dev.domain.CountryTO
 import com.vcheck.demo.dev.presentation.MainActivity
 import java.util.*
 

@@ -2,7 +2,6 @@ package com.vcheck.demo.dev.presentation.photo_upload_stage
 
 import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.os.FileUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -20,12 +19,9 @@ import com.vcheck.demo.dev.domain.toCategoryIdx
 import com.vcheck.demo.dev.presentation.MainActivity
 import com.vcheck.demo.dev.presentation.transferrable_objects.CheckDocInfoDataTO
 import com.vcheck.demo.dev.presentation.transferrable_objects.ZoomPhotoTO
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
-import okhttp3.MultipartBody.Part.Companion.create
 import okhttp3.MultipartBody.Part.Companion.createFormData
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 
@@ -76,6 +72,13 @@ class CheckPhotoFragment : Fragment() {
                 photoCard2.isVisible = false
             }
 
+            machinePrintCard.setOnClickListener {
+                radioBtnMachineFilledDoc.isChecked = true
+            }
+            handPrintCard.setOnClickListener {
+                radioBtnHandwrittenDoc.isChecked = true
+            }
+
             radioBtnHandwrittenDoc.setOnCheckedChangeListener { buttonView, isChecked ->
                 if (isChecked) {
                     _isDocHandwritten = true
@@ -103,7 +106,8 @@ class CheckPhotoFragment : Fragment() {
             }
 
             replacePhotoButton.setOnClickListener {
-                //TODO
+                findNavController().popBackStack()
+                findNavController().navigate(R.id.action_global_photoUploadScreen)
             }
 
             confirmPhotoButton.setOnClickListener {
@@ -125,14 +129,15 @@ class CheckPhotoFragment : Fragment() {
                     multipartList.add(filePartPhoto2)
                 }
 
-                Log.i("PHOTOS", "----------------- MULTIPART LIST: ${multipartList.map { it.body.contentLength() }} | " +
-                        "${multipartList.map { it.body.contentType() }}")
-                Log.i("PHOTOS", "----------------- MULTIPART LIST: ${multipartList.size}")
+//                Log.i("PHOTOS", "----------------- MULTIPART LIST: ${multipartList.map { it.body.contentLength() }} | " +
+//                        "${multipartList.map { it.body.contentType() }}")
+//                Log.i("PHOTOS", "----------------- MULTIPART LIST: ${multipartList.size}")
 
                 handPrintCard.isVisible = false
                 machinePrintCard.isVisible = false
                 replacePhotoButton.isVisible = false
                 uploadDocPhotosLoadingIndicator.isVisible = true
+                confirmPhotoButton.isVisible = false
                 checkPhotoTitle2.setText(R.string.photo_upload_wait_disclaimer)
 
                 _viewModel.uploadVerificationDocuments(
@@ -156,6 +161,7 @@ class CheckPhotoFragment : Fragment() {
                 handPrintCard.isVisible = true
                 machinePrintCard.isVisible = true
                 replacePhotoButton.isVisible = true
+                confirmPhotoButton.isVisible = true
                 uploadDocPhotosLoadingIndicator.isVisible = false
                 checkPhotoTitle2.setText(R.string.check_photo_title_2)
                 if (it != null) Toast.makeText(activity, it, Toast.LENGTH_LONG).show()

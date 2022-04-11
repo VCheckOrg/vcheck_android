@@ -206,16 +206,16 @@ class PhotoUploadFragment : Fragment() {
                 _binding!!.photoUploadContinueButton.setOnClickListener {
                     val action = PhotoUploadFragmentDirections
                         .actionPhotoUploadScreenToCheckPhotoFragment(
-                            CheckPhotoDataTO(_docType, _photo1Path!!, _photo2Path!!)
-                        )
+                            CheckPhotoDataTO(_docType, _photo1Path!!, _photo2Path!!))
                     findNavController().navigate(action)
 
                     _photo1Path = null
                     _photo2Path = null
                 }
-            } else {
-                Toast.makeText(activity, "Please make all photos first", Toast.LENGTH_LONG).show()
             }
+//            if (_photo1Path == null || _photo2Path == null) {
+//                Toast.makeText(activity, "Требуется сдедать оба фото документа", Toast.LENGTH_LONG).show()
+//            }
         }
     }
 

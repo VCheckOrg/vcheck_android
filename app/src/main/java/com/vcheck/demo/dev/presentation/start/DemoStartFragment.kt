@@ -1,5 +1,6 @@
 package com.vcheck.demo.dev.presentation.start
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.vcheck.demo.dev.VcheckDemoApp
@@ -19,6 +21,17 @@ import com.vcheck.demo.dev.presentation.MainActivity
 import java.util.*
 
 class DemoStartFragment : Fragment() {
+
+    private val requestPermissionsLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            if (permissions.all { it.value }) {
+                //Stub; all is ok
+            } else Toast.makeText(
+                (activity as MainActivity),
+                "Для обработки фото документов и проверки лица на живость требуется предоставить запрошенные разрешения",
+                Toast.LENGTH_LONG
+            ).show()
+        }
 
     private var _binding: FragmentDemoStartBinding? = null
 
@@ -41,6 +54,7 @@ class DemoStartFragment : Fragment() {
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         _binding = FragmentDemoStartBinding.bind(view)
 
         _binding!!.startCallChainLoadingIndicator.isVisible = false
@@ -106,6 +120,13 @@ class DemoStartFragment : Fragment() {
         _binding!!.btnLaunchMediaPipeDemo.setOnClickListener {
             findNavController().navigate(R.id.action_demoStartFragment_to_livenessFragment2)
         }
+
+        requestPermissionsLauncher.launch(
+            arrayOf(
+                Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
+        )
     }
 
 }

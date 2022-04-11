@@ -63,7 +63,7 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
                 dataList = it.data.data.type.fields.map { docField ->
                     convertDocFieldToOptParsedData(docField, it.data.data.parsedData)
                 } as ArrayList<DocFieldWitOptPreFilledData>
-                //adapter.notifyDataSetChanged() //!
+                //adapter.notifyDataSetChanged() //remove
                 val updatedAdapter = CheckInfoAdapter(ArrayList(dataList),
                     this@CheckDocInfoFragment)
                 binding.docInfoList.adapter = updatedAdapter

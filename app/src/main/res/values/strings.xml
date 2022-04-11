@@ -65,13 +65,11 @@
     <string name="hand_print_text">Рукописный текст</string>
     <string name="replace_photo_button">Заменить фото</string>
     <string name="confirm_photo_button">Подтвердить</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="start_demo_flow">Start Demo Flow</string>
     <string name="country_name">Country</string>
     <string name="docMethodInnerPassport">Внутренний гражданский паспорт</string>
     <string name="choose_doc_method_title">Выберите тип документа</string>
-    <string name="choose_doc_method_subtitle">Не следует, однако забывать, что консультация с широким активом обеспечивает широкому кругу (специалистов) участие в формировании систем массового участия.</string>
+    <string name="choose_doc_method_subtitle">Для последующей обработки и валидации укажите, какому из типов ниже соответствует ваш документ.</string>
     <string name="docMethodForeignPassport">Загранпаспорт</string>
     <string name="docMethodIdCard">Биометрический паспорт (ID-карта)</string>
     <string name="check_info_confirm_button">Все верно! Продолжить</string>
