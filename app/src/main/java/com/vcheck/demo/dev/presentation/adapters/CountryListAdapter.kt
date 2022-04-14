@@ -19,6 +19,7 @@ import kotlin.collections.ArrayList
 class CountryListAdapter(
     private val countryList: ArrayList<CountryTO>,
     private val onCountryItemClick: OnCountryItemClick,
+    private val searchCountryCallback: SearchCountryCallback
 ) :
     RecyclerView.Adapter<CountryListAdapter.ViewHolder>(), Filterable {
 
@@ -83,7 +84,12 @@ class CountryListAdapter(
             @SuppressLint("NotifyDataSetChanged")
             override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
                 mainCountryList.clear()
-                mainCountryList.addAll(results?.values as ArrayList<CountryTO>)
+                val resultList = results?.values as ArrayList<CountryTO>
+                if (resultList.isNotEmpty()) {
+                    mainCountryList.addAll(resultList)
+                } else {
+                    searchCountryCallback.onEmptySearchResult()
+                }
                 notifyDataSetChanged()
             }
         }

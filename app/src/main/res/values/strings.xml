@@ -83,5 +83,6 @@
     <string name="photo_upload_wait_disclaimer">Пожалуйста, подождите. Идет загрузка и обработка фото вашего документа. Это может занять от нескольких секунд до минуты.</string>
     <string name="make_document_photo_title">Сфотографируйте документ</string>
     <string name="document_photo_initial_description">Убедитесь, что каждое сделанное фото читабельно (видны все 4 угла документа, пальцы не закрывают данные)</string>
+    <string name="no_data_placeholder">Нет данных</string>
 
 </resources>

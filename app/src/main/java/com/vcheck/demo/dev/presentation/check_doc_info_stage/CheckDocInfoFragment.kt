@@ -79,9 +79,14 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
         viewModel.getDocumentInfo(viewModel.getVerifToken(activity as MainActivity), args.checkDocInfoDataTO.docId)
 
         binding.checkInfoConfirmButton.setOnClickListener {
+
             viewModel.updateAndConfirmDocument(viewModel.getVerifToken(activity as MainActivity),
                 args.checkDocInfoDataTO.docId, composeConfirmedDocFieldsData())
         }
+    }
+
+    fun checkIfAnyFieldEmpty() {
+        //TODO
     }
 
     override fun onFieldInfoEdited(fieldName: String, value: String) {

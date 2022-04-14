@@ -219,8 +219,8 @@ class PhotoUploadFragment : Fragment() {
         }
     }
 
-    @SuppressLint("QueryPermissionsNeeded")
     private fun dispatchTakePictureIntent(photoIdx: Int) {
+        Log.d("PHOTO", "------------ dispatchTakePictureIntent(photoIdx: $photoIdx)")
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
             // Ensure that there's a camera activity to handle the intent
             //startActivity(takePictureIntent)

@@ -35,20 +35,25 @@ class CheckInfoAdapter(private val documentInfoList: ArrayList<DocFieldWitOptPre
             //TODO: check for locale: if device locale corresponds to one of localized titles,
             // set appropriate title (until we have more locales)
             // Else, set title.en:
-            binding.title.text = documentInfo.title.ru
+            val title = documentInfo.title.ru
+            binding.title.text = title
             binding.infoField.setText(documentInfo.autoParsedValue)
 
             //TODO test!
-            if (documentInfo.regex != null) {
-                val filter = CustomInputFilter()
-                filter.setRegex(documentInfo.regex)
-
-                //Log.d("DOC_FILED", "-------- name: ${documentInfo.name} | regex: ${documentInfo.regex}")
-
-                binding.infoField.filters += filter
-            }
+//            if (documentInfo.regex != null) {
+//                val filter = CustomInputFilter()
+//                filter.setRegex(documentInfo.regex)
+//
+//                //Log.d("DOC_FILED", "-------- name: ${documentInfo.name} | regex: ${documentInfo.regex}")
+//
+//                binding.infoField.filters += filter
+//            }
 
             binding.infoField.doOnTextChanged { text, start, before, count ->
+                if (text != null && text.isNotEmpty() && documentInfo.regex != null
+                    && !text.matches(Regex(documentInfo.regex))) {
+                    binding.infoField.error = "Формат поля не соответствует указанному документу"
+                }
                 docInfoEditCallback.onFieldInfoEdited(documentInfo.name, text.toString())
             }
         }
