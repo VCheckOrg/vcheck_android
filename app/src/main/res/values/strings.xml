@@ -11,7 +11,7 @@
     <string name="wrong_move_title">Wrong movement</string>
     <string name="wrong_move_description">The motion that was requested was not executed correctly. Try to do exactly those movements that are requested. Movements should be fluid and timely.</string>
     <string name="wrong_move_repeat_button">Try again</string>
-    <string name="loading">Loading...</string>
+    <string name="loading">Loading…</string>
     <string name="search">Search</string>
     <string name="choose_country_title">Select the country</string>
     <string name="choose_country_description">Select the country of registration of your document, which should be uploaded in the next step.</string>
@@ -63,7 +63,7 @@
     <string name="machine_print_text">Machine print</string>
     <string name="hand_print_text">Handwritten text</string>
     <string name="check_photo_title">Check your photo</string>
-    <string name="fail_verification_support_button">Contact Support...</string>
+    <string name="fail_verification_support_button">Contact Support…</string>
     <string name="fail_verification_title">Verification failed</string>
     <string name="frame_interference_button">Try again</string>
     <string name="check_photo_title_2">How is the data in the document filled in?</string>
@@ -103,12 +103,11 @@
     <string name="liveness_start_button">Start</string>
     <string name="choose_method_title">Choose a verification method</string>
     <string name="choose_method_description">On the other hand, the framework and place of personnel training allows you to perform important tasks in developing directions for progressive development.</string>
-    <string name="verif_method_title_1">VCHECK</string>
-    <string name="verif_method_title_2">Bank ID</string>
-    <string name="verif_method_title_3">Дiя</string>
+    <string name="verif_method_title_1" translatable="false">VCHECK</string>
+    <string name="verif_method_title_2" translatable="false">Bank ID</string>
+    <string name="verif_method_title_3" translatable="false">Дiя</string>
     <string name="doc_field_title">Title</string>
     <string name="verif_method_subtitle_1">Verification with document upload</string>
     <string name="verif_method_subtitle_2">Verification through Ukrainian banks</string>
     <string name="verif_method_subtitle_3">Verification through the ID.GOV.UA platform</string>
-
 </resources>

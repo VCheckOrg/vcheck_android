@@ -14,7 +14,7 @@
     <string name="make_photo_button">Зробити фото</string>
     <string name="photo_upload_button">Завантажити фото</string>
     <string name="success_title">Верифікація успішна</string>
-    <string name="loading">Завантаження...</string>
+    <string name="loading">Завантаження…</string>
     <string name="choose_country_description">Виберіть країну, якій відповідає ваш документ.</string>
     <string name="take_photo_title">Зробити фото</string>
     <string name="wrong_move_repeat_button">Спробувати знову</string>
@@ -96,6 +96,7 @@
     <string name="success_description">Таким чином, постійне інформаційно-пропагандистське забезпечення нашої діяльності відіграє важливу роль у формуванні суттєвих фінансових та адміністративних умов.</string>
     <string name="choose_method_title">Виберіть метод верифікації</string>
     <string name="choose_method_description">З іншого боку рамки та місце навчання кадрів дозволяє виконувати важливі завдання щодо розробки напрямів прогресивного розвитку.</string>
+    <string name="doc_field_title">Назва поля</string>
     <string name="verif_method_subtitle_1">Верифікація із підвантаженням документів</string>
     <string name="verif_method_subtitle_2">Верифікація через українські банки</string>
     <string name="verif_method_subtitle_3">Верифікація через платформу ID.GOV.UA</string>

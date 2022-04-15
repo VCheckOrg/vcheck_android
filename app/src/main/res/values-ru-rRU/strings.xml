@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">VCheckAndroidSDKDemo</string>
     <string name="wrong_move_title">Неверное движение</string>
-    <string name="wrong_move_description">Движение, которое запрашивалось не было выполнено корректно. Старайтесь делать именно те движения, которые запрашиваются. Движения должны быть плавными и своевременными.</string>
+    <string name="wrong_move_description">Движение, которое запрашивалось, не было выполнено корректно. Старайтесь делать именно те движения, которые запрашиваются. Движения должны быть плавными и своевременными.</string>
     <string name="wrong_move_correct_text">Все было пройдено корректно, отправить на проверку</string>
     <string name="wrong_move_repeat_button">Попробовать снова</string>
     <string name="success_button">Отлично</string>
@@ -81,7 +81,7 @@
     <string name="choose_country_title">Выберите страну</string>
     <string name="choose_country_description">Выберите страну, которой соответствует ваш документ:</string>
     <string name="search">Поиск</string>
-    <string name="loading">Загрузка...</string>
+    <string name="loading">Загрузка…</string>
     <string name="choose_country_card_title">Страна</string>
     <string name="take_photo_title">Сделать фото</string>
     <string name="country_name">Страна</string>
@@ -96,6 +96,7 @@
     <string name="liveness_start_button">Все понятно. Начать проверку</string>
     <string name="choose_method_title">Выберите метод верфикации</string>
     <string name="choose_method_description">С другой стороны рамки и место обучения кадров позволяет выполнять важные задания по разработке направлений прогрессивного развития.</string>
+    <string name="doc_field_title">Название поля</string>
     <string name="verif_method_subtitle_1">Верификация с подгрузкой документов</string>
     <string name="verif_method_subtitle_2">Верификация через украинские банки</string>
     <string name="verif_method_subtitle_3">Верификация через платформу ID.GOV.UA</string>

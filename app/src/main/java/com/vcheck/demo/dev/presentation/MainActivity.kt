@@ -1,6 +1,5 @@
 package com.vcheck.demo.dev.presentation
 
-import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.MotionEvent
@@ -39,7 +38,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Vi
         )
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         langSpinner.adapter = adapter;
-        langSpinner.onItemSelectedListener = this;
+        langSpinner.onItemSelectedListener = this
         langSpinner.setOnTouchListener(this)
 
         when (code) {
