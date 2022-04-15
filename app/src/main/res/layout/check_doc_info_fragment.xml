@@ -42,12 +42,12 @@
                     tools:ignore="ContentDescription" />
 
                 <TextView
-                    android:id="@+id/check_photo_title"
+                    android:id="@+id/check_filled_data_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="24dp"
-                    android:text="Сверка заполнения данных"
+                    android:text="@string/check_filled_data_title"
                     android:textColor="@color/white"
                     android:textSize="18sp"
                     android:textStyle="bold"
@@ -55,19 +55,19 @@
                     app:layout_constraintTop_toBottomOf="@id/back_arrow" />
 
                 <TextView
-                    android:id="@+id/description_text"
+                    android:id="@+id/check_filled_data_description"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
-                    android:text="Проверьте, все ли данные по документу были распознаны корректно?"
+                    android:text="@string/check_filled_data_description"
                     android:textColor="#EAEAEA"
                     android:textSize="14sp"
                     android:textStyle="normal"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/check_photo_title" />
+                    app:layout_constraintTop_toBottomOf="@+id/check_filled_data_title" />
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/photo_card_1"
@@ -81,7 +81,7 @@
                     app:contentPadding="1dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/description_text">
+                    app:layout_constraintTop_toBottomOf="@+id/check_filled_data_description">
 
                     <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"

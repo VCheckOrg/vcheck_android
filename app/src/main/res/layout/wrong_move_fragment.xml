@@ -84,6 +84,8 @@
                     android:layout_marginBottom="20dp"
                     android:background="@drawable/shape_for_blue_button"
                     android:text="@string/wrong_move_repeat_button"
+                    android:textAllCaps="false"
+                    android:textSize="16sp"
                     app:layout_constraintBottom_toTopOf="@+id/wrong_move_correct_text"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

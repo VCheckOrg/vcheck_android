@@ -36,4 +36,12 @@ class LocalDatasource() {
     fun getSelectedDocTypeWithData(): DocTypeData {
         return _selectedDocTypeWithData
     }
+
+    fun setLocale(ctx: Context, locale: String) {
+        getSharedPreferences(ctx).edit().putString("locale", locale).apply()
+    }
+
+    fun getLocale(ctx: Context): String {
+        return getSharedPreferences(ctx).getString("locale", "uk")!!
+    }
 }

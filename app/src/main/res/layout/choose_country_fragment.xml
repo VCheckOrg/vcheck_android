@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="24dp"
-                android:text="Выберите страну"
+                android:text="@string/choose_country_title"
                 android:textColor="@color/white"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -45,7 +45,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:text="Выберите страну, которой соответствует ваш документ:"
+                android:text="@string/choose_country_description"
                 android:textColor="#EAEAEA"
                 android:textSize="14sp"
                 android:textStyle="normal"
@@ -54,12 +54,12 @@
                 app:layout_constraintTop_toBottomOf="@+id/choose_country_title" />
 
             <TextView
-                android:id="@+id/country_name"
+                android:id="@+id/choose_country_card_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="28dp"
-                android:text="Страна"
+                android:text="@string/choose_country_card_title"
                 android:textColor="@color/white"
                 android:textSize="12sp"
                 android:textStyle="bold"
@@ -77,7 +77,7 @@
                 app:cardCornerRadius="12dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/country_name">
+                app:layout_constraintTop_toBottomOf="@+id/choose_country_card_title">
 
                 <TextView
                     android:id="@+id/flag_emoji"
@@ -114,8 +114,8 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="24dp"
-                android:text="@string/proceed"
                 android:background="@drawable/shape_for_blue_button"
+                android:text="@string/proceed"
                 android:textAllCaps="false"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"

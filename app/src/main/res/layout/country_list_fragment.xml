@@ -33,7 +33,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/country_list_back_arrow"
-        app:queryHint="Поиск" />
+        app:queryHint="@string/search" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/countries_list"

@@ -42,12 +42,12 @@
                     tools:ignore="ContentDescription" />
 
                 <TextView
-                    android:id="@+id/check_face_text"
+                    android:id="@+id/face_check_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="17dp"
                     android:layout_marginTop="25dp"
-                    android:text="Проверка лица"
+                    android:text="@string/face_check_title"
                     android:textColor="@color/white"
                     android:textSize="18sp"
                     android:textStyle="bold"
@@ -55,19 +55,19 @@
                     app:layout_constraintTop_toBottomOf="@+id/back_arrow" />
 
                 <TextView
-                    android:id="@+id/description_text"
+                    android:id="@+id/face_check_description"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="17dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="17dp"
-                    android:text="Сначала разместите лицо по центру кадра, затем двигайте головой в заданом направлении, как на примере ниже, чтобы показать свое лицо со всех углов."
+                    android:text="@string/face_check_description"
                     android:textColor="@color/white"
                     android:textSize="14sp"
                     android:textStyle="normal"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/check_face_text" />
+                    app:layout_constraintTop_toBottomOf="@+id/face_check_title" />
 
                 <ImageView
                     android:id="@+id/face_example"
@@ -78,7 +78,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.45"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/description_text"
+                    app:layout_constraintTop_toBottomOf="@+id/face_check_description"
                     tools:ignore="ContentDescription" />
 
                 <ImageView
@@ -98,7 +98,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
                     android:layout_marginEnd="17dp"
-                    android:text="Выполняйте только запрашиваемые движения"
+                    android:text="@string/requested_movements_text"
                     android:textColor="@color/white"
                     android:textSize="15sp"
                     android:textStyle="bold"
@@ -124,7 +124,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
                     android:layout_marginEnd="17dp"
-                    android:text="движения должны быть четкими и плавными"
+                    android:text="@string/smooth_movements_text"
                     android:textColor="@color/white"
                     android:textSize="15sp"
                     android:textStyle="bold"
@@ -150,7 +150,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/const12"
                     android:layout_marginEnd="@dimen/const17"
-                    android:text="в кадре не должно быть помех"
+                    android:text="@string/no_interference_text"
                     android:textColor="@color/white"
                     android:textSize="15sp"
                     android:textStyle="bold"
@@ -177,7 +177,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
                     android:layout_marginEnd="17dp"
-                    android:text="найдите место с хорошим освещением (светло, но без ярких засветов)"
+                    android:text="@string/good_light_text"
                     android:textColor="@color/white"
                     android:textSize="15sp"
                     android:textStyle="bold"
@@ -204,7 +204,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
                     android:layout_marginEnd="17dp"
-                    android:text="зафиксированная камера (старайтесь не двигать камерой)"
+                    android:text="@string/fixed_camera_text"
                     android:textColor="@color/white"
                     android:textSize="15sp"
                     android:textStyle="bold"
@@ -213,18 +213,20 @@
                     app:layout_constraintStart_toEndOf="@+id/fixed_camera_icon"
                     app:layout_constraintTop_toTopOf="@+id/fixed_camera_icon" />
 
-                <ImageView
-                    android:id="@+id/check_button"
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/liveness_start_button"
                     android:layout_width="264dp"
                     android:layout_height="56dp"
-                    android:layout_marginStart="17dp"
-                    android:layout_marginEnd="17dp"
-                    android:layout_marginBottom="60dp"
-                    android:src="@drawable/check_button"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="24dp"
+                    android:background="@drawable/shape_for_blue_button"
+                    android:text="@string/liveness_start_button"
+                    android:textAllCaps="false"
+                    android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    tools:ignore="ContentDescription" />
+                    app:layout_constraintStart_toStartOf="parent"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

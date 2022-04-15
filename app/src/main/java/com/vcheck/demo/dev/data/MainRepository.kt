@@ -104,4 +104,12 @@ class MainRepository(
     fun getSelectedDocTypeWithData(): DocTypeData {
         return localDatasource.getSelectedDocTypeWithData()
     }
+
+    fun setLocale(ctx: Context, locale: String) {
+        localDatasource.setLocale(ctx, locale)
+    }
+
+    fun getLocale(ctx: Context): String {
+        return localDatasource.getLocale(ctx)
+    }
 }

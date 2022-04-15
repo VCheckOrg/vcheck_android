@@ -35,7 +35,7 @@ class CheckInfoAdapter(private val documentInfoList: ArrayList<DocFieldWitOptPre
             //TODO: check for locale: if device locale corresponds to one of localized titles,
             // set appropriate title (until we have more locales)
             // Else, set title.en:
-            binding.title.text = documentInfo.title.ru
+            binding.docFieldTitle.text = documentInfo.title.ru
             binding.infoField.setText(documentInfo.autoParsedValue)
 
             //TODO test!
