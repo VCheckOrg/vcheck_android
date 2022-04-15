@@ -17,19 +17,23 @@ class RemoteDatasource(private val apiClient: ApiClient) {
     }
 
     fun initVerification(verifToken: String): MutableLiveData<Resource<VerificationInitResponse>> {
-        return NetworkCall<VerificationInitResponse>().makeCall(apiClient.initVerification(
-            verifToken
-        ))
+        return NetworkCall<VerificationInitResponse>().makeCall(
+            apiClient.initVerification(
+                verifToken
+            )
+        )
     }
 
     fun getCountries(verifToken: String): MutableLiveData<Resource<CountriesResponse>> {
-        return NetworkCall<CountriesResponse>().makeCall(apiClient.getCountries(
-            verifToken
-        ))
+        return NetworkCall<CountriesResponse>().makeCall(
+            apiClient.getCountries(
+                verifToken
+            )
+        )
     }
 
     fun getCountryAvailableDocTypeInfo(verifToken: String, countryCode: String)
-        : MutableLiveData<Resource<DocumentTypesForCountryResponse>> {
+            : MutableLiveData<Resource<DocumentTypesForCountryResponse>> {
         return NetworkCall<DocumentTypesForCountryResponse>().makeCall(
             apiClient.getCountryAvailableDocTypeInfo(verifToken, countryCode)
         )
@@ -67,16 +71,19 @@ class RemoteDatasource(private val apiClient: ApiClient) {
     }
 
     fun getDocumentInfo(verifToken: String, docId: Int)
-        : MutableLiveData<Resource<PreProcessedDocumentResponse>> {
+            : MutableLiveData<Resource<PreProcessedDocumentResponse>> {
         return NetworkCall<PreProcessedDocumentResponse>().makeCall(
             apiClient.getDocumentInfo(verifToken, docId)
         )
     }
 
-    fun updateAndConfirmDocInfo(verifToken: String,
-                                docId: Int,
-                                docData: ParsedDocFieldsData): MutableLiveData<Resource<Response<Void>>> {
+    fun updateAndConfirmDocInfo(
+        verifToken: String,
+        docId: Int,
+        docData: ParsedDocFieldsData
+    ): MutableLiveData<Resource<Response<Void>>> {
         return NetworkCall<Response<Void>>().makeCall(
-            apiClient.updateAndConfirmDocInfo(verifToken, docId, docData))
+            apiClient.updateAndConfirmDocInfo(verifToken, docId, docData)
+        )
     }
 }

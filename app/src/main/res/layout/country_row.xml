@@ -13,7 +13,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
-        android:text=""
+        android:text="Flag"
         android:textSize="36sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

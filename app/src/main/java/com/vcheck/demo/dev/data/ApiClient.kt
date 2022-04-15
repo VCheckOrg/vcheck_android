@@ -13,15 +13,16 @@ interface ApiClient {
             : Call<CreateVerificationAttemptResponse>
 
     @PUT("verifications/init")
-    fun initVerification(@Header("Authorization") verifToken: String) : Call<VerificationInitResponse>
+    fun initVerification(@Header("Authorization") verifToken: String): Call<VerificationInitResponse>
 
     @GET("countries")
-    fun getCountries(@Header("Authorization") verifToken: String) : Call<CountriesResponse>
+    fun getCountries(@Header("Authorization") verifToken: String): Call<CountriesResponse>
 
     @GET("countries/{country}/documents")
-    fun getCountryAvailableDocTypeInfo(@Header("Authorization") verifToken: String,
-                                       @Path("country") countryCode: String)
-                                        : Call<DocumentTypesForCountryResponse>
+    fun getCountryAvailableDocTypeInfo(
+        @Header("Authorization") verifToken: String,
+        @Path("country") countryCode: String
+    ): Call<DocumentTypesForCountryResponse>
 
     @Headers("multipart: true")
     @Multipart
@@ -53,11 +54,15 @@ interface ApiClient {
     ): Call<DocumentUploadResponse>
 
     @GET("documents/{document}")
-    fun getDocumentInfo(@Header("Authorization") verifToken: String,
-                        @Path("document") docId: Int) : Call<PreProcessedDocumentResponse>
+    fun getDocumentInfo(
+        @Header("Authorization") verifToken: String,
+        @Path("document") docId: Int
+    ): Call<PreProcessedDocumentResponse>
 
     @PUT("documents/{document}")
-    fun updateAndConfirmDocInfo(@Header("Authorization") verifToken: String,
-                                @Path("document") docId: Int,
-                                @Body parsedDocFieldsData: ParsedDocFieldsData): Call<Response<Void>>
+    fun updateAndConfirmDocInfo(
+        @Header("Authorization") verifToken: String,
+        @Path("document") docId: Int,
+        @Body parsedDocFieldsData: ParsedDocFieldsData
+    ): Call<Response<Void>>
 }

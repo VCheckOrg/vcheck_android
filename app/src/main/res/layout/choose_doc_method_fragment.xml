@@ -51,13 +51,13 @@
                 app:layout_constraintTop_toBottomOf="@+id/back_arrow" />
 
             <TextView
-                android:id="@+id/choose_doc_method_subtitle"
+                android:id="@+id/choose_doc_method_description"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:text="@string/choose_doc_method_subtitle"
+                android:text="@string/choose_doc_method_description"
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 android:textStyle="normal"
@@ -77,7 +77,7 @@
                 app:cardBackgroundColor="#3C3C3C"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/choose_doc_method_subtitle">
+                app:layout_constraintTop_toBottomOf="@+id/choose_doc_method_description">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"

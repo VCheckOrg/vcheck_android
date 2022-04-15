@@ -84,6 +84,8 @@
                     android:layout_marginBottom="20dp"
                     android:background="@drawable/shape_for_blue_button"
                     android:text="@string/os_not_support_copy_button"
+                    android:textAllCaps="false"
+                    android:textSize="16sp"
                     app:layout_constraintBottom_toTopOf="@+id/os_not_support_back_button"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
@@ -97,6 +99,8 @@
                     android:layout_marginBottom="24dp"
                     android:background="@drawable/shape_for_outlined_button"
                     android:text="@string/os_not_support_back_button"
+                    android:textAllCaps="false"
+                    android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />

@@ -224,6 +224,9 @@
         <argument
             android:name="zoomPhotoTO"
             app:argType="com.vcheck.demo.dev.presentation.transferrable_objects.ZoomPhotoTO" />
-    </fragment><action android:id="@+id/action_global_photoUploadScreen" app:destination="@id/photoUploadScreen"/>
+    </fragment>
+    <action
+        android:id="@+id/action_global_photoUploadScreen"
+        app:destination="@id/photoUploadScreen" />
 
 </navigation>

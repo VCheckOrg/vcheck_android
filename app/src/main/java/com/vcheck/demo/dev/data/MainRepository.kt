@@ -48,7 +48,11 @@ class MainRepository(
         images: List<MultipartBody.Part>
     ): MutableLiveData<Resource<DocumentUploadResponse>> {
         return if (verifToken.isNotEmpty()) {
-            remoteDatasource.uploadVerificationDocuments(verifToken, documentUploadRequestBody, images)
+            remoteDatasource.uploadVerificationDocuments(
+                verifToken,
+                documentUploadRequestBody,
+                images
+            )
         } else MutableLiveData(Resource.error(ApiError("No token available!")))
     }
 
@@ -63,9 +67,11 @@ class MainRepository(
         }
     }
 
-    fun updateAndConfirmDocInfo(token: String,
-                                docId: Int,
-                                docData: ParsedDocFieldsData) : MutableLiveData<Resource<Response<Void>>> {
+    fun updateAndConfirmDocInfo(
+        token: String,
+        docId: Int,
+        docData: ParsedDocFieldsData
+    ): MutableLiveData<Resource<Response<Void>>> {
         return if (token.isNotEmpty()) {
             remoteDatasource.updateAndConfirmDocInfo(token, docId, docData)
         } else {
@@ -97,5 +103,13 @@ class MainRepository(
 
     fun getSelectedDocTypeWithData(): DocTypeData {
         return localDatasource.getSelectedDocTypeWithData()
+    }
+
+    fun setLocale(ctx: Context, locale: String) {
+        localDatasource.setLocale(ctx, locale)
+    }
+
+    fun getLocale(ctx: Context): String {
+        return localDatasource.getLocale(ctx)
     }
 }
