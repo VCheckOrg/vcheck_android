@@ -15,9 +15,9 @@ import androidx.navigation.fragment.findNavController
 import com.vcheck.demo.dev.VcheckDemoApp
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.databinding.FragmentDemoStartBinding
-import com.vcheck.demo.dev.domain.CountriesListTO
 import com.vcheck.demo.dev.domain.CountryTO
 import com.vcheck.demo.dev.presentation.MainActivity
+import com.vcheck.demo.dev.presentation.transferrable_objects.CountriesListTO
 import java.util.*
 
 class DemoStartFragment : Fragment() {
@@ -28,7 +28,7 @@ class DemoStartFragment : Fragment() {
                 //Stub; all is ok
             } else Toast.makeText(
                 (activity as MainActivity),
-                "Для обработки фото документов и проверки лица на живость требуется предоставить запрошенные разрешения",
+                R.string.permissions_denied,
                 Toast.LENGTH_LONG
             ).show()
         }
@@ -65,12 +65,20 @@ class DemoStartFragment : Fragment() {
                     "CREATED VERIFICATION REQUEST: application_id : ${it.data.data.applicationId} |" +
                             "redirect_url : ${it.data.data.redirectUrl}" //+create_time
 
-                _viewModel.repository.storeVerifToken(
-                    (activity as MainActivity),
-                    it.data.data.redirectUrl.substringAfterLast("/", "").substringBefore("?id")
-                )
-                _viewModel.setVerifToken(_viewModel.repository.getVerifToken((activity as MainActivity)))
-                _viewModel.initVerification()
+                if (it.data.data.redirectUrl != null) {
+                    _viewModel.repository.storeVerifToken((activity as MainActivity),
+                        it.data.data.redirectUrl!!.substringAfterLast("/", "")
+                            .substringBefore("?id"))
+                    _viewModel.setVerifToken(_viewModel.repository.getVerifToken((activity as MainActivity)))
+
+                    _viewModel.initVerification()
+                } else {
+                    Toast.makeText(
+                        (activity as MainActivity),
+                        "Error: Cannot retrieve verification token",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             }
         }
 
@@ -78,7 +86,15 @@ class DemoStartFragment : Fragment() {
             if (it.data?.data != null) {
                 _binding!!.tvInitVerificationResultInfo.text =
                     "INITIALIZED VERIFICATION: document : ${it.data.data.document} |" +
-                            "return_url : ${it.data.data.returnUrl} | stage: ${it.data.data.stage}" //+locale
+                            "return_url : ${it.data.data.returnUrl} | stage: ${it.data.data.stage}" +
+                            "| locale: ${it.data.data.locale}"
+
+                if (it.data.data.locale != null) {
+                    _viewModel.repository.setLocale((activity as MainActivity),
+                        if (it.data.data.locale == "ua") "uk" else it.data.data.locale)
+                    //check for possible alt. ua locale option
+                }
+
                 _viewModel.getCountriesList()
             }
         }
@@ -96,8 +112,7 @@ class DemoStartFragment : Fragment() {
                     val secondLetter: Int =
                         Character.codePointAt(locale.country, 1) - 0x41 + 0x1F1E6
                     val flag = String(Character.toChars(firstLetter)) + String(
-                        Character.toChars(secondLetter)
-                    )
+                        Character.toChars(secondLetter))
                     CountryTO(locale.displayCountry, country.code, flag)
                 }.toList() as ArrayList<CountryTO>
 

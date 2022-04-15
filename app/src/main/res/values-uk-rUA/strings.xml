@@ -101,4 +101,5 @@
     <string name="verif_method_subtitle_2">Верифікація через українські банки</string>
     <string name="verif_method_subtitle_3">Верифікація через платформу ID.GOV.UA</string>
     <string name="no_data_placeholder">Немає даних</string>
+    <string name="permissions_denied">Для обробки фото документів та перевірки обличчя на живість потрібно прийняти запрошені дозволи</string>
 </resources>

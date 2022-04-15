@@ -29,7 +29,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.VCheckAndroidSDKDemo"
-        android:requestLegacyExternalStorage="true">
+        android:requestLegacyExternalStorage="true"
+        android:configChanges="locale">
         <activity
             android:name=".presentation.MainActivity"
             android:exported="true">

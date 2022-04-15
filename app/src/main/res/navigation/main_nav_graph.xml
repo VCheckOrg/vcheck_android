@@ -38,13 +38,13 @@
         tools:layout="@layout/choose_country_fragment">
         <argument
             android:name="countriesListTO"
-            app:argType="com.vcheck.demo.dev.domain.CountriesListTO" />
+            app:argType="com.vcheck.demo.dev.presentation.transferrable_objects.CountriesListTO" />
         <action
             android:id="@+id/action_chooseCountryFragment_to_countryListFragment"
             app:destination="@id/countryListFragment">
             <argument
                 android:name="countriesListTO"
-                app:argType="com.vcheck.demo.dev.domain.CountriesListTO" />
+                app:argType="com.vcheck.demo.dev.presentation.transferrable_objects.CountriesListTO" />
         </action>
         <action
             android:id="@+id/action_chooseCountryFragment_to_chooseDocMethodScreen"
@@ -191,7 +191,7 @@
         tools:layout="@layout/country_list_fragment">
         <argument
             android:name="countriesListTO"
-            app:argType="com.vcheck.demo.dev.domain.CountriesListTO" />
+            app:argType="com.vcheck.demo.dev.presentation.transferrable_objects.CountriesListTO" />
     </fragment>
 
     <fragment
@@ -207,7 +207,7 @@
             app:destination="@id/chooseCountryFragment">
             <argument
                 android:name="countriesListTO"
-                app:argType="com.vcheck.demo.dev.domain.CountriesListTO" />
+                app:argType="com.vcheck.demo.dev.presentation.transferrable_objects.CountriesListTO" />
         </action>
     </fragment>
 
@@ -227,6 +227,6 @@
     </fragment>
     <action
         android:id="@+id/action_global_photoUploadScreen"
-        app:destination="@id/photoUploadScreen" />
+        app:destination="@id/photoUploadScreen" /><action android:id="@+id/action_global_chooseCountryFragment" app:destination="@id/chooseCountryFragment"/>
 
 </navigation>

@@ -36,6 +36,8 @@ class CountryListFragment : Fragment(R.layout.country_list_fragment),
 
         binding = CountryListFragmentBinding.bind(view)
 
+        binding.tvNoCountriesFoundPlaceholder.isVisible = false
+
         val countryListAdapter = CountryListAdapter(countriesList,
             this@CountryListFragment, this@CountryListFragment)
 

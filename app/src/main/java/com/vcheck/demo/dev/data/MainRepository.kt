@@ -5,9 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import com.vcheck.demo.dev.domain.*
 import okhttp3.MultipartBody
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.Header
-import retrofit2.http.Path
 
 class MainRepository(
     private val remoteDatasource: RemoteDatasource,
@@ -23,23 +20,22 @@ class MainRepository(
         remoteDatasource.createVerificationRequest(CreateVerificationRequestBody())
 
     fun initVerification(verifToken: String): MutableLiveData<Resource<VerificationInitResponse>> {
-        //val token = localDatasource.getVerifToken(context)
         return if (verifToken.isNotEmpty()) {
             remoteDatasource.initVerification(verifToken)
-        } else MutableLiveData(Resource.error(ApiError("No token available!")))
+        } else MutableLiveData(Resource.error(ApiError(BaseClientErrors.NO_TOKEN_AVAILABLE)))
     }
 
     fun getCountries(verifToken: String): MutableLiveData<Resource<CountriesResponse>> {
         return if (verifToken.isNotEmpty()) {
             remoteDatasource.getCountries(verifToken)
-        } else MutableLiveData(Resource.error(ApiError("No token available!")))
+        } else MutableLiveData(Resource.error(ApiError(BaseClientErrors.NO_TOKEN_AVAILABLE)))
     }
 
     fun getCountryAvailableDocTypeInfo(verifToken: String, countryCode: String)
             : MutableLiveData<Resource<DocumentTypesForCountryResponse>> {
         return if (verifToken.isNotEmpty()) {
             return remoteDatasource.getCountryAvailableDocTypeInfo(verifToken, countryCode)
-        } else MutableLiveData(Resource.error(ApiError("No token available!")))
+        } else MutableLiveData(Resource.error(ApiError(BaseClientErrors.NO_TOKEN_AVAILABLE)))
     }
 
     fun uploadVerificationDocuments(
@@ -53,7 +49,7 @@ class MainRepository(
                 documentUploadRequestBody,
                 images
             )
-        } else MutableLiveData(Resource.error(ApiError("No token available!")))
+        } else MutableLiveData(Resource.error(ApiError(BaseClientErrors.NO_TOKEN_AVAILABLE)))
     }
 
     fun getDocumentInfo(
@@ -63,7 +59,7 @@ class MainRepository(
         return if (token.isNotEmpty()) {
             remoteDatasource.getDocumentInfo(token, docId)
         } else {
-            MutableLiveData(Resource.error(ApiError("No token available!")))
+            MutableLiveData(Resource.error(ApiError(BaseClientErrors.NO_TOKEN_AVAILABLE)))
         }
     }
 
@@ -75,7 +71,7 @@ class MainRepository(
         return if (token.isNotEmpty()) {
             remoteDatasource.updateAndConfirmDocInfo(token, docId, docData)
         } else {
-            MutableLiveData(Resource.error(ApiError("No token available!")))
+            MutableLiveData(Resource.error(ApiError(BaseClientErrors.NO_TOKEN_AVAILABLE)))
         }
     }
 
@@ -111,5 +107,13 @@ class MainRepository(
 
     fun getLocale(ctx: Context): String {
         return localDatasource.getLocale(ctx)
+    }
+
+    fun setLocaleAutoChanged(ctx: Context, value: Boolean) {
+        localDatasource.setLocaleAutoChanged(ctx, value)
+    }
+
+    fun isLocaleAutoChanged(ctx: Context): Boolean {
+        return localDatasource.isLocaleAutoChanged(ctx)
     }
 }

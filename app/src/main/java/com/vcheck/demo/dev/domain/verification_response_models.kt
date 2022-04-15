@@ -15,7 +15,7 @@ data class CreateVerificationAttemptData(
     @SerializedName("application_id")
     val applicationId: Int,
     @SerializedName("redirect_url")
-    var redirectUrl: String,
+    var redirectUrl: String?,
     @SerializedName("create_time")
     var createTime: String)
 
@@ -35,7 +35,7 @@ data class VerificationInitResponseData(
     @SerializedName("document")
     val document: Int,
     @SerializedName("locale")
-    val locale: String,
+    val locale: String?,
     @SerializedName("return_url")
     val returnUrl: String
 )

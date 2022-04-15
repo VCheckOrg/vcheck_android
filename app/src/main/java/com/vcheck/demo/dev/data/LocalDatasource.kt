@@ -4,8 +4,9 @@ import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import com.vcheck.demo.dev.domain.DocTypeData
+import java.util.*
 
-class LocalDatasource() {
+class LocalDatasource {
 
     //TODO think of optimal way of caching single object:
     private lateinit var _selectedDocTypeWithData: DocTypeData
@@ -42,6 +43,14 @@ class LocalDatasource() {
     }
 
     fun getLocale(ctx: Context): String {
-        return getSharedPreferences(ctx).getString("locale", "uk")!!
+        return getSharedPreferences(ctx).getString("locale", Locale.getDefault().language)!!
+    }
+
+    fun setLocaleAutoChanged(ctx: Context, value: Boolean) {
+        getSharedPreferences(ctx).edit().putBoolean("locale_auto_changed", value).apply()
+    }
+
+    fun isLocaleAutoChanged(ctx: Context): Boolean {
+        return getSharedPreferences(ctx).getBoolean("locale_auto_changed", false)
     }
 }

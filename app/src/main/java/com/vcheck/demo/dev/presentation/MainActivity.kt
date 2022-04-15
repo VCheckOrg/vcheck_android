@@ -2,6 +2,7 @@ package com.vcheck.demo.dev.presentation
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.*
@@ -22,9 +23,11 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Vi
 
         appContainer = (application as VcheckDemoApp).appContainer
 
-        val code = appContainer.mainRepository.getLocale(applicationContext)
-        val locale = Locale(code)
+        val languageCode = appContainer.mainRepository.getLocale(applicationContext)
+        Log.i("LOCALE", "----------- LANG CODE : $languageCode")
+        val locale = Locale(languageCode)
         Locale.setDefault(locale)
+
         val res = resources
         val config = Configuration(res.configuration)
         config.locale = locale
@@ -33,22 +36,27 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Vi
         val langSpinner = findViewById<Spinner>(R.id.lang_spinner)
 
         val adapter = ArrayAdapter.createFromResource(
-            this,
+            this@MainActivity,
             R.array.languages, android.R.layout.simple_spinner_item)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        langSpinner.adapter = adapter;
+        langSpinner.adapter = adapter
         langSpinner.onItemSelectedListener = this@MainActivity
         langSpinner.setOnTouchListener(this@MainActivity)
 
-        when (code) {
-            "uk" -> {
-                langSpinner.setSelection(0)
-            }
-            "en" -> {
-                langSpinner.setSelection(1)
-            }
-            "ru" -> {
-                langSpinner.setSelection(2)
+        langSpinner.post {
+            when (languageCode) {
+                "uk" -> {
+                    langSpinner.setSelection(0)
+                }
+                "en" -> {
+                    langSpinner.setSelection(1)
+                }
+                "ru" -> {
+                    langSpinner.setSelection(2)
+                }
+                else -> {
+                    langSpinner.setSelection(1)
+                }
             }
         }
 

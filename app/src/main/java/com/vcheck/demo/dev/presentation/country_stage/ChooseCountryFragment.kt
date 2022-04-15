@@ -9,8 +9,8 @@ import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VcheckDemoApp
 import com.vcheck.demo.dev.databinding.ChooseCountryFragmentBinding
 import com.vcheck.demo.dev.di.AppContainer
-import com.vcheck.demo.dev.domain.CountriesListTO
 import com.vcheck.demo.dev.presentation.MainActivity
+import com.vcheck.demo.dev.presentation.transferrable_objects.CountriesListTO
 import java.util.*
 
 class ChooseCountryFragment : Fragment(R.layout.choose_country_fragment) {
@@ -23,25 +23,11 @@ class ChooseCountryFragment : Fragment(R.layout.choose_country_fragment) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         appContainer = (activity?.application as VcheckDemoApp).appContainer
-    }
 
-    override fun onResume() {
-        super.onResume()
-        country = appContainer.mainRepository.getSelectedCountryCode(activity as MainActivity)
-
-        val locale = Locale("", country)
-
-        //iso codes to flag emojis:
-        //TODO move to extension function (extensions.kt)
-        val firstLetter: Int = Character.codePointAt(locale.country, 0) - 0x41 + 0x1F1E6
-        val secondLetter: Int =
-            Character.codePointAt(locale.country, 1) - 0x41 + 0x1F1E6
-        val flag = String(Character.toChars(firstLetter)) + String(
-            Character.toChars(secondLetter)
-        )
-
-        binding.countryTitle.text = locale.displayCountry
-        binding.flagEmoji.text = flag
+        if (!appContainer.mainRepository.isLocaleAutoChanged(activity as MainActivity)) {
+            appContainer.mainRepository.setLocaleAutoChanged(activity as MainActivity, true)
+            (activity as MainActivity).recreate()
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -62,6 +48,23 @@ class ChooseCountryFragment : Fragment(R.layout.choose_country_fragment) {
         binding.chooseCountryContinueButton.setOnClickListener {
             findNavController().navigate(R.id.action_chooseCountryFragment_to_chooseDocMethodScreen)
         }
+    }
 
+    override fun onResume() {
+        super.onResume()
+        country = appContainer.mainRepository.getSelectedCountryCode(activity as MainActivity)
+
+        val locale = Locale("", country)
+
+        //iso codes to flag emojis:
+        //TODO move to extension function (extensions.kt)
+        val firstLetter: Int = Character.codePointAt(locale.country, 0) - 0x41 + 0x1F1E6
+        val secondLetter: Int =
+            Character.codePointAt(locale.country, 1) - 0x41 + 0x1F1E6
+        val flag = String(Character.toChars(firstLetter)) + String(
+            Character.toChars(secondLetter))
+
+        binding.countryTitle.text = locale.displayCountry
+        binding.flagEmoji.text = flag
     }
 }
