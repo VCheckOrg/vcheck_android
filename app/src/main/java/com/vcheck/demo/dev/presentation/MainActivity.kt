@@ -34,12 +34,11 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Vi
 
         val adapter = ArrayAdapter.createFromResource(
             this,
-            R.array.languages, android.R.layout.simple_spinner_item
-        )
+            R.array.languages, android.R.layout.simple_spinner_item)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         langSpinner.adapter = adapter;
-        langSpinner.onItemSelectedListener = this
-        langSpinner.setOnTouchListener(this)
+        langSpinner.onItemSelectedListener = this@MainActivity
+        langSpinner.setOnTouchListener(this@MainActivity)
 
         when (code) {
             "uk" -> {
@@ -75,7 +74,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Vi
     override fun onNothingSelected(p0: AdapterView<*>?) {}
 
     override fun onTouch(p0: View?, p1: MotionEvent?): Boolean {
-        userSelect = true;
+        userSelect = true
         return false
     }
 }

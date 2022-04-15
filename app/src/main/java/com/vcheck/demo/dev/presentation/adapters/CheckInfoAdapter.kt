@@ -36,7 +36,7 @@ class CheckInfoAdapter(private val documentInfoList: ArrayList<DocFieldWitOptPre
             // set appropriate title (until we have more locales)
             // Else, set title.en:
             val title = documentInfo.title.ru
-            binding.title.text = title
+            binding.docFieldTitle.text = title
             binding.infoField.setText(documentInfo.autoParsedValue)
 
             //TODO test!
