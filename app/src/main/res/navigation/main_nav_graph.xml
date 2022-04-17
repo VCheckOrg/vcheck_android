@@ -169,6 +169,13 @@
                 android:name="zoomPhotoTO"
                 app:argType="com.vcheck.demo.dev.presentation.transferrable_objects.ZoomPhotoTO" />
         </action>
+        <action
+            android:id="@+id/action_checkPhotoFragment_to_docVerificationNotSuccessfulFragment"
+            app:destination="@id/docVerificationNotSuccessfulFragment">
+            <argument
+                android:name="checkDocInfoDataTO"
+                app:argType="com.vcheck.demo.dev.presentation.transferrable_objects.CheckDocInfoDataTO" />
+        </action>
     </fragment>
 
     <fragment
@@ -225,8 +232,23 @@
             android:name="zoomPhotoTO"
             app:argType="com.vcheck.demo.dev.presentation.transferrable_objects.ZoomPhotoTO" />
     </fragment>
-    <action
-        android:id="@+id/action_global_photoUploadScreen"
-        app:destination="@id/photoUploadScreen" /><action android:id="@+id/action_global_chooseCountryFragment" app:destination="@id/chooseCountryFragment"/>
+    <action android:id="@+id/action_global_errorFragment" app:destination="@id/errorFragment" />
+    <action android:id="@+id/action_global_chooseDocMethodScreen" app:destination="@id/chooseDocMethodScreen" />
+    <fragment
+        android:id="@+id/docVerificationNotSuccessfulFragment"
+        android:name="com.vcheck.demo.dev.presentation.screens.DocVerificationNotSuccessfulFragment"
+        android:label="fragment_doc_verification_not_successful"
+        tools:layout="@layout/fragment_doc_verification_not_successful" >
+        <action
+            android:id="@+id/action_docVerificationNotSuccessfulFragment_to_checkDocInfoFragment"
+            app:destination="@id/checkDocInfoFragment">
+            <argument
+                android:name="checkDocInfoDataTO"
+                app:argType="com.vcheck.demo.dev.presentation.transferrable_objects.CheckDocInfoDataTO" />
+        </action>
+        <argument
+            android:name="checkDocInfoDataTO"
+            app:argType="com.vcheck.demo.dev.presentation.transferrable_objects.CheckDocInfoDataTO" />
+    </fragment>
 
 </navigation>

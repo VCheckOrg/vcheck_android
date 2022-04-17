@@ -1,6 +1,5 @@
 package com.vcheck.demo.dev.presentation.photo_upload_stage
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
@@ -28,7 +27,6 @@ import com.vcheck.demo.dev.presentation.MainActivity
 import com.vcheck.demo.dev.presentation.transferrable_objects.CheckPhotoDataTO
 import java.io.File
 import java.io.IOException
-
 
 class PhotoUploadFragment : Fragment() {
 
@@ -61,7 +59,8 @@ class PhotoUploadFragment : Fragment() {
 
         _binding = PhotoUploadFragmentBinding.bind(view)
 
-        _docType = docCategoryIdxToType(_viewModel.repository.getSelectedDocTypeWithData().category)
+        val docTypeWithData = _viewModel.repository.getSelectedDocTypeWithData()
+        _docType = docCategoryIdxToType(docTypeWithData.category)
 
         _binding!!.apply {
 
@@ -77,13 +76,18 @@ class PhotoUploadFragment : Fragment() {
                 findNavController().popBackStack()
             }
 
-
             when (_docType) {
                 DocType.FOREIGN_PASSPORT -> {
                     methodCard1.isVisible = true
                     methodCard2.isVisible = false
                     verifMethodTitle1.text =
                         getString(R.string.photo_upload_title_foreign)
+
+                    if (docTypeWithData.country == "ua") {
+                        verifMethodIcon1.setImageResource(R.drawable.doc_ua_international_passport)
+                    } else {
+                        verifMethodIcon1.isVisible = false
+                    }
                     makePhotoButton1.setOnClickListener {
                         dispatchTakePictureIntent(1)
                     }
@@ -91,6 +95,9 @@ class PhotoUploadFragment : Fragment() {
                 DocType.INNER_PASSPORT_OR_COMMON -> {
                     methodCard1.isVisible = true
                     methodCard2.isVisible = true
+                    verifMethodIcon1.isVisible = false
+                    verifMethodIcon2.isVisible = false
+
                     verifMethodTitle1.text =
                         getString(R.string.photo_upload_title_common_forward)
                     verifMethodTitle2.text =
@@ -105,6 +112,17 @@ class PhotoUploadFragment : Fragment() {
                 DocType.ID_CARD -> {
                     methodCard1.isVisible = true
                     methodCard2.isVisible = true
+
+                    if (docTypeWithData.country == "ua") {
+                        verifMethodIcon1.isVisible = true
+                        verifMethodIcon2.isVisible = true
+                        verifMethodIcon1.setImageResource(R.drawable.doc_id_card_front)
+                        verifMethodIcon2.setImageResource(R.drawable.doc_id_card_back)
+                    } else {
+                        verifMethodIcon1.isVisible = false
+                        verifMethodIcon2.isVisible = false
+                    }
+
                     verifMethodTitle1.text =
                         getString(R.string.photo_upload_title_id_card_forward)
                     verifMethodTitle2.text =
@@ -182,7 +200,7 @@ class PhotoUploadFragment : Fragment() {
     }
 
     private fun checkPhotoCompletenessAndSetProceedClickListener() {
-        if (_docType == DocType.FOREIGN_PASSPORT) {
+        if (_docType == DocType.FOREIGN_PASSPORT || _docType == DocType.INNER_PASSPORT_OR_COMMON) {
             if (_photo1Path != null) {
                 _binding!!.photoUploadContinueButton.setBackgroundResource(R.drawable.shape_for_blue_button)
                 _binding!!.photoUploadContinueButton.setTextColor(Color.WHITE)
@@ -197,7 +215,7 @@ class PhotoUploadFragment : Fragment() {
 
                 }
             } else {
-                Toast.makeText(activity, "Please make the photo first", Toast.LENGTH_LONG).show()
+                Toast.makeText(activity, R.string.error_make_at_least_one_photo, Toast.LENGTH_LONG).show()
             }
         } else {
             if (_photo1Path != null && _photo2Path != null) {

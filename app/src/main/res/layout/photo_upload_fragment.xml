@@ -54,21 +54,20 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/back_arrow" />
 
-                <TextView
-                    android:id="@+id/make_document_photo_description"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="17dp"
-                    android:text="@string/make_document_photo_description"
-                    android:textColor="#EAEAEA"
-                    android:textSize="14sp"
-                    android:textStyle="normal"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/make_document_photo_title" />
-
+<!--                <TextView-->
+<!--                    android:id="@+id/make_document_photo_description"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginStart="16dp"-->
+<!--                    android:layout_marginTop="16dp"-->
+<!--                    android:layout_marginEnd="17dp"-->
+<!--                    android:text="@string/make_document_photo_description"-->
+<!--                    android:textColor="#EAEAEA"-->
+<!--                    android:textSize="14sp"-->
+<!--                    android:textStyle="normal"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toBottomOf="@+id/make_document_photo_title" />-->
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/method_card_1"
@@ -82,7 +81,7 @@
                     app:contentPadding="1dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/make_document_photo_description">
+                    app:layout_constraintTop_toBottomOf="@+id/make_document_photo_title">
 
                     <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
@@ -120,7 +119,6 @@
                                 android:layout_height="80dp"
                                 android:layout_marginStart="16dp"
                                 android:layout_marginTop="24dp"
-                                android:src="@drawable/passport_image"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
                                 tools:ignore="ContentDescription" />
@@ -129,80 +127,18 @@
                                 android:id="@+id/verif_method_title_1"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="12dp"
-                                android:layout_marginTop="40dp"
-                                android:layout_marginEnd="16dp"
-                                android:layout_marginBottom="162dp"
+                                android:layout_marginStart="22dp"
+                                android:layout_marginTop="60dp"
+                                android:layout_marginEnd="22dp"
+                                android:layout_marginBottom="120dp"
                                 android:text=""
                                 android:textColor="@color/white"
                                 android:textSize="14sp"
                                 android:textStyle="normal"
+                                app:layout_constraintStart_toEndOf="@id/verif_method_icon_1"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toEndOf="@+id/verif_method_icon_1"
                                 app:layout_constraintTop_toTopOf="parent" />
-
-                            <!--                            <androidx.cardview.widget.CardView-->
-                            <!--                                android:id="@+id/upload_photo_button"-->
-                            <!--                                android:layout_width="232dp"-->
-                            <!--                                android:layout_height="40dp"-->
-                            <!--                                android:layout_marginStart="16dp"-->
-                            <!--                                android:layout_marginTop="128dp"-->
-                            <!--                                android:layout_marginEnd="16dp"-->
-                            <!--                                android:layout_marginBottom="82dp"-->
-                            <!--                                app:cardBackgroundColor="#FFFFFF"-->
-                            <!--                                app:cardCornerRadius="4dp"-->
-                            <!--                                app:contentPadding="1dp"-->
-                            <!--                                app:layout_constraintBottom_toBottomOf="parent"-->
-                            <!--                                app:layout_constraintEnd_toEndOf="parent"-->
-                            <!--                                app:layout_constraintStart_toStartOf="parent"-->
-                            <!--                                app:layout_constraintTop_toTopOf="parent">-->
-
-                            <!--                                <androidx.cardview.widget.CardView-->
-                            <!--                                    android:layout_width="match_parent"-->
-                            <!--                                    android:layout_height="match_parent"-->
-                            <!--                                    app:cardBackgroundColor="#555555"-->
-                            <!--                                    app:cardCornerRadius="4dp">-->
-
-                            <!--                                    <androidx.constraintlayout.widget.ConstraintLayout-->
-                            <!--                                        android:layout_width="match_parent"-->
-                            <!--                                        android:layout_height="match_parent">-->
-
-                            <!--                                        <ImageView-->
-                            <!--                                            android:id="@+id/upload_photo_icon"-->
-                            <!--                                            android:layout_width="24dp"-->
-                            <!--                                            android:layout_height="24dp"-->
-                            <!--                                            android:layout_marginStart="50dp"-->
-                            <!--                                            android:layout_marginTop="11dp"-->
-                            <!--                                            android:layout_marginBottom="11dp"-->
-                            <!--                                            android:src="@drawable/upload_photo_icon"-->
-                            <!--                                            app:layout_constraintBottom_toBottomOf="parent"-->
-                            <!--                                            app:layout_constraintStart_toStartOf="parent"-->
-                            <!--                                            app:layout_constraintTop_toTopOf="parent"-->
-                            <!--                                            tools:ignore="ContentDescription" />-->
-
-                            <!--                                        <TextView-->
-                            <!--                                            android:id="@+id/upload_photo_title"-->
-                            <!--                                            android:layout_width="0dp"-->
-                            <!--                                            android:layout_height="wrap_content"-->
-                            <!--                                            android:layout_marginStart="13dp"-->
-                            <!--                                            android:layout_marginTop="13dp"-->
-                            <!--                                            android:layout_marginEnd="16dp"-->
-                            <!--                                            android:layout_marginBottom="13dp"-->
-                            <!--                                            android:text="Загрузить фото"-->
-                            <!--                                            android:textColor="@color/white"-->
-                            <!--                                            android:textSize="14sp"-->
-                            <!--                                            android:textStyle="bold"-->
-                            <!--                                            app:layout_constraintBottom_toBottomOf="parent"-->
-                            <!--                                            app:layout_constraintEnd_toEndOf="parent"-->
-                            <!--                                            app:layout_constraintStart_toEndOf="@+id/upload_photo_icon"-->
-                            <!--                                            app:layout_constraintTop_toTopOf="parent" />-->
-
-                            <!--                                    </androidx.constraintlayout.widget.ConstraintLayout>-->
-
-                            <!--                                </androidx.cardview.widget.CardView>-->
-
-                            <!--                            </androidx.cardview.widget.CardView>-->
 
                             <androidx.cardview.widget.CardView
                                 android:id="@+id/make_photo_button_1"
@@ -320,9 +256,8 @@
                                 android:id="@+id/verif_method_icon_2"
                                 android:layout_width="62dp"
                                 android:layout_height="80dp"
-                                android:layout_marginStart="16dp"
+                                android:layout_marginStart="15dp"
                                 android:layout_marginTop="24dp"
-                                android:src="@drawable/passport_image"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
                                 tools:ignore="ContentDescription" />
@@ -331,80 +266,18 @@
                                 android:id="@+id/verif_method_title_2"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="12dp"
-                                android:layout_marginTop="40dp"
-                                android:layout_marginEnd="16dp"
+                                android:layout_marginStart="22dp"
+                                android:layout_marginTop="60dp"
+                                android:layout_marginEnd="22dp"
                                 android:layout_marginBottom="120dp"
                                 android:text=""
                                 android:textColor="@color/white"
                                 android:textSize="14sp"
                                 android:textStyle="normal"
-                                app:layout_constraintBottom_toBottomOf="@+id/imgPhoto2"
+                                app:layout_constraintStart_toEndOf="@id/verif_method_icon_2"
+                                app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toEndOf="@+id/verif_method_icon_2"
                                 app:layout_constraintTop_toTopOf="parent" />
-
-                            <!--                            <androidx.cardview.widget.CardView-->
-                            <!--                                android:id="@+id/upload_photo_button2"-->
-                            <!--                                android:layout_width="232dp"-->
-                            <!--                                android:layout_height="40dp"-->
-                            <!--                                android:layout_marginStart="16dp"-->
-                            <!--                                android:layout_marginTop="128dp"-->
-                            <!--                                android:layout_marginEnd="16dp"-->
-                            <!--                                android:layout_marginBottom="82dp"-->
-                            <!--                                app:cardBackgroundColor="#FFFFFF"-->
-                            <!--                                app:cardCornerRadius="4dp"-->
-                            <!--                                app:contentPadding="1dp"-->
-                            <!--                                app:layout_constraintBottom_toBottomOf="parent"-->
-                            <!--                                app:layout_constraintEnd_toEndOf="parent"-->
-                            <!--                                app:layout_constraintStart_toStartOf="parent"-->
-                            <!--                                app:layout_constraintTop_toTopOf="parent">-->
-
-                            <!--                                <androidx.cardview.widget.CardView-->
-                            <!--                                    android:layout_width="match_parent"-->
-                            <!--                                    android:layout_height="match_parent"-->
-                            <!--                                    app:cardBackgroundColor="#555555"-->
-                            <!--                                    app:cardCornerRadius="4dp">-->
-
-                            <!--                                    <androidx.constraintlayout.widget.ConstraintLayout-->
-                            <!--                                        android:layout_width="match_parent"-->
-                            <!--                                        android:layout_height="match_parent">-->
-
-                            <!--                                        <ImageView-->
-                            <!--                                            android:id="@+id/upload_photo_icon2"-->
-                            <!--                                            android:layout_width="24dp"-->
-                            <!--                                            android:layout_height="24dp"-->
-                            <!--                                            android:layout_marginStart="50dp"-->
-                            <!--                                            android:layout_marginTop="11dp"-->
-                            <!--                                            android:layout_marginBottom="11dp"-->
-                            <!--                                            android:src="@drawable/upload_photo_icon"-->
-                            <!--                                            app:layout_constraintBottom_toBottomOf="parent"-->
-                            <!--                                            app:layout_constraintStart_toStartOf="parent"-->
-                            <!--                                            app:layout_constraintTop_toTopOf="parent"-->
-                            <!--                                            tools:ignore="ContentDescription" />-->
-
-                            <!--                                        <TextView-->
-                            <!--                                            android:id="@+id/upload_photo_title2"-->
-                            <!--                                            android:layout_width="0dp"-->
-                            <!--                                            android:layout_height="wrap_content"-->
-                            <!--                                            android:layout_marginStart="13dp"-->
-                            <!--                                            android:layout_marginTop="13dp"-->
-                            <!--                                            android:layout_marginEnd="16dp"-->
-                            <!--                                            android:layout_marginBottom="13dp"-->
-                            <!--                                            android:text="Загрузить фото"-->
-                            <!--                                            android:textColor="@color/white"-->
-                            <!--                                            android:textSize="14sp"-->
-                            <!--                                            android:textStyle="bold"-->
-                            <!--                                            app:layout_constraintBottom_toBottomOf="parent"-->
-                            <!--                                            app:layout_constraintEnd_toEndOf="parent"-->
-                            <!--                                            app:layout_constraintStart_toEndOf="@+id/upload_photo_icon2"-->
-                            <!--                                            app:layout_constraintTop_toTopOf="parent" />-->
-
-                            <!--                                    </androidx.constraintlayout.widget.ConstraintLayout>-->
-
-                            <!--                                </androidx.cardview.widget.CardView>-->
-
-                            <!--                            </androidx.cardview.widget.CardView>-->
 
                             <androidx.cardview.widget.CardView
                                 android:id="@+id/make_photo_button_2"
@@ -474,27 +347,12 @@
 
                 </androidx.cardview.widget.CardView>
 
-                <!--                <ImageView-->
-                <!--                    android:id="@+id/photo_upload_continue_button"-->
-                <!--                    android:layout_width="264dp"-->
-                <!--                    android:layout_height="56dp"-->
-                <!--                    android:layout_marginStart="16dp"-->
-                <!--                    android:layout_marginTop="44dp"-->
-                <!--                    android:layout_marginEnd="16dp"-->
-                <!--                    android:layout_marginBottom="24dp"-->
-                <!--                    android:src="@drawable/choose_country_button"-->
-                <!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-                <!--                    app:layout_constraintEnd_toEndOf="parent"-->
-                <!--                    app:layout_constraintStart_toStartOf="parent"-->
-                <!--                    app:layout_constraintTop_toBottomOf="@+id/method_card_2"-->
-                <!--                    tools:ignore="ContentDescription" />-->
-
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/photo_upload_continue_button"
-                    android:layout_width="264dp"
+                    android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="30dp"
+                    android:layout_marginTop="40dp"
                     android:layout_marginEnd="16dp"
                     android:background="@drawable/shape_for_blue_button"
                     android:text="@string/proceed"
@@ -506,25 +364,10 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
+                    android:layout_height="25dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/photo_upload_continue_button" />
-
-                <!--                <androidx.appcompat.widget.AppCompatButton-->
-                <!--                    android:id="@+id/photo_upload_inactive_dummy_button"-->
-                <!--                    android:layout_width="264dp"-->
-                <!--                    android:layout_height="56dp"-->
-                <!--                    android:layout_marginStart="16dp"-->
-                <!--                    android:layout_marginEnd="16dp"-->
-                <!--                    android:layout_marginTop="30dp"-->
-                <!--                    android:background="@drawable/shape_for_inactive_button"-->
-                <!--                    android:clickable="false"-->
-                <!--                    android:focusable="false"-->
-                <!--                    android:text="@string/proceed"-->
-                <!--                    app:layout_constraintTop_toBottomOf="@+id/method_card_2"-->
-                <!--                    app:layout_constraintEnd_toEndOf="parent"-->
-                <!--                    app:layout_constraintStart_toStartOf="parent" />-->
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

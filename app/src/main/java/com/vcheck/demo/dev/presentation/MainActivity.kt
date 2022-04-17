@@ -2,7 +2,6 @@ package com.vcheck.demo.dev.presentation
 
 import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.*
@@ -14,7 +13,7 @@ import java.util.*
 
 class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, View.OnTouchListener {
 
-    private var userSelect = false
+    private var wasLocaleSelectedByUser = false
     private lateinit var appContainer: AppContainer
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,7 +23,6 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Vi
         appContainer = (application as VcheckDemoApp).appContainer
 
         val languageCode = appContainer.mainRepository.getLocale(applicationContext)
-        Log.i("LOCALE", "----------- LANG CODE : $languageCode")
         val locale = Locale(languageCode)
         Locale.setDefault(locale)
 
@@ -39,6 +37,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Vi
             this@MainActivity,
             R.array.languages, android.R.layout.simple_spinner_item)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
         langSpinner.adapter = adapter
         langSpinner.onItemSelectedListener = this@MainActivity
         langSpinner.setOnTouchListener(this@MainActivity)
@@ -63,7 +62,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Vi
     }
 
     override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
-        if (userSelect) {
+        if (wasLocaleSelectedByUser) {
             when (position) {
                 0 -> {
                     appContainer.mainRepository.setLocale(applicationContext, "uk")
@@ -82,7 +81,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Vi
     override fun onNothingSelected(p0: AdapterView<*>?) {}
 
     override fun onTouch(p0: View?, p1: MotionEvent?): Boolean {
-        userSelect = true
+        wasLocaleSelectedByUser = true
         return false
     }
 }

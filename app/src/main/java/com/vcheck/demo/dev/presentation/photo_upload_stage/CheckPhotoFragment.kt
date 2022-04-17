@@ -2,7 +2,6 @@ package com.vcheck.demo.dev.presentation.photo_upload_stage
 
 import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +14,8 @@ import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VcheckDemoApp
 import com.vcheck.demo.dev.databinding.CheckPhotoFragmentBinding
 import com.vcheck.demo.dev.domain.DocumentUploadRequestBody
+import com.vcheck.demo.dev.domain.DocumentVerificationCode
+import com.vcheck.demo.dev.domain.codeIdxToVerificationCode
 import com.vcheck.demo.dev.domain.toCategoryIdx
 import com.vcheck.demo.dev.presentation.MainActivity
 import com.vcheck.demo.dev.presentation.transferrable_objects.CheckDocInfoDataTO
@@ -72,26 +73,6 @@ class CheckPhotoFragment : Fragment() {
                 photoCard2.isVisible = false
             }
 
-            machinePrintCard.setOnClickListener {
-                radioBtnMachineFilledDoc.isChecked = true
-            }
-            handPrintCard.setOnClickListener {
-                radioBtnHandwrittenDoc.isChecked = true
-            }
-
-            radioBtnHandwrittenDoc.setOnCheckedChangeListener { buttonView, isChecked ->
-                if (isChecked) {
-                    _isDocHandwritten = true
-                    radioBtnMachineFilledDoc.isChecked = false
-                }
-            }
-            radioBtnMachineFilledDoc.setOnCheckedChangeListener { buttonView, isChecked ->
-                if (isChecked) {
-                    _isDocHandwritten = false
-                    radioBtnHandwrittenDoc.isChecked = false
-                }
-            }
-
             zoomIcon1.setOnClickListener {
                 val action =
                     CheckPhotoFragmentDirections.actionCheckPhotoFragmentToZoomedPhotoScreen(
@@ -107,7 +88,7 @@ class CheckPhotoFragment : Fragment() {
 
             replacePhotoButton.setOnClickListener {
                 findNavController().popBackStack()
-                findNavController().navigate(R.id.action_global_photoUploadScreen)
+                findNavController().navigate(R.id.action_global_chooseDocMethodScreen)
             }
 
             confirmPhotoButton.setOnClickListener {
@@ -133,12 +114,10 @@ class CheckPhotoFragment : Fragment() {
 //                        "${multipartList.map { it.body.contentType() }}")
 //                Log.i("PHOTOS", "----------------- MULTIPART LIST: ${multipartList.size}")
 
-                handPrintCard.isVisible = false
-                machinePrintCard.isVisible = false
                 replacePhotoButton.isVisible = false
-                uploadDocPhotosLoadingIndicator.isVisible = true
                 confirmPhotoButton.isVisible = false
-                checkPhotoTitle2.setText(R.string.photo_upload_wait_disclaimer)
+                uploadDocPhotosLoadingIndicator.isVisible = true
+                tvProcessingDisclaimer.isVisible = true
 
                 _viewModel.uploadVerificationDocuments(
                     _viewModel.repository.getVerifToken(activity as MainActivity), body, multipartList)
@@ -146,24 +125,42 @@ class CheckPhotoFragment : Fragment() {
 
             _viewModel.uploadResponse.observe(viewLifecycleOwner) {
                 if (it.data?.data != null) {
-                    val action = CheckPhotoFragmentDirections
-                        .actionCheckPhotoFragmentToCheckInfoFragment(
-                            CheckDocInfoDataTO(args.checkPhotoDataTO.selectedDocType,
-                                it.data.data.document,
-                                args.checkPhotoDataTO.photo1Path,
-                                args.checkPhotoDataTO.photo2Path)
-                        )
-                    findNavController().navigate(action)
+                    if (it.data.data.status != 0) {
+                        //TODO TEST
+                        if (codeIdxToVerificationCode(it.data.data.status) == DocumentVerificationCode.UploadAttemptsExceeded) {
+                            val action = CheckPhotoFragmentDirections
+                                .actionCheckPhotoFragmentToCheckInfoFragment(
+                                    CheckDocInfoDataTO(args.checkPhotoDataTO.selectedDocType,
+                                        it.data.data.document,
+                                        args.checkPhotoDataTO.photo1Path,
+                                        args.checkPhotoDataTO.photo2Path))
+                            findNavController().navigate(action)
+                        } else {
+                            val action = CheckPhotoFragmentDirections
+                                .actionCheckPhotoFragmentToDocVerificationNotSuccessfulFragment(
+                                    CheckDocInfoDataTO(args.checkPhotoDataTO.selectedDocType,
+                                        it.data.data.document,
+                                        args.checkPhotoDataTO.photo1Path,
+                                        args.checkPhotoDataTO.photo2Path))
+                            findNavController().navigate(action)
+                        }
+                    } else {
+                        val action = CheckPhotoFragmentDirections
+                            .actionCheckPhotoFragmentToCheckInfoFragment(
+                                CheckDocInfoDataTO(args.checkPhotoDataTO.selectedDocType,
+                                    it.data.data.document,
+                                    args.checkPhotoDataTO.photo1Path,
+                                    args.checkPhotoDataTO.photo2Path))
+                        findNavController().navigate(action)
+                    }
                 }
             }
 
             _viewModel.clientError.observe(viewLifecycleOwner) {
-                handPrintCard.isVisible = true
-                machinePrintCard.isVisible = true
                 replacePhotoButton.isVisible = true
                 confirmPhotoButton.isVisible = true
                 uploadDocPhotosLoadingIndicator.isVisible = false
-                checkPhotoTitle2.setText(R.string.check_photo_title_2)
+                tvProcessingDisclaimer.isVisible = false
                 if (it != null) Toast.makeText(activity, it, Toast.LENGTH_LONG).show()
             }
         }

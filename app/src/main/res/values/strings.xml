@@ -34,7 +34,7 @@
     <string name="make_document_photo_title">Take a photo of a document</string>
     <string name="photo_upload_title_common_forward">Photo of the first page / side of the document (with your photo)</string>
     <string name="photo_upload_title_common_back">Photo of the last page / side with your photo (if you have multiple photos in the document)</string>
-    <string name="photo_upload_title_foreign">Photo of the full spread of the foreing passport (both pages are visible)</string>
+    <string name="photo_upload_title_foreign">Photo of the full spread of the foreign passport (both pages are visible)</string>
     <string name="take_photo_title">Take a photo</string>
     <string name="check_filled_data_description">Check if all the data on the document was recognized correctly.</string>
     <string name="check_filled_data_title">Reconciliation / filling of data</string>
@@ -112,4 +112,9 @@
     <string name="verif_method_subtitle_3">Verification through the ID.GOV.UA platform</string>
     <string name="no_data_placeholder">No data available</string>
     <string name="permissions_denied">To process photo documents and check the face for liveliness, you must provide the requested permissions</string>
+    <string name="error_make_at_least_one_photo">Please make at least one photo of the document</string>
+    <string name="doc_verification_error_title">Document verification is not successful</string>
+    <string name="doc_verification_error_description">Something went wrong. We recommend to re-upload the document.</string>
+    <string name="doc_verif_continue_anyway"><u>I am confident in my document, continue the verification process</u></string>
+    <string name="reload_photo">Try again</string>
 </resources>

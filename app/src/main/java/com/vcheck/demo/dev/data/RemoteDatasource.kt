@@ -48,9 +48,6 @@ class RemoteDatasource(private val apiClient: ApiClient) {
             return NetworkCall<DocumentUploadResponse>().makeCall(
                 apiClient.uploadVerificationDocumentsForOnePage(
                     verifToken,
-//                    "multipart/form-data",
-//                    "gzip, deflate, br",
-//                    "application/json, text/plain, */*",
                     images[0],
                     MultipartBody.Part.createFormData("country", documentUploadRequestBody.country),
                     MultipartBody.Part.createFormData("document_type", documentUploadRequestBody.document_type.toString()),
@@ -59,9 +56,6 @@ class RemoteDatasource(private val apiClient: ApiClient) {
         else {
             return NetworkCall<DocumentUploadResponse>().makeCall(apiClient.uploadVerificationDocumentsForTwoPages(
                 verifToken,
-//                "multipart/form-data",
-//                "gzip, deflate, br",
-//                "application/json, text/plain, */*",
                 images[0],
                 images[1],
                 MultipartBody.Part.createFormData("country", documentUploadRequestBody.country),

@@ -102,4 +102,9 @@
     <string name="verif_method_subtitle_3">Верифікація через платформу ID.GOV.UA</string>
     <string name="no_data_placeholder">Немає даних</string>
     <string name="permissions_denied">Для обробки фото документів та перевірки обличчя на живість потрібно прийняти запрошені дозволи</string>
+    <string name="error_make_at_least_one_photo">Будь-ласка, зробіть щонайменше одну фотографію документа</string>
+    <string name="doc_verification_error_title">Помилка верифікациї документа</string>
+    <string name="doc_verification_error_description">Щось пішло не так. Ми рекомендуємо сфотографувати документ ще раз.</string>
+    <string name="doc_verif_continue_anyway">Я впевнен(-а) в своєму документі, продовжити процес верифікації</string>
+    <string name="reload_photo">Српобувати ще раз</string>
 </resources>
