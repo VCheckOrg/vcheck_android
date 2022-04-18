@@ -32,7 +32,7 @@ interface ApiClient {
         @Part photo1: MultipartBody.Part,
         @Part country: MultipartBody.Part,
         @Part document_type: MultipartBody.Part,
-        @Part is_handwritten: MultipartBody.Part
+        // @Part is_handwritten: MultipartBody.Part //obsolete
     ): Call<DocumentUploadResponse>
 
     @Headers("multipart: true")
@@ -44,7 +44,7 @@ interface ApiClient {
         @Part photo2: MultipartBody.Part,
         @Part country: MultipartBody.Part,
         @Part document_type: MultipartBody.Part,
-        @Part is_handwritten: MultipartBody.Part
+        // @Part is_handwritten: MultipartBody.Part //obsolete
     ): Call<DocumentUploadResponse>
 
     @GET("documents/{document}")
@@ -59,4 +59,9 @@ interface ApiClient {
         @Path("document") docId: Int,
         @Body parsedDocFieldsData: ParsedDocFieldsData
     ): Call<Response<Void>>
+
+    @PUT("documents/{document}/primary")
+    fun setDocumentAsPrimary(
+        @Header("Authorization") verifToken: String,
+        @Path("document") docId: Int) : Call<Response<Void>>
 }

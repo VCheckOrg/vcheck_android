@@ -19,7 +19,7 @@ class AppContainer(val app: VcheckDemoApp) {
     init {
         val logging = HttpLoggingInterceptor()
 
-        logging.setLevel(HttpLoggingInterceptor.Level.HEADERS) //when having debug issue change to BODY
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY) //when having debug issue change to BODY
         val httpClient = OkHttpClient.Builder()
 
         httpClient.addInterceptor(logging)

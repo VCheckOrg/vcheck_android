@@ -2,6 +2,7 @@ package com.vcheck.demo.dev.presentation.photo_upload_stage
 
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,11 +13,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VcheckDemoApp
+import com.vcheck.demo.dev.data.Resource
 import com.vcheck.demo.dev.databinding.CheckPhotoFragmentBinding
-import com.vcheck.demo.dev.domain.DocumentUploadRequestBody
-import com.vcheck.demo.dev.domain.DocumentVerificationCode
-import com.vcheck.demo.dev.domain.codeIdxToVerificationCode
-import com.vcheck.demo.dev.domain.toCategoryIdx
+import com.vcheck.demo.dev.domain.*
 import com.vcheck.demo.dev.presentation.MainActivity
 import com.vcheck.demo.dev.presentation.transferrable_objects.CheckDocInfoDataTO
 import com.vcheck.demo.dev.presentation.transferrable_objects.ZoomPhotoTO
@@ -34,8 +33,6 @@ class CheckPhotoFragment : Fragment() {
     private var _binding: CheckPhotoFragmentBinding? = null
 
     private val args: CheckPhotoFragmentArgs by navArgs()
-
-    private var _isDocHandwritten: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,8 +91,7 @@ class CheckPhotoFragment : Fragment() {
             confirmPhotoButton.setOnClickListener {
                 val body = DocumentUploadRequestBody(
                     _viewModel.repository.getSelectedCountryCode(activity as MainActivity),
-                    args.checkPhotoDataTO.selectedDocType.toCategoryIdx(),
-                    _isDocHandwritten)
+                    args.checkPhotoDataTO.selectedDocType.toCategoryIdx())
 
                 val multipartList: ArrayList<MultipartBody.Part> = ArrayList()
                 val photoFile1 = File(args.checkPhotoDataTO.photo1Path)
@@ -110,10 +106,6 @@ class CheckPhotoFragment : Fragment() {
                     multipartList.add(filePartPhoto2)
                 }
 
-//                Log.i("PHOTOS", "----------------- MULTIPART LIST: ${multipartList.map { it.body.contentLength() }} | " +
-//                        "${multipartList.map { it.body.contentType() }}")
-//                Log.i("PHOTOS", "----------------- MULTIPART LIST: ${multipartList.size}")
-
                 replacePhotoButton.isVisible = false
                 confirmPhotoButton.isVisible = false
                 uploadDocPhotosLoadingIndicator.isVisible = true
@@ -124,36 +116,7 @@ class CheckPhotoFragment : Fragment() {
             }
 
             _viewModel.uploadResponse.observe(viewLifecycleOwner) {
-                if (it.data?.data != null) {
-                    if (it.data.data.status != 0) {
-                        //TODO TEST
-                        if (codeIdxToVerificationCode(it.data.data.status) == DocumentVerificationCode.UploadAttemptsExceeded) {
-                            val action = CheckPhotoFragmentDirections
-                                .actionCheckPhotoFragmentToCheckInfoFragment(
-                                    CheckDocInfoDataTO(args.checkPhotoDataTO.selectedDocType,
-                                        it.data.data.document,
-                                        args.checkPhotoDataTO.photo1Path,
-                                        args.checkPhotoDataTO.photo2Path))
-                            findNavController().navigate(action)
-                        } else {
-                            val action = CheckPhotoFragmentDirections
-                                .actionCheckPhotoFragmentToDocVerificationNotSuccessfulFragment(
-                                    CheckDocInfoDataTO(args.checkPhotoDataTO.selectedDocType,
-                                        it.data.data.document,
-                                        args.checkPhotoDataTO.photo1Path,
-                                        args.checkPhotoDataTO.photo2Path))
-                            findNavController().navigate(action)
-                        }
-                    } else {
-                        val action = CheckPhotoFragmentDirections
-                            .actionCheckPhotoFragmentToCheckInfoFragment(
-                                CheckDocInfoDataTO(args.checkPhotoDataTO.selectedDocType,
-                                    it.data.data.document,
-                                    args.checkPhotoDataTO.photo1Path,
-                                    args.checkPhotoDataTO.photo2Path))
-                        findNavController().navigate(action)
-                    }
-                }
+                handleDocUploadResponse(it)
             }
 
             _viewModel.clientError.observe(viewLifecycleOwner) {
@@ -162,6 +125,41 @@ class CheckPhotoFragment : Fragment() {
                 uploadDocPhotosLoadingIndicator.isVisible = false
                 tvProcessingDisclaimer.isVisible = false
                 if (it != null) Toast.makeText(activity, it, Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun handleDocUploadResponse(resource: Resource<DocumentUploadResponse>) {
+        if (resource.data?.data != null) {
+            if (resource.data.data.status != 0) {
+                if (codeIdxToVerificationCode(resource.data.data.status) == DocumentVerificationCode.UploadAttemptsExceeded) {
+                    Log.e("DOC", "---------------- UploadAttemptsExceeded !")
+                    val action = CheckPhotoFragmentDirections
+                        .actionCheckPhotoFragmentToCheckInfoFragment(
+                            CheckDocInfoDataTO(args.checkPhotoDataTO.selectedDocType,
+                                resource.data.data.document,
+                                args.checkPhotoDataTO.photo1Path,
+                                args.checkPhotoDataTO.photo2Path))
+                    findNavController().navigate(action)
+                } else {
+                    Log.e("DOC", "---------------- ERROR STATUS: ${codeIdxToVerificationCode(resource.data.data.status).name}")
+                    val action = CheckPhotoFragmentDirections
+                        .actionCheckPhotoFragmentToDocVerificationNotSuccessfulFragment(
+                            CheckDocInfoDataTO(args.checkPhotoDataTO.selectedDocType,
+                                resource.data.data.document,
+                                args.checkPhotoDataTO.photo1Path,
+                                args.checkPhotoDataTO.photo2Path))
+                    findNavController().navigate(action)
+                }
+            } else {
+                Log.e("DOC", "---------------- ELSE (NORMAL)")
+                val action = CheckPhotoFragmentDirections
+                    .actionCheckPhotoFragmentToCheckInfoFragment(
+                        CheckDocInfoDataTO(args.checkPhotoDataTO.selectedDocType,
+                            resource.data.data.document,
+                            args.checkPhotoDataTO.photo1Path,
+                            args.checkPhotoDataTO.photo2Path))
+                findNavController().navigate(action)
             }
         }
     }

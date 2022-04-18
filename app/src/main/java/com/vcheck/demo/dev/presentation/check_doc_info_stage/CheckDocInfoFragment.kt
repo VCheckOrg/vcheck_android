@@ -4,6 +4,7 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -14,6 +15,7 @@ import com.vcheck.demo.dev.databinding.CheckDocInfoFragmentBinding
 import com.vcheck.demo.dev.domain.DocField
 import com.vcheck.demo.dev.domain.DocFieldWitOptPreFilledData
 import com.vcheck.demo.dev.domain.ParsedDocFieldsData
+import com.vcheck.demo.dev.domain.PreProcessedDocData
 import com.vcheck.demo.dev.presentation.MainActivity
 import com.vcheck.demo.dev.presentation.adapters.CheckInfoAdapter
 import com.vcheck.demo.dev.presentation.adapters.DocInfoEditCallback
@@ -58,34 +60,44 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
         binding.docInfoList.adapter = adapter
 
         viewModel.documentInfoResponse.observe(viewLifecycleOwner) {
-            if (it.data?.data?.type?.fields != null && it.data.data.type.fields.isNotEmpty()) {
-                Log.d("DOC", "GOT AUTO-PARSED FIELDS: ${it.data.data.type.fields}")
-                dataList = it.data.data.type.fields.map { docField ->
-                    convertDocFieldToOptParsedData(docField, it.data.data.parsedData)
-                } as ArrayList<DocFieldWitOptPreFilledData>
-                //adapter.notifyDataSetChanged() //remove
-                val updatedAdapter = CheckInfoAdapter(ArrayList(dataList),
-                    this@CheckDocInfoFragment)
-                binding.docInfoList.adapter = updatedAdapter
+            Log.d("LISTEN", "------ documentInfoResponse")
+            if (it.data?.data != null) {
+                populateDocFields(it.data.data)
             }
         }
 
         viewModel.confirmedDocResponse.observe(viewLifecycleOwner) {
+            Log.d("LISTEN", "------ confirmedDocResponse")
             if (it) {
                 findNavController().navigate(R.id.livenessInstructionsFragment)
             }
         }
 
-        viewModel.getDocumentInfo(viewModel.getVerifToken(activity as MainActivity), args.checkDocInfoDataTO.docId)
+        viewModel.getDocumentInfo(viewModel.repository.getVerifToken(activity as MainActivity),
+            args.checkDocInfoDataTO.docId)
 
         binding.checkInfoConfirmButton.setOnClickListener {
 
-            viewModel.updateAndConfirmDocument(viewModel.getVerifToken(activity as MainActivity),
+            viewModel.updateAndConfirmDocument(viewModel.repository.getVerifToken(activity as MainActivity),
                 args.checkDocInfoDataTO.docId, composeConfirmedDocFieldsData())
         }
     }
 
-    fun checkIfAnyFieldEmpty() {
+    private fun populateDocFields(preProcessedDocData: PreProcessedDocData) {
+        if (preProcessedDocData.type.fields.isNotEmpty()) {
+            Log.d("DOC", "GOT AUTO-PARSED FIELDS: ${preProcessedDocData.type.fields}")
+            dataList = preProcessedDocData.type.fields.map { docField ->
+                convertDocFieldToOptParsedData(docField, preProcessedDocData.parsedData)
+            } as ArrayList<DocFieldWitOptPreFilledData>
+            val updatedAdapter = CheckInfoAdapter(ArrayList(dataList),
+                this@CheckDocInfoFragment)
+            binding.docInfoList.adapter = updatedAdapter
+        } else {
+            Log.i("DOC", "__NO__ AVAILABLE AUTO-PARSED FIELDS!")
+        }
+    }
+
+    private fun checkIfAnyFieldEmpty() {
         //TODO
     }
 
@@ -121,30 +133,36 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
         return data
     }
 
-    private fun convertDocFieldToOptParsedData(docField: DocField, parsedDocFieldsData: ParsedDocFieldsData) : DocFieldWitOptPreFilledData {
+    private fun convertDocFieldToOptParsedData(docField: DocField, parsedDocFieldsData: ParsedDocFieldsData?) : DocFieldWitOptPreFilledData {
         var optParsedData = ""
-        if (docField.name == "date_of_birth" && parsedDocFieldsData.dateOfBirth != null) {
-            optParsedData = parsedDocFieldsData.dateOfBirth!!
+        if (parsedDocFieldsData == null) {
+           return DocFieldWitOptPreFilledData(
+                docField.name, docField.title, docField.type, docField.regex, "")
+        } else {
+            if (docField.name == "date_of_birth" && parsedDocFieldsData.dateOfBirth != null) {
+                optParsedData = parsedDocFieldsData.dateOfBirth!!
+            }
+            if (docField.name == "date_of_expiry" && parsedDocFieldsData.dateOfExpiry != null) {
+                optParsedData = parsedDocFieldsData.dateOfExpiry!!
+            }
+            if (docField.name == "name" && parsedDocFieldsData.name != null) {
+                optParsedData = parsedDocFieldsData.name!!
+            }
+            if (docField.name == "surname" && parsedDocFieldsData.surname != null) {
+                optParsedData = parsedDocFieldsData.surname!!
+            }
+            if (docField.name == "number" && parsedDocFieldsData.number != null) {
+                optParsedData = parsedDocFieldsData.number!!
+            }
+            if (docField.name == "og_name" && parsedDocFieldsData.ogName != null) {
+                optParsedData = parsedDocFieldsData.ogName!!
+            }
+            if (docField.name == "og_surname" && parsedDocFieldsData.ogSurname != null) {
+                optParsedData = parsedDocFieldsData.ogSurname!!
+            }
+            return DocFieldWitOptPreFilledData(
+                docField.name, docField.title, docField.type, docField.regex, optParsedData
+            )
         }
-        if (docField.name == "date_of_expiry" && parsedDocFieldsData.dateOfExpiry != null) {
-            optParsedData = parsedDocFieldsData.dateOfExpiry!!
-        }
-        if (docField.name == "name" && parsedDocFieldsData.name != null) {
-            optParsedData = parsedDocFieldsData.name!!
-        }
-        if (docField.name == "surname" && parsedDocFieldsData.surname != null) {
-            optParsedData = parsedDocFieldsData.surname!!
-        }
-        if (docField.name == "number" && parsedDocFieldsData.number != null) {
-            optParsedData = parsedDocFieldsData.number!!
-        }
-        if (docField.name == "og_name" && parsedDocFieldsData.ogName != null) {
-            optParsedData = parsedDocFieldsData.ogName!!
-        }
-        if (docField.name == "og_surname" && parsedDocFieldsData.ogSurname != null) {
-            optParsedData = parsedDocFieldsData.ogSurname!!
-        }
-        return DocFieldWitOptPreFilledData(
-            docField.name, docField.title, docField.type, docField.regex, optParsedData)
     }
 }

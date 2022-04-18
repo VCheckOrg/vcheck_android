@@ -21,7 +21,7 @@
     <string name="choose_country_card_title">Country</string>
     <string name="proceed">Continue</string>
     <string name="choose_doc_method_title">Select document type</string>
-    <string name="choose_doc_method_description">Select the type of document that you can upload in the next step.</string>
+    <string name="choose_doc_method_description">Select the country of registration of your document, which will need to be photographed during the next step.</string>
     <string name="docMethodForeignPassport">International passport</string>
     <string name="docMethodIdCard">Biometric passport (ID-card)</string>
     <string name="docMethodInnerPassport">Internal passport</string>

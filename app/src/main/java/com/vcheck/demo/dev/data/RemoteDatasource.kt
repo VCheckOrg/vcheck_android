@@ -4,6 +4,8 @@ import androidx.lifecycle.MutableLiveData
 import com.vcheck.demo.dev.domain.*
 import okhttp3.MultipartBody
 import retrofit2.Response
+import retrofit2.http.Header
+import retrofit2.http.Path
 
 class RemoteDatasource(private val apiClient: ApiClient) {
 
@@ -51,7 +53,8 @@ class RemoteDatasource(private val apiClient: ApiClient) {
                     images[0],
                     MultipartBody.Part.createFormData("country", documentUploadRequestBody.country),
                     MultipartBody.Part.createFormData("document_type", documentUploadRequestBody.document_type.toString()),
-                    MultipartBody.Part.createFormData("is_handwritten", documentUploadRequestBody.is_handwritten.toString())))
+                    //MultipartBody.Part.createFormData("is_handwritten", documentUploadRequestBody.is_handwritten.toString())
+                ))
         }
         else {
             return NetworkCall<DocumentUploadResponse>().makeCall(apiClient.uploadVerificationDocumentsForTwoPages(
@@ -59,8 +62,9 @@ class RemoteDatasource(private val apiClient: ApiClient) {
                 images[0],
                 images[1],
                 MultipartBody.Part.createFormData("country", documentUploadRequestBody.country),
-                MultipartBody.Part.createFormData("document_type", documentUploadRequestBody.document_type.toString()),
-                MultipartBody.Part.createFormData("is_handwritten", documentUploadRequestBody.is_handwritten.toString())))
+                MultipartBody.Part.createFormData("document_type", documentUploadRequestBody.document_type.toString())
+                //MultipartBody.Part.createFormData("is_handwritten", documentUploadRequestBody.is_handwritten.toString())
+            ))
         }
     }
 
@@ -77,7 +81,13 @@ class RemoteDatasource(private val apiClient: ApiClient) {
         docData: ParsedDocFieldsData
     ): MutableLiveData<Resource<Response<Void>>> {
         return NetworkCall<Response<Void>>().makeCall(
-            apiClient.updateAndConfirmDocInfo(verifToken, docId, docData)
-        )
+            apiClient.updateAndConfirmDocInfo(verifToken, docId, docData))
+    }
+
+    fun setDocumentAsPrimary(
+        @Header("Authorization") verifToken: String,
+        @Path("document") docId: Int) : MutableLiveData<Resource<Response<Void>>> {
+        return NetworkCall<Response<Void>>().makeCall(apiClient.setDocumentAsPrimary(
+            verifToken, docId))
     }
 }

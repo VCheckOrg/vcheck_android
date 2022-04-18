@@ -16,10 +16,6 @@ class CheckDocInfoViewModel(val repository: MainRepository) : ViewModel() {
     var documentInfoResponse: MutableLiveData<Resource<PreProcessedDocumentResponse>> =
         MutableLiveData()
 
-    fun getVerifToken(ctx: Context): String {
-        return repository.getVerifToken(ctx)
-    }
-
     fun getDocumentInfo(token: String, docId: Int) {
         repository.getDocumentInfo(token, docId).observeForever {
             documentInfoResponse.value = it
@@ -30,7 +26,7 @@ class CheckDocInfoViewModel(val repository: MainRepository) : ViewModel() {
                                  parsedDocFieldsData: ParsedDocFieldsData) {
         Log.i("DOCUMENT", "UPDATING/CONFIRMING DOC: $parsedDocFieldsData")
         repository.updateAndConfirmDocInfo(token, docId, parsedDocFieldsData).observeForever {
-            confirmedDocResponse.value = true
+            confirmedDocResponse.value = true //TODO refactor for handling errors
         }
     }
 }

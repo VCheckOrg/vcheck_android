@@ -75,6 +75,14 @@ class MainRepository(
         }
     }
 
+    fun setDocumentAsPrimary(token: String, docId: Int) : MutableLiveData<Resource<Response<Void>>> {
+        return if (token.isNotEmpty()) {
+            remoteDatasource.setDocumentAsPrimary(token, docId)
+        } else {
+            MutableLiveData(Resource.error(ApiError(BaseClientErrors.NO_TOKEN_AVAILABLE)))
+        }
+    }
+
     //---- LOCAL SOURCE DATA OPS:
 
     fun storeVerifToken(ctx: Context, verifToken: String) {

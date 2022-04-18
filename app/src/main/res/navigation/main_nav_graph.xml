@@ -236,7 +236,7 @@
     <action android:id="@+id/action_global_chooseDocMethodScreen" app:destination="@id/chooseDocMethodScreen" />
     <fragment
         android:id="@+id/docVerificationNotSuccessfulFragment"
-        android:name="com.vcheck.demo.dev.presentation.screens.DocVerificationNotSuccessfulFragment"
+        android:name="com.vcheck.demo.dev.presentation.screens.DocVerifErrorFragment"
         android:label="fragment_doc_verification_not_successful"
         tools:layout="@layout/fragment_doc_verification_not_successful" >
         <action
