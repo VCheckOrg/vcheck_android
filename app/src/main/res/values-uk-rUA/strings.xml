@@ -77,10 +77,10 @@
     <string name="frame_interference_description">У кадрі могло бути кілька людей, або сторонні предмети. При повторній перевірці постарайтеся, щоб у кадрі було тільки ваше обличчя і його було видно якомога чіткіше.</string>
     <string name="in_process_subtitle">Заявку на верифікацію надіслано на перевірку. Незабаром Вас повідомлять про результат.</string>
     <string name="make_document_photo_description">Переконайтеся, що кожне зроблене фото читабельне (видні всі 4 кути документа, пальці не закривають дані)</string>
-    <string name="check_photo_description">Перевірте читаємість інформації на фото. Переконайтеся, що на фото видно всі 4 кути документа</string>
+    <string name="check_photo_description">Перевірте читаність інформації на фото. Переконайтеся, що на фото видно всі 4 кути документа.</string>
     <string name="error_description">З якоїсь причини ми не змогли завантажити вміст цієї сторінки. Спробуйте перезавантажити сторінку</string>
     <string name="face_check_title">Перевірка обличчя</string>
-    <string name="liveness_start_button">Все зрозуміло. Розпочати перевірку</string>
+    <string name="liveness_start_button">Розпочати перевірку</string>
     <string name="fixed_camera_text">зафіксована камера (намагайтеся не рухати камерою)</string>
     <string name="good_light_text">знайдіть місце з хорошим освітленням (світло, але без яскравих засвітів)</string>
     <string name="no_interference_text">у кадрі не повинно бути перешкод</string>
@@ -91,7 +91,7 @@
     <string name="look_stratight_error_subtitle">Особа не була зафіксована прямо в кадрі у необхідний для цього момент. Намагайтеся чітко дотримуватись інструкцій у момент проходження перевірки. Спробуйте знову.</string>
     <string name="no_time_subtitle">Ви не встигли зробити коректний рух. Намагайтеся чітко дотримуватись інструкцій у момент проходження перевірки</string>
     <string name="fail_verification_description">На жаль, нам не вдалося верифікувати вашу заявку. Якщо ви не погоджуєтесь з цим рішенням, прохання звернутися до служби підтримки</string>
-    <string name="photo_upload_wait_disclaimer">Будь ласка зачекайте. Йде завантаження та обробка фото вашого документа. Це може тривати від кількох секунд до хвилини.</string>
+    <string name="photo_upload_wait_disclaimer">Будь-ласка, зачекайте. Йде завантаження та обробка фото вашого документа. Це може тривати від кількох секунд до хвилини.</string>
     <string name="photo_upload_title_common_back">Фотографія останньої сторінки/сторони з вашою фотографією (якщо у вас є кілька фотографій у документі).</string>
     <string name="success_description">Таким чином, постійне інформаційно-пропагандистське забезпечення нашої діяльності відіграє важливу роль у формуванні суттєвих фінансових та адміністративних умов.</string>
     <string name="choose_method_title">Виберіть метод верифікації</string>
@@ -105,6 +105,7 @@
     <string name="error_make_at_least_one_photo">Будь-ласка, зробіть щонайменше одну фотографію документа</string>
     <string name="doc_verification_error_title">Помилка верифікациї документа</string>
     <string name="doc_verification_error_description">Щось пішло не так. Ми рекомендуємо сфотографувати документ ще раз.</string>
-    <string name="doc_verif_continue_anyway">Я впевнен(-а) в своєму документі, продовжити процес верифікації</string>
+    <string name="doc_verif_continue_anyway"><u>Я впевнен(-а) в своєму документі, продовжити процес верифікації</u></string>
     <string name="reload_photo">Српобувати ще раз</string>
+    <string name="check_doc_fields_validation_error">Перевірте правильність заповнення усіх полей документу</string>
 </resources>

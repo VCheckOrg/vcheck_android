@@ -2,7 +2,6 @@ package com.vcheck.demo.dev.presentation.photo_upload_stage
 
 import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -133,7 +132,6 @@ class CheckPhotoFragment : Fragment() {
         if (resource.data?.data != null) {
             if (resource.data.data.status != 0) {
                 if (codeIdxToVerificationCode(resource.data.data.status) == DocumentVerificationCode.UploadAttemptsExceeded) {
-                    Log.e("DOC", "---------------- UploadAttemptsExceeded !")
                     val action = CheckPhotoFragmentDirections
                         .actionCheckPhotoFragmentToCheckInfoFragment(
                             CheckDocInfoDataTO(args.checkPhotoDataTO.selectedDocType,
@@ -142,7 +140,6 @@ class CheckPhotoFragment : Fragment() {
                                 args.checkPhotoDataTO.photo2Path))
                     findNavController().navigate(action)
                 } else {
-                    Log.e("DOC", "---------------- ERROR STATUS: ${codeIdxToVerificationCode(resource.data.data.status).name}")
                     val action = CheckPhotoFragmentDirections
                         .actionCheckPhotoFragmentToDocVerificationNotSuccessfulFragment(
                             CheckDocInfoDataTO(args.checkPhotoDataTO.selectedDocType,
@@ -152,7 +149,6 @@ class CheckPhotoFragment : Fragment() {
                     findNavController().navigate(action)
                 }
             } else {
-                Log.e("DOC", "---------------- ELSE (NORMAL)")
                 val action = CheckPhotoFragmentDirections
                     .actionCheckPhotoFragmentToCheckInfoFragment(
                         CheckDocInfoDataTO(args.checkPhotoDataTO.selectedDocType,

@@ -38,6 +38,8 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="28dp"
                     android:src="@drawable/back_arrow"
+                    android:clickable="true"
+                    android:focusable="true"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="ContentDescription" />
@@ -93,8 +95,7 @@
                         <ImageView
                             android:id="@+id/passport_image_1"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:src="@drawable/passport_photo_1" />
+                            android:layout_height="match_parent" />
 
                     </androidx.cardview.widget.CardView>
 
@@ -123,8 +124,7 @@
                         <ImageView
                             android:id="@+id/passport_image_2"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:src="@drawable/passport_photo" />
+                            android:layout_height="match_parent" />
 
                     </androidx.cardview.widget.CardView>
 
@@ -147,7 +147,7 @@
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/check_info_confirm_button"
-                    android:layout_width="264dp"
+                    android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"

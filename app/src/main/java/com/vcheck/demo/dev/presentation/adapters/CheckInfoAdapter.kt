@@ -39,16 +39,6 @@ class CheckInfoAdapter(private val documentInfoList: ArrayList<DocFieldWitOptPre
             binding.docFieldTitle.text = title
             binding.infoField.setText(documentInfo.autoParsedValue)
 
-            //TODO test!
-//            if (documentInfo.regex != null) {
-//                val filter = CustomInputFilter()
-//                filter.setRegex(documentInfo.regex)
-//
-//                //Log.d("DOC_FILED", "-------- name: ${documentInfo.name} | regex: ${documentInfo.regex}")
-//
-//                binding.infoField.filters += filter
-//            }
-
             binding.infoField.doOnTextChanged { text, start, before, count ->
                 if (text != null && text.isNotEmpty() && documentInfo.regex != null
                     && !text.matches(Regex(documentInfo.regex))) {

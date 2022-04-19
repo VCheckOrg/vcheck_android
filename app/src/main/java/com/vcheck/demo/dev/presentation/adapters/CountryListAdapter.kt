@@ -1,19 +1,13 @@
 package com.vcheck.demo.dev.presentation.adapters
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
-import com.vcheck.demo.dev.data.MainRepository
 import com.vcheck.demo.dev.databinding.CountryRowBinding
-import com.vcheck.demo.dev.domain.Country
 import com.vcheck.demo.dev.domain.CountryTO
-import com.vcheck.demo.dev.presentation.country_stage.ChooseCountryFragment
-import java.util.*
 import kotlin.collections.ArrayList
 
 class CountryListAdapter(

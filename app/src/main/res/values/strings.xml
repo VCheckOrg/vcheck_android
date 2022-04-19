@@ -68,7 +68,7 @@
     <string name="frame_interference_button">Try again</string>
     <string name="check_photo_title_2">How is the data in the document filled in?</string>
     <string name="photo_upload_wait_disclaimer">Wait, please. The photo of your document is being loaded and processed. This may take from a few seconds to a minute.</string>
-    <string name="check_photo_description">Check the readability of the information in the photo. Make sure all 4 corners of the document are visible in the photo</string>
+    <string name="check_photo_description">Check the readability of the information in the photo. Make sure all 4 corners of the document are visible in the photo.</string>
     <string name="error_description">For some reason, we were unable to load the content of this page. Try reloading the page</string>
     <string name="fail_verification_description">Unfortunately, we were unable to verify your application. If you do not agree with this decision, please contact support</string>
     <string name="frame_interference_send_text">Everything was completed correctly, send for verification</string>
@@ -117,4 +117,5 @@
     <string name="doc_verification_error_description">Something went wrong. We recommend to re-upload the document.</string>
     <string name="doc_verif_continue_anyway"><u>I am confident in my document, continue the verification process</u></string>
     <string name="reload_photo">Try again</string>
+    <string name="check_doc_fields_validation_error">Some document fields are not properly filled or empty</string>
 </resources>

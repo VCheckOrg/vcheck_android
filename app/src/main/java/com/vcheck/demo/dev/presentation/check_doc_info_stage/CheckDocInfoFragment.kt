@@ -60,16 +60,15 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
         binding.docInfoList.adapter = adapter
 
         viewModel.documentInfoResponse.observe(viewLifecycleOwner) {
-            Log.d("LISTEN", "------ documentInfoResponse")
             if (it.data?.data != null) {
                 populateDocFields(it.data.data)
             }
         }
 
         viewModel.confirmedDocResponse.observe(viewLifecycleOwner) {
-            Log.d("LISTEN", "------ confirmedDocResponse")
             if (it) {
                 findNavController().navigate(R.id.livenessInstructionsFragment)
+                //TODO handle possible error!
             }
         }
 
@@ -77,9 +76,18 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
             args.checkDocInfoDataTO.docId)
 
         binding.checkInfoConfirmButton.setOnClickListener {
+            if (checkIfAnyFieldEmpty()) {
+                Toast.makeText((activity as MainActivity),
+                    R.string.check_doc_fields_validation_error, Toast.LENGTH_LONG).show()
+            } else {
+                viewModel.updateAndConfirmDocument(viewModel.repository.getVerifToken(activity as MainActivity),
+                    args.checkDocInfoDataTO.docId, composeConfirmedDocFieldsData())
+            }
+        }
 
-            viewModel.updateAndConfirmDocument(viewModel.repository.getVerifToken(activity as MainActivity),
-                args.checkDocInfoDataTO.docId, composeConfirmedDocFieldsData())
+        binding.backArrow.setOnClickListener {
+            findNavController().popBackStack()
+            //findNavController().navigate(R.id.action_global_chooseDocMethodScreen)
         }
     }
 
@@ -97,8 +105,18 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
         }
     }
 
-    private fun checkIfAnyFieldEmpty() {
-        //TODO
+    private fun checkIfAnyFieldEmpty(): Boolean {
+        var hasValidationErrors: Boolean = false
+        dataList.forEach {
+            Log.d("DOC", "FIELD : ${it.autoParsedValue} | ${it.regex} | ${it.name}")
+            if (it.autoParsedValue.length < 2) {
+                hasValidationErrors = true
+            }
+//            if (it.regex != null && it.autoParsedValue.matches(Regex(it.regex))) {
+//                hasValidationErrors = true
+//            }
+        }
+        return hasValidationErrors
     }
 
     override fun onFieldInfoEdited(fieldName: String, value: String) {
