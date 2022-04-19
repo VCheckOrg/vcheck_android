@@ -59,8 +59,6 @@ class DemoStartFragment : Fragment() {
 
         _binding!!.startCallChainLoadingIndicator.isVisible = false
 
-
-
         _viewModel.verifResponse.observe(viewLifecycleOwner) {
             if (it.data?.data != null) {
                 _binding!!.tvCreateVerificationResultInfo.text =
