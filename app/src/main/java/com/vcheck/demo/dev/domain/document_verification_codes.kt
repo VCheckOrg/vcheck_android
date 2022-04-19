@@ -1,6 +1,7 @@
 package com.vcheck.demo.dev.domain
 
 enum class DocumentVerificationCode {
+    OK, //0
     InvalidPagesCount,  //1 - Неверное кол-во загруженных файлов
     InvalidVerificationStage,  //2 - Этап заявки не соответствует разрешенному для данного запроса
     UploadAttemptsExceeded,  //3 - Кол-во попыток на загрузку истекло
@@ -12,6 +13,7 @@ enum class DocumentVerificationCode {
 
 fun DocumentVerificationCode.toCodeIdx(): Int {
     return when(this) {
+        DocumentVerificationCode.OK -> 0
         DocumentVerificationCode.InvalidPagesCount -> 1
         DocumentVerificationCode.InvalidVerificationStage -> 2
         DocumentVerificationCode.UploadAttemptsExceeded -> 3
@@ -25,6 +27,7 @@ fun DocumentVerificationCode.toCodeIdx(): Int {
 fun codeIdxToVerificationCode(codeIdx: Int)
     : DocumentVerificationCode {
     return when(codeIdx) {
+        0 -> DocumentVerificationCode.OK
         1 -> DocumentVerificationCode.InvalidPagesCount
         2 -> DocumentVerificationCode.InvalidVerificationStage
         3 -> DocumentVerificationCode.UploadAttemptsExceeded

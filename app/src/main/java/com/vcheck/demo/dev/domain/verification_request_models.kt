@@ -3,7 +3,6 @@ package com.vcheck.demo.dev.domain
 import com.google.gson.annotations.SerializedName
 import com.vcheck.demo.dev.util.generateSHA256Hash
 import java.util.*
-import kotlin.math.floor
 
 data class CreateVerificationRequestBody(
     @SerializedName("partner_id")
@@ -12,21 +11,23 @@ data class CreateVerificationRequestBody(
     val partner_application_id: String = Date().time.toString(),
     @SerializedName("partner_user_id")
     val partner_user_id: String = Date().time.toString(),
-//    val partner_application_url: String? = null,
-//    val partner_user_url: String? = null,
-//    val return_url: String? = null,
-//    val callback_url: String? = null,
-//    val session_lifetime: Int? = null,
     @SerializedName("timestamp")
     val timestamp: Long =
-        //Date().time / 1000 - 160,
         (Calendar.getInstance(TimeZone.getTimeZone("UTC")).timeInMillis / 1000) - 3,
     @SerializedName("locale")
     val locale: String = "ru",
     @SerializedName("sign")
     val sign: String = generateSHA256Hash(
-        "$partner_application_id$partner_id$partner_user_id$timestamp" + "DWBnN7LbeTaqG9vE"))
+        "$partner_application_id$partner_id$partner_user_id$timestamp" + "DWBnN7LbeTaqG9vE")) //DWBnN7LbeTaqG9vE
             //client secret key at the end; currently hardcoded for tests!
+
+
+//    Obsolete fields:
+//    val partner_application_url: String? = null,
+//    val partner_user_url: String? = null,
+//    val return_url: String? = null,
+//    val callback_url: String? = null,
+//    val session_lifetime: Int? = null,
 
 /*
     data = {
@@ -35,5 +36,4 @@ data class CreateVerificationRequestBody(
             partner_user_id: Date.now().toString(),
             timestamp: Math.floor(Date.now() / 1000),
           };
-
  */

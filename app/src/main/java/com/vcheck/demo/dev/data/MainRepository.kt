@@ -16,8 +16,8 @@ class MainRepository(
 //  fun createVerificationRequest(verificationRequestBody: CreateVerificationRequestBody): CreateVerificationAttemptResponse
 //        = remoteData.createVerificationRequest(verificationRequestBody)
 
-    fun createTestVerificationRequest(): MutableLiveData<Resource<CreateVerificationAttemptResponse>> =
-        remoteDatasource.createVerificationRequest(CreateVerificationRequestBody())
+    fun createTestVerificationRequest(serviceTS: Long): MutableLiveData<Resource<CreateVerificationAttemptResponse>> =
+        remoteDatasource.createVerificationRequest(CreateVerificationRequestBody(timestamp = serviceTS))
 
     fun initVerification(verifToken: String): MutableLiveData<Resource<VerificationInitResponse>> {
         return if (verifToken.isNotEmpty()) {
@@ -81,6 +81,10 @@ class MainRepository(
         } else {
             MutableLiveData(Resource.error(ApiError(BaseClientErrors.NO_TOKEN_AVAILABLE)))
         }
+    }
+
+    fun getActualServiceTimestamp() : MutableLiveData<Resource<String>> {
+        return remoteDatasource.getServiceTimestamp()
     }
 
     //---- LOCAL SOURCE DATA OPS:

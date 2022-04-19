@@ -1,7 +1,6 @@
 package com.vcheck.demo.dev.presentation.screens
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -29,6 +28,8 @@ class DocVerifErrorFragment : Fragment(R.layout.fragment_doc_verification_not_su
         super.onViewCreated(view, savedInstanceState)
 
         _binding = FragmentDocVerificationNotSuccessfulBinding.bind(view)
+
+        _binding!!.errorInfo.text = args.checkDocInfoDataTO.optCodeWithMessage
 
         _binding!!.errorButton.setOnClickListener {
             findNavController().popBackStack()

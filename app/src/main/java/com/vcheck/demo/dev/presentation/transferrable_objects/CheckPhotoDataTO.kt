@@ -16,8 +16,8 @@ data class CheckDocInfoDataTO(
     val selectedDocType: DocType,
     val docId: Int,
     val photo1Path: String,
-    val photo2Path: String?
-    //val invalidVerificationStage: Boolean = false
+    val photo2Path: String?,
+    val optCodeWithMessage: String = ""
 ) : Parcelable
 
 

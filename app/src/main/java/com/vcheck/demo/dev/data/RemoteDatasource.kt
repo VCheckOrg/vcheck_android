@@ -90,4 +90,9 @@ class RemoteDatasource(private val apiClient: ApiClient) {
         return NetworkCall<Response<Void>>().makeCall(apiClient.setDocumentAsPrimary(
             verifToken, docId))
     }
+
+    fun getServiceTimestamp() : MutableLiveData<Resource<String>> {
+        return NetworkCall<String>().makeCall(
+            apiClient.getServiceTimestamp())
+    }
 }

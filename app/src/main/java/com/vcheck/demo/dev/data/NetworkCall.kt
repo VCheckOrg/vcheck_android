@@ -1,7 +1,9 @@
 package com.vcheck.demo.dev.data
 
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.Gson
 import com.vcheck.demo.dev.domain.ApiError
+import com.vcheck.demo.dev.domain.BaseClientResponseModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -21,7 +23,7 @@ open class NetworkCall<T> {
         var result: MutableLiveData<Resource<T>> = MutableLiveData()
 
         override fun onFailure(call: Call<T>, t: Throwable) {
-            result.value = Resource.error(ApiError("Client failure"))
+            result.value = Resource.error(ApiError("Client failure: ${t.localizedMessage}"))
             t.printStackTrace()
         }
 
@@ -29,9 +31,11 @@ open class NetworkCall<T> {
             if (response.isSuccessful)
                 result.value = Resource.success(response.body())
             else {
+                val errorResponse = Gson().fromJson(response.errorBody()!!.charStream(),
+                    BaseClientResponseModel::class.java)
+
                 result.value = Resource.error(
-                    //ErrorUtils.parseError(response)
-                    ApiError(response.errorBody().toString())
+                    ApiError("Error [${response.code()}] : ${errorResponse.message}")
                 )
             }
         }

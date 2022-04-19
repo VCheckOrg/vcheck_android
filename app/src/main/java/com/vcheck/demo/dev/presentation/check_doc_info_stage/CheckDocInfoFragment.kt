@@ -68,7 +68,6 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
         viewModel.confirmedDocResponse.observe(viewLifecycleOwner) {
             if (it) {
                 findNavController().navigate(R.id.livenessInstructionsFragment)
-                //TODO handle possible error!
             }
         }
 
@@ -86,8 +85,11 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
         }
 
         binding.backArrow.setOnClickListener {
+            //TODO make another approach
             findNavController().popBackStack()
-            //findNavController().navigate(R.id.action_global_chooseDocMethodScreen)
+            findNavController().popBackStack()
+            findNavController().popBackStack()
+            findNavController().popBackStack()
         }
     }
 

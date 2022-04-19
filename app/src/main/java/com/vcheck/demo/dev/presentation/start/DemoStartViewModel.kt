@@ -1,5 +1,6 @@
 package com.vcheck.demo.dev.presentation.start
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.vcheck.demo.dev.data.MainRepository
 import com.vcheck.demo.dev.data.Resource
@@ -10,8 +11,6 @@ import com.vcheck.demo.dev.domain.VerificationInitResponse
 class DemoStartViewModel (val repository: MainRepository) : ViewModel() {
 
     val clientError: MutableLiveData<String?> = MutableLiveData(null)
-    //    private val isSuccess: MutableLiveData<Boolean> = MutableLiveData()
-    //    private val isLoading: MutableLiveData<Boolean> = MutableLiveData()
 
     var verifResponse: MutableLiveData<Resource<CreateVerificationAttemptResponse>> = MutableLiveData()
     var initResponse: MutableLiveData<Resource<VerificationInitResponse>> = MutableLiveData()
@@ -24,8 +23,12 @@ class DemoStartViewModel (val repository: MainRepository) : ViewModel() {
     }
 
     fun createTestVerificationRequest() {
-        repository.createTestVerificationRequest().observeForever {
-            processCreateVerifResponse(it)
+        repository.getActualServiceTimestamp().observeForever { ts ->
+            if (ts.data != null) {
+                repository.createTestVerificationRequest(ts.data.toLong()).observeForever {
+                    processCreateVerifResponse(it)
+                }
+            }
         }
     }
 
@@ -70,10 +73,8 @@ class DemoStartViewModel (val repository: MainRepository) : ViewModel() {
     private fun processGetCountriesResponse(response: Resource<CountriesResponse>){
         when(response.status) {
             Resource.Status.LOADING -> {
-                //setLoading()
             }
             Resource.Status.SUCCESS -> {
-                //setSuccess()
                 countriesResponse.value = response
             }
             Resource.Status.ERROR -> {

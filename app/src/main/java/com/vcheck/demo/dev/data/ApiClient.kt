@@ -64,4 +64,7 @@ interface ApiClient {
     fun setDocumentAsPrimary(
         @Header("Authorization") verifToken: String,
         @Path("document") docId: Int) : Call<Response<Void>>
+
+    @GET("timestamp")
+    fun getServiceTimestamp() : Call<String>
 }
