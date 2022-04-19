@@ -1,13 +1,13 @@
 package com.vcheck.demo.dev.presentation.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.RecyclerView
+import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.databinding.DocInfoRowBinding
 import com.vcheck.demo.dev.domain.DocFieldWitOptPreFilledData
-import com.vcheck.demo.dev.util.CustomInputFilter
+import com.vcheck.demo.dev.presentation.check_doc_info_stage.CheckDocInfoFragment
 
 class CheckInfoAdapter(private val documentInfoList: ArrayList<DocFieldWitOptPreFilledData>,
                        private val docInfoEditCallback: DocInfoEditCallback) :
@@ -42,7 +42,9 @@ class CheckInfoAdapter(private val documentInfoList: ArrayList<DocFieldWitOptPre
             binding.infoField.doOnTextChanged { text, start, before, count ->
                 if (text != null && text.isNotEmpty() && documentInfo.regex != null
                     && !text.matches(Regex(documentInfo.regex))) {
-                    binding.infoField.error = "Формат поля не соответствует указанному документу"
+                        //TODO test
+                    binding.infoField.error = (docInfoEditCallback as CheckDocInfoFragment).getString(
+                        R.string.check_doc_fields_validation_error)
                 }
                 docInfoEditCallback.onFieldInfoEdited(documentInfo.name, text.toString())
             }

@@ -108,4 +108,5 @@
     <string name="doc_verif_continue_anyway"><u>Я уверен(-а) в своем документе, продолжить процесс верификации</u></string>
     <string name="reload_photo">Попробовать еще раз</string>
     <string name="check_doc_fields_validation_error">Проверьте правильность заполнения всех полей документа</string>
+    <string name="field_validation_error">Неверный формат заполнения поля</string>
 </resources>

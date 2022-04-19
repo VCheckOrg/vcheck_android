@@ -118,4 +118,5 @@
     <string name="doc_verif_continue_anyway"><u>I am confident in my document, continue the verification process</u></string>
     <string name="reload_photo">Try again</string>
     <string name="check_doc_fields_validation_error">Some document fields are not properly filled or empty</string>
+    <string name="field_validation_error">Validation error: wrong format</string>
 </resources>

@@ -6,13 +6,6 @@ import org.jetbrains.kotlinx.multik.ndarray.operations.*
 
 import kotlin.math.*
 
-fun crossProd(a: MultiArray<Double, D1>, b: MultiArray<Double, D1>): MultiArray<Double, D1> {
-    return mk.ndarray(mk[a[1]*b[2] - a[2]*b[1], a[2]*b[0] - a[0]*b[2], a[0]*b[1] - a[1]*b[0]])
-}
-
-fun toDegrees (i: Double): Double {
-    return i * 180 / PI
-}
 
 fun landmarksToEulerAngles(landmarks: D2Array<Double>): D1Array<Double> {
     val landmarksCount = landmarks.shape[0]
@@ -38,14 +31,23 @@ fun landmarksToEulerAngles(landmarks: D2Array<Double>): D1Array<Double> {
     return mk.ndarray(mk[pitch, yaw, roll])
 }
 
-fun euclidean(p0: MultiArray<Double, D1>, p1:  MultiArray<Double, D1>): Double {
-    return sqrt((p0[0] - p1[0]).pow(2) + (p0[1] - p1[1]).pow(2) + (p0[2] - p1[2]).pow(2))
-}
-
 fun landmarksToMouthAspectRatio(landmarks: D2Array<Double>): Double {
     val A = euclidean(landmarks[37], landmarks[83])
     val B = euclidean(landmarks[267], landmarks[314])
     val C = euclidean(landmarks[61], landmarks[281])
 
     return (A + B / (2.0 * C))
+}
+
+
+fun euclidean(p0: MultiArray<Double, D1>, p1:  MultiArray<Double, D1>): Double {
+    return sqrt((p0[0] - p1[0]).pow(2) + (p0[1] - p1[1]).pow(2) + (p0[2] - p1[2]).pow(2))
+}
+
+fun crossProd(a: MultiArray<Double, D1>, b: MultiArray<Double, D1>): MultiArray<Double, D1> {
+    return mk.ndarray(mk[a[1]*b[2] - a[2]*b[1], a[2]*b[0] - a[0]*b[2], a[0]*b[1] - a[1]*b[0]])
+}
+
+fun toDegrees (i: Double): Double {
+    return i * 180 / PI
 }
