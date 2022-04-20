@@ -16,6 +16,7 @@ import android.util.Size
 import android.view.Surface
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.airbnb.lottie.LottieAnimationView
 import com.google.mediapipe.solutioncore.CameraInput
 import com.google.mediapipe.solutioncore.SolutionGlSurfaceView
 import com.google.mediapipe.solutions.facemesh.FaceMesh
@@ -43,8 +44,6 @@ class LivenessActivity : AppCompatActivity(), ImageReader.OnImageAvailableListen
     }
 
     private var facemesh: FaceMesh? = null
-    private var cameraInput: CameraInput? = null
-    private var glSurfaceView: SolutionGlSurfaceView<FaceMeshResult>? = null
 
     private var debounceTime: Long = 0
 
@@ -55,6 +54,10 @@ class LivenessActivity : AppCompatActivity(), ImageReader.OnImageAvailableListen
 
         debounceTime = SystemClock.elapsedRealtime()
         setupStreamingModePipeline()
+
+        //TODO make cycle animation
+        val animation: LottieAnimationView = findViewById(R.id.animation_view)
+        animation.playAnimation()
 
         setFragment()
     }
@@ -77,13 +80,8 @@ class LivenessActivity : AppCompatActivity(), ImageReader.OnImageAvailableListen
         }
 
         facemesh!!.setResultListener { faceMeshResult: FaceMeshResult ->
-            //logNoseLandmark(faceMeshResult,  /*showPixelValues=*/false)
-
             //Log.d(TAG, "----  RESULT LISTENER WORKED")
             processLandmarks(faceMeshResult)
-
-//            glSurfaceView!!.setRenderData(faceMeshResult)
-//            glSurfaceView!!.requestRender()
         }
     }
 
@@ -93,7 +91,7 @@ class LivenessActivity : AppCompatActivity(), ImageReader.OnImageAvailableListen
             Log.d(TAG, "----  RESULT LISTENER WORKED WITH DEBOUNCE")
             val convertResult = get2DArrayFromMotionUpdate(faceMeshResult)
             if (convertResult != null) {
-                val eulerAnglesResultArr = LandmarkUtil.landmarksToEulerAngles(convertResult)
+                //val eulerAnglesResultArr = LandmarkUtil.landmarksToEulerAngles(convertResult)
 //                Log.d(TAG, "=========== EULER ANGLES " +
 //                            " | pitch: ${eulerAnglesResultArr[0]}")  // from -30.0 to 30.0 degrees
                 //" | yaw: ${eulerAnglesResultArr[1]}" +
@@ -263,7 +261,7 @@ class LivenessActivity : AppCompatActivity(), ImageReader.OnImageAvailableListen
     }
 
 
-    //TODO rotate image if image captured on sumsong devices
+    //TODO rotate image if image captured on samsung devices (?)
     //Most phone cameras are landscape, meaning if you take the photo in portrait, the resulting photos will be rotated 90 degrees.
     fun rotateBitmap(input: Bitmap): Bitmap? {
         Log.d("trySensor", sensorOrientation.toString() + "     " + getScreenOrientation())
@@ -276,35 +274,3 @@ class LivenessActivity : AppCompatActivity(), ImageReader.OnImageAvailableListen
         super.onDestroy()
     }
 }
-
-//    override fun onRequestPermissionsResult(
-//        requestCode: Int,
-//        permissions: Array<String?>,
-//        grantResults: IntArray
-//    ) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-//        //TODO show live camera footage
-//        if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//            //TODO show live camera footage
-//            setFragment()
-//        } else {
-//            finish()
-//        }
-//    }
-
-//        //TODO ask for permission of camera upon first launch of application
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED
-//            ) {
-//                val permission = arrayOf(
-//                    Manifest.permission.CAMERA
-//                )
-//                requestPermissions(permission, 1122)
-//            } else {
-//                //TODO show live camera footage
-//                setFragment()
-//            }
-//        } else {
-//            //TODO show live camera footage
-//            setFragment()
-//        }

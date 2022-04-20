@@ -23,199 +23,199 @@ import org.jetbrains.kotlinx.multik.ndarray.data.get
 import org.jetbrains.kotlinx.multik.ndarray.data.set
 import java.lang.IndexOutOfBoundsException
 import java.lang.RuntimeException
-
-class LivenessFragment : Fragment() {
-
-    private var facemesh: FaceMesh? = null
-    private var cameraInput: CameraInput? = null
-    private var glSurfaceView: SolutionGlSurfaceView<FaceMeshResult>? = null
-
-    private var debounceTime: Long = 0
-
-    companion object {
-        private const val TAG = "LivenessFragment"
-        // Run the pipeline and the model inference on GPU or CPU.
-        private const val RUN_ON_GPU = true
-        private const val DEBOUNCE_PROCESS_MILLIS = 600
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val rootView = inflater.inflate(R.layout.fragment_liveness, container, false)
-        debounceTime = SystemClock.elapsedRealtime()
-        setupStreamingModePipeline(rootView)
-        return rootView
-    }
-
-    override fun onResume() {
-        super.onResume()
-        //if (inputSource == InputSource.CAMERA) {
-        // Restarts the camera and the opengl surface rendering.
-        cameraInput = CameraInput(activity)
-        cameraInput!!.setNewFrameListener { textureFrame: TextureFrame? ->
-            facemesh!!.send(
-                textureFrame
-            )
-        }
-        glSurfaceView!!.post { startCamera() }
-        glSurfaceView!!.visibility = View.VISIBLE
-        //    } else if (inputSource == InputSource.VIDEO) {
-        //      videoInput.resume();
-        //    }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        //if (inputSource == InputSource.CAMERA) {
-        glSurfaceView!!.visibility = View.GONE
-        cameraInput!!.close()
-        //}
-        //    else if (inputSource == InputSource.VIDEO) {
-        //      videoInput.pause();
-        //    }
-    }
-
-    /** Sets up core workflow for streaming mode.  */
-    private fun setupStreamingModePipeline(view: View) {
-        Log.i("PIPELINE", "setupStreamingModePipeline START")
-        //this.inputSource = inputSource;
-        // Initializes a new MediaPipe Face Mesh solution instance in the streaming mode.
-        facemesh = FaceMesh(
-            activity,
-            FaceMeshOptions.builder()
-                .setStaticImageMode(false)
-                .setRefineLandmarks(true)
-                .setRunOnGpu(RUN_ON_GPU)
-                .build()
-        )
-        facemesh!!.setErrorListener { message: String, e: RuntimeException? ->
-            Log.e(
-                TAG,
-                "MediaPipe Face Mesh error:$message"
-            )
-        }
-
-        //   if (inputSource == InputSource.CAMERA) {
-        cameraInput = CameraInput(activity)
-        cameraInput!!.setNewFrameListener { textureFrame: TextureFrame? ->
-            facemesh!!.send(
-                textureFrame
-            )
-        }
-        //    } else if (inputSource == InputSource.VIDEO) {
-        //      videoInput = new VideoInput(this);
-        //      videoInput.setNewFrameListener(textureFrame -> facemesh.send(textureFrame));
-        //    }
-
-        // Initializes a new Gl surface view with a user-defined FaceMeshResultGlRenderer.
-        glSurfaceView =
-            SolutionGlSurfaceView(activity, facemesh!!.glContext, facemesh!!.glMajorVersion)
-        glSurfaceView!!.setSolutionResultRenderer(FaceMeshResultGlRenderer())
-        glSurfaceView!!.setRenderInputImage(true)
-
-
-        facemesh!!.setResultListener { faceMeshResult: FaceMeshResult ->
-            //logNoseLandmark(faceMeshResult,  /*showPixelValues=*/false)
-
-            Log.d(TAG, "----  RESULT LISTENER WORKED")
-            get2DArrayFromMotionUpdate(faceMeshResult)
-
-            glSurfaceView!!.setRenderData(faceMeshResult)
-            glSurfaceView!!.requestRender()
-        }
-
-        // The runnable to start camera after the gl surface view is attached.
-        // For video input source, videoInput.start() will be called when the video uri is available.
-        //if (inputSource == InputSource.CAMERA) {
-        glSurfaceView!!.post { startCamera() }
-        //}
-
-        // Updates the preview layout.
-        val frameLayout = view.findViewById<FrameLayout>(R.id.preview_display_layout)
-        //imageView.setVisibility(View.GONE);
-        frameLayout.removeAllViewsInLayout()
-        frameLayout.addView(glSurfaceView)
-        glSurfaceView!!.visibility = View.VISIBLE
-        frameLayout.requestLayout()
-    }
-
-    private fun startCamera() {
-        cameraInput!!.start(
-            activity,
-            facemesh!!.glContext,
-            CameraInput.CameraFacing.FRONT,
-            glSurfaceView!!.width,
-            glSurfaceView!!.height
-        )
-    }
-
-    private fun stopCurrentPipeline() {
-        if (cameraInput != null) {
-            cameraInput!!.setNewFrameListener(null)
-            cameraInput!!.close()
-        }
-        //    if (videoInput != null) {
-        //      videoInput.setNewFrameListener(null);
-        //      videoInput.close();
-        //    }
-        if (glSurfaceView != null) {
-            glSurfaceView!!.visibility = View.GONE
-        }
-        if (facemesh != null) {
-            facemesh!!.close()
-        }
-    }
-
-    private fun processLandmarks(faceMeshResult: FaceMeshResult) {
-        // convert markers to 2DArray each 1 second (may vary)
-        if (SystemClock.elapsedRealtime() - debounceTime >= DEBOUNCE_PROCESS_MILLIS) {
-            Log.d(TAG, "----  RESULT LISTENER WORKED WITH DEBOUNCE")
-            val convertResult = get2DArrayFromMotionUpdate(faceMeshResult)
-            if (convertResult != null) {
-                val eulerAnglesResultArr = LandmarkUtil.landmarksToEulerAngles(convertResult)
-                Log.d(
-                    TAG, "=========== EULER ANGLES " +
-                            " | pitch: ${eulerAnglesResultArr[0]}")  // from -30.0 to 30.0 degrees
-                //" | yaw: ${eulerAnglesResultArr[1]}" +
-                //" | roll: ${eulerAnglesResultArr[2]}")
-
-//                val mouthAspectRatio = LandmarkUtil.landmarksToMouthAspectRatio(convertResult)
-//                Log.d(TAG, "========= MOUTH ASPECT RATIO: $mouthAspectRatio")  // >= 055
-            }
-            debounceTime = SystemClock.elapsedRealtime()
-        }
-    }
-
-    private fun get2DArrayFromMotionUpdate(result: FaceMeshResult?) : D2Array<Double>? {
-        if (result == null || result.multiFaceLandmarks().isEmpty()) {
-            return null
-        }
-        val twoDimArray = mk.d2array(468, 3) { it.toDouble() }
-
-        result.multiFaceLandmarks()[0].landmarkList.forEachIndexed { idx, landmark ->
-
-            val arr = mk.ndarray(doubleArrayOf(
-                landmark.x.toDouble(),
-                landmark.y.toDouble(),
-                (1 - landmark.z).toDouble()))  //was Float typing!
-
-//            Log.i(TAG, "--------------- IDX: $idx")
-//            Log.i(TAG, "--------------- x: ${arr[0]} | y: ${arr[1]} | z: ${arr[2]}")
-
-            try {
-                if (!arr.isEmpty()) {
-                    twoDimArray[idx] = arr
-                }
-            } catch (e: IndexOutOfBoundsException) {
-                Log.w(TAG, e.message ?: "2D MARKER ARRAY: caught IndexOutOfBoundsException")
-            }
-        }
-        return twoDimArray
-    }
-
+//
+//class LivenessFragment : Fragment() {
+//
+//    private var facemesh: FaceMesh? = null
+//    private var cameraInput: CameraInput? = null
+//    private var glSurfaceView: SolutionGlSurfaceView<FaceMeshResult>? = null
+//
+//    private var debounceTime: Long = 0
+//
+//    companion object {
+//        private const val TAG = "LivenessFragment"
+//        // Run the pipeline and the model inference on GPU or CPU.
+//        private const val RUN_ON_GPU = true
+//        private const val DEBOUNCE_PROCESS_MILLIS = 600
+//    }
+//
+//    override fun onCreateView(
+//        inflater: LayoutInflater,
+//        container: ViewGroup?,
+//        savedInstanceState: Bundle?
+//    ): View? {
+//        val rootView = inflater.inflate(R.layout.fragment_liveness, container, false)
+//        debounceTime = SystemClock.elapsedRealtime()
+//        setupStreamingModePipeline(rootView)
+//        return rootView
+//    }
+//
+//    override fun onResume() {
+//        super.onResume()
+//        //if (inputSource == InputSource.CAMERA) {
+//        // Restarts the camera and the opengl surface rendering.
+//        cameraInput = CameraInput(activity)
+//        cameraInput!!.setNewFrameListener { textureFrame: TextureFrame? ->
+//            facemesh!!.send(
+//                textureFrame
+//            )
+//        }
+//        glSurfaceView!!.post { startCamera() }
+//        glSurfaceView!!.visibility = View.VISIBLE
+//        //    } else if (inputSource == InputSource.VIDEO) {
+//        //      videoInput.resume();
+//        //    }
+//    }
+//
+//    override fun onPause() {
+//        super.onPause()
+//        //if (inputSource == InputSource.CAMERA) {
+//        glSurfaceView!!.visibility = View.GONE
+//        cameraInput!!.close()
+//        //}
+//        //    else if (inputSource == InputSource.VIDEO) {
+//        //      videoInput.pause();
+//        //    }
+//    }
+//
+//    /** Sets up core workflow for streaming mode.  */
+//    private fun setupStreamingModePipeline(view: View) {
+//        Log.i("PIPELINE", "setupStreamingModePipeline START")
+//        //this.inputSource = inputSource;
+//        // Initializes a new MediaPipe Face Mesh solution instance in the streaming mode.
+//        facemesh = FaceMesh(
+//            activity,
+//            FaceMeshOptions.builder()
+//                .setStaticImageMode(false)
+//                .setRefineLandmarks(true)
+//                .setRunOnGpu(RUN_ON_GPU)
+//                .build()
+//        )
+//        facemesh!!.setErrorListener { message: String, e: RuntimeException? ->
+//            Log.e(
+//                TAG,
+//                "MediaPipe Face Mesh error:$message"
+//            )
+//        }
+//
+//        //   if (inputSource == InputSource.CAMERA) {
+//        cameraInput = CameraInput(activity)
+//        cameraInput!!.setNewFrameListener { textureFrame: TextureFrame? ->
+//            facemesh!!.send(
+//                textureFrame
+//            )
+//        }
+//        //    } else if (inputSource == InputSource.VIDEO) {
+//        //      videoInput = new VideoInput(this);
+//        //      videoInput.setNewFrameListener(textureFrame -> facemesh.send(textureFrame));
+//        //    }
+//
+//        // Initializes a new Gl surface view with a user-defined FaceMeshResultGlRenderer.
+//        glSurfaceView =
+//            SolutionGlSurfaceView(activity, facemesh!!.glContext, facemesh!!.glMajorVersion)
+//        glSurfaceView!!.setSolutionResultRenderer(FaceMeshResultGlRenderer())
+//        glSurfaceView!!.setRenderInputImage(true)
+//
+//
+//        facemesh!!.setResultListener { faceMeshResult: FaceMeshResult ->
+//            //logNoseLandmark(faceMeshResult,  /*showPixelValues=*/false)
+//
+//            Log.d(TAG, "----  RESULT LISTENER WORKED")
+//            get2DArrayFromMotionUpdate(faceMeshResult)
+//
+//            glSurfaceView!!.setRenderData(faceMeshResult)
+//            glSurfaceView!!.requestRender()
+//        }
+//
+//        // The runnable to start camera after the gl surface view is attached.
+//        // For video input source, videoInput.start() will be called when the video uri is available.
+//        //if (inputSource == InputSource.CAMERA) {
+//        glSurfaceView!!.post { startCamera() }
+//        //}
+//
+//        // Updates the preview layout.
+//        val frameLayout = view.findViewById<FrameLayout>(R.id.preview_display_layout)
+//        //imageView.setVisibility(View.GONE);
+//        frameLayout.removeAllViewsInLayout()
+//        frameLayout.addView(glSurfaceView)
+//        glSurfaceView!!.visibility = View.VISIBLE
+//        frameLayout.requestLayout()
+//    }
+//
+//    private fun startCamera() {
+//        cameraInput!!.start(
+//            activity,
+//            facemesh!!.glContext,
+//            CameraInput.CameraFacing.FRONT,
+//            glSurfaceView!!.width,
+//            glSurfaceView!!.height
+//        )
+//    }
+//
+//    private fun stopCurrentPipeline() {
+//        if (cameraInput != null) {
+//            cameraInput!!.setNewFrameListener(null)
+//            cameraInput!!.close()
+//        }
+//        //    if (videoInput != null) {
+//        //      videoInput.setNewFrameListener(null);
+//        //      videoInput.close();
+//        //    }
+//        if (glSurfaceView != null) {
+//            glSurfaceView!!.visibility = View.GONE
+//        }
+//        if (facemesh != null) {
+//            facemesh!!.close()
+//        }
+//    }
+//
+//    private fun processLandmarks(faceMeshResult: FaceMeshResult) {
+//        // convert markers to 2DArray each 1 second (may vary)
+//        if (SystemClock.elapsedRealtime() - debounceTime >= DEBOUNCE_PROCESS_MILLIS) {
+//            Log.d(TAG, "----  RESULT LISTENER WORKED WITH DEBOUNCE")
+//            val convertResult = get2DArrayFromMotionUpdate(faceMeshResult)
+//            if (convertResult != null) {
+//                val eulerAnglesResultArr = LandmarkUtil.landmarksToEulerAngles(convertResult)
+//                Log.d(
+//                    TAG, "=========== EULER ANGLES " +
+//                            " | pitch: ${eulerAnglesResultArr[0]}")  // from -30.0 to 30.0 degrees
+//                //" | yaw: ${eulerAnglesResultArr[1]}" +
+//                //" | roll: ${eulerAnglesResultArr[2]}")
+//
+////                val mouthAspectRatio = LandmarkUtil.landmarksToMouthAspectRatio(convertResult)
+////                Log.d(TAG, "========= MOUTH ASPECT RATIO: $mouthAspectRatio")  // >= 055
+//            }
+//            debounceTime = SystemClock.elapsedRealtime()
+//        }
+//    }
+//
+//    private fun get2DArrayFromMotionUpdate(result: FaceMeshResult?) : D2Array<Double>? {
+//        if (result == null || result.multiFaceLandmarks().isEmpty()) {
+//            return null
+//        }
+//        val twoDimArray = mk.d2array(468, 3) { it.toDouble() }
+//
+//        result.multiFaceLandmarks()[0].landmarkList.forEachIndexed { idx, landmark ->
+//
+//            val arr = mk.ndarray(doubleArrayOf(
+//                landmark.x.toDouble(),
+//                landmark.y.toDouble(),
+//                (1 - landmark.z).toDouble()))  //was Float typing!
+//
+////            Log.i(TAG, "--------------- IDX: $idx")
+////            Log.i(TAG, "--------------- x: ${arr[0]} | y: ${arr[1]} | z: ${arr[2]}")
+//
+//            try {
+//                if (!arr.isEmpty()) {
+//                    twoDimArray[idx] = arr
+//                }
+//            } catch (e: IndexOutOfBoundsException) {
+//                Log.w(TAG, e.message ?: "2D MARKER ARRAY: caught IndexOutOfBoundsException")
+//            }
+//        }
+//        return twoDimArray
+//    }
+//
 
 
 
@@ -406,4 +406,4 @@ class LivenessFragment : Fragment() {
     //                ))
     //        }
     //    }
-}
+//}

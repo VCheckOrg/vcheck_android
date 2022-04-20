@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -16,7 +17,80 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:context="org.tensorflow.lite.examples.classification.CameraActivity">
-
     </FrameLayout>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="112dp"
+        app:cardBackgroundColor="@color/transparent"
+        app:cardCornerRadius="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/check_face_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="36dp"
+                android:layout_marginBottom="40dp"
+                android:text="@string/loading"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/cosmetic_rounded_frame"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:id="@+id/cosmetic_rounded_frame"
+                android:layout_width="320dp"
+                android:layout_height="320dp"
+                android:background="@drawable/rounded_shape"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+<!--            <ImageView-->
+<!--                android:id="@+id/small_face"-->
+<!--                android:layout_width="88dp"-->
+<!--                android:layout_height="88dp"-->
+<!--                android:src="@drawable/small_face"-->
+<!--                app:layout_constraintCircle="@id/cosmetic_rounded_frame"-->
+<!--                app:layout_constraintCircleAngle="45"-->
+<!--                app:layout_constraintCircleRadius="160dp"-->
+<!--                tools:ignore="ContentDescription,MissingConstraints" />-->
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/animation_view"
+                android:layout_width="88dp"
+                android:layout_height="88dp"
+                app:lottie_rawRes="@raw/left"
+                app:layout_constraintCircle="@id/cosmetic_rounded_frame"
+                app:layout_constraintCircleAngle="45"
+                app:layout_constraintCircleRadius="160dp"
+                tools:ignore="ContentDescription,MissingConstraints" />
+<!--            // or-->
+<!--            app:lottie_fileName="hello_world.json"-->
+
+<!--            // Loop indefinitely-->
+<!--            app:lottie_loop="true"-->
+<!--            // Start playing as soon as the animation is loaded-->
+<!--            app:lottie_autoPlay="true" />-->
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,11 +1,13 @@
 package com.vcheck.demo.dev.presentation.liveness.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.databinding.LivenessInstructionsFragmentBinding
+import com.vcheck.demo.dev.presentation.MainActivity
+import com.vcheck.demo.dev.presentation.liveness.LivenessActivity
 
 class LivenessInstructionsFragment : Fragment(R.layout.liveness_instructions_fragment) {
 
@@ -17,7 +19,8 @@ class LivenessInstructionsFragment : Fragment(R.layout.liveness_instructions_fra
         _binding = LivenessInstructionsFragmentBinding.bind(view)
 
         _binding!!.livenessStartButton.setOnClickListener {
-            findNavController().navigate(R.id.action_mainFragment_to_faceCheckFragment)
+            //findNavController().navigate(R.id.action_mainFragment_to_faceCheckFragment)
+            startActivity(Intent(activity as MainActivity, LivenessActivity::class.java))
         }
     }
 }
