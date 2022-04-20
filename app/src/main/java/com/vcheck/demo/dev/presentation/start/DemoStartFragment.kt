@@ -2,6 +2,7 @@ package com.vcheck.demo.dev.presentation.start
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -17,6 +18,7 @@ import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.databinding.FragmentDemoStartBinding
 import com.vcheck.demo.dev.domain.CountryTO
 import com.vcheck.demo.dev.presentation.MainActivity
+import com.vcheck.demo.dev.presentation.liveness.LivenessActivity
 import com.vcheck.demo.dev.presentation.transferrable_objects.CountriesListTO
 import java.util.*
 
@@ -133,7 +135,8 @@ class DemoStartFragment : Fragment() {
         }
 
         _binding!!.btnLaunchMediaPipeDemo.setOnClickListener {
-            findNavController().navigate(R.id.action_demoStartFragment_to_livenessFragment2)
+            //findNavController().navigate(R.id.action_demoStartFragment_to_livenessFragment2)
+            startActivity(Intent(activity as MainActivity, LivenessActivity::class.java))
         }
 
         requestPermissionsLauncher.launch(

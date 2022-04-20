@@ -2,16 +2,21 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.vcheck.demo.dev">
-
     <!-- For loading images from gallery -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" tools:remove="android:maxSdkVersion"/>
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
-    <!-- For using the camera -->
-    <!-- <uses-permission android:name="android.permission.CAMERA" android:required="true" />-->
-    <!--    <uses-feature android:name="android.hardware.camera" android:required="true" />-->
-    <uses-permission android:name="android.permission.CAMERA" tools:remove="android:maxSdkVersion"/>
-    <!-- For logging solution events -->
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:remove="android:maxSdkVersion" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" /> <!-- For using the camera -->
+    <!-- <uses-permission android:name="android.permission.CAMERA" android:required="true" /> -->
+
+    <uses-permission
+        android:name="android.permission.CAMERA"
+        tools:remove="android:maxSdkVersion" /> <!-- For logging solution events -->
+
+    <uses-feature android:name="android.hardware.camera" android:required="true" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
@@ -24,13 +29,16 @@
     <application
         android:name=".VcheckDemoApp"
         android:allowBackup="true"
+        android:configChanges="locale"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.VCheckAndroidSDKDemo"
-        android:requestLegacyExternalStorage="true"
-        android:configChanges="locale">
+        android:theme="@style/Theme.VCheckAndroidSDKDemo">
+        <activity
+            android:name=".presentation.liveness.LivenessActivity"
+            android:exported="false" />
         <activity
             android:name=".presentation.MainActivity"
             android:exported="true">
@@ -47,7 +55,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"/>
+                android:resource="@xml/file_paths" />
         </provider>
     </application>
 

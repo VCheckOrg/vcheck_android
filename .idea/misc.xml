@@ -61,7 +61,9 @@
         <entry key="app/src/main/res/drawable/shape_for_blue_button.xml" value="0.1835" />
         <entry key="app/src/main/res/drawable/shape_for_text_field.xml" value="0.1835" />
         <entry key="app/src/main/res/drawable/shape_search_field.xml" value="0.1835" />
+        <entry key="app/src/main/res/layout/activity_liveness.xml" value="0.29257246376811596" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.29791666666666666" />
+        <entry key="app/src/main/res/layout/camera_fragment.xml" value="0.29257246376811596" />
         <entry key="app/src/main/res/layout/check_doc_info_fragment.xml" value="0.27219202898550726" />
         <entry key="app/src/main/res/layout/check_info_fragment.xml" value="0.2890625" />
         <entry key="app/src/main/res/layout/check_photo_fragment.xml" value="0.290625" />

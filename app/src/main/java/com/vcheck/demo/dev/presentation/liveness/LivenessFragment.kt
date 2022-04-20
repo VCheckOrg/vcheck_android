@@ -115,6 +115,8 @@ class LivenessFragment : Fragment() {
             SolutionGlSurfaceView(activity, facemesh!!.glContext, facemesh!!.glMajorVersion)
         glSurfaceView!!.setSolutionResultRenderer(FaceMeshResultGlRenderer())
         glSurfaceView!!.setRenderInputImage(true)
+
+
         facemesh!!.setResultListener { faceMeshResult: FaceMeshResult ->
             //logNoseLandmark(faceMeshResult,  /*showPixelValues=*/false)
 
