@@ -5,7 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#2A2A2A"
-    tools:context=".presentation.screens.FaceCheckFragment">
+    tools:context=".presentation.liveness.ui.FaceCheckFragment">
+
+    <FrameLayout
+        android:id="@+id/preview_display_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -14,7 +23,7 @@
         android:layout_marginTop="14dp"
         android:layout_marginEnd="12dp"
         android:layout_marginBottom="112dp"
-        app:cardBackgroundColor="#3C3C3C"
+        app:cardBackgroundColor="@color/transparent"
         app:cardCornerRadius="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -35,29 +44,29 @@
                 android:textColor="@color/white"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/preview_display_layout"
+                app:layout_constraintBottom_toTopOf="@+id/cosmetic_rounded_frame"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <FrameLayout
-                android:id="@+id/preview_display_layout"
-                android:layout_width="294dp"
-                android:layout_height="294dp"
+            <androidx.camera.view.PreviewView
+                android:id="@+id/cosmetic_rounded_frame"
+                android:layout_width="320dp"
+                android:layout_height="320dp"
                 android:background="@drawable/rounded_shape"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <ImageView
                 android:id="@+id/small_face"
                 android:layout_width="88dp"
                 android:layout_height="88dp"
                 android:src="@drawable/small_face"
-                app:layout_constraintCircle="@id/preview_display_layout"
+                app:layout_constraintCircle="@id/cosmetic_rounded_frame"
                 app:layout_constraintCircleAngle="45"
-                app:layout_constraintCircleRadius="140dp"
+                app:layout_constraintCircleRadius="160dp"
                 tools:ignore="ContentDescription,MissingConstraints" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/livenessInstructionsFragment"
-        android:name="com.vcheck.demo.dev.presentation.screens.LivenessInstructionsFragment"
+        android:name="com.vcheck.demo.dev.presentation.liveness.ui.LivenessInstructionsFragment"
         android:label="fragment_main"
         tools:layout="@layout/liveness_instructions_fragment">
         <action
@@ -17,7 +17,7 @@
 
     <fragment
         android:id="@+id/faceCheckFragment"
-        android:name="com.vcheck.demo.dev.presentation.screens.FaceCheckFragment"
+        android:name="com.vcheck.demo.dev.presentation.liveness.LivenessFragment"
         android:label="fragment_face_check"
         tools:layout="@layout/face_check_fragment">
         <action

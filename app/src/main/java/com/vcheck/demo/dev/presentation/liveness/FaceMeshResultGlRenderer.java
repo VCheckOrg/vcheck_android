@@ -1,5 +1,4 @@
-
-package com.vcheck.demo.dev.face_mesh;
+package com.vcheck.demo.dev.presentation.liveness;
 
 import android.opengl.GLES20;
 
@@ -76,60 +75,61 @@ public class FaceMeshResultGlRenderer implements ResultGlRenderer<FaceMeshResult
     if (result == null) {
       return;
     }
-    GLES20.glUseProgram(program);
-    GLES20.glUniformMatrix4fv(projectionMatrixHandle, 1, false, projectionMatrix, 0);
 
-    int numFaces = result.multiFaceLandmarks().size();
-    for (int i = 0; i < numFaces; ++i) {
-      drawLandmarks(
-          result.multiFaceLandmarks().get(i).getLandmarkList(),
-          FaceMeshConnections.FACEMESH_TESSELATION,
-          TESSELATION_COLOR,
-          TESSELATION_THICKNESS);
-      drawLandmarks(
-          result.multiFaceLandmarks().get(i).getLandmarkList(),
-          FaceMeshConnections.FACEMESH_RIGHT_EYE,
-          RIGHT_EYE_COLOR,
-          RIGHT_EYE_THICKNESS);
-      drawLandmarks(
-          result.multiFaceLandmarks().get(i).getLandmarkList(),
-          FaceMeshConnections.FACEMESH_RIGHT_EYEBROW,
-          RIGHT_EYEBROW_COLOR,
-          RIGHT_EYEBROW_THICKNESS);
-      drawLandmarks(
-          result.multiFaceLandmarks().get(i).getLandmarkList(),
-          FaceMeshConnections.FACEMESH_LEFT_EYE,
-          LEFT_EYE_COLOR,
-          LEFT_EYE_THICKNESS);
-      drawLandmarks(
-          result.multiFaceLandmarks().get(i).getLandmarkList(),
-          FaceMeshConnections.FACEMESH_LEFT_EYEBROW,
-          LEFT_EYEBROW_COLOR,
-          LEFT_EYEBROW_THICKNESS);
-      drawLandmarks(
-          result.multiFaceLandmarks().get(i).getLandmarkList(),
-          FaceMeshConnections.FACEMESH_FACE_OVAL,
-          FACE_OVAL_COLOR,
-          FACE_OVAL_THICKNESS);
-      drawLandmarks(
-          result.multiFaceLandmarks().get(i).getLandmarkList(),
-          FaceMeshConnections.FACEMESH_LIPS,
-          LIPS_COLOR,
-          LIPS_THICKNESS);
-      if (result.multiFaceLandmarks().get(i).getLandmarkCount()
-          == FaceMesh.FACEMESH_NUM_LANDMARKS_WITH_IRISES) {
-        drawLandmarks(
-            result.multiFaceLandmarks().get(i).getLandmarkList(),
-            FaceMeshConnections.FACEMESH_RIGHT_IRIS,
-            RIGHT_EYE_COLOR,
-            RIGHT_EYE_THICKNESS);
-        drawLandmarks(
-            result.multiFaceLandmarks().get(i).getLandmarkList(),
-            FaceMeshConnections.FACEMESH_LEFT_IRIS,
-            LEFT_EYE_COLOR,
-            LEFT_EYE_THICKNESS);
-      }
-    }
+//    GLES20.glUseProgram(program);
+//    GLES20.glUniformMatrix4fv(projectionMatrixHandle, 1, false, projectionMatrix, 0);
+//
+//    int numFaces = result.multiFaceLandmarks().size();
+//    for (int i = 0; i < numFaces; ++i) {
+//      drawLandmarks(
+//          result.multiFaceLandmarks().get(i).getLandmarkList(),
+//          FaceMeshConnections.FACEMESH_TESSELATION,
+//          TESSELATION_COLOR,
+//          TESSELATION_THICKNESS);
+//      drawLandmarks(
+//          result.multiFaceLandmarks().get(i).getLandmarkList(),
+//          FaceMeshConnections.FACEMESH_RIGHT_EYE,
+//          RIGHT_EYE_COLOR,
+//          RIGHT_EYE_THICKNESS);
+//      drawLandmarks(
+//          result.multiFaceLandmarks().get(i).getLandmarkList(),
+//          FaceMeshConnections.FACEMESH_RIGHT_EYEBROW,
+//          RIGHT_EYEBROW_COLOR,
+//          RIGHT_EYEBROW_THICKNESS);
+//      drawLandmarks(
+//          result.multiFaceLandmarks().get(i).getLandmarkList(),
+//          FaceMeshConnections.FACEMESH_LEFT_EYE,
+//          LEFT_EYE_COLOR,
+//          LEFT_EYE_THICKNESS);
+//      drawLandmarks(
+//          result.multiFaceLandmarks().get(i).getLandmarkList(),
+//          FaceMeshConnections.FACEMESH_LEFT_EYEBROW,
+//          LEFT_EYEBROW_COLOR,
+//          LEFT_EYEBROW_THICKNESS);
+//      drawLandmarks(
+//          result.multiFaceLandmarks().get(i).getLandmarkList(),
+//          FaceMeshConnections.FACEMESH_FACE_OVAL,
+//          FACE_OVAL_COLOR,
+//          FACE_OVAL_THICKNESS);
+//      drawLandmarks(
+//          result.multiFaceLandmarks().get(i).getLandmarkList(),
+//          FaceMeshConnections.FACEMESH_LIPS,
+//          LIPS_COLOR,
+//          LIPS_THICKNESS);
+//      if (result.multiFaceLandmarks().get(i).getLandmarkCount()
+//          == FaceMesh.FACEMESH_NUM_LANDMARKS_WITH_IRISES) {
+//        drawLandmarks(
+//            result.multiFaceLandmarks().get(i).getLandmarkList(),
+//            FaceMeshConnections.FACEMESH_RIGHT_IRIS,
+//            RIGHT_EYE_COLOR,
+//            RIGHT_EYE_THICKNESS);
+//        drawLandmarks(
+//            result.multiFaceLandmarks().get(i).getLandmarkList(),
+//            FaceMeshConnections.FACEMESH_LEFT_IRIS,
+//            LEFT_EYE_COLOR,
+//            LEFT_EYE_THICKNESS);
+//      }
+//    }
   }
 
   /**

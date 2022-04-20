@@ -1,6 +1,7 @@
 package com.vcheck.demo.dev.presentation.liveness
 
 import android.os.Bundle
+import android.os.SystemClock
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +14,6 @@ import com.google.mediapipe.solutioncore.SolutionGlSurfaceView
 import com.google.mediapipe.solutions.facemesh.FaceMeshResult
 import com.google.mediapipe.framework.TextureFrame
 import com.google.mediapipe.solutions.facemesh.FaceMeshOptions
-import com.vcheck.demo.dev.face_mesh.FaceMeshResultGlRenderer
 import com.vcheck.demo.dev.R
 import org.jetbrains.kotlinx.multik.api.d2array
 import org.jetbrains.kotlinx.multik.api.mk
@@ -30,10 +30,13 @@ class LivenessFragment : Fragment() {
     private var cameraInput: CameraInput? = null
     private var glSurfaceView: SolutionGlSurfaceView<FaceMeshResult>? = null
 
+    private var debounceTime: Long = 0
+
     companion object {
         private const val TAG = "LivenessFragment"
         // Run the pipeline and the model inference on GPU or CPU.
         private const val RUN_ON_GPU = true
+        private const val DEBOUNCE_PROCESS_MILLIS = 600
     }
 
     override fun onCreateView(
@@ -42,6 +45,7 @@ class LivenessFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_liveness, container, false)
+        debounceTime = SystemClock.elapsedRealtime()
         setupStreamingModePipeline(rootView)
         return rootView
     }
@@ -163,18 +167,41 @@ class LivenessFragment : Fragment() {
         }
     }
 
-    private fun get2DArrayFromMotionUpdate(result: FaceMeshResult?) : D2Array<Float>? {
+    private fun processLandmarks(faceMeshResult: FaceMeshResult) {
+        // convert markers to 2DArray each 1 second (may vary)
+        if (SystemClock.elapsedRealtime() - debounceTime >= DEBOUNCE_PROCESS_MILLIS) {
+            Log.d(TAG, "----  RESULT LISTENER WORKED WITH DEBOUNCE")
+            val convertResult = get2DArrayFromMotionUpdate(faceMeshResult)
+            if (convertResult != null) {
+                val eulerAnglesResultArr = LandmarkUtil.landmarksToEulerAngles(convertResult)
+                Log.d(
+                    TAG, "=========== EULER ANGLES " +
+                            " | pitch: ${eulerAnglesResultArr[0]}")  // from -30.0 to 30.0 degrees
+                //" | yaw: ${eulerAnglesResultArr[1]}" +
+                //" | roll: ${eulerAnglesResultArr[2]}")
+
+//                val mouthAspectRatio = LandmarkUtil.landmarksToMouthAspectRatio(convertResult)
+//                Log.d(TAG, "========= MOUTH ASPECT RATIO: $mouthAspectRatio")  // >= 055
+            }
+            debounceTime = SystemClock.elapsedRealtime()
+        }
+    }
+
+    private fun get2DArrayFromMotionUpdate(result: FaceMeshResult?) : D2Array<Double>? {
         if (result == null || result.multiFaceLandmarks().isEmpty()) {
             return null
         }
-        val twoDimArray = mk.d2array(468, 3) { it.toFloat() }
+        val twoDimArray = mk.d2array(468, 3) { it.toDouble() }
 
         result.multiFaceLandmarks()[0].landmarkList.forEachIndexed { idx, landmark ->
 
-            val arr = mk.ndarray(floatArrayOf(landmark.x, landmark.y, 1 - landmark.z))
+            val arr = mk.ndarray(doubleArrayOf(
+                landmark.x.toDouble(),
+                landmark.y.toDouble(),
+                (1 - landmark.z).toDouble()))  //was Float typing!
 
-            Log.i(TAG, "--------------- IDX: $idx")
-            Log.i(TAG, "--------------- x: ${arr[0]} | y: ${arr[1]} | z: ${arr[2]}")
+//            Log.i(TAG, "--------------- IDX: $idx")
+//            Log.i(TAG, "--------------- x: ${arr[0]} | y: ${arr[1]} | z: ${arr[2]}")
 
             try {
                 if (!arr.isEmpty()) {
@@ -186,6 +213,7 @@ class LivenessFragment : Fragment() {
         }
         return twoDimArray
     }
+
 
 
 

@@ -16,3 +16,4 @@ rootProject.name = "VCheckAndroidSDKDemo"
 include ':app'
 
 include ':opencv'
+include ':multik'

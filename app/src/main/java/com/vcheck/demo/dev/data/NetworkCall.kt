@@ -1,5 +1,6 @@
 package com.vcheck.demo.dev.data
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.vcheck.demo.dev.domain.ApiError
@@ -31,8 +32,14 @@ open class NetworkCall<T> {
             if (response.isSuccessful)
                 result.value = Resource.success(response.body())
             else {
-                val errorResponse = Gson().fromJson(response.errorBody()!!.charStream(),
-                    BaseClientResponseModel::class.java)
+
+                val errorResponse: BaseClientResponseModel = try {
+                    Gson().fromJson(response.errorBody()!!.charStream(),
+                        BaseClientResponseModel::class.java)
+                } catch (e: Exception) {
+                    Log.w("OkHttpClient", "Error parsing JSON on non-0 code")
+                    BaseClientResponseModel(null, response.code(), "")
+                }
 
                 result.value = Resource.error(
                     ApiError("Error [${response.code()}] : ${errorResponse.message}")
