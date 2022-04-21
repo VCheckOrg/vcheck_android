@@ -82,7 +82,7 @@
     <string name="look_stratight_error_title">You didn\'t look straight</string>
     <string name="no_time_title">The time to complete the movement has expired</string>
     <string name="in_process_title">Application sent for verification</string>
-    <string name="no_time_correct_text">Everything was completed correctly, send for verification</string>
+    <string name="no_time_correct_text"><u>Everything was completed correctly, send for verification</u></string>
     <string name="no_camera_link_button">Copy link</string>
     <string name="passport_title">Upload a photo of the front spread (spread with your photo).</string>
     <string name="os_not_support_description">Unfortunately, this mobile OS is not supported. To successfully complete the verification procedure, we recommend that you copy the link below and continue on your personal computer</string>
@@ -119,11 +119,8 @@
     <string name="reload_photo">Try again</string>
     <string name="check_doc_fields_validation_error">Some document fields are not properly filled or empty</string>
     <string name="field_validation_error">Validation error: wrong format</string>
-
     <string name="liveness_stage_check_face_pos">Align face and close mouth</string>
-    <string name="liveness_stage_face_left">Turn face to the right</string>
-    <string name="liveness_stage_face_right">Turn face to the left</string>
+    <string name="liveness_stage_face_left">Turn face to the left</string>
+    <string name="liveness_stage_face_right">Turn face to the right</string>
     <string name="liveness_stage_open_mouth">Open mouth</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -13,12 +13,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/successFragment"
-        android:name="com.vcheck.demo.dev.presentation.screens.SuccessFragment"
-        android:label="fragment_success"
-        tools:layout="@layout/success_fragment" />
-
-    <fragment
         android:id="@+id/chooseCountryFragment"
         android:name="com.vcheck.demo.dev.presentation.country_stage.ChooseCountryFragment"
         android:label="choose_country_fragment"
@@ -69,30 +63,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/inProcessFragment"
-        android:name="com.vcheck.demo.dev.presentation.screens.InProcessFragment"
-        android:label="in_process_fragment"
-        tools:layout="@layout/in_process_fragment" />
-
-    <fragment
-        android:id="@+id/frameInterferenceFragment"
-        android:name="com.vcheck.demo.dev.presentation.screens.FrameInterferenceFragment"
-        android:label="frame_interference_fragment"
-        tools:layout="@layout/frame_interference_fragment" />
-
-    <fragment
-        android:id="@+id/lookStraightErrorFragment"
-        android:name="com.vcheck.demo.dev.presentation.screens.LookStraightErrorFragment"
-        android:label="look_straight_error_fragment"
-        tools:layout="@layout/look_straight_error_fragment" />
-
-    <fragment
-        android:id="@+id/noTimeFragment"
-        android:name="com.vcheck.demo.dev.presentation.screens.NoTimeFragment"
-        android:label="no_time_fragment"
-        tools:layout="@layout/no_time_fragment" />
-
-    <fragment
         android:id="@+id/photoInstructionsFragment"
         android:name="com.vcheck.demo.dev.presentation.photo_upload_stage.PhotoInstructionsFragment"
         android:label="photo_instructions_fragment"
@@ -103,22 +73,10 @@
     </fragment>
 
     <fragment
-        android:id="@+id/wrongMoveFragment"
-        android:name="com.vcheck.demo.dev.presentation.screens.WrongMoveFragment"
-        android:label="wrong_move_fragment"
-        tools:layout="@layout/wrong_move_fragment" />
-
-    <fragment
         android:id="@+id/errorFragment"
         android:name="com.vcheck.demo.dev.presentation.screens.ErrorFragment"
         android:label="error_fragment"
         tools:layout="@layout/error_fragment" />
-
-    <fragment
-        android:id="@+id/failVerificationFragment"
-        android:name="com.vcheck.demo.dev.presentation.screens.FailVerificationFragment"
-        android:label="fail_verification_fragment"
-        tools:layout="@layout/fail_verification_fragment" />
 
     <fragment
         android:id="@+id/noCameraFragment"

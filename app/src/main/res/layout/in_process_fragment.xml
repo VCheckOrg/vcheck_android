@@ -1,24 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:scrollbars="none"
-    tools:context=".presentation.screens.InProcessFragment">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="#2A2A2A">
+    tools:context=".presentation.liveness.ui.InProcessFragment"
+    android:background="#2A2A2A">
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="524dp"
+            android:layout_height="560dp"
             android:layout_marginStart="12dp"
-            android:layout_marginTop="14dp"
             android:layout_marginEnd="12dp"
-            android:layout_marginBottom="32dp"
             app:cardBackgroundColor="#3C3C3C"
             app:cardCornerRadius="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -76,7 +70,7 @@
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/in_process_button"
-                    android:layout_width="264dp"
+                    android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="44dp"
@@ -96,5 +90,3 @@
         </androidx.cardview.widget.CardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-</ScrollView>

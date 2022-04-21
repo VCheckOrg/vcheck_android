@@ -62,6 +62,7 @@
     </FrameLayout>
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/livenessCosmeticsHolder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginStart="12dp"
@@ -107,8 +108,8 @@
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/face_animation_view"
-                android:layout_width="88dp"
-                android:layout_height="88dp"
+                android:layout_width="95dp"
+                android:layout_height="95dp"
                 android:scaleType="fitXY"
                 android:scaleX="2"
                 android:scaleY="2"

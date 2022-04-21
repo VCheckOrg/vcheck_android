@@ -10,6 +10,7 @@ import android.os.SystemClock
 import android.util.Log
 import android.util.Size
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.google.mediapipe.solutions.facemesh.FaceMesh
@@ -42,6 +43,7 @@ class LivenessActivity : AppCompatActivity(),
         private const val STATIC_PIPELINE_IMAGE_MODE = true
         private const val REFINE_PIPELINE_LANDMARKS = true
         private const val DEBOUNCE_PROCESS_MILLIS = 600
+        private const val LIVENESS_TIME_LIMIT_MILLIS = 20000
     }
 
     //refactor to protected
@@ -49,12 +51,13 @@ class LivenessActivity : AppCompatActivity(),
 
     private var facemesh: FaceMesh? = null
     private var faceCheckDebounceTime: Long = 0
+    private var livenessSessionLimitCheckTime: Long = 0
+    private var isLivenessSessionFinished: Boolean = false
 
     private var binding: ActivityLivenessBinding? = null
 
-    private val milestoneFlow: StandardMilestoneFlow =
+    private var milestoneFlow: StandardMilestoneFlow =
         StandardMilestoneFlow(this@LivenessActivity)
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,13 +67,26 @@ class LivenessActivity : AppCompatActivity(),
         val view = binding!!.root
         setContentView(view)
 
-        faceCheckDebounceTime = SystemClock.elapsedRealtime()
+        resetMilestonesForNewLivenessSession()
+
         setupStreamingModePipeline()
-
         setCameraFragment()
+    }
 
+    fun resetMilestonesForNewLivenessSession() {
+        milestoneFlow = StandardMilestoneFlow(this@LivenessActivity)
+        livenessSessionLimitCheckTime = SystemClock.elapsedRealtime()
+        faceCheckDebounceTime = SystemClock.elapsedRealtime()
+    }
+
+    fun resetUIForNewLivenessSession() {
+        binding!!.livenessCosmeticsHolder.isVisible = true
         binding!!.checkFaceTitle.text = getString(R.string.liveness_stage_check_face_pos)
-        //binding!!.faceAnimationView.repeatCount = LottieDrawable.INFINITE
+        binding!!.faceAnimationView.cancelAnimation()
+    }
+
+    fun finishLivenessSession() {
+        isLivenessSessionFinished = true
     }
 
     private fun setupStreamingModePipeline() {
@@ -80,12 +96,24 @@ class LivenessActivity : AppCompatActivity(),
                 .setStaticImageMode(STATIC_PIPELINE_IMAGE_MODE)
                 .setRefineLandmarks(REFINE_PIPELINE_LANDMARKS)
                 .setRunOnGpu(RUN_PIPELINE_ON_GPU)
+                .setMaxNumFaces(1)
                 .build())
         facemesh!!.setErrorListener { message: String, e: RuntimeException? ->
-            Log.e(TAG, "MediaPipe Face Mesh error : $message")
+            Log.e(TAG, "======= MediaPipe Face Mesh error : $message")
         }
         facemesh!!.setResultListener { faceMeshResult: FaceMeshResult ->
-            processLandmarks(faceMeshResult)
+            if (enoughTimeForNextGesture()) {
+                processLandmarks(faceMeshResult)
+            } else {
+                if (!isLivenessSessionFinished) {
+                    runOnUiThread {
+                        livenessSessionLimitCheckTime = SystemClock.elapsedRealtime()
+                        binding!!.livenessCosmeticsHolder.isVisible = false
+                        findNavController(R.id.liveness_host_fragment)
+                            .navigate(R.id.action_dummyLivenessStartDestFragment_to_noTimeFragment)
+                    }
+                }
+            }
         }
     }
 
@@ -110,21 +138,20 @@ class LivenessActivity : AppCompatActivity(),
                     binding!!.checkFaceTitle.text = getString(R.string.liveness_stage_open_mouth)
                 }
                 GestureMilestoneType.MouthOpenMilestone -> {
+                    binding!!.livenessCosmeticsHolder.isVisible = false
                     findNavController(R.id.liveness_host_fragment)
                         .navigate(R.id.action_dummyLivenessStartDestFragment_to_inProcessFragment)
-
                 }
                 else -> {
                     //Stub. Cases in which results we are not straightly concerned
                 }
             }
         }
-
     }
 
     private fun processLandmarks(faceMeshResult: FaceMeshResult) {
         // convert markers to 2DArray each 1 second or less (may vary)
-        if (SystemClock.elapsedRealtime() - faceCheckDebounceTime >= DEBOUNCE_PROCESS_MILLIS) {
+        if (mayProcessNextLandmarkArray()) {
             val convertResult = get2DArrayFromMotionUpdate(faceMeshResult)
             if (convertResult != null) {
                 val pitchAngle = LandmarksProcessingUtil.landmarksToEulerAngles(convertResult)[0]
@@ -135,6 +162,15 @@ class LivenessActivity : AppCompatActivity(),
             }
             faceCheckDebounceTime = SystemClock.elapsedRealtime()
         }
+    }
+
+    private fun mayProcessNextLandmarkArray(): Boolean {
+        return (SystemClock.elapsedRealtime() - faceCheckDebounceTime >= DEBOUNCE_PROCESS_MILLIS)
+                && !isLivenessSessionFinished
+    }
+
+    private fun enoughTimeForNextGesture(): Boolean {
+        return SystemClock.elapsedRealtime() - livenessSessionLimitCheckTime <= LIVENESS_TIME_LIMIT_MILLIS
     }
 
     private fun get2DArrayFromMotionUpdate(result: FaceMeshResult?) : D2Array<Double>? {

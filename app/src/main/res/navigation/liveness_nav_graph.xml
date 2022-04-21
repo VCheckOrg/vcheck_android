@@ -12,11 +12,51 @@
         <action
             android:id="@+id/action_dummyLivenessStartDestFragment_to_inProcessFragment"
             app:destination="@id/inProcessFragment" />
+        <action
+            android:id="@+id/action_dummyLivenessStartDestFragment_to_noTimeFragment"
+            app:destination="@id/noTimeFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/inProcessFragment"
-        android:name="com.vcheck.demo.dev.presentation.screens.InProcessFragment"
+        android:name="com.vcheck.demo.dev.presentation.liveness.ui.InProcessFragment"
         android:label="in_process_fragment"
         tools:layout="@layout/in_process_fragment" />
+
+    <fragment
+        android:id="@+id/noTimeFragment"
+        android:name="com.vcheck.demo.dev.presentation.liveness.ui.NoTimeFragment"
+        android:label="no_time_fragment"
+        tools:layout="@layout/no_time_fragment" />
+
+    <fragment
+        android:id="@+id/successFragment"
+        android:name="com.vcheck.demo.dev.presentation.liveness.ui.SuccessFragment"
+        android:label="fragment_success"
+        tools:layout="@layout/success_fragment" />
+
+    <fragment
+        android:id="@+id/lookStraightErrorFragment"
+        android:name="com.vcheck.demo.dev.presentation.screens.LookStraightErrorFragment"
+        android:label="look_straight_error_fragment"
+        tools:layout="@layout/look_straight_error_fragment" />
+
+    <fragment
+        android:id="@+id/frameInterferenceFragment"
+        android:name="com.vcheck.demo.dev.presentation.screens.FrameInterferenceFragment"
+        android:label="frame_interference_fragment"
+        tools:layout="@layout/frame_interference_fragment" />
+
+    <fragment
+        android:id="@+id/wrongMoveFragment"
+        android:name="com.vcheck.demo.dev.presentation.screens.WrongMoveFragment"
+        android:label="wrong_move_fragment"
+        tools:layout="@layout/wrong_move_fragment" />
+
+    <fragment
+        android:id="@+id/failVerificationFragment"
+        android:name="com.vcheck.demo.dev.presentation.screens.FailVerificationFragment"
+        android:label="fail_verification_fragment"
+        tools:layout="@layout/fail_verification_fragment" />
+
 </navigation>

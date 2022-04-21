@@ -69,7 +69,7 @@
     <string name="look_stratight_error_title">Ви не дивилися прямо</string>
     <string name="in_process_title">Заявку надіслано на перевірку</string>
     <string name="no_time_title">Час на виконання руху закінчився</string>
-    <string name="no_time_correct_text">Все було пройдено коректно, відправити на перевірку</string>
+    <string name="no_time_correct_text"><u>Все було пройдено коректно, відправити на перевірку</u></string>
     <string name="no_camera_link_button">Копіювати посилання</string>
     <string name="passport_title">Завантажте фото лицьового розвороту (розворот із вашим фото).</string>
     <string name="look_stratight_error_send_text">Все було пройдено коректно, відправити на перевірку</string>
@@ -111,7 +111,7 @@
     <string name="field_validation_error">Невірний формат заповнення поля</string>
 
     <string name="liveness_stage_check_face_pos">Вировняйте обличчя і закрийте ріт</string>
-    <string name="liveness_stage_face_left">Поверніть обличчя праворуч</string>
-    <string name="liveness_stage_face_right">Поверніть обличчя ліворуч</string>
+    <string name="liveness_stage_face_left">Поверніть обличчя ліворуч</string>
+    <string name="liveness_stage_face_right">Поверніть обличчя праворуч</string>
     <string name="liveness_stage_open_mouth">Відкрийте ріт</string>
 </resources>
