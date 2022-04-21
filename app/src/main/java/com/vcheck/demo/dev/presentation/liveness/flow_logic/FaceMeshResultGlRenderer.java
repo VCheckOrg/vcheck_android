@@ -1,4 +1,4 @@
-package com.vcheck.demo.dev.presentation.liveness;
+package com.vcheck.demo.dev.presentation.liveness.flow_logic;
 
 import android.opengl.GLES20;
 

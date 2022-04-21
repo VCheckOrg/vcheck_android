@@ -3,104 +3,128 @@ package com.vcheck.demo.dev.presentation.liveness
 import android.app.Fragment
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.Matrix
 import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
-import android.media.Image
 import android.media.ImageReader
 import android.os.Bundle
 import android.os.SystemClock
-import android.util.AttributeSet
 import android.util.Log
 import android.util.Size
-import android.view.Surface
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.airbnb.lottie.LottieAnimationView
-import com.google.mediapipe.solutioncore.CameraInput
-import com.google.mediapipe.solutioncore.SolutionGlSurfaceView
+import com.airbnb.lottie.LottieDrawable
 import com.google.mediapipe.solutions.facemesh.FaceMesh
 import com.google.mediapipe.solutions.facemesh.FaceMeshOptions
 import com.google.mediapipe.solutions.facemesh.FaceMeshResult
 import com.vcheck.demo.dev.R
-import com.vcheck.demo.dev.util.ImageUtils
+import com.vcheck.demo.dev.databinding.ActivityLivenessBinding
+import com.vcheck.demo.dev.presentation.liveness.flow_logic.GestureMilestoneType
+import com.vcheck.demo.dev.presentation.liveness.flow_logic.MilestoneResultListener
+import com.vcheck.demo.dev.presentation.liveness.flow_logic.StandardMilestoneFlow
+import com.vcheck.demo.dev.presentation.liveness.flow_logic.LandmarksProcessingUtil
+import com.vcheck.demo.dev.presentation.liveness.flow_logic.LivenessCameraParams
+import com.vcheck.demo.dev.presentation.liveness.flow_logic.getScreenOrientation
+import com.vcheck.demo.dev.presentation.liveness.flow_logic.onImageAvailableImpl
+import com.vcheck.demo.dev.presentation.liveness.ui.CameraConnectionFragment
 import org.jetbrains.kotlinx.multik.api.d2array
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.api.ndarray
 import org.jetbrains.kotlinx.multik.ndarray.data.D2Array
 import org.jetbrains.kotlinx.multik.ndarray.data.get
 import org.jetbrains.kotlinx.multik.ndarray.data.set
-import java.lang.IndexOutOfBoundsException
-import java.lang.RuntimeException
 
-
-class LivenessActivity : AppCompatActivity(), ImageReader.OnImageAvailableListener {
+class LivenessActivity : AppCompatActivity(),
+    ImageReader.OnImageAvailableListener,
+    MilestoneResultListener {
 
     companion object {
         const val TAG = "LivenessActivity"
-        // Run the pipeline and the model inference on GPU or CPU.
-        private const val RUN_ON_GPU = true
+        private const val RUN_PIPELINE_ON_GPU = true
+        private const val STATIC_PIPELINE_IMAGE_MODE = true
+        private const val REFINE_PIPELINE_LANDMARKS = true
         private const val DEBOUNCE_PROCESS_MILLIS = 600
     }
 
-    private var facemesh: FaceMesh? = null
+    //refactor to protected
+    val openLivenessCameraParams: LivenessCameraParams = LivenessCameraParams()
 
-    private var debounceTime: Long = 0
+    private var facemesh: FaceMesh? = null
+    private var faceCheckDebounceTime: Long = 0
+
+    private var binding: ActivityLivenessBinding? = null
+
+    private val milestoneFlow: StandardMilestoneFlow =
+        StandardMilestoneFlow(this@LivenessActivity)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_liveness)
+        //setContentView(R.layout.activity_liveness)
 
-        debounceTime = SystemClock.elapsedRealtime()
+        binding = ActivityLivenessBinding.inflate(layoutInflater)
+        val view = binding!!.root
+        setContentView(view)
+
+        faceCheckDebounceTime = SystemClock.elapsedRealtime()
         setupStreamingModePipeline()
 
-        //TODO make cycle animation
-        val animation: LottieAnimationView = findViewById(R.id.animation_view)
-        animation.playAnimation()
+        setCameraFragment()
 
-        setFragment()
+        binding!!.faceAnimationView.repeatCount = LottieDrawable.INFINITE
+        binding!!.faceAnimationView.playAnimation()
     }
 
-    var previewHeight = 0;
-    var previewWidth = 0
-    var sensorOrientation = 0;
+    override fun onResume() {
+        super.onResume()
+    }
 
-    fun setupStreamingModePipeline() {
+    private fun setupStreamingModePipeline() {
         facemesh = FaceMesh(
             this@LivenessActivity,
             FaceMeshOptions.builder()
-                .setStaticImageMode(true)
-                .setRefineLandmarks(true)
-                .setRunOnGpu(RUN_ON_GPU)
-                .build()
-        )
+                .setStaticImageMode(STATIC_PIPELINE_IMAGE_MODE)
+                .setRefineLandmarks(REFINE_PIPELINE_LANDMARKS)
+                .setRunOnGpu(RUN_PIPELINE_ON_GPU)
+                .build())
         facemesh!!.setErrorListener { message: String, e: RuntimeException? ->
-            Log.e(TAG, "MediaPipe Face Mesh error:$message")
+            Log.e(TAG, "MediaPipe Face Mesh error : $message")
         }
-
         facemesh!!.setResultListener { faceMeshResult: FaceMeshResult ->
-            //Log.d(TAG, "----  RESULT LISTENER WORKED")
             processLandmarks(faceMeshResult)
         }
     }
 
+    override fun onMilestoneResult(gestureMilestoneType: GestureMilestoneType) {
+        when (gestureMilestoneType) {
+            GestureMilestoneType.CheckHeadPositionMilestone -> {
+                Log.d(TAG, "-----------======== INIT STAGE (0)")
+            }
+            GestureMilestoneType.OuterLeftHeadPitchMilestone -> {
+                Log.d(TAG, "-----------======== HEAD LEFT STAGE (1)")
+            }
+            GestureMilestoneType.OuterRightHeadPitchMilestone -> {
+                Log.d(TAG, "-----------======== HEAD RIGHT STAGE (2)")
+            }
+            GestureMilestoneType.MouthOpenMilestone -> {
+                Log.d(TAG, "-----------======== MOUTH OPENED STAGE (3)")
+            } else -> {
+                //Cases in which we are not concerned
+            }
+        }
+    }
+
     private fun processLandmarks(faceMeshResult: FaceMeshResult) {
-        // convert markers to 2DArray each 1 second (may vary)
-        if (SystemClock.elapsedRealtime() - debounceTime >= DEBOUNCE_PROCESS_MILLIS) {
-            Log.d(TAG, "----  RESULT LISTENER WORKED WITH DEBOUNCE")
+        // convert markers to 2DArray each 1 second or less (may vary)
+        if (SystemClock.elapsedRealtime() - faceCheckDebounceTime >= DEBOUNCE_PROCESS_MILLIS) {
             val convertResult = get2DArrayFromMotionUpdate(faceMeshResult)
             if (convertResult != null) {
-                //val eulerAnglesResultArr = LandmarkUtil.landmarksToEulerAngles(convertResult)
-//                Log.d(TAG, "=========== EULER ANGLES " +
-//                            " | pitch: ${eulerAnglesResultArr[0]}")  // from -30.0 to 30.0 degrees
-                //" | yaw: ${eulerAnglesResultArr[1]}" +
-                //" | roll: ${eulerAnglesResultArr[2]}")
+                val pitchAngle = LandmarksProcessingUtil.landmarksToEulerAngles(convertResult)[0]
+                val mouthAspectRatio = LandmarksProcessingUtil.landmarksToMouthAspectRatio(convertResult)
 
-                val mouthAspectRatio = LandmarkUtil.landmarksToMouthAspectRatio(convertResult)
-                Log.d(TAG, "========= MOUTH ASPECT RATIO: $mouthAspectRatio")  // >= 055
+                Log.d(TAG, "========= MOUTH ASPECT RATIO: $mouthAspectRatio | PITCH: $pitchAngle")
+                milestoneFlow.checkCurrentStage(pitchAngle, mouthAspectRatio)
             }
-            debounceTime = SystemClock.elapsedRealtime()
+            faceCheckDebounceTime = SystemClock.elapsedRealtime()
         }
     }
 
@@ -116,52 +140,41 @@ class LivenessActivity : AppCompatActivity(), ImageReader.OnImageAvailableListen
                 landmark.x.toDouble(),
                 landmark.y.toDouble(),
                 (1 - landmark.z).toDouble()))  //was Float typing!
-
-//            Log.i(TAG, "--------------- IDX: $idx")
-//            Log.i(TAG, "--------------- x: ${arr[0]} | y: ${arr[1]} | z: ${arr[2]}")
-
             try {
                 if (!arr.isEmpty()) {
                     twoDimArray[idx] = arr
                 }
             } catch (e: IndexOutOfBoundsException) {
-                Log.w(TAG, e.message ?: "2D MARKER ARRAY: caught IndexOutOfBoundsException")
+                //Log.w(TAG, e.message ?: "2D MARKER ARRAY: caught IndexOutOfBoundsException")
             }
         }
         return twoDimArray
     }
 
-    //TODO fragment which show llive footage from camera
-    protected fun setFragment() {
-        val manager =
-            getSystemService(Context.CAMERA_SERVICE) as CameraManager
+   private fun setCameraFragment() {
+        val cameraManager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
         var cameraId: String? = null
-//        try {
-//            cameraId = manager.cameraIdList[1]
-//        } catch (e: CameraAccessException) {
-//            e.printStackTrace()
-//        }
         try {
-            for (cameraIdx in manager.cameraIdList) {
-                val chars: CameraCharacteristics = manager.getCameraCharacteristics(cameraIdx)
+            for (cameraIdx in cameraManager.cameraIdList) {
+                val chars: CameraCharacteristics = cameraManager.getCameraCharacteristics(cameraIdx)
                 //val keys: List<CameraCharacteristics.Key<*>> = chars.keys
                 if (CameraCharacteristics.LENS_FACING_FRONT == chars.get(CameraCharacteristics.LENS_FACING)) {
-                    // This is the one we want.
                     cameraId = cameraIdx
                     break
                 }
             }
         } catch (e: Exception) {
-            Log.e(TAG, "CAMERA ID ERROR: ${e.message}")
+            Log.e(TAG, "FRONT CAMERA DETECTION ERROR: ${e.message}")
         }
+
         val fragment: Fragment
         val camera2Fragment = CameraConnectionFragment.newInstance(
             object :
                 CameraConnectionFragment.ConnectionCallback {
-                override fun onPreviewSizeChosen(size: Size?, rotation: Int) {
-                    previewHeight = size!!.height
-                    previewWidth = size.width
-                    sensorOrientation = rotation - getScreenOrientation()
+                override fun onPreviewSizeChosen(size: Size?, cameraRotation: Int) {
+                    openLivenessCameraParams.previewHeight = size!!.height
+                    openLivenessCameraParams.previewWidth = size.width
+                    openLivenessCameraParams.sensorOrientation = cameraRotation - getScreenOrientation()
                 }
             },
             this,
@@ -173,104 +186,34 @@ class LivenessActivity : AppCompatActivity(), ImageReader.OnImageAvailableListen
         fragmentManager.beginTransaction().replace(R.id.container, fragment).commit()
     }
 
-    protected fun getScreenOrientation(): Int {
-        return when (windowManager.defaultDisplay.rotation) {
-            Surface.ROTATION_270 -> 270
-            Surface.ROTATION_180 -> 180
-            Surface.ROTATION_90 -> 90
-            else -> 0
-        }
-    }
-
     //TODO getting frames of live camera footage and passing them to model
-    private var isProcessingFrame = false
-    private val yuvBytes = arrayOfNulls<ByteArray>(3)
-    private var rgbBytes: IntArray? = null
-    private var yRowStride = 0
-    private var postInferenceCallback: Runnable? = null
-    private var imageConverter: Runnable? = null
-    private var rgbFrameBitmap: Bitmap? = null
-    override fun onImageAvailable(reader: ImageReader) {
-        // We need wait until we have some size from onPreviewSizeChosen
-        if (previewWidth == 0 || previewHeight == 0) {
-            return
-        }
-        if (rgbBytes == null) {
-            rgbBytes = IntArray(previewWidth * previewHeight)
-        }
-        try {
-            val image = reader.acquireLatestImage() ?: return
-            if (isProcessingFrame) {
-                image.close()
-                return
-            }
-            isProcessingFrame = true
-            val planes = image.planes
-            fillBytes(planes, yuvBytes)
-            yRowStride = planes[0].rowStride
-            val uvRowStride = planes[1].rowStride
-            val uvPixelStride = planes[1].pixelStride
-            imageConverter = Runnable {
-                ImageUtils.convertYUV420ToARGB8888(
-                    yuvBytes[0]!!,
-                    yuvBytes[1]!!,
-                    yuvBytes[2]!!,
-                    previewWidth,
-                    previewHeight,
-                    yRowStride,
-                    uvRowStride,
-                    uvPixelStride,
-                    rgbBytes!!
-                )
-            }
-            postInferenceCallback = Runnable {
-                image.close()
-                isProcessingFrame = false
-            }
-            processImage()
-        } catch (e: Exception) {
-            return
-        }
+    override fun onImageAvailable(reader: ImageReader?) {
+        onImageAvailableImpl(reader)
     }
 
+    fun processImage() {
+        openLivenessCameraParams.apply {
+            imageConverter!!.run()
+            rgbFrameBitmap = Bitmap.createBitmap(previewWidth, previewHeight, Bitmap.Config.ARGB_8888)
+            rgbFrameBitmap?.setPixels(rgbBytes, 0, previewWidth, 0, 0, previewWidth, previewHeight)
 
-    private fun processImage() {
-        imageConverter!!.run()
-        rgbFrameBitmap = Bitmap.createBitmap(previewWidth, previewHeight, Bitmap.Config.ARGB_8888)
-        rgbFrameBitmap?.setPixels(rgbBytes, 0, previewWidth, 0, 0, previewWidth, previewHeight)
+            //sending bitmap to FaceMesh to process
+            facemesh!!.send(rgbFrameBitmap)
 
-
-        facemesh!!.send(rgbFrameBitmap)
-
-        postInferenceCallback!!.run()
-    }
-
-    protected fun fillBytes(
-        planes: Array<Image.Plane>,
-        yuvBytes: Array<ByteArray?>
-    ) {
-        // Because of the variable row stride it's not possible to know in
-        // advance the actual necessary dimensions of the yuv planes.
-        for (i in planes.indices) {
-            val buffer = planes[i].buffer
-            if (yuvBytes[i] == null) {
-                yuvBytes[i] = ByteArray(buffer.capacity())
-            }
-            buffer[yuvBytes[i]]
+            postInferenceCallback!!.run()
         }
-    }
-
-
-    //TODO rotate image if image captured on samsung devices (?)
-    //Most phone cameras are landscape, meaning if you take the photo in portrait, the resulting photos will be rotated 90 degrees.
-    fun rotateBitmap(input: Bitmap): Bitmap? {
-        Log.d("trySensor", sensorOrientation.toString() + "     " + getScreenOrientation())
-        val rotationMatrix = Matrix()
-        rotationMatrix.setRotate(sensorOrientation.toFloat())
-        return Bitmap.createBitmap(input, 0, 0, input.width, input.height, rotationMatrix, true)
     }
 
     override fun onDestroy() {
         super.onDestroy()
     }
+
+    //            Log.i(TAG, "--------------- IDX: $idx")
+    //            Log.i(TAG, "--------------- x: ${arr[0]} | y: ${arr[1]} | z: ${arr[2]}")
+
+    //Log.d(TAG, "=========== EULER ANGLES " +
+    //" | pitch: ${eulerAnglesResultArr[0]}")  // from -30.0 to 30.0 degrees
+    //" | yaw: ${eulerAnglesResultArr[1]}" +
+    //" | roll: ${eulerAnglesResultArr[2]}")
+    //Log.d(TAG, "========= MOUTH ASPECT RATIO: $mouthAspectRatio")  // >= 055
 }

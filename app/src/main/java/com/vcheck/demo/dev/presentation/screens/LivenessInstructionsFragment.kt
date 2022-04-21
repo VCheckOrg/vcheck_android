@@ -1,4 +1,4 @@
-package com.vcheck.demo.dev.presentation.liveness.ui
+package com.vcheck.demo.dev.presentation.screens
 
 import android.content.Intent
 import android.os.Bundle

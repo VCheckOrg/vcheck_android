@@ -1,4 +1,4 @@
-package com.vcheck.demo.dev.presentation.liveness
+package com.vcheck.demo.dev.presentation.liveness.ui
 
 
 import android.Manifest
@@ -33,7 +33,6 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import com.vcheck.demo.dev.R
-import com.vcheck.demo.dev.presentation.liveness.ui.AutoFitTextureView
 import java.util.*
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit

@@ -9,7 +9,7 @@
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-package com.vcheck.demo.dev.presentation.liveness;
+package com.vcheck.demo.dev.presentation.liveness.flow_logic;
 
 import android.content.Context;
 import android.graphics.Bitmap;

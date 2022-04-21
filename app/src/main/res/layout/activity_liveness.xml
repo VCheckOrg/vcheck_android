@@ -73,17 +73,20 @@
 <!--                tools:ignore="ContentDescription,MissingConstraints" />-->
 
             <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/animation_view"
+                android:id="@+id/face_animation_view"
                 android:layout_width="88dp"
                 android:layout_height="88dp"
                 app:lottie_rawRes="@raw/left"
+                android:scaleType="fitXY"
+                android:scaleX="2"
+                android:scaleY="2"
                 app:layout_constraintCircle="@id/cosmetic_rounded_frame"
                 app:layout_constraintCircleAngle="45"
                 app:layout_constraintCircleRadius="160dp"
                 tools:ignore="ContentDescription,MissingConstraints" />
+
 <!--            // or-->
 <!--            app:lottie_fileName="hello_world.json"-->
-
 <!--            // Loop indefinitely-->
 <!--            app:lottie_loop="true"-->
 <!--            // Start playing as soon as the animation is loaded-->
