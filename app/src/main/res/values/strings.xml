@@ -119,4 +119,11 @@
     <string name="reload_photo">Try again</string>
     <string name="check_doc_fields_validation_error">Some document fields are not properly filled or empty</string>
     <string name="field_validation_error">Validation error: wrong format</string>
+
+    <string name="liveness_stage_check_face_pos">Align face and close mouth</string>
+    <string name="liveness_stage_face_left">Turn face to the right</string>
+    <string name="liveness_stage_face_right">Turn face to the left</string>
+    <string name="liveness_stage_open_mouth">Open mouth</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

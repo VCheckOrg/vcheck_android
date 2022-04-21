@@ -109,4 +109,9 @@
     <string name="reload_photo">Српобувати ще раз</string>
     <string name="check_doc_fields_validation_error">Перевірте правильність заповнення усіх полей документу</string>
     <string name="field_validation_error">Невірний формат заповнення поля</string>
+
+    <string name="liveness_stage_check_face_pos">Вировняйте обличчя і закрийте ріт</string>
+    <string name="liveness_stage_face_left">Поверніть обличчя праворуч</string>
+    <string name="liveness_stage_face_right">Поверніть обличчя ліворуч</string>
+    <string name="liveness_stage_open_mouth">Відкрийте ріт</string>
 </resources>

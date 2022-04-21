@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/liveness_nav_graph"/>
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/liveness_nav_graph"
+    app:startDestination="@id/dummyLivenessStartDestFragment">
+    <fragment
+        android:id="@+id/dummyLivenessStartDestFragment"
+        android:name="com.vcheck.demo.dev.presentation.liveness.ui.DummyLivenessStartDestFragment"
+        android:label="fragment_dummy_liveness_start_dest"
+        tools:layout="@layout/fragment_dummy_liveness_start_dest" >
+        <action
+            android:id="@+id/action_dummyLivenessStartDestFragment_to_inProcessFragment"
+            app:destination="@id/inProcessFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/inProcessFragment"
+        android:name="com.vcheck.demo.dev.presentation.screens.InProcessFragment"
+        android:label="in_process_fragment"
+        tools:layout="@layout/in_process_fragment" />
+</navigation>

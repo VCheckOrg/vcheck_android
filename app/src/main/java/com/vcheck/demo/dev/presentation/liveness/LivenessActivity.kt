@@ -1,6 +1,5 @@
 package com.vcheck.demo.dev.presentation.liveness
 
-import android.app.Fragment
 import android.content.Context
 import android.graphics.Bitmap
 import android.hardware.camera2.CameraCharacteristics
@@ -11,8 +10,8 @@ import android.os.SystemClock
 import android.util.Log
 import android.util.Size
 import androidx.appcompat.app.AppCompatActivity
-import com.airbnb.lottie.LottieAnimationView
-import com.airbnb.lottie.LottieDrawable
+import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import com.google.mediapipe.solutions.facemesh.FaceMesh
 import com.google.mediapipe.solutions.facemesh.FaceMeshOptions
 import com.google.mediapipe.solutions.facemesh.FaceMeshResult
@@ -70,12 +69,8 @@ class LivenessActivity : AppCompatActivity(),
 
         setCameraFragment()
 
-        binding!!.faceAnimationView.repeatCount = LottieDrawable.INFINITE
-        binding!!.faceAnimationView.playAnimation()
-    }
-
-    override fun onResume() {
-        super.onResume()
+        binding!!.checkFaceTitle.text = getString(R.string.liveness_stage_check_face_pos)
+        //binding!!.faceAnimationView.repeatCount = LottieDrawable.INFINITE
     }
 
     private fun setupStreamingModePipeline() {
@@ -95,22 +90,36 @@ class LivenessActivity : AppCompatActivity(),
     }
 
     override fun onMilestoneResult(gestureMilestoneType: GestureMilestoneType) {
-        when (gestureMilestoneType) {
-            GestureMilestoneType.CheckHeadPositionMilestone -> {
-                Log.d(TAG, "-----------======== INIT STAGE (0)")
-            }
-            GestureMilestoneType.OuterLeftHeadPitchMilestone -> {
-                Log.d(TAG, "-----------======== HEAD LEFT STAGE (1)")
-            }
-            GestureMilestoneType.OuterRightHeadPitchMilestone -> {
-                Log.d(TAG, "-----------======== HEAD RIGHT STAGE (2)")
-            }
-            GestureMilestoneType.MouthOpenMilestone -> {
-                Log.d(TAG, "-----------======== MOUTH OPENED STAGE (3)")
-            } else -> {
-                //Cases in which we are not concerned
+        runOnUiThread {
+            when (gestureMilestoneType) {
+                GestureMilestoneType.CheckHeadPositionMilestone -> {
+                    binding!!.faceAnimationView.setAnimation(R.raw.left)
+                    binding!!.faceAnimationView.playAnimation()
+                    binding!!.checkFaceTitle.text = getString(R.string.liveness_stage_face_left)
+                }
+                GestureMilestoneType.OuterLeftHeadPitchMilestone -> {
+                    binding!!.faceAnimationView.cancelAnimation()
+                    binding!!.faceAnimationView.setAnimation(R.raw.right)
+                    binding!!.faceAnimationView.playAnimation()
+                    binding!!.checkFaceTitle.text = getString(R.string.liveness_stage_face_right)
+                }
+                GestureMilestoneType.OuterRightHeadPitchMilestone -> {
+                    binding!!.faceAnimationView.cancelAnimation()
+                    binding!!.faceAnimationView.setAnimation(R.raw.mouth)
+                    binding!!.faceAnimationView.playAnimation()
+                    binding!!.checkFaceTitle.text = getString(R.string.liveness_stage_open_mouth)
+                }
+                GestureMilestoneType.MouthOpenMilestone -> {
+                    findNavController(R.id.liveness_host_fragment)
+                        .navigate(R.id.action_dummyLivenessStartDestFragment_to_inProcessFragment)
+
+                }
+                else -> {
+                    //Stub. Cases in which results we are not straightly concerned
+                }
             }
         }
+
     }
 
     private fun processLandmarks(faceMeshResult: FaceMeshResult) {
@@ -145,6 +154,7 @@ class LivenessActivity : AppCompatActivity(),
                     twoDimArray[idx] = arr
                 }
             } catch (e: IndexOutOfBoundsException) {
+                //Stub; ignoring exception
                 //Log.w(TAG, e.message ?: "2D MARKER ARRAY: caught IndexOutOfBoundsException")
             }
         }
@@ -183,7 +193,7 @@ class LivenessActivity : AppCompatActivity(),
         )
         camera2Fragment.setCamera(cameraId)
         fragment = camera2Fragment
-        fragmentManager.beginTransaction().replace(R.id.container, fragment).commit()
+        supportFragmentManager.beginTransaction().replace(R.id.container, fragment).commit()
     }
 
     //TODO getting frames of live camera footage and passing them to model
@@ -204,16 +214,18 @@ class LivenessActivity : AppCompatActivity(),
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
     }
 
     //            Log.i(TAG, "--------------- IDX: $idx")
     //            Log.i(TAG, "--------------- x: ${arr[0]} | y: ${arr[1]} | z: ${arr[2]}")
-
     //Log.d(TAG, "=========== EULER ANGLES " +
     //" | pitch: ${eulerAnglesResultArr[0]}")  // from -30.0 to 30.0 degrees
     //" | yaw: ${eulerAnglesResultArr[1]}" +
     //" | roll: ${eulerAnglesResultArr[2]}")
-    //Log.d(TAG, "========= MOUTH ASPECT RATIO: $mouthAspectRatio")  // >= 055
 }

@@ -5,8 +5,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.Dialog
-import android.app.DialogFragment
-import android.app.Fragment
 import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Configuration
@@ -32,7 +30,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import com.vcheck.demo.dev.R
+import com.vcheck.demo.dev.presentation.liveness.LivenessActivity
 import java.util.*
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
@@ -230,21 +231,15 @@ class CameraConnectionFragment @SuppressLint("ValidFragment") private constructo
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         return inflater.inflate(layout, container, false)
     }
 
     override fun onViewCreated(
         view: View,
-        savedInstanceState: Bundle?
-    ) {
+        savedInstanceState: Bundle?) {
         textureView = view.findViewById<View>(R.id.texture) as AutoFitTextureView
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
     }
 
     override fun onResume() {
@@ -275,7 +270,7 @@ class CameraConnectionFragment @SuppressLint("ValidFragment") private constructo
     /** Sets up member variables related to camera.  */
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private fun setUpCameraOutputs() {
-        val activity = activity
+        val activity = activity as LivenessActivity
         val manager =
             activity.getSystemService(Context.CAMERA_SERVICE) as CameraManager
         try {
@@ -316,7 +311,7 @@ class CameraConnectionFragment @SuppressLint("ValidFragment") private constructo
     private fun openCamera(width: Int, height: Int) {
         setUpCameraOutputs()
         configureTransform(width, height)
-        val activity = activity
+        val activity = activity as LivenessActivity
         val manager =
             activity.getSystemService(Context.CAMERA_SERVICE) as CameraManager
         try {
@@ -324,17 +319,9 @@ class CameraConnectionFragment @SuppressLint("ValidFragment") private constructo
                 throw RuntimeException("Time out waiting to lock camera opening.")
             }
             if (ActivityCompat.checkSelfPermission(
-                    getActivity(),
-                    Manifest.permission.CAMERA
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
+                    activity,
+                    Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling ActivityCompat#requestPermissions
                 return
             }
             manager.openCamera(cameraId!!, stateCallback, backgroundHandler)
@@ -514,13 +501,14 @@ class CameraConnectionFragment @SuppressLint("ValidFragment") private constructo
 
     /** Shows an error message dialog.  */
     class ErrorDialog : DialogFragment() {
-        override fun onCreateDialog(savedInstanceState: Bundle): Dialog {
-            val activity = activity
+
+        override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+            val activity = activity as LivenessActivity
             return AlertDialog.Builder(activity)
-                .setMessage(arguments.getString(ARG_MESSAGE))
+                .setMessage(arguments?.getString(ARG_MESSAGE))
                 .setPositiveButton(
                     android.R.string.ok
-                ) { dialogInterface, i -> activity.finish() }
+                ) { _, _ -> activity.finish() }
                 .create()
         }
 
