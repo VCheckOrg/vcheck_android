@@ -64,7 +64,9 @@ data class DocFieldWitOptPreFilledData(
 )
 
 data class DocTitle(
-    @SerializedName("eng")
+    @SerializedName("uk")
+    val ua: String?,
+    @SerializedName("en")
     val en: String,
     @SerializedName("ru")
     val ru: String?

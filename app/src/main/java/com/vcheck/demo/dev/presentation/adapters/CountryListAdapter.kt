@@ -11,7 +11,7 @@ import com.vcheck.demo.dev.domain.CountryTO
 import kotlin.collections.ArrayList
 
 class CountryListAdapter(
-    private val countryList: ArrayList<CountryTO>,
+    private val countryList: List<CountryTO>,
     private val onCountryItemClick: OnCountryItemClick,
     private val searchCountryCallback: SearchCountryCallback
 ) :
@@ -26,7 +26,6 @@ class CountryListAdapter(
         val layoutInflater = LayoutInflater.from(parent.context)
         binding = CountryRowBinding.inflate(layoutInflater, parent, false)
         return ViewHolder(binding, onCountryItemClick)
-
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

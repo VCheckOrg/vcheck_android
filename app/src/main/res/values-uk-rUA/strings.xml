@@ -7,7 +7,7 @@
     <string name="photo_instructions_button">Продовжити</string>
     <string name="choose_country_card_title">Країна</string>
     <string name="proceed">Продовжити</string>
-    <string name="choose_doc_method_title">Оберіть тип документу</string>
+    <string name="choose_doc_method_title">Оберіть тип документа</string>
     <string name="make_document_photo_title">Зробіть фото документа</string>
     <string name="docMethodForeignPassport">Закордонний паспорт</string>
     <string name="docMethodInnerPassport">Внутрішній громадянський паспорт</string>
@@ -49,12 +49,12 @@
     <string name="seen_all_text">видно всі захисні елементи</string>
     <string name="seen_four_corners_text">повністю видно всі 4 кути документа</string>
     <string name="valid_dispatch_text">дійсні на момент відправлення</string>
-    <string name="no_foreign_objects_text">немає сторонніх об\'єктів: обкладинки, пальців, скріпок тощо.</string>
+    <string name="no_foreign_objects_text">немає сторонніх об\'єктів: обкладинки, пальців, скріпок тощо</string>
     <string name="original_doc_text">сфотографовані або відскановані з оригіналів</string>
     <string name="photo_upload_title_common_forward">Фотографія першої сторінки/сторони документа (з вашим фото).</string>
     <string name="photo_upload_title_foreign">Повний розворот закордонного паспорта (видно обидві сторінки)</string>
     <string name="check_filled_data_description">Перевірте, чи всі дані документа були розпізнані коректно?</string>
-    <string name="check_filled_data_title">Звіряння / заповнення даних</string>
+    <string name="check_filled_data_title">Перевірка / заповнення даних</string>
     <string name="photo_upload_title_id_card_forward">Передня сторона ID картки</string>
     <string name="photo_upload_title_id_card_back">Задня сторона ID картки</string>
     <string name="check_info_confirm_button">Все вірно! Продовжити</string>
@@ -77,7 +77,7 @@
     <string name="frame_interference_description">У кадрі могло бути кілька людей, або сторонні предмети. При повторній перевірці постарайтеся, щоб у кадрі було тільки ваше обличчя і його було видно якомога чіткіше.</string>
     <string name="in_process_subtitle">Заявку на верифікацію надіслано на перевірку. Незабаром Вас повідомлять про результат.</string>
     <string name="make_document_photo_description">Переконайтеся, що кожне зроблене фото читабельне (видні всі 4 кути документа, пальці не закривають дані)</string>
-    <string name="check_photo_description">Перевірте читаність інформації на фото. Переконайтеся, що на фото видно всі 4 кути документа.</string>
+    <string name="check_photo_description">Перевірте читабельність інформації на фото. Переконайтеся, що на фото видно всі 4 кути документа.</string>
     <string name="error_description">З якоїсь причини ми не змогли завантажити вміст цієї сторінки. Спробуйте перезавантажити сторінку</string>
     <string name="face_check_title">Перевірка обличчя</string>
     <string name="liveness_start_button">Розпочати перевірку</string>
@@ -91,7 +91,7 @@
     <string name="look_stratight_error_subtitle">Особа не була зафіксована прямо в кадрі у необхідний для цього момент. Намагайтеся чітко дотримуватись інструкцій у момент проходження перевірки. Спробуйте знову.</string>
     <string name="no_time_subtitle">Ви не встигли зробити коректний рух. Намагайтеся чітко дотримуватись інструкцій у момент проходження перевірки</string>
     <string name="fail_verification_description">На жаль, нам не вдалося верифікувати вашу заявку. Якщо ви не погоджуєтесь з цим рішенням, прохання звернутися до служби підтримки</string>
-    <string name="photo_upload_wait_disclaimer">Будь-ласка, зачекайте. Йде завантаження та обробка фото вашого документа. Це може тривати від кількох секунд до хвилини.</string>
+    <string name="photo_upload_wait_disclaimer">Будь ласка, зачекайте. Йде завантаження та обробка фото вашого документа. Це може тривати від кількох секунд до хвилини.</string>
     <string name="photo_upload_title_common_back">Фотографія останньої сторінки/сторони з вашою фотографією (якщо у вас є кілька фотографій у документі).</string>
     <string name="success_description">Таким чином, постійне інформаційно-пропагандистське забезпечення нашої діяльності відіграє важливу роль у формуванні суттєвих фінансових та адміністративних умов.</string>
     <string name="choose_method_title">Виберіть метод верифікації</string>
@@ -102,12 +102,12 @@
     <string name="verif_method_subtitle_3">Верифікація через платформу ID.GOV.UA</string>
     <string name="no_data_placeholder">Немає даних</string>
     <string name="permissions_denied">Для обробки фото документів та перевірки обличчя на живість потрібно прийняти запрошені дозволи</string>
-    <string name="error_make_at_least_one_photo">Будь-ласка, зробіть щонайменше одну фотографію документа</string>
+    <string name="error_make_at_least_one_photo">Будь ласка, зробіть щонайменше одну фотографію документа</string>
     <string name="doc_verification_error_title">Помилка верифікації документа</string>
     <string name="doc_verification_error_description">Щось пішло не так. Ми рекомендуємо сфотографувати документ ще раз.</string>
     <string name="doc_verif_continue_anyway"><u>Я впевнен(-а) в своєму документі, продовжити процес верифікації</u></string>
-    <string name="reload_photo">Српобувати ще раз</string>
-    <string name="check_doc_fields_validation_error">Перевірте правильність заповнення усіх полей документу</string>
+    <string name="reload_photo">Спробувати ще раз</string>
+    <string name="check_doc_fields_validation_error">Перевірте правильність заповнення усіх полей документа</string>
     <string name="field_validation_error">Невірний формат заповнення поля</string>
 
     <string name="liveness_stage_check_face_pos">Вировняйте обличчя і закрийте ріт</string>

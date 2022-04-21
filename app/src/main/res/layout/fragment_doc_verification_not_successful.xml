@@ -7,20 +7,19 @@
     android:layout_height="match_parent"
     android:scrollbars="none"
     android:background="#2A2A2A"
-    tools:context=".presentation.screens.DocVerifErrorFragment">
+    tools:context=".presentation.check_doc_info_stage.DocVerifErrorFragment">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="670dp"
+        android:layout_height="580dp"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="20dp"
         android:layout_marginEnd="12dp"
-        android:layout_marginBottom="40dp"
         app:cardBackgroundColor="#3C3C3C"
         app:cardCornerRadius="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -70,21 +69,21 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/error_title" />
 
-            <TextView
-                android:id="@+id/error_info"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:maxLines="4"
-                android:gravity="center"
-                android:textColor="#D8D8D8"
-                android:textSize="12sp"
-                android:textStyle="normal"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/error_description" />
+<!--            <TextView-->
+<!--                android:id="@+id/error_info"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="16dp"-->
+<!--                android:layout_marginTop="16dp"-->
+<!--                android:layout_marginEnd="16dp"-->
+<!--                android:maxLines="4"-->
+<!--                android:gravity="center"-->
+<!--                android:textColor="#D8D8D8"-->
+<!--                android:textSize="12sp"-->
+<!--                android:textStyle="normal"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/error_description" />-->
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/error_button"
@@ -92,7 +91,7 @@
                 android:layout_height="56dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginBottom="28dp"
+                android:layout_marginBottom="38dp"
                 android:background="@drawable/shape_for_blue_button"
                 android:text="@string/reload_photo"
                 android:textAllCaps="false"
@@ -100,7 +99,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/error_info" />
+                app:layout_constraintTop_toBottomOf="@+id/error_description" />
 
             <TextView
                 android:id="@+id/pseudoBtnProceedAnyway"

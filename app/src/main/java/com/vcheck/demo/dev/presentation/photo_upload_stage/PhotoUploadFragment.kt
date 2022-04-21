@@ -102,6 +102,7 @@ class PhotoUploadFragment : Fragment() {
                         getString(R.string.photo_upload_title_common_forward)
                     verifMethodTitle2.text =
                         getString(R.string.photo_upload_title_common_back)
+
                     makePhotoButton1.setOnClickListener {
                         dispatchTakePictureIntent(1)
                     }
@@ -127,6 +128,7 @@ class PhotoUploadFragment : Fragment() {
                         getString(R.string.photo_upload_title_id_card_forward)
                     verifMethodTitle2.text =
                         getString(R.string.photo_upload_title_id_card_back)
+
                     makePhotoButton1.setOnClickListener {
                         dispatchTakePictureIntent(1)
                     }
@@ -200,40 +202,40 @@ class PhotoUploadFragment : Fragment() {
     }
 
     private fun checkPhotoCompletenessAndSetProceedClickListener() {
-        if (_docType == DocType.FOREIGN_PASSPORT || _docType == DocType.INNER_PASSPORT_OR_COMMON) {
+        if (_docType == DocType.FOREIGN_PASSPORT) {
             if (_photo1Path != null) {
-                _binding!!.photoUploadContinueButton.setBackgroundResource(R.drawable.shape_for_blue_button)
-                _binding!!.photoUploadContinueButton.setTextColor(Color.WHITE)
-                _binding!!.photoUploadContinueButton.setOnClickListener {
-                    val action = PhotoUploadFragmentDirections
-                        .actionPhotoUploadScreenToCheckPhotoFragment(
-                            CheckPhotoDataTO(_docType, _photo1Path!!, null)
-                        )
-                    findNavController().navigate(action)
-
-                    _photo1Path = null
-
-                }
+                prepareForNavigation(false)
+            } else {
+                Toast.makeText(activity, R.string.error_make_at_least_one_photo, Toast.LENGTH_LONG).show()
+            }
+        } else if (_docType == DocType.INNER_PASSPORT_OR_COMMON) {
+            if (_photo1Path != null && _photo2Path != null) {
+                prepareForNavigation(true)
+            } else if (_photo1Path != null) {
+                prepareForNavigation(false)
             } else {
                 Toast.makeText(activity, R.string.error_make_at_least_one_photo, Toast.LENGTH_LONG).show()
             }
         } else {
             if (_photo1Path != null && _photo2Path != null) {
-                _binding!!.photoUploadContinueButton.setBackgroundResource(R.drawable.shape_for_blue_button)
-                _binding!!.photoUploadContinueButton.setTextColor(Color.WHITE)
-                _binding!!.photoUploadContinueButton.setOnClickListener {
-                    val action = PhotoUploadFragmentDirections
-                        .actionPhotoUploadScreenToCheckPhotoFragment(
-                            CheckPhotoDataTO(_docType, _photo1Path!!, _photo2Path!!))
-                    findNavController().navigate(action)
-
-                    _photo1Path = null
-                    _photo2Path = null
-                }
+                prepareForNavigation(true)
             }
-//            if (_photo1Path == null || _photo2Path == null) {
-//                Toast.makeText(activity, "Требуется сдедать оба фото документа", Toast.LENGTH_LONG).show()
-//            }
+        }
+    }
+
+    private fun prepareForNavigation(resetSecondPhoto: Boolean) {
+        _binding!!.photoUploadContinueButton.setBackgroundResource(R.drawable.shape_for_blue_button)
+        _binding!!.photoUploadContinueButton.setTextColor(Color.WHITE)
+        _binding!!.photoUploadContinueButton.setOnClickListener {
+            val action = PhotoUploadFragmentDirections
+                .actionPhotoUploadScreenToCheckPhotoFragment(
+                    CheckPhotoDataTO(_docType, _photo1Path!!, _photo2Path))
+            findNavController().navigate(action)
+
+            _photo1Path = null
+            if (resetSecondPhoto) {
+                _photo2Path = null
+            }
         }
     }
 

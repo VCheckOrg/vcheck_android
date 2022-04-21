@@ -58,7 +58,7 @@
     <string name="error_button">Reload page</string>
     <string name="confirm_photo_button">Confirm</string>
     <string name="country_name">Country</string>
-    <string name="replace_photo_button">Replace photo</string>
+    <string name="replace_photo_button">Change photo</string>
     <string name="start_demo_flow">Start Demo Flow</string>
     <string name="machine_print_text">Machine print</string>
     <string name="hand_print_text">Handwritten text</string>

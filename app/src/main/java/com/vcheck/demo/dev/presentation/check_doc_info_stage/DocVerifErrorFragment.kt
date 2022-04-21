@@ -1,4 +1,4 @@
-package com.vcheck.demo.dev.presentation.screens
+package com.vcheck.demo.dev.presentation.check_doc_info_stage
 
 import android.os.Bundle
 import android.view.View
@@ -29,7 +29,7 @@ class DocVerifErrorFragment : Fragment(R.layout.fragment_doc_verification_not_su
 
         _binding = FragmentDocVerificationNotSuccessfulBinding.bind(view)
 
-        _binding!!.errorInfo.text = args.checkDocInfoDataTO.optCodeWithMessage
+        //_binding!!.errorInfo.text = args.checkDocInfoDataTO.optCodeWithMessage
 
         _binding!!.errorButton.setOnClickListener {
             findNavController().popBackStack()
@@ -44,8 +44,7 @@ class DocVerifErrorFragment : Fragment(R.layout.fragment_doc_verification_not_su
         viewModel.primaryDocStatusResponse.observe(viewLifecycleOwner) {
             if (it) {
                 val action = DocVerifErrorFragmentDirections
-                    .actionDocVerificationNotSuccessfulFragmentToCheckDocInfoFragment(
-                        args.checkDocInfoDataTO)
+                    .actionDocVerificationNotSuccessfulFragmentToCheckDocInfoFragment(args.checkDocInfoDataTO)
                 findNavController().navigate(action)
             }
         }

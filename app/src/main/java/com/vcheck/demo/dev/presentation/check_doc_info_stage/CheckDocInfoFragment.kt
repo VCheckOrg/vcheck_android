@@ -17,7 +17,7 @@ import com.vcheck.demo.dev.domain.DocFieldWitOptPreFilledData
 import com.vcheck.demo.dev.domain.ParsedDocFieldsData
 import com.vcheck.demo.dev.domain.PreProcessedDocData
 import com.vcheck.demo.dev.presentation.MainActivity
-import com.vcheck.demo.dev.presentation.adapters.CheckInfoAdapter
+import com.vcheck.demo.dev.presentation.adapters.CheckDocInfoAdapter
 import com.vcheck.demo.dev.presentation.adapters.DocInfoEditCallback
 
 class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfoEditCallback {
@@ -40,6 +40,8 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
 
         binding = CheckDocInfoFragmentBinding.bind(view)
 
+        val currentLocaleCode = viewModel.repository.getLocale(activity as MainActivity)
+
         binding.apply {
             photoCard2.isVisible = false
 
@@ -56,12 +58,13 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
         }
 
         dataList = mutableListOf()
-        val adapter = CheckInfoAdapter(ArrayList(), this@CheckDocInfoFragment)
+        val adapter = CheckDocInfoAdapter(ArrayList(), this@CheckDocInfoFragment,
+            currentLocaleCode)
         binding.docInfoList.adapter = adapter
 
         viewModel.documentInfoResponse.observe(viewLifecycleOwner) {
             if (it.data?.data != null) {
-                populateDocFields(it.data.data)
+                populateDocFields(it.data.data, currentLocaleCode)
             }
         }
 
@@ -93,14 +96,14 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
         }
     }
 
-    private fun populateDocFields(preProcessedDocData: PreProcessedDocData) {
+    private fun populateDocFields(preProcessedDocData: PreProcessedDocData, currentLocaleCode: String) {
         if (preProcessedDocData.type.fields.isNotEmpty()) {
             Log.d("DOC", "GOT AUTO-PARSED FIELDS: ${preProcessedDocData.type.fields}")
             dataList = preProcessedDocData.type.fields.map { docField ->
                 convertDocFieldToOptParsedData(docField, preProcessedDocData.parsedData)
             } as ArrayList<DocFieldWitOptPreFilledData>
-            val updatedAdapter = CheckInfoAdapter(ArrayList(dataList),
-                this@CheckDocInfoFragment)
+            val updatedAdapter = CheckDocInfoAdapter(ArrayList(dataList),
+                this@CheckDocInfoFragment, currentLocaleCode)
             binding.docInfoList.adapter = updatedAdapter
         } else {
             Log.i("DOC", "__NO__ AVAILABLE AUTO-PARSED FIELDS!")
@@ -110,7 +113,7 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
     private fun checkIfAnyFieldEmpty(): Boolean {
         var hasValidationErrors: Boolean = false
         dataList.forEach {
-            Log.d("DOC", "FIELD : ${it.autoParsedValue} | ${it.regex} | ${it.name}")
+            Log.d("DOC", "FIELD : ${it.autoParsedValue} | ${it.regex} | ${it.name} | ${it.title}")
             if (it.autoParsedValue.length < 2) {
                 hasValidationErrors = true
             }

@@ -61,7 +61,6 @@ class LivenessActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //setContentView(R.layout.activity_liveness)
 
         binding = ActivityLivenessBinding.inflate(layoutInflater)
         val view = binding!!.root
@@ -249,6 +248,8 @@ class LivenessActivity : AppCompatActivity(),
             postInferenceCallback!!.run()
         }
     }
+
+
 
     override fun onResume() {
         super.onResume()

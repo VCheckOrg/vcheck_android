@@ -20,6 +20,7 @@ import com.vcheck.demo.dev.domain.CountryTO
 import com.vcheck.demo.dev.presentation.MainActivity
 import com.vcheck.demo.dev.presentation.liveness.LivenessActivity
 import com.vcheck.demo.dev.presentation.transferrable_objects.CountriesListTO
+import com.vcheck.demo.dev.util.toFlagEmoji
 import java.util.*
 
 class DemoStartFragment : Fragment() {
@@ -110,11 +111,7 @@ class DemoStartFragment : Fragment() {
 
                 val countryList = it.data.data.map { country ->
                     val locale = Locale("", country.code)
-                    val firstLetter: Int = Character.codePointAt(locale.country, 0) - 0x41 + 0x1F1E6
-                    val secondLetter: Int =
-                        Character.codePointAt(locale.country, 1) - 0x41 + 0x1F1E6
-                    val flag = String(Character.toChars(firstLetter)) + String(
-                        Character.toChars(secondLetter))
+                    val flag = locale.country.toFlagEmoji()
                     CountryTO(locale.displayCountry, country.code, flag)
                 }.toList() as ArrayList<CountryTO>
 
@@ -134,8 +131,8 @@ class DemoStartFragment : Fragment() {
             _viewModel.createTestVerificationRequest()
         }
 
+        //FOR TEST
         _binding!!.btnLaunchMediaPipeDemo.setOnClickListener {
-            //findNavController().navigate(R.id.action_demoStartFragment_to_livenessFragment2)
             startActivity(Intent(activity as MainActivity, LivenessActivity::class.java))
         }
 

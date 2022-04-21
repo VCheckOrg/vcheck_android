@@ -1,4 +1,4 @@
-package com.vcheck.demo.dev.presentation.screens
+package com.vcheck.demo.dev.presentation.check_doc_info_stage
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

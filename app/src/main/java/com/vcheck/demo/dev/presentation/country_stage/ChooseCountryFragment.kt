@@ -11,6 +11,7 @@ import com.vcheck.demo.dev.databinding.ChooseCountryFragmentBinding
 import com.vcheck.demo.dev.di.AppContainer
 import com.vcheck.demo.dev.presentation.MainActivity
 import com.vcheck.demo.dev.presentation.transferrable_objects.CountriesListTO
+import com.vcheck.demo.dev.util.toFlagEmoji
 import java.util.*
 
 class ChooseCountryFragment : Fragment(R.layout.choose_country_fragment) {
@@ -56,13 +57,7 @@ class ChooseCountryFragment : Fragment(R.layout.choose_country_fragment) {
 
         val locale = Locale("", country)
 
-        //iso codes to flag emojis:
-        //TODO move to extension function (extensions.kt)
-        val firstLetter: Int = Character.codePointAt(locale.country, 0) - 0x41 + 0x1F1E6
-        val secondLetter: Int =
-            Character.codePointAt(locale.country, 1) - 0x41 + 0x1F1E6
-        val flag = String(Character.toChars(firstLetter)) + String(
-            Character.toChars(secondLetter))
+        val flag = locale.country.toFlagEmoji()
 
         binding.countryTitle.text = locale.displayCountry
         binding.flagEmoji.text = flag

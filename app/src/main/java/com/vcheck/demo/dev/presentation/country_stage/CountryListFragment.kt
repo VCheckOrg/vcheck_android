@@ -14,12 +14,14 @@ import com.vcheck.demo.dev.di.AppContainer
 import com.vcheck.demo.dev.domain.CountryTO
 import com.vcheck.demo.dev.presentation.MainActivity
 import com.vcheck.demo.dev.presentation.adapters.SearchCountryCallback
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class CountryListFragment : Fragment(R.layout.country_list_fragment),
     CountryListAdapter.OnCountryItemClick, SearchCountryCallback {
 
-    private lateinit var countriesList: ArrayList<CountryTO>
+    private lateinit var countriesList: List<CountryTO>
     private lateinit var appContainer: AppContainer
     private lateinit var binding: CountryListFragmentBinding
     private val args: CountryListFragmentArgs by navArgs()
@@ -32,7 +34,9 @@ class CountryListFragment : Fragment(R.layout.country_list_fragment),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        countriesList = args.countriesListTO.countriesList
+        countriesList = args.countriesListTO.countriesList.map {
+            CountryTO(Locale("", it.code).displayCountry, it.code, it.flag)
+        }.toList()
 
         binding = CountryListFragmentBinding.bind(view)
 
