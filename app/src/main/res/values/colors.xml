@@ -13,4 +13,5 @@
     <color name="appLightGrey">#515151</color>
     <color name="appBlue">#2E75FF</color>
     <color name="appSuccess">#00DF53</color>
+    <color name="appSuccessHalfFilled">#5B00DF53</color>
 </resources>

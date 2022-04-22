@@ -3,6 +3,14 @@
     <item>
         <shape android:shape="rectangle">
             <stroke android:width="8dp" android:color="@color/appSuccess" />
+
+            <gradient
+                android:angle="270"
+                android:startColor="@android:color/transparent"
+                android:centerColor="@android:color/transparent"
+                android:centerY="0.9"
+                android:endColor="@color/appSuccess"
+                android:type="linear" />
         </shape>
     </item>
 </selector>

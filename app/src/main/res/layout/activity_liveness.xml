@@ -72,14 +72,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-
             <View
                 android:id="@+id/stageSuccessAnimBorder"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/shape_liveness_stage_success_frame"
-                android:layout_marginTop="120dp"
-                />
+                android:layout_marginTop="120dp" />
 
             <TextView
                 android:id="@+id/check_face_title"

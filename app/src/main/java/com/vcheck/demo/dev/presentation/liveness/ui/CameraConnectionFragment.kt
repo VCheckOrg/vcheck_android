@@ -285,8 +285,7 @@ class CameraConnectionFragment @SuppressLint("ValidFragment") private constructo
             previewSize = chooseOptimalSize(
                 map!!.getOutputSizes(SurfaceTexture::class.java),
                 inputSize.width,
-                inputSize.height
-            )
+                inputSize.height)
 
             // We fit the aspect ratio of TextureView to the size of preview we picked.
             val orientation = resources.configuration.orientation

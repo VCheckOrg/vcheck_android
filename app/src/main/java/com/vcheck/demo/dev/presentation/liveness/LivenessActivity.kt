@@ -30,7 +30,6 @@ import com.vcheck.demo.dev.presentation.liveness.flow_logic.LivenessCameraParams
 import com.vcheck.demo.dev.presentation.liveness.flow_logic.getScreenOrientation
 import com.vcheck.demo.dev.presentation.liveness.flow_logic.onImageAvailableImpl
 import com.vcheck.demo.dev.presentation.liveness.ui.CameraConnectionFragment
-import com.vcheck.demo.dev.presentation.screens.LivenessInstructionsFragment
 import com.vcheck.demo.dev.util.setMargins
 import org.jetbrains.kotlinx.multik.api.d2array
 import org.jetbrains.kotlinx.multik.api.mk
@@ -38,6 +37,7 @@ import org.jetbrains.kotlinx.multik.api.ndarray
 import org.jetbrains.kotlinx.multik.ndarray.data.D2Array
 import org.jetbrains.kotlinx.multik.ndarray.data.get
 import org.jetbrains.kotlinx.multik.ndarray.data.set
+import java.lang.IllegalArgumentException
 
 class LivenessActivity : AppCompatActivity(),
     ImageReader.OnImageAvailableListener,
@@ -49,9 +49,9 @@ class LivenessActivity : AppCompatActivity(),
         private const val STATIC_PIPELINE_IMAGE_MODE = true
         private const val REFINE_PIPELINE_LANDMARKS = false
         private const val MAX_MILESTONES_NUM = 468
-        private const val DEBOUNCE_PROCESS_MILLIS = 400
-        private const val LIVENESS_TIME_LIMIT_MILLIS = 20000 //TODO reduce after tests
-        private const val BLOCK_PIPELINE_TIME_MILLIS: Long = 900
+        private const val DEBOUNCE_PROCESS_MILLIS = 400 //may reduce a bit
+        private const val LIVENESS_TIME_LIMIT_MILLIS = 18000 //TODO reduce after tests
+        private const val BLOCK_PIPELINE_TIME_MILLIS: Long = 1400 //may reduce a bit
     }
 
     //refactor to protected
@@ -140,8 +140,12 @@ class LivenessActivity : AppCompatActivity(),
                 }
                 GestureMilestoneType.MouthOpenMilestone -> {
                     binding!!.livenessCosmeticsHolder.isVisible = false
-                    findNavController(R.id.liveness_host_fragment)
-                        .navigate(R.id.action_dummyLivenessStartDestFragment_to_inProcessFragment)
+                    try {
+                        findNavController(R.id.liveness_host_fragment)
+                            .navigate(R.id.action_dummyLivenessStartDestFragment_to_inProcessFragment)
+                    } catch (e: IllegalArgumentException) {
+                        Log.d(TAG, "Attempt to nev to success was made, but was already on another fragment")
+                    }
                 }
                 else -> {
                     //Stub. Cases in which results we are not straightly concerned
@@ -262,6 +266,7 @@ class LivenessActivity : AppCompatActivity(),
     }
 
     fun resetUIForNewLivenessSession() {
+        binding!!.stageSuccessAnimBorder.isVisible = false
         binding!!.livenessCosmeticsHolder.isVisible = true
         binding!!.checkFaceTitle.text = getString(R.string.liveness_stage_check_face_pos)
         binding!!.faceAnimationView.cancelAnimation()
@@ -305,6 +310,7 @@ class LivenessActivity : AppCompatActivity(),
 
     private fun setUIOnOuterRightHeadPitchMilestone() {
         binding!!.imgViewStaticStageIndication.isVisible = true
+        binding!!.stageSuccessAnimBorder.isVisible = true
         animateStageSuccessFrame()
         Handler(Looper.getMainLooper()).postDelayed ({
             binding!!.imgViewStaticStageIndication.isVisible = false
