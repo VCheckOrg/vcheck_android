@@ -10,4 +10,7 @@
     <color name="cardBackgroundColor">#543C3C3C</color>
     <color name="transparent">#00FFFFFF</color>
     <color name="appGrey">#3B3B3B</color>
+    <color name="appLightGrey">#515151</color>
+    <color name="appBlue">#2E75FF</color>
+    <color name="appSuccess">#00DF53</color>
 </resources>

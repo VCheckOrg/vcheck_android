@@ -133,7 +133,9 @@ class DemoStartFragment : Fragment() {
 
         //FOR TEST
         _binding!!.btnLaunchMediaPipeDemo.setOnClickListener {
-            startActivity(Intent(activity as MainActivity, LivenessActivity::class.java))
+            //TEMP nav action:
+            findNavController().navigate(R.id.action_demoStartFragment_to_livenessInstructionsFragment)
+            //startActivity(Intent(activity as MainActivity, LivenessActivity::class.java))
         }
 
         requestPermissionsLauncher.launch(

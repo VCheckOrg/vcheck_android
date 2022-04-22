@@ -72,18 +72,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-<!--        <com.google.android.material.progressindicator.CircularProgressIndicator-->
-<!--            android:id="@+id/loadingIndicator"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="116dp"-->
-<!--            android:layout_marginBottom="40dp"-->
-<!--            android:indeterminate="true"-->
-<!--            app:indicatorColor="@color/white"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent" />-->
+
+            <View
+                android:id="@+id/stageSuccessAnimBorder"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/shape_liveness_stage_success_frame"
+                android:layout_marginTop="120dp"
+                />
 
             <TextView
                 android:id="@+id/check_face_title"
@@ -136,26 +132,19 @@
                 app:layout_constraintStart_toStartOf="@id/cosmetic_rounded_frame"
                 app:layout_constraintBottom_toBottomOf="@id/cosmetic_rounded_frame" />
 
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/arrow_animation_view"
-            android:layout_width="260dp"
-            android:layout_height="140dp"
-            app:lottie_rawRes="@raw/arrow"
-            android:scaleX="2.5"
-            android:scaleY="3"
-            app:lottie_loop="true"
-            app:lottie_autoPlay="true"
-            app:layout_constraintTop_toBottomOf="@id/cosmetic_rounded_frame"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
-
-        <!--            android:layout_marginStart="-90dp"-->
-<!--            app:lottie_rawRes="@raw/left"-->
-<!--            app:lottie_fileName="hello_world.json"-->
-<!--            // Loop indefinitely-->
-<!--            app:lottie_loop="true"-->
-<!--            // Start playing as soon as the animation is loaded-->
-<!--            app:lottie_autoPlay="true" />-->
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/arrow_animation_view"
+                android:layout_width="260dp"
+                android:layout_height="140dp"
+                app:lottie_rawRes="@raw/arrow"
+                android:scaleX="2.8"
+                android:scaleY="3.2"
+                app:lottie_loop="true"
+                app:lottie_autoPlay="true"
+                app:layout_constraintTop_toBottomOf="@id/cosmetic_rounded_frame"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -172,3 +161,27 @@
         app:navGraph="@navigation/liveness_nav_graph" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <!--            android:layout_marginStart="-90dp"-->
+    <!--            app:lottie_rawRes="@raw/left"-->
+    <!--            app:lottie_fileName="hello_world.json"-->
+    <!--            // Loop indefinitely-->
+    <!--            app:lottie_loop="true"-->
+    <!--            // Start playing as soon as the animation is loaded-->
+    <!--            app:lottie_autoPlay="true" />-->
+
+
+
+    <!--        <com.google.android.material.progressindicator.CircularProgressIndicator-->
+    <!--            android:id="@+id/loadingIndicator"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginTop="116dp"-->
+    <!--            android:layout_marginBottom="40dp"-->
+    <!--            android:indeterminate="true"-->
+    <!--            app:indicatorColor="@color/white"-->
+    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--            app:layout_constraintEnd_toEndOf="parent"-->
+    <!--            app:layout_constraintStart_toStartOf="parent"-->
+    <!--            app:layout_constraintTop_toTopOf="parent" />-->

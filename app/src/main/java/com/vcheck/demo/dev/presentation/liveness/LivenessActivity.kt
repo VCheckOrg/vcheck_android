@@ -11,6 +11,8 @@ import android.os.Looper
 import android.os.SystemClock
 import android.util.Log
 import android.util.Size
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.DecelerateInterpolator
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -28,6 +30,7 @@ import com.vcheck.demo.dev.presentation.liveness.flow_logic.LivenessCameraParams
 import com.vcheck.demo.dev.presentation.liveness.flow_logic.getScreenOrientation
 import com.vcheck.demo.dev.presentation.liveness.flow_logic.onImageAvailableImpl
 import com.vcheck.demo.dev.presentation.liveness.ui.CameraConnectionFragment
+import com.vcheck.demo.dev.presentation.screens.LivenessInstructionsFragment
 import com.vcheck.demo.dev.util.setMargins
 import org.jetbrains.kotlinx.multik.api.d2array
 import org.jetbrains.kotlinx.multik.api.mk
@@ -45,9 +48,10 @@ class LivenessActivity : AppCompatActivity(),
         private const val RUN_PIPELINE_ON_GPU = false
         private const val STATIC_PIPELINE_IMAGE_MODE = true
         private const val REFINE_PIPELINE_LANDMARKS = false
+        private const val MAX_MILESTONES_NUM = 468
         private const val DEBOUNCE_PROCESS_MILLIS = 400
-        private const val LIVENESS_TIME_LIMIT_MILLIS = 20000
-        private const val BLOCK_PIPELINE_PROCESSING_TIME: Long = 900
+        private const val LIVENESS_TIME_LIMIT_MILLIS = 20000 //TODO reduce after tests
+        private const val BLOCK_PIPELINE_TIME_MILLIS: Long = 900
     }
 
     //refactor to protected
@@ -74,35 +78,15 @@ class LivenessActivity : AppCompatActivity(),
         resetMilestonesForNewLivenessSession()
 
         setupStreamingModePipeline()
+
         setCameraFragment()
-
         initSetupUI()
-    }
-
-    private fun initSetupUI() {
-        binding!!.checkFaceTitle.text = getString(R.string.wait_for_liveness_start)
-        binding!!.imgViewStaticStageIndication.isVisible = false
-        binding!!.arrowAnimationView.setMargins(-80, null,
-            null, null)
-        binding!!.arrowAnimationView.rotation = 0F
-        binding!!.arrowAnimationView.isVisible = false
     }
 
     fun resetMilestonesForNewLivenessSession() {
         milestoneFlow = StandardMilestoneFlow(this@LivenessActivity)
         livenessSessionLimitCheckTime = SystemClock.elapsedRealtime()
         faceCheckDebounceTime = SystemClock.elapsedRealtime()
-    }
-
-    fun resetUIForNewLivenessSession() {
-        binding!!.livenessCosmeticsHolder.isVisible = true
-        binding!!.checkFaceTitle.text = getString(R.string.liveness_stage_check_face_pos)
-        binding!!.faceAnimationView.cancelAnimation()
-        binding!!.arrowAnimationView.cancelAnimation()
-        binding!!.arrowAnimationView.rotation = 0F
-        binding!!.arrowAnimationView.setMargins(-80, null,
-            null, null)
-        binding!!.arrowAnimationView.isVisible = false
     }
 
     fun finishLivenessSession() {
@@ -146,43 +130,13 @@ class LivenessActivity : AppCompatActivity(),
 
             when (gestureMilestoneType) {
                 GestureMilestoneType.CheckHeadPositionMilestone -> {
-                    binding!!.imgViewStaticStageIndication.isVisible = false
-                    binding!!.arrowAnimationView.isVisible = true
-                    binding!!.faceAnimationView.isVisible = true
-                    binding!!.faceAnimationView.setAnimation(R.raw.left)
-                    binding!!.faceAnimationView.playAnimation()
-                    binding!!.arrowAnimationView.playAnimation()
-                    binding!!.checkFaceTitle.text = getString(R.string.liveness_stage_face_left)
-                    blockProcessingByUI = false
+                    setUIOnCheckHeadPositionMilestone()
                 }
                 GestureMilestoneType.OuterLeftHeadPitchMilestone -> {
-                    binding!!.imgViewStaticStageIndication.isVisible = true
-                    Handler(Looper.getMainLooper()).postDelayed ({
-                        binding!!.imgViewStaticStageIndication.isVisible = false
-                        binding!!.arrowAnimationView.isVisible = true
-                        binding!!.faceAnimationView.isVisible = true
-                        binding!!.faceAnimationView.cancelAnimation()
-                        binding!!.faceAnimationView.setAnimation(R.raw.right)
-                        binding!!.faceAnimationView.playAnimation()
-                        binding!!.checkFaceTitle.text = getString(R.string.liveness_stage_face_right)
-                        binding!!.arrowAnimationView.rotation = 180F
-                        binding!!.arrowAnimationView.setMargins(10, null,
-                            null, null)
-                        blockProcessingByUI = false
-                    }, BLOCK_PIPELINE_PROCESSING_TIME)
+                    setUIOnOuterLeftHeadPitchMilestone()
                 }
                 GestureMilestoneType.OuterRightHeadPitchMilestone -> {
-                    binding!!.imgViewStaticStageIndication.isVisible = true
-                    Handler(Looper.getMainLooper()).postDelayed ({
-                        binding!!.imgViewStaticStageIndication.isVisible = false
-                        binding!!.arrowAnimationView.isVisible = false
-                        binding!!.faceAnimationView.isVisible = true
-                        binding!!.faceAnimationView.cancelAnimation()
-                        binding!!.faceAnimationView.setAnimation(R.raw.mouth)
-                        binding!!.faceAnimationView.playAnimation()
-                        binding!!.checkFaceTitle.text = getString(R.string.liveness_stage_open_mouth)
-                        blockProcessingByUI = false
-                    }, BLOCK_PIPELINE_PROCESSING_TIME)
+                    setUIOnOuterRightHeadPitchMilestone()
                 }
                 GestureMilestoneType.MouthOpenMilestone -> {
                     binding!!.livenessCosmeticsHolder.isVisible = false
@@ -224,10 +178,9 @@ class LivenessActivity : AppCompatActivity(),
         if (result == null || result.multiFaceLandmarks().isEmpty()) {
             return null
         }
-        val twoDimArray = mk.d2array(468, 3) { it.toDouble() }
+        val twoDimArray = mk.d2array(MAX_MILESTONES_NUM, 3) { it.toDouble() }
 
         result.multiFaceLandmarks()[0].landmarkList.forEachIndexed { idx, landmark ->
-
             val arr = mk.ndarray(doubleArrayOf(
                 landmark.x.toDouble(),
                 landmark.y.toDouble(),
@@ -237,8 +190,8 @@ class LivenessActivity : AppCompatActivity(),
                     twoDimArray[idx] = arr
                 }
             } catch (e: IndexOutOfBoundsException) {
-                //Stub; ignoring exception
-                //Log.w(TAG, e.message ?: "2D MARKER ARRAY: caught IndexOutOfBoundsException")
+                //Stub; ignoring exception as at real-time matrix
+                //may not contain all of MAX_MILESTONES_NUM
             }
         }
         return twoDimArray
@@ -250,7 +203,6 @@ class LivenessActivity : AppCompatActivity(),
         try {
             for (cameraIdx in cameraManager.cameraIdList) {
                 val chars: CameraCharacteristics = cameraManager.getCameraCharacteristics(cameraIdx)
-                //val keys: List<CameraCharacteristics.Key<*>> = chars.keys
                 if (CameraCharacteristics.LENS_FACING_FRONT == chars.get(CameraCharacteristics.LENS_FACING)) {
                     cameraId = cameraIdx
                     break
@@ -279,8 +231,8 @@ class LivenessActivity : AppCompatActivity(),
         supportFragmentManager.beginTransaction().replace(R.id.container, fragment).commit()
     }
 
-    //TODO getting frames of live camera footage and passing them to model
     override fun onImageAvailable(reader: ImageReader?) {
+        //calling verbose extension function, which leads to processImage()
         onImageAvailableImpl(reader)
     }
 
@@ -297,14 +249,89 @@ class LivenessActivity : AppCompatActivity(),
         }
     }
 
+    /// -------------------------------------------- UI functions
+
+    private fun initSetupUI() {
+        binding!!.stageSuccessAnimBorder.isVisible = false
+        binding!!.checkFaceTitle.text = getString(R.string.wait_for_liveness_start)
+        binding!!.imgViewStaticStageIndication.isVisible = false
+        binding!!.arrowAnimationView.setMargins(null, null,
+            300, null)
+        binding!!.arrowAnimationView.rotation = 0F
+        binding!!.arrowAnimationView.isVisible = false
+    }
+
+    fun resetUIForNewLivenessSession() {
+        binding!!.livenessCosmeticsHolder.isVisible = true
+        binding!!.checkFaceTitle.text = getString(R.string.liveness_stage_check_face_pos)
+        binding!!.faceAnimationView.cancelAnimation()
+        binding!!.arrowAnimationView.cancelAnimation()
+        binding!!.arrowAnimationView.rotation = 0F
+        binding!!.arrowAnimationView.setMargins(300, null,
+            null, null)
+        binding!!.arrowAnimationView.isVisible = false
+    }
 
 
-    override fun onResume() {
-        super.onResume()
+    private fun setUIOnCheckHeadPositionMilestone() {
+        binding!!.imgViewStaticStageIndication.isVisible = false
+        binding!!.arrowAnimationView.isVisible = true
+        binding!!.faceAnimationView.isVisible = true
+        binding!!.faceAnimationView.setAnimation(R.raw.left)
+        binding!!.faceAnimationView.playAnimation()
+        binding!!.arrowAnimationView.playAnimation()
+        binding!!.checkFaceTitle.text = getString(R.string.liveness_stage_face_left)
+        blockProcessingByUI = false
+    }
+
+    private fun setUIOnOuterLeftHeadPitchMilestone() {
+        binding!!.imgViewStaticStageIndication.isVisible = true
+        binding!!.stageSuccessAnimBorder.isVisible = true
+        animateStageSuccessFrame()
+        Handler(Looper.getMainLooper()).postDelayed ({
+            binding!!.imgViewStaticStageIndication.isVisible = false
+            binding!!.arrowAnimationView.isVisible = true
+            binding!!.faceAnimationView.isVisible = true
+            binding!!.faceAnimationView.cancelAnimation()
+            binding!!.faceAnimationView.setAnimation(R.raw.right)
+            binding!!.faceAnimationView.playAnimation()
+            binding!!.checkFaceTitle.text = getString(R.string.liveness_stage_face_right)
+            binding!!.arrowAnimationView.rotation = 180F
+            binding!!.arrowAnimationView.setMargins(null, null,
+                -300, null)
+            blockProcessingByUI = false
+        }, BLOCK_PIPELINE_TIME_MILLIS)
+    }
+
+    private fun setUIOnOuterRightHeadPitchMilestone() {
+        binding!!.imgViewStaticStageIndication.isVisible = true
+        animateStageSuccessFrame()
+        Handler(Looper.getMainLooper()).postDelayed ({
+            binding!!.imgViewStaticStageIndication.isVisible = false
+            binding!!.arrowAnimationView.isVisible = false
+            binding!!.faceAnimationView.isVisible = true
+            binding!!.faceAnimationView.cancelAnimation()
+            binding!!.faceAnimationView.setAnimation(R.raw.mouth)
+            binding!!.faceAnimationView.playAnimation()
+            binding!!.checkFaceTitle.text = getString(R.string.liveness_stage_open_mouth)
+            blockProcessingByUI = false
+        }, BLOCK_PIPELINE_TIME_MILLIS)
+    }
+
+    private fun animateStageSuccessFrame() {
+        binding!!.stageSuccessAnimBorder.animate().alpha(1F).setDuration(
+            BLOCK_PIPELINE_TIME_MILLIS / 2).setInterpolator(
+            DecelerateInterpolator())
+            .withEndAction {
+                binding!!.stageSuccessAnimBorder.animate().alpha(0F).setDuration(
+                    BLOCK_PIPELINE_TIME_MILLIS / 2)
+                    .setInterpolator(AccelerateInterpolator()).start()
+            }.start()
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        //TODO
     }
 
     //            Log.i(TAG, "--------------- IDX: $idx")

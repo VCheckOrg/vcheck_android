@@ -158,6 +158,9 @@
                 android:name="countriesListTO"
                 app:argType="com.vcheck.demo.dev.presentation.transferrable_objects.CountriesListTO" />
         </action>
+        <action
+            android:id="@+id/action_demoStartFragment_to_livenessInstructionsFragment"
+            app:destination="@id/livenessInstructionsFragment" />
     </fragment>
 
 

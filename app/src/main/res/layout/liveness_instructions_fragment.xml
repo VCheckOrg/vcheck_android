@@ -14,7 +14,7 @@
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="700dp"
+            android:layout_height="740dp"
             android:layout_marginStart="12dp"
             android:layout_marginTop="14dp"
             android:layout_marginEnd="12dp"
@@ -29,17 +29,6 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-
-<!--                <ImageView-->
-<!--                    android:id="@+id/back_arrow"-->
-<!--                    android:layout_width="16dp"-->
-<!--                    android:layout_height="16dp"-->
-<!--                    android:layout_marginStart="17dp"-->
-<!--                    android:layout_marginTop="28dp"-->
-<!--                    android:src="@drawable/back_arrow"-->
-<!--                    app:layout_constraintStart_toStartOf="parent"-->
-<!--                    app:layout_constraintTop_toTopOf="parent"-->
-<!--                    tools:ignore="ContentDescription" />-->
 
                 <TextView
                     android:id="@+id/face_check_title"
@@ -69,27 +58,103 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/face_check_title" />
 
-                <ImageView
-                    android:id="@+id/face_example"
-                    android:layout_width="218dp"
-                    android:layout_height="218dp"
-                    android:layout_marginTop="15dp"
-                    android:src="@drawable/face_example"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.45"
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/animationsHolder"
+                    android:layout_width="210dp"
+                    android:layout_height="210dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/face_check_description"
-                    tools:ignore="ContentDescription" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/face_check_description"
+                    android:layout_marginTop="30dp">
+
+                    <View
+                        android:id="@+id/cosmetic_rounded_frame"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/rounded_shape_large"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:id="@+id/static_face_animation_view"
+                        android:layout_width="160dp"
+                        android:layout_height="160dp"
+                        android:scaleType="fitXY"
+                        android:scaleX="2"
+                        android:scaleY="2"
+                        app:lottie_repeatCount="0"
+                        app:lottie_rawRes="@raw/left"
+                        android:layout_marginBottom="1dp"
+                        android:layout_marginStart="7dp"
+                        app:layout_constraintEnd_toEndOf="@id/cosmetic_rounded_frame"
+                        app:layout_constraintTop_toTopOf="@id/cosmetic_rounded_frame"
+                        app:layout_constraintStart_toStartOf="@id/cosmetic_rounded_frame"
+                        app:layout_constraintBottom_toBottomOf="@id/cosmetic_rounded_frame" />
+
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:id="@+id/face_animation_view"
+                        android:layout_width="160dp"
+                        android:layout_height="160dp"
+                        android:scaleType="fitXY"
+                        android:scaleX="2"
+                        android:scaleY="2"
+                        android:layout_marginBottom="1dp"
+                        android:layout_marginStart="7dp"
+                        app:layout_constraintEnd_toEndOf="@id/cosmetic_rounded_frame"
+                        app:layout_constraintTop_toTopOf="@id/cosmetic_rounded_frame"
+                        app:layout_constraintStart_toStartOf="@id/cosmetic_rounded_frame"
+                        app:layout_constraintBottom_toBottomOf="@id/cosmetic_rounded_frame" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <View
+                    android:id="@+id/leftAnimBall"
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/animationsHolder"
+                    app:layout_constraintBottom_toBottomOf="@id/animationsHolder"
+                    android:layout_marginStart="30dp"
+                    android:background="@drawable/shape_anim_ball" />
+
+                <View
+                    android:id="@+id/rightAnimBall"
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/animationsHolder"
+                    app:layout_constraintBottom_toBottomOf="@id/animationsHolder"
+                    android:layout_marginEnd="30dp"
+                    android:background="@drawable/shape_anim_ball" />
+
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/arrow_animation_view"
+                    android:layout_width="260dp"
+                    android:layout_height="140dp"
+                    app:lottie_rawRes="@raw/arrow"
+                    android:scaleX="2.8"
+                    android:scaleY="3.2"
+                    app:lottie_loop="true"
+                    app:lottie_autoPlay="true"
+                    app:layout_constraintTop_toTopOf="@id/animationsHolder"
+                    app:layout_constraintStart_toStartOf="@id/animationsHolder"
+                    app:layout_constraintBottom_toBottomOf="@id/animationsHolder"
+                    app:layout_constraintEnd_toEndOf="@id/animationsHolder"/>
 
                 <ImageView
                     android:id="@+id/requested_movements_icon"
                     android:layout_width="22dp"
                     android:layout_height="22dp"
                     android:layout_marginStart="17dp"
-                    android:layout_marginTop="17dp"
+                    android:layout_marginTop="30dp"
                     android:src="@drawable/requested_movements_icon"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/face_example"
+                    app:layout_constraintTop_toBottomOf="@+id/animationsHolder"
                     tools:ignore="ContentDescription" />
 
                 <TextView
@@ -236,4 +301,25 @@
 
 </ScrollView>
 
+    <!--                <ImageView-->
+    <!--                    android:id="@+id/back_arrow"-->
+    <!--                    android:layout_width="16dp"-->
+    <!--                    android:layout_height="16dp"-->
+    <!--                    android:layout_marginStart="17dp"-->
+    <!--                    android:layout_marginTop="28dp"-->
+    <!--                    android:src="@drawable/back_arrow"-->
+    <!--                    app:layout_constraintStart_toStartOf="parent"-->
+    <!--                    app:layout_constraintTop_toTopOf="parent"-->
+    <!--                    tools:ignore="ContentDescription" />-->
 
+    <!--                <ImageView-->
+    <!--                    android:id="@+id/face_example"-->
+    <!--                    android:layout_width="218dp"-->
+    <!--                    android:layout_height="218dp"-->
+    <!--                    android:layout_marginTop="15dp"-->
+    <!--                    android:src="@drawable/face_example"-->
+    <!--                    app:layout_constraintEnd_toEndOf="parent"-->
+    <!--                    app:layout_constraintHorizontal_bias="0.45"-->
+    <!--                    app:layout_constraintStart_toStartOf="parent"-->
+    <!--                    app:layout_constraintTop_toBottomOf="@+id/face_check_description"-->
+    <!--                    tools:ignore="ContentDescription" />-->
