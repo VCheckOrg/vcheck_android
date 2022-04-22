@@ -114,4 +114,5 @@
     <string name="liveness_stage_face_left">Поверніть обличчя ліворуч</string>
     <string name="liveness_stage_face_right">Поверніть обличчя праворуч</string>
     <string name="liveness_stage_open_mouth">Відкрийте ріт</string>
+    <string name="wait_for_liveness_start">Будь ласка, зачекайте</string>
 </resources>

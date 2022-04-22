@@ -67,7 +67,7 @@
     <string name="fail_verification_title">Verification failed</string>
     <string name="frame_interference_button">Try again</string>
     <string name="check_photo_title_2">How is the data in the document filled in?</string>
-    <string name="photo_upload_wait_disclaimer">Wait, please. The photo of your document is being loaded and processed. This may take from a few seconds to a minute.</string>
+    <string name="photo_upload_wait_disclaimer">Please, wait. The photo of your document is being loaded and processed. This may take from a few seconds to a minute.</string>
     <string name="check_photo_description">Check the readability of the information in the photo. Make sure all 4 corners of the document are visible in the photo.</string>
     <string name="error_description">For some reason, we were unable to load the content of this page. Try reloading the page</string>
     <string name="fail_verification_description">Unfortunately, we were unable to verify your application. If you do not agree with this decision, please contact support</string>
@@ -123,4 +123,5 @@
     <string name="liveness_stage_face_left">Turn face to the left</string>
     <string name="liveness_stage_face_right">Turn face to the right</string>
     <string name="liveness_stage_open_mouth">Open mouth</string>
+    <string name="wait_for_liveness_start">Please, wait…</string>
 </resources>

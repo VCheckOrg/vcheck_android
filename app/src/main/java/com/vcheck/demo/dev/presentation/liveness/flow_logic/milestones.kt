@@ -53,7 +53,7 @@ class HeadPitchGestureMilestone(val gestureMilestoneType: GestureMilestoneType)
 class MouthGestureMilestone(val gestureMilestoneType: GestureMilestoneType)
     : GestureMilestone(gestureMilestoneType) {
 
-    private val mouthOpenPassFactor: Double = 0.48 //reduced from 0.55
+    private val mouthOpenPassFactor: Double = 0.41 //reduced from 0.55 !
 
     init {
         if (gestureMilestoneType != GestureMilestoneType.MouthClosedMilestone

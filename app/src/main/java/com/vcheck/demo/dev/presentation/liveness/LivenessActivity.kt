@@ -6,12 +6,13 @@ import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
 import android.media.ImageReader
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.os.SystemClock
 import android.util.Log
 import android.util.Size
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.core.view.marginStart
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.google.mediapipe.solutions.facemesh.FaceMesh
@@ -41,11 +42,12 @@ class LivenessActivity : AppCompatActivity(),
 
     companion object {
         const val TAG = "LivenessActivity"
-        private const val RUN_PIPELINE_ON_GPU = true
+        private const val RUN_PIPELINE_ON_GPU = false
         private const val STATIC_PIPELINE_IMAGE_MODE = true
-        private const val REFINE_PIPELINE_LANDMARKS = true
-        private const val DEBOUNCE_PROCESS_MILLIS = 600
+        private const val REFINE_PIPELINE_LANDMARKS = false
+        private const val DEBOUNCE_PROCESS_MILLIS = 400
         private const val LIVENESS_TIME_LIMIT_MILLIS = 20000
+        private const val BLOCK_PIPELINE_PROCESSING_TIME: Long = 900
     }
 
     //refactor to protected
@@ -55,6 +57,7 @@ class LivenessActivity : AppCompatActivity(),
     private var faceCheckDebounceTime: Long = 0
     private var livenessSessionLimitCheckTime: Long = 0
     private var isLivenessSessionFinished: Boolean = false
+    private var blockProcessingByUI: Boolean = false
 
     private var binding: ActivityLivenessBinding? = null
 
@@ -76,8 +79,9 @@ class LivenessActivity : AppCompatActivity(),
         initSetupUI()
     }
 
-    fun initSetupUI() {
-        // + hide success static image icon
+    private fun initSetupUI() {
+        binding!!.checkFaceTitle.text = getString(R.string.wait_for_liveness_start)
+        binding!!.imgViewStaticStageIndication.isVisible = false
         binding!!.arrowAnimationView.setMargins(-80, null,
             null, null)
         binding!!.arrowAnimationView.rotation = 0F
@@ -95,6 +99,10 @@ class LivenessActivity : AppCompatActivity(),
         binding!!.checkFaceTitle.text = getString(R.string.liveness_stage_check_face_pos)
         binding!!.faceAnimationView.cancelAnimation()
         binding!!.arrowAnimationView.cancelAnimation()
+        binding!!.arrowAnimationView.rotation = 0F
+        binding!!.arrowAnimationView.setMargins(-80, null,
+            null, null)
+        binding!!.arrowAnimationView.isVisible = false
     }
 
     fun finishLivenessSession() {
@@ -114,10 +122,10 @@ class LivenessActivity : AppCompatActivity(),
             Log.e(TAG, "======= MediaPipe Face Mesh error : $message")
         }
         facemesh!!.setResultListener { faceMeshResult: FaceMeshResult ->
-            if (enoughTimeForNextGesture()) {
+            if (enoughTimeForNextGesture() && !blockProcessingByUI) {
                 processLandmarks(faceMeshResult)
             } else {
-                if (!isLivenessSessionFinished) {
+                if (!isLivenessSessionFinished && !blockProcessingByUI) {
                     runOnUiThread {
                         livenessSessionLimitCheckTime = SystemClock.elapsedRealtime()
                         binding!!.livenessCosmeticsHolder.isVisible = false
@@ -130,28 +138,51 @@ class LivenessActivity : AppCompatActivity(),
     }
 
     override fun onMilestoneResult(gestureMilestoneType: GestureMilestoneType) {
+        blockProcessingByUI = true
+
         runOnUiThread {
+            binding!!.faceAnimationView.isVisible = false
+            binding!!.arrowAnimationView.isVisible = false
+
             when (gestureMilestoneType) {
                 GestureMilestoneType.CheckHeadPositionMilestone -> {
+                    binding!!.imgViewStaticStageIndication.isVisible = false
+                    binding!!.arrowAnimationView.isVisible = true
+                    binding!!.faceAnimationView.isVisible = true
                     binding!!.faceAnimationView.setAnimation(R.raw.left)
                     binding!!.faceAnimationView.playAnimation()
+                    binding!!.arrowAnimationView.playAnimation()
                     binding!!.checkFaceTitle.text = getString(R.string.liveness_stage_face_left)
-                    binding!!.arrowAnimationView.isVisible = true
+                    blockProcessingByUI = false
                 }
                 GestureMilestoneType.OuterLeftHeadPitchMilestone -> {
-                    binding!!.faceAnimationView.cancelAnimation()
-                    binding!!.faceAnimationView.setAnimation(R.raw.right)
-                    binding!!.checkFaceTitle.text = getString(R.string.liveness_stage_face_right)
-                    binding!!.arrowAnimationView.rotation = 180F
-                    binding!!.arrowAnimationView.setMargins(10, null,
-                        null, null)
+                    binding!!.imgViewStaticStageIndication.isVisible = true
+                    Handler(Looper.getMainLooper()).postDelayed ({
+                        binding!!.imgViewStaticStageIndication.isVisible = false
+                        binding!!.arrowAnimationView.isVisible = true
+                        binding!!.faceAnimationView.isVisible = true
+                        binding!!.faceAnimationView.cancelAnimation()
+                        binding!!.faceAnimationView.setAnimation(R.raw.right)
+                        binding!!.faceAnimationView.playAnimation()
+                        binding!!.checkFaceTitle.text = getString(R.string.liveness_stage_face_right)
+                        binding!!.arrowAnimationView.rotation = 180F
+                        binding!!.arrowAnimationView.setMargins(10, null,
+                            null, null)
+                        blockProcessingByUI = false
+                    }, BLOCK_PIPELINE_PROCESSING_TIME)
                 }
                 GestureMilestoneType.OuterRightHeadPitchMilestone -> {
-                    binding!!.faceAnimationView.cancelAnimation()
-                    binding!!.faceAnimationView.setAnimation(R.raw.mouth)
-                    binding!!.faceAnimationView.playAnimation()
-                    binding!!.checkFaceTitle.text = getString(R.string.liveness_stage_open_mouth)
-                    binding!!.arrowAnimationView.isVisible = false
+                    binding!!.imgViewStaticStageIndication.isVisible = true
+                    Handler(Looper.getMainLooper()).postDelayed ({
+                        binding!!.imgViewStaticStageIndication.isVisible = false
+                        binding!!.arrowAnimationView.isVisible = false
+                        binding!!.faceAnimationView.isVisible = true
+                        binding!!.faceAnimationView.cancelAnimation()
+                        binding!!.faceAnimationView.setAnimation(R.raw.mouth)
+                        binding!!.faceAnimationView.playAnimation()
+                        binding!!.checkFaceTitle.text = getString(R.string.liveness_stage_open_mouth)
+                        blockProcessingByUI = false
+                    }, BLOCK_PIPELINE_PROCESSING_TIME)
                 }
                 GestureMilestoneType.MouthOpenMilestone -> {
                     binding!!.livenessCosmeticsHolder.isVisible = false
@@ -241,7 +272,7 @@ class LivenessActivity : AppCompatActivity(),
             },
             this,
             R.layout.camera_fragment,
-            Size(640, 720) //480
+            Size(640, 480) //480 //960
         )
         camera2Fragment.setCamera(cameraId)
         fragment = camera2Fragment

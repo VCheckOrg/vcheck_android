@@ -59,7 +59,7 @@ class CameraConnectionFragment @SuppressLint("ValidFragment") private constructo
          * The camera preview size will be chosen to be the smallest frame by pixel size capable of
          * containing a DESIRED_SIZE x DESIRED_SIZE square.
          */
-        private const val MINIMUM_PREVIEW_SIZE = 320
+        private const val MINIMUM_PREVIEW_SIZE = 640  // was 320 by default
 
         /** Conversion from screen rotation to JPEG orientation.  */
         private val ORIENTATIONS = SparseIntArray()
