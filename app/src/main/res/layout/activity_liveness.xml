@@ -51,75 +51,92 @@
     <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:background="@android:color/black"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="120dp"
+        app:layout_constraintTop_toBottomOf="@id/appBar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         tools:context="org.tensorflow.lite.examples.classification.CameraActivity">
     </FrameLayout>
 
-    <androidx.cardview.widget.CardView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/livenessCosmeticsHolder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="80dp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginBottom="112dp"
-        app:cardBackgroundColor="@color/transparent"
-        app:cardCornerRadius="10dp"
+        android:layout_marginTop="70dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
             <TextView
                 android:id="@+id/check_face_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="36dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginBottom="40dp"
                 android:textColor="@color/white"
-                android:textSize="18sp"
+                android:textSize="21sp"
                 android:textStyle="bold"
                 android:padding="10dp"
-                android:background="@drawable/shape_doc_card"
-                app:layout_constraintBottom_toTopOf="@+id/cosmetic_rounded_frame"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <View
                 android:id="@+id/cosmetic_rounded_frame"
-                android:layout_width="320dp"
-                android:layout_height="320dp"
+                android:layout_width="116dp"
+                android:layout_height="116dp"
                 android:background="@drawable/rounded_shape"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                android:layout_marginTop="75dp"
+                android:layout_marginEnd="20dp"/>
+
+            <ImageView
+                android:id="@+id/imgViewStaticStageIndication"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:src="@drawable/ic_success"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@id/cosmetic_rounded_frame"
+                app:layout_constraintTop_toTopOf="@id/cosmetic_rounded_frame"
+                app:layout_constraintStart_toStartOf="@id/cosmetic_rounded_frame"
+                app:layout_constraintBottom_toBottomOf="@id/cosmetic_rounded_frame"
+                android:contentDescription="@string/success_button" />
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/face_animation_view"
-                android:layout_width="95dp"
-                android:layout_height="95dp"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
                 android:scaleType="fitXY"
                 android:scaleX="2"
                 android:scaleY="2"
                 app:lottie_loop="true"
                 app:lottie_autoPlay="true"
-                app:layout_constraintCircle="@id/cosmetic_rounded_frame"
-                app:layout_constraintCircleAngle="45"
-                app:layout_constraintCircleRadius="160dp"
-                tools:ignore="ContentDescription,MissingConstraints" />
+                android:layout_marginBottom="1dp"
+                app:layout_constraintEnd_toEndOf="@id/cosmetic_rounded_frame"
+                app:layout_constraintTop_toTopOf="@id/cosmetic_rounded_frame"
+                app:layout_constraintStart_toStartOf="@id/cosmetic_rounded_frame"
+                app:layout_constraintBottom_toBottomOf="@id/cosmetic_rounded_frame" />
 
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/arrow_animation_view"
+            android:layout_width="260dp"
+            android:layout_height="140dp"
+            app:lottie_rawRes="@raw/arrow"
+            android:scaleX="2.5"
+            android:scaleY="3"
+            app:lottie_loop="true"
+            app:lottie_autoPlay="true"
+            app:layout_constraintTop_toBottomOf="@id/cosmetic_rounded_frame"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <!--            android:layout_marginStart="-90dp"-->
 <!--            app:lottie_rawRes="@raw/left"-->
 <!--            app:lottie_fileName="hello_world.json"-->
 <!--            // Loop indefinitely-->
@@ -127,9 +144,7 @@
 <!--            // Start playing as soon as the animation is loaded-->
 <!--            app:lottie_autoPlay="true" />-->
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/liveness_host_fragment"

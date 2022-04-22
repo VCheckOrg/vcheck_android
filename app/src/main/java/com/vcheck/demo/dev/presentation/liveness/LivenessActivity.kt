@@ -11,6 +11,7 @@ import android.util.Log
 import android.util.Size
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.core.view.marginStart
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.google.mediapipe.solutions.facemesh.FaceMesh
@@ -26,6 +27,7 @@ import com.vcheck.demo.dev.presentation.liveness.flow_logic.LivenessCameraParams
 import com.vcheck.demo.dev.presentation.liveness.flow_logic.getScreenOrientation
 import com.vcheck.demo.dev.presentation.liveness.flow_logic.onImageAvailableImpl
 import com.vcheck.demo.dev.presentation.liveness.ui.CameraConnectionFragment
+import com.vcheck.demo.dev.util.setMargins
 import org.jetbrains.kotlinx.multik.api.d2array
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.api.ndarray
@@ -70,6 +72,16 @@ class LivenessActivity : AppCompatActivity(),
 
         setupStreamingModePipeline()
         setCameraFragment()
+
+        initSetupUI()
+    }
+
+    fun initSetupUI() {
+        // + hide success static image icon
+        binding!!.arrowAnimationView.setMargins(-80, null,
+            null, null)
+        binding!!.arrowAnimationView.rotation = 0F
+        binding!!.arrowAnimationView.isVisible = false
     }
 
     fun resetMilestonesForNewLivenessSession() {
@@ -82,6 +94,7 @@ class LivenessActivity : AppCompatActivity(),
         binding!!.livenessCosmeticsHolder.isVisible = true
         binding!!.checkFaceTitle.text = getString(R.string.liveness_stage_check_face_pos)
         binding!!.faceAnimationView.cancelAnimation()
+        binding!!.arrowAnimationView.cancelAnimation()
     }
 
     fun finishLivenessSession() {
@@ -123,18 +136,22 @@ class LivenessActivity : AppCompatActivity(),
                     binding!!.faceAnimationView.setAnimation(R.raw.left)
                     binding!!.faceAnimationView.playAnimation()
                     binding!!.checkFaceTitle.text = getString(R.string.liveness_stage_face_left)
+                    binding!!.arrowAnimationView.isVisible = true
                 }
                 GestureMilestoneType.OuterLeftHeadPitchMilestone -> {
                     binding!!.faceAnimationView.cancelAnimation()
                     binding!!.faceAnimationView.setAnimation(R.raw.right)
-                    binding!!.faceAnimationView.playAnimation()
                     binding!!.checkFaceTitle.text = getString(R.string.liveness_stage_face_right)
+                    binding!!.arrowAnimationView.rotation = 180F
+                    binding!!.arrowAnimationView.setMargins(10, null,
+                        null, null)
                 }
                 GestureMilestoneType.OuterRightHeadPitchMilestone -> {
                     binding!!.faceAnimationView.cancelAnimation()
                     binding!!.faceAnimationView.setAnimation(R.raw.mouth)
                     binding!!.faceAnimationView.playAnimation()
                     binding!!.checkFaceTitle.text = getString(R.string.liveness_stage_open_mouth)
+                    binding!!.arrowAnimationView.isVisible = false
                 }
                 GestureMilestoneType.MouthOpenMilestone -> {
                     binding!!.livenessCosmeticsHolder.isVisible = false
@@ -224,7 +241,7 @@ class LivenessActivity : AppCompatActivity(),
             },
             this,
             R.layout.camera_fragment,
-            Size(640, 480)
+            Size(640, 720) //480
         )
         camera2Fragment.setCamera(cameraId)
         fragment = camera2Fragment
