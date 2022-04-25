@@ -17,6 +17,8 @@ class NoTimeFragment : Fragment(R.layout.no_time_fragment) {
 
         _binding = NoTimeFragmentBinding.bind(view)
 
+        (activity as LivenessActivity).finishLivenessSession()
+
         _binding!!.tryAgainButton.setOnClickListener {
             (activity as LivenessActivity).resetMilestonesForNewLivenessSession()
             (activity as LivenessActivity).resetUIForNewLivenessSession()

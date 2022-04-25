@@ -21,7 +21,11 @@
         android:id="@+id/inProcessFragment"
         android:name="com.vcheck.demo.dev.presentation.liveness.ui.InProcessFragment"
         android:label="in_process_fragment"
-        tools:layout="@layout/in_process_fragment" />
+        tools:layout="@layout/in_process_fragment" >
+        <action
+            android:id="@+id/action_inProcessFragment_to_livenessResultVideoViewFragment"
+            app:destination="@id/livenessResultVideoViewFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/noTimeFragment"
@@ -58,5 +62,10 @@
         android:name="com.vcheck.demo.dev.presentation.screens.FailVerificationFragment"
         android:label="fail_verification_fragment"
         tools:layout="@layout/fail_verification_fragment" />
+    <fragment
+        android:id="@+id/livenessResultVideoViewFragment"
+        android:name="com.vcheck.demo.dev.presentation.liveness.ui.LivenessResultVideoViewFragment"
+        android:label="fragment_liveness_result_video_view"
+        tools:layout="@layout/fragment_liveness_result_video_view" />
 
 </navigation>

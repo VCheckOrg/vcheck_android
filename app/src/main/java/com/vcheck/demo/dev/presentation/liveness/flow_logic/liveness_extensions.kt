@@ -1,13 +1,19 @@
 package com.vcheck.demo.dev.presentation.liveness.flow_logic
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Matrix
+import android.media.ExifInterface
 import android.media.Image
 import android.media.ImageReader
+import android.os.Build
 import android.util.Log
 import android.view.Surface
 import com.vcheck.demo.dev.presentation.liveness.LivenessActivity
 import com.vcheck.demo.dev.util.ImageUtils
+import java.io.ByteArrayInputStream
+import java.nio.ByteBuffer
+
 
 fun LivenessActivity.onImageAvailableImpl(reader: ImageReader?) {
     // We need wait until we have some size from onPreviewSizeChosen
@@ -76,6 +82,7 @@ fun LivenessActivity.getScreenOrientation(): Int {
         else -> 0
     }
 }
+
 
 //TODO rotate image if image captured on samsung devices (?)
 //Most phone cameras are landscape, meaning if you take the photo in portrait, the resulting photos will be rotated 90 degrees.

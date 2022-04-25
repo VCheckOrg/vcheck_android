@@ -20,6 +20,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
+import android.util.Log
 import android.util.Size
 import android.util.SparseIntArray
 import android.view.LayoutInflater
@@ -131,20 +132,16 @@ class CameraConnectionFragment @SuppressLint("ValidFragment") private constructo
         init {
             ORIENTATIONS.append(
                 Surface.ROTATION_0,
-                90
-            )
+                90)
             ORIENTATIONS.append(
                 Surface.ROTATION_90,
-                0
-            )
+                0)
             ORIENTATIONS.append(
                 Surface.ROTATION_180,
-                270
-            )
+                270)
             ORIENTATIONS.append(
                 Surface.ROTATION_270,
-                180
-            )
+                180)
         }
     }
 
@@ -286,6 +283,8 @@ class CameraConnectionFragment @SuppressLint("ValidFragment") private constructo
                 map!!.getOutputSizes(SurfaceTexture::class.java),
                 inputSize.width,
                 inputSize.height)
+
+            Log.d("mux", "------------ SIZE: width ${previewSize!!.width} | height: ${previewSize!!.height}")
 
             // We fit the aspect ratio of TextureView to the size of preview we picked.
             val orientation = resources.configuration.orientation

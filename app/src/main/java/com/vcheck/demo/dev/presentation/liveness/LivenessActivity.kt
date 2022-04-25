@@ -5,10 +5,8 @@ import android.graphics.Bitmap
 import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
 import android.media.ImageReader
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.os.SystemClock
+import android.media.MediaFormat
+import android.os.*
 import android.util.Log
 import android.util.Size
 import android.view.animation.AccelerateInterpolator
@@ -22,22 +20,23 @@ import com.google.mediapipe.solutions.facemesh.FaceMeshOptions
 import com.google.mediapipe.solutions.facemesh.FaceMeshResult
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.databinding.ActivityLivenessBinding
-import com.vcheck.demo.dev.presentation.liveness.flow_logic.GestureMilestoneType
-import com.vcheck.demo.dev.presentation.liveness.flow_logic.MilestoneResultListener
-import com.vcheck.demo.dev.presentation.liveness.flow_logic.StandardMilestoneFlow
-import com.vcheck.demo.dev.presentation.liveness.flow_logic.LandmarksProcessingUtil
-import com.vcheck.demo.dev.presentation.liveness.flow_logic.LivenessCameraParams
-import com.vcheck.demo.dev.presentation.liveness.flow_logic.getScreenOrientation
-import com.vcheck.demo.dev.presentation.liveness.flow_logic.onImageAvailableImpl
+import com.vcheck.demo.dev.presentation.liveness.flow_logic.*
 import com.vcheck.demo.dev.presentation.liveness.ui.CameraConnectionFragment
 import com.vcheck.demo.dev.util.setMargins
+import com.vcheck.demo.dev.util.vibrateDevice
+import com.vcheck.demo.dev.util.video.Muxer
+import com.vcheck.demo.dev.util.video.MuxerConfig
+import com.vcheck.demo.dev.util.video.MuxingCompletionListener
 import org.jetbrains.kotlinx.multik.api.d2array
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.api.ndarray
 import org.jetbrains.kotlinx.multik.ndarray.data.D2Array
 import org.jetbrains.kotlinx.multik.ndarray.data.get
 import org.jetbrains.kotlinx.multik.ndarray.data.set
+import java.io.File
+import java.io.IOException
 import java.lang.IllegalArgumentException
+import java.util.concurrent.CopyOnWriteArrayList
 
 class LivenessActivity : AppCompatActivity(),
     ImageReader.OnImageAvailableListener,
@@ -50,9 +49,14 @@ class LivenessActivity : AppCompatActivity(),
         private const val REFINE_PIPELINE_LANDMARKS = false
         private const val MAX_MILESTONES_NUM = 468
         private const val DEBOUNCE_PROCESS_MILLIS = 400 //may reduce a bit
-        private const val LIVENESS_TIME_LIMIT_MILLIS = 18000 //TODO reduce after tests
+        private const val LIVENESS_TIME_LIMIT_MILLIS = 15000 //TODO reduce after tests
         private const val BLOCK_PIPELINE_TIME_MILLIS: Long = 1400 //may reduce a bit
+        private const val STAGE_VIBRATION_DURATION_MILLIS: Long = 100
     }
+
+    var bitmapArray: ArrayList<Bitmap> = ArrayList()
+    private lateinit var muxer: Muxer
+    var videoPath: String? = null
 
     //refactor to protected
     val openLivenessCameraParams: LivenessCameraParams = LivenessCameraParams()
@@ -75,6 +79,12 @@ class LivenessActivity : AppCompatActivity(),
         val view = binding!!.root
         setContentView(view)
 
+        val muxerConfig = MuxerConfig(createVideoFile(),
+            480, 640, MediaFormat.MIMETYPE_VIDEO_AVC,
+            1, 20F, 1500000)
+        muxer = Muxer(this@LivenessActivity, muxerConfig)
+
+
         resetMilestonesForNewLivenessSession()
 
         setupStreamingModePipeline()
@@ -87,6 +97,7 @@ class LivenessActivity : AppCompatActivity(),
         milestoneFlow = StandardMilestoneFlow(this@LivenessActivity)
         livenessSessionLimitCheckTime = SystemClock.elapsedRealtime()
         faceCheckDebounceTime = SystemClock.elapsedRealtime()
+        isLivenessSessionFinished = false
     }
 
     fun finishLivenessSession() {
@@ -106,7 +117,7 @@ class LivenessActivity : AppCompatActivity(),
             Log.e(TAG, "======= MediaPipe Face Mesh error : $message")
         }
         facemesh!!.setResultListener { faceMeshResult: FaceMeshResult ->
-            if (enoughTimeForNextGesture() && !blockProcessingByUI) {
+            if (!isLivenessSessionFinished && !blockProcessingByUI && enoughTimeForNextGesture()) {
                 processLandmarks(faceMeshResult)
             } else {
                 if (!isLivenessSessionFinished && !blockProcessingByUI) {
@@ -140,6 +151,7 @@ class LivenessActivity : AppCompatActivity(),
                 }
                 GestureMilestoneType.MouthOpenMilestone -> {
                     binding!!.livenessCosmeticsHolder.isVisible = false
+                    vibrateDevice(this@LivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
                     try {
                         findNavController(R.id.liveness_host_fragment)
                             .navigate(R.id.action_dummyLivenessStartDestFragment_to_inProcessFragment)
@@ -201,7 +213,7 @@ class LivenessActivity : AppCompatActivity(),
         return twoDimArray
     }
 
-   private fun setCameraFragment() {
+    private fun setCameraFragment() {
         val cameraManager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
         var cameraId: String? = null
         try {
@@ -228,7 +240,7 @@ class LivenessActivity : AppCompatActivity(),
             },
             this,
             R.layout.camera_fragment,
-            Size(640, 480) //480 //960
+            Size(640, 480) //480 //960 ?
         )
         camera2Fragment.setCamera(cameraId)
         fragment = camera2Fragment
@@ -237,7 +249,29 @@ class LivenessActivity : AppCompatActivity(),
 
     override fun onImageAvailable(reader: ImageReader?) {
         //calling verbose extension function, which leads to processImage()
-        onImageAvailableImpl(reader)
+        if (!isLivenessSessionFinished) {
+            onImageAvailableImpl(reader)
+        }
+    }
+
+    fun processVideoOnResult(videoProcessingListener: VideoProcessingListener) {
+        muxer.setOnMuxingCompletedListener(object : MuxingCompletionListener {
+            override fun onVideoSuccessful(file: File) {
+                Log.d(TAG, "Video muxed - file path: ${file.absolutePath}")
+                runOnUiThread {
+                    videoProcessingListener.onVideoProcessed()
+                }
+            }
+            override fun onVideoError(error: Throwable) {
+                Log.e(TAG, "There was an error muxing the video")
+            }
+        })
+
+        val finalList = CopyOnWriteArrayList(bitmapArray)
+        Thread {
+            Log.d(TAG, "-------------------- MUXING......")
+            muxer.mux(finalList)
+        }.start()
     }
 
     fun processImage() {
@@ -246,8 +280,12 @@ class LivenessActivity : AppCompatActivity(),
             rgbFrameBitmap = Bitmap.createBitmap(previewWidth, previewHeight, Bitmap.Config.ARGB_8888)
             rgbFrameBitmap?.setPixels(rgbBytes, 0, previewWidth, 0, 0, previewWidth, previewHeight)
 
+            val bitmap = rgbFrameBitmap
             //sending bitmap to FaceMesh to process
-            facemesh!!.send(rgbFrameBitmap)
+
+            facemesh!!.send(bitmap)
+            bitmapArray.add(rotateBitmap(bitmap!!)!!)
+            //Log.d(TAG, "------------- PUT BITMAP TO ARRAY. SIZE: ${bitmapArray.size}")
 
             postInferenceCallback!!.run()
         }
@@ -290,6 +328,7 @@ class LivenessActivity : AppCompatActivity(),
     }
 
     private fun setUIOnOuterLeftHeadPitchMilestone() {
+        vibrateDevice(this@LivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
         binding!!.imgViewStaticStageIndication.isVisible = true
         binding!!.stageSuccessAnimBorder.isVisible = true
         animateStageSuccessFrame()
@@ -309,6 +348,7 @@ class LivenessActivity : AppCompatActivity(),
     }
 
     private fun setUIOnOuterRightHeadPitchMilestone() {
+        vibrateDevice(this@LivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
         binding!!.imgViewStaticStageIndication.isVisible = true
         binding!!.stageSuccessAnimBorder.isVisible = true
         animateStageSuccessFrame()
@@ -333,6 +373,18 @@ class LivenessActivity : AppCompatActivity(),
                     BLOCK_PIPELINE_TIME_MILLIS / 2)
                     .setInterpolator(AccelerateInterpolator()).start()
             }.start()
+    }
+
+    @Throws(IOException::class)
+    private fun createVideoFile(): File {
+        val storageDir: File =
+            this@LivenessActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
+        return File.createTempFile(
+            "faceVideo${System.currentTimeMillis()}", ".mp4", storageDir
+        ).apply {
+            videoPath = this.path
+            Log.d("VIDEO", "SAVING A FILE: ${this.path}")
+        }
     }
 
     override fun onDestroy() {
