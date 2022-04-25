@@ -53,14 +53,14 @@ class CameraConnectionFragment @SuppressLint("ValidFragment") private constructo
     /** The layout identifier to inflate for this Fragment.  */
     private val layout: Int,
     /** The input size in pixels desired by TensorFlow (width and height of a square bitmap).  */
-    private val inputSize: Size
+    //private val inputSize: Size
 ) : Fragment() {
     companion object {
         /**
          * The camera preview size will be chosen to be the smallest frame by pixel size capable of
          * containing a DESIRED_SIZE x DESIRED_SIZE square.
          */
-        private const val MINIMUM_PREVIEW_SIZE = 640  // was 320 by default
+        //private const val MINIMUM_PREVIEW_SIZE = 640  // was 320 by default
 
         /** Conversion from screen rotation to JPEG orientation.  */
         private val ORIENTATIONS = SparseIntArray()
@@ -75,58 +75,58 @@ class CameraConnectionFragment @SuppressLint("ValidFragment") private constructo
          * @param height The minimum desired height
          * @return The optimal `Size`, or an arbitrary one if none were big enough
          */
-        protected fun chooseOptimalSize(
-            choices: Array<Size>,
-            width: Int,
-            height: Int
-        ): Size {
-            val minSize = Math.max(
-                Math.min(width, height),
-                MINIMUM_PREVIEW_SIZE
-            )
-            val desiredSize = Size(width, height)
-
-            // Collect the supported resolutions that are at least as big as the preview Surface
-            var exactSizeFound = false
-            val bigEnough: MutableList<Size> =
-                ArrayList()
-            val tooSmall: MutableList<Size> =
-                ArrayList()
-            for (option in choices) {
-                if (option == desiredSize) {
-                    // Set the size but don't return yet so that remaining sizes will still be logged.
-                    exactSizeFound = true
-                }
-                if (option.height >= minSize && option.width >= minSize) {
-                    bigEnough.add(option)
-                } else {
-                    tooSmall.add(option)
-                }
-            }
-            if (exactSizeFound) {
-                return desiredSize
-            }
-
-            // Pick the smallest of those, assuming we found any
-            return if (bigEnough.size > 0) {
-                // LOGGER.i("Chosen size: " + chosenSize.getWidth() + "x" + chosenSize.getHeight());
-                Collections.min(
-                    bigEnough,
-                    CompareSizesByArea()
-                )
-            } else {
-                // LOGGER.e("Couldn't find any suitable preview size");
-                choices[0]
-            }
-        }
+//        protected fun chooseOptimalSize(
+//            choices: Array<Size>,
+//            width: Int,
+//            height: Int
+//        ): Size {
+//            val minSize = Math.max(
+//                Math.min(width, height),
+//                MINIMUM_PREVIEW_SIZE
+//            )
+//            val desiredSize = Size(width, height)
+//
+//            // Collect the supported resolutions that are at least as big as the preview Surface
+//            var exactSizeFound = false
+//            val bigEnough: MutableList<Size> =
+//                ArrayList()
+//            val tooSmall: MutableList<Size> =
+//                ArrayList()
+//            for (option in choices) {
+//                if (option == desiredSize) {
+//                    // Set the size but don't return yet so that remaining sizes will still be logged.
+//                    exactSizeFound = true
+//                }
+//                if (option.height >= minSize && option.width >= minSize) {
+//                    bigEnough.add(option)
+//                } else {
+//                    tooSmall.add(option)
+//                }
+//            }
+//            if (exactSizeFound) {
+//                return desiredSize
+//            }
+//
+//            // Pick the smallest of those, assuming we found any
+//            return if (bigEnough.size > 0) {
+//                // LOGGER.i("Chosen size: " + chosenSize.getWidth() + "x" + chosenSize.getHeight());
+//                Collections.min(
+//                    bigEnough,
+//                    CompareSizesByArea()
+//                )
+//            } else {
+//                // LOGGER.e("Couldn't find any suitable preview size");
+//                choices[0]
+//            }
+//        }
 
         fun newInstance(
             callback: ConnectionCallback,
             imageListener: OnImageAvailableListener,
             layout: Int,
-            inputSize: Size
+            //inputSize: Size
         ): CameraConnectionFragment {
-            return CameraConnectionFragment(callback, imageListener, layout, inputSize)
+            return CameraConnectionFragment(callback, imageListener, layout)
         }
 
         init {
@@ -279,10 +279,12 @@ class CameraConnectionFragment @SuppressLint("ValidFragment") private constructo
             // Danger, W.R.! Attempting to use too large a preview size could  exceed the camera
             // bus' bandwidth limitation, resulting in gorgeous previews but the storage of
             // garbage capture data.
-            previewSize = chooseOptimalSize(
-                map!!.getOutputSizes(SurfaceTexture::class.java),
-                inputSize.width,
-                inputSize.height)
+//            previewSize = chooseOptimalSize(
+//                map!!.getOutputSizes(SurfaceTexture::class.java),
+//                inputSize.width,
+//                inputSize.height)
+
+            previewSize = Size(960, 720)
 
             Log.d("mux", "------------ SIZE: width ${previewSize!!.width} | height: ${previewSize!!.height}")
 

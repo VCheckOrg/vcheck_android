@@ -49,7 +49,7 @@ class LivenessActivity : AppCompatActivity(),
         private const val REFINE_PIPELINE_LANDMARKS = false
         private const val MAX_MILESTONES_NUM = 468
         private const val DEBOUNCE_PROCESS_MILLIS = 400 //may reduce a bit
-        private const val LIVENESS_TIME_LIMIT_MILLIS = 15000 //TODO reduce after tests
+        private const val LIVENESS_TIME_LIMIT_MILLIS = 15000
         private const val BLOCK_PIPELINE_TIME_MILLIS: Long = 1400 //may reduce a bit
         private const val STAGE_VIBRATION_DURATION_MILLIS: Long = 100
     }
@@ -79,17 +79,14 @@ class LivenessActivity : AppCompatActivity(),
         val view = binding!!.root
         setContentView(view)
 
-        val muxerConfig = MuxerConfig(createVideoFile(),
-            480, 640, MediaFormat.MIMETYPE_VIDEO_AVC,
-            1, 20F, 1500000)
-        muxer = Muxer(this@LivenessActivity, muxerConfig)
-
+        setUpMuxer()
 
         resetMilestonesForNewLivenessSession()
 
         setupStreamingModePipeline()
 
         setCameraFragment()
+
         initSetupUI()
     }
 
@@ -102,6 +99,14 @@ class LivenessActivity : AppCompatActivity(),
 
     fun finishLivenessSession() {
         isLivenessSessionFinished = true
+    }
+
+    private fun setUpMuxer() {
+        val muxerConfig = MuxerConfig(createVideoFile(),
+            720, 960, MediaFormat.MIMETYPE_VIDEO_AVC,
+            3, 32F, 2500000, iFrameInterval = 50)
+        //TODO check number of output bitmaps in list on different devices after 15 seconds!
+        muxer = Muxer(this@LivenessActivity, muxerConfig)
     }
 
     private fun setupStreamingModePipeline() {
@@ -239,9 +244,9 @@ class LivenessActivity : AppCompatActivity(),
                 }
             },
             this,
-            R.layout.camera_fragment,
-            Size(640, 480) //480 //960 ?
-        )
+            R.layout.camera_fragment)
+            //Size(960, 720) //640x480
+
         camera2Fragment.setCamera(cameraId)
         fragment = camera2Fragment
         supportFragmentManager.beginTransaction().replace(R.id.container, fragment).commit()
@@ -259,7 +264,7 @@ class LivenessActivity : AppCompatActivity(),
             override fun onVideoSuccessful(file: File) {
                 Log.d(TAG, "Video muxed - file path: ${file.absolutePath}")
                 runOnUiThread {
-                    videoProcessingListener.onVideoProcessed()
+                    videoProcessingListener.onVideoProcessed(file.path)
                 }
             }
             override fun onVideoError(error: Throwable) {
@@ -284,6 +289,8 @@ class LivenessActivity : AppCompatActivity(),
             //sending bitmap to FaceMesh to process
 
             facemesh!!.send(bitmap)
+            //bitmapArray.add(bitmap!!)
+
             bitmapArray.add(rotateBitmap(bitmap!!)!!)
             //Log.d(TAG, "------------- PUT BITMAP TO ARRAY. SIZE: ${bitmapArray.size}")
 

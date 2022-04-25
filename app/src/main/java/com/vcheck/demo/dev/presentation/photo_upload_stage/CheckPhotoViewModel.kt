@@ -17,15 +17,14 @@ class CheckPhotoViewModel(val repository: MainRepository) : ViewModel() {
 
     fun uploadVerificationDocuments(
         token: String, documentUploadRequestBody: DocumentUploadRequestBody,
-        images: List<MultipartBody.Part>
-    ) {
+        images: List<MultipartBody.Part>) {
         repository.uploadVerificationDocuments(token, documentUploadRequestBody, images)
             .observeForever {
-                processCreateVerifResponse(it)
+                processResponse(it)
             }
     }
 
-    private fun processCreateVerifResponse(response: Resource<DocumentUploadResponse>) {
+    private fun processResponse(response: Resource<DocumentUploadResponse>) {
         when (response.status) {
             Resource.Status.LOADING -> {
                 //setLoading()

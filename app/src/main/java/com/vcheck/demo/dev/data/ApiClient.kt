@@ -67,4 +67,12 @@ interface ApiClient {
 
     @GET("timestamp")
     fun getServiceTimestamp() : Call<String>
+
+    @Headers("multipart: true")
+    @Multipart
+    @POST("liveness")
+    fun uploadLivenessVideo(
+        @Header("Authorization") verifToken: String,
+        @Part video: MultipartBody.Part
+    ) : Call<Response<Void>>
 }

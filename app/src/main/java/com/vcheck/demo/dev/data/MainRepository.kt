@@ -83,6 +83,13 @@ class MainRepository(
         }
     }
 
+    fun uploadLivenessVideo(verifToken: String, video: MultipartBody.Part)
+        : MutableLiveData<Resource<Response<Void>>> {
+        return if (verifToken.isNotEmpty()) {
+            remoteDatasource.uploadLivenessVideo(verifToken, video)
+        } else MutableLiveData(Resource.error(ApiError(BaseClientErrors.NO_TOKEN_AVAILABLE)))
+    }
+
     fun getActualServiceTimestamp() : MutableLiveData<Resource<String>> {
         return remoteDatasource.getServiceTimestamp()
     }

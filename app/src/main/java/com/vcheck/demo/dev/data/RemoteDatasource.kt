@@ -5,6 +5,7 @@ import com.vcheck.demo.dev.domain.*
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Header
+import retrofit2.http.Part
 import retrofit2.http.Path
 
 class RemoteDatasource(private val apiClient: ApiClient) {
@@ -84,9 +85,7 @@ class RemoteDatasource(private val apiClient: ApiClient) {
             apiClient.updateAndConfirmDocInfo(verifToken, docId, docData))
     }
 
-    fun setDocumentAsPrimary(
-        @Header("Authorization") verifToken: String,
-        @Path("document") docId: Int) : MutableLiveData<Resource<Response<Void>>> {
+    fun setDocumentAsPrimary(verifToken: String, docId: Int) : MutableLiveData<Resource<Response<Void>>> {
         return NetworkCall<Response<Void>>().makeCall(apiClient.setDocumentAsPrimary(
             verifToken, docId))
     }
@@ -94,5 +93,11 @@ class RemoteDatasource(private val apiClient: ApiClient) {
     fun getServiceTimestamp() : MutableLiveData<Resource<String>> {
         return NetworkCall<String>().makeCall(
             apiClient.getServiceTimestamp())
+    }
+
+    fun uploadLivenessVideo(verifToken: String, video: MultipartBody.Part)
+        : MutableLiveData<Resource<Response<Void>>> {
+        return NetworkCall<Response<Void>>().makeCall(apiClient.uploadLivenessVideo(
+            verifToken, video))
     }
 }

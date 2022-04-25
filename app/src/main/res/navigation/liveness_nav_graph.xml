@@ -25,6 +25,9 @@
         <action
             android:id="@+id/action_inProcessFragment_to_livenessResultVideoViewFragment"
             app:destination="@id/livenessResultVideoViewFragment" />
+        <action
+            android:id="@+id/action_inProcessFragment_to_successFragment"
+            app:destination="@id/successFragment" />
     </fragment>
 
     <fragment
