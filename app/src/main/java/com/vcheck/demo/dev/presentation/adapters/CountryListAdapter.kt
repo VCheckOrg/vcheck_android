@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
+import com.vcheck.demo.dev.databinding.CountryBlockedRowBinding
 import com.vcheck.demo.dev.databinding.CountryRowBinding
 import com.vcheck.demo.dev.domain.CountryTO
 import kotlin.collections.ArrayList
@@ -15,28 +16,56 @@ class CountryListAdapter(
     private val onCountryItemClick: OnCountryItemClick,
     private val searchCountryCallback: SearchCountryCallback
 ) :
-    RecyclerView.Adapter<CountryListAdapter.ViewHolder>(), Filterable {
+    RecyclerView.Adapter<RecyclerView.ViewHolder>(), Filterable {
 
-    private lateinit var binding: CountryRowBinding
+    private lateinit var availableCountryBinding: CountryRowBinding
+    private lateinit var unavailableCountryRowBinding: CountryBlockedRowBinding
     private val mainCountryList = ArrayList<CountryTO>(countryList)
     private val searchCountryList = ArrayList<CountryTO>(countryList)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-
-        val layoutInflater = LayoutInflater.from(parent.context)
-        binding = CountryRowBinding.inflate(layoutInflater, parent, false)
-        return ViewHolder(binding, onCountryItemClick)
+    override fun getItemViewType(position: Int): Int {
+        return if (mainCountryList[position].isBlocked) {
+            0
+        } else {
+            1
+        }
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+
+        val layoutInflater = LayoutInflater.from(parent.context)
+
+        return if (viewType == 0) {
+            unavailableCountryRowBinding = CountryBlockedRowBinding.inflate(layoutInflater, parent, false)
+            UnavailableCountryViewHolder(unavailableCountryRowBinding)
+        } else {
+            availableCountryBinding = CountryRowBinding.inflate(layoutInflater, parent, false)
+            AvailableCountryViewHolder(availableCountryBinding, onCountryItemClick)
+        }
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val country = mainCountryList[position]
-        holder.bind(country)
+
+        if (country.isBlocked) {
+            (holder as UnavailableCountryViewHolder).bind(country)
+        } else {
+            (holder as AvailableCountryViewHolder).bind(country)
+        }
     }
 
     override fun getItemCount(): Int = mainCountryList.size
 
+    class UnavailableCountryViewHolder(
+        private val binding: CountryBlockedRowBinding) : RecyclerView.ViewHolder(binding.root) {
 
-    class ViewHolder(
+            fun bind(country: CountryTO) {
+                binding.countryName.text = country.name
+                binding.flagEmoji.text = country.flag
+            }
+    }
+
+    class AvailableCountryViewHolder(
         private val binding: CountryRowBinding,
         private val onCountryItemClick: OnCountryItemClick,
     ) :

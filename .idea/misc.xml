@@ -55,12 +55,14 @@
         <entry key="..\:/Android/projects/vcheck_android_demo/app/src/main/res/layout/zoomed_photo_screen.xml" value="0.31927083333333334" />
         <entry key="app/src/main/res/drawable/ball_shape.xml" value="0.1815" />
         <entry key="app/src/main/res/drawable/border_shape.xml" value="0.1835" />
+        <entry key="app/src/main/res/drawable/foreground_mask.xml" value="0.1985" />
         <entry key="app/src/main/res/drawable/ic_baseline_arrow_drop_down_24.xml" value="0.138" />
         <entry key="app/src/main/res/drawable/inactive_button.xml" value="0.1835" />
         <entry key="app/src/main/res/drawable/outlined_button_shape.xml" value="0.1835" />
         <entry key="app/src/main/res/drawable/rounded_shape.xml" value="0.1835" />
         <entry key="app/src/main/res/drawable/rounded_shape_large.xml" value="0.1815" />
         <entry key="app/src/main/res/drawable/shape_anim_ball.xml" value="0.1815" />
+        <entry key="app/src/main/res/drawable/shape_choose_country.xml" value="0.1985" />
         <entry key="app/src/main/res/drawable/shape_doc_card.xml" value="0.1815" />
         <entry key="app/src/main/res/drawable/shape_for_blue_button.xml" value="0.1835" />
         <entry key="app/src/main/res/drawable/shape_for_border.xml" value="0.1815" />
@@ -76,6 +78,7 @@
         <entry key="app/src/main/res/layout/choose_country_fragment.xml" value="0.21652577718098953" />
         <entry key="app/src/main/res/layout/choose_doc_method_fragment.xml" value="0.33125" />
         <entry key="app/src/main/res/layout/choose_method_fragment.xml" value="0.2890625" />
+        <entry key="app/src/main/res/layout/country_blocked_row.xml" value="0.33695652173913043" />
         <entry key="app/src/main/res/layout/country_list_fragment.xml" value="0.2890625" />
         <entry key="app/src/main/res/layout/country_row.xml" value="0.27219202898550726" />
         <entry key="app/src/main/res/layout/doc_info_row.xml" value="0.27219202898550726" />

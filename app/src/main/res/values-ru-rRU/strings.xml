@@ -62,7 +62,7 @@
     <string name="hand_print_text">Рукописный текст</string>
     <string name="replace_photo_button">Заменить фото</string>
     <string name="confirm_photo_button">Подтвердить</string>
-    <string name="docMethodInnerPassport">Внутренний гражданский паспорт</string>
+    <string name="docMethodInnerPassport">Внутренний паспорт гражданина</string>
     <string name="choose_doc_method_title">Выберите тип документа</string>
     <string name="choose_doc_method_description">Для последующей обработки и валидации укажите, какому из типов ниже соответствует ваш документ.</string>
     <string name="docMethodForeignPassport">Загранпаспорт</string>
@@ -109,11 +109,11 @@
     <string name="reload_photo">Попробовать еще раз</string>
     <string name="check_doc_fields_validation_error">Проверьте правильность заполнения всех полей документа</string>
     <string name="field_validation_error">Неверный формат заполнения поля</string>
-    
     <string name="liveness_stage_check_face_pos">Выровняйте лицо и закройте рот</string>
     <string name="liveness_stage_face_left">Поверните лицо влево</string>
     <string name="liveness_stage_face_right">Поверните лицо вправо</string>
     <string name="liveness_stage_open_mouth">Откройте рот</string>
     <string name="wait_for_liveness_start">Пожалуйста, подождите</string>
+    <string name="unavailable_country">В данный момент недоступно</string>
 
 </resources>

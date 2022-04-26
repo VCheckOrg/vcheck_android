@@ -44,7 +44,10 @@ class InProcessFragment : Fragment(R.layout.in_process_fragment), VideoProcessin
 
         _viewModel.uploadResponse.observe(viewLifecycleOwner) {
             if (it) {
-                findNavController().navigate(R.id.action_inProcessFragment_to_successFragment)
+                //TODO: NO navigation on success!
+                // we need to display 'Proceed' button which will restart the app/session (AKA back to partner)
+                //findNavController().navigate(R.id.action_inProcessFragment_to_successFragment)
+                findNavController().navigate(R.id.action_inProcessFragment_to_livenessResultVideoViewFragment)
             }
         }
 

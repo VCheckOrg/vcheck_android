@@ -6,6 +6,7 @@ import com.vcheck.demo.dev.data.LocalDatasource
 import com.vcheck.demo.dev.data.MainRepository
 import com.vcheck.demo.dev.data.RemoteDatasource
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -19,8 +20,17 @@ class AppContainer(val app: VcheckDemoApp) {
     init {
         val logging = HttpLoggingInterceptor()
 
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY) //when having debug issue change to BODY
+        //logging.setLevel(HttpLoggingInterceptor.Level.BODY) //when having debug issue change to BODY
+
         val httpClient = OkHttpClient.Builder()
+
+        httpClient.addInterceptor { chain ->
+            val original: Request = chain.request()
+            val request: Request = original.newBuilder().build()
+            val hasMultipart: Boolean = request.headers.names().contains("multipart")
+            logging.setLevel(if (hasMultipart) HttpLoggingInterceptor.Level.HEADERS else HttpLoggingInterceptor.Level.BODY)
+            chain.proceed(request)
+        }.build()
 
         httpClient.addInterceptor(logging)
         httpClient.readTimeout(180, TimeUnit.SECONDS) //3min

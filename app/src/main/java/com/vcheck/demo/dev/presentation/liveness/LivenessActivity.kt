@@ -104,7 +104,7 @@ class LivenessActivity : AppCompatActivity(),
     private fun setUpMuxer() {
         val muxerConfig = MuxerConfig(createVideoFile(),
             720, 960, MediaFormat.MIMETYPE_VIDEO_AVC,
-            3, 32F, 2500000, iFrameInterval = 50)
+            1, 24F, 2500000, iFrameInterval = 1) //3, 32F, 2500000, iFrameInterval = 50 (10))
         //TODO check number of output bitmaps in list on different devices after 15 seconds!
         muxer = Muxer(this@LivenessActivity, muxerConfig)
     }
@@ -179,7 +179,11 @@ class LivenessActivity : AppCompatActivity(),
                 val pitchAngle = LandmarksProcessingUtil.landmarksToEulerAngles(convertResult)[0]
                 val mouthAspectRatio = LandmarksProcessingUtil.landmarksToMouthAspectRatio(convertResult)
 
-                Log.d(TAG, "========= MOUTH ASPECT RATIO: $mouthAspectRatio | PITCH: $pitchAngle")
+                //TODO optimize values!  + add yaw check:
+                // по поворотам не больше 20 yaw и больше 30 pitch
+                // + deal with freezes on time out -> navigating back!
+
+                //Log.d(TAG, "========= MOUTH ASPECT RATIO: $mouthAspectRatio | PITCH: $pitchAngle")
                 milestoneFlow.checkCurrentStage(pitchAngle, mouthAspectRatio)
             }
             faceCheckDebounceTime = SystemClock.elapsedRealtime()

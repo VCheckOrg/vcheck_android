@@ -124,6 +124,5 @@
     <string name="liveness_stage_face_right">Turn face to the right</string>
     <string name="liveness_stage_open_mouth">Open mouth</string>
     <string name="wait_for_liveness_start">Please, wait…</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="unavailable_country">Currently unavailable</string>
 </resources>

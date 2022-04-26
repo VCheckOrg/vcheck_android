@@ -10,7 +10,7 @@
     <string name="choose_doc_method_title">Оберіть тип документа</string>
     <string name="make_document_photo_title">Зробіть фото документа</string>
     <string name="docMethodForeignPassport">Закордонний паспорт</string>
-    <string name="docMethodInnerPassport">Внутрішній громадянський паспорт</string>
+    <string name="docMethodInnerPassport">Внутрішній паспорт громадянина</string>
     <string name="make_photo_button">Зробити фото</string>
     <string name="photo_upload_button">Завантажити фото</string>
     <string name="success_title">Верифікація успішна</string>
@@ -109,10 +109,10 @@
     <string name="reload_photo">Спробувати ще раз</string>
     <string name="check_doc_fields_validation_error">Перевірте правильність заповнення усіх полей документа</string>
     <string name="field_validation_error">Невірний формат заповнення поля</string>
-
     <string name="liveness_stage_check_face_pos">Вировняйте обличчя і закрийте ріт</string>
     <string name="liveness_stage_face_left">Поверніть обличчя ліворуч</string>
     <string name="liveness_stage_face_right">Поверніть обличчя праворуч</string>
     <string name="liveness_stage_open_mouth">Відкрийте ріт</string>
     <string name="wait_for_liveness_start">Будь ласка, зачекайте</string>
+    <string name="unavailable_country">На даний момент недоступно</string>
 </resources>

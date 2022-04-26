@@ -112,7 +112,7 @@ class DemoStartFragment : Fragment() {
                 val countryList = it.data.data.map { country ->
                     val locale = Locale("", country.code)
                     val flag = locale.country.toFlagEmoji()
-                    CountryTO(locale.displayCountry, country.code, flag)
+                    CountryTO(locale.displayCountry, country.code, flag, country.isBlocked)
                 }.toList() as ArrayList<CountryTO>
 
                 val action =

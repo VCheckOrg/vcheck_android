@@ -5,6 +5,7 @@
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
+
     <color name="black">#222222</color>
     <color name="white">#FFFFFFFF</color>
     <color name="cardBackgroundColor">#543C3C3C</color>
@@ -14,4 +15,7 @@
     <color name="appBlue">#2E75FF</color>
     <color name="appSuccess">#00DF53</color>
     <color name="appSuccessHalfFilled">#5B00DF53</color>
+    <color name="unavailable_mask">#7C3B3B3B</color>
+    <color name="moreLightGrey">#D89F9F9F</color>
+    <color name="errorLight">#FF877C</color>
 </resources>

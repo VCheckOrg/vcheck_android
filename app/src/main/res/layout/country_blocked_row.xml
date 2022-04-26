@@ -15,22 +15,34 @@
         android:layout_marginBottom="10dp"
         android:text="Flag"
         android:textSize="36sp"
+        android:foreground="@drawable/foreground_mask"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 
     <TextView
         android:id="@+id/country_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginTop="11dp"
         android:text="@string/country_name"
-        android:textColor="@color/white"
+        android:textColor="@color/moreLightGrey"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/flag_emoji"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/unavailable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="2dp"
+        android:text="@string/unavailable_country"
+        android:textColor="@color/errorLight"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@id/country_name"
+        app:layout_constraintStart_toEndOf="@+id/flag_emoji" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

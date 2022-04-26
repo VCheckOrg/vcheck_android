@@ -22,10 +22,6 @@ import java.io.FileOutputStream
 
 class LivenessResultVideoViewFragment : Fragment() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -50,7 +46,7 @@ class LivenessResultVideoViewFragment : Fragment() {
             }
 
             //Log.d("mux", getFolderSizeLabel(File(videoPath)))
-            //saveVideoTOGalleryForChecking(videoPath, "VcheckVideo${System.currentTimeMillis()}")
+            saveVideoTOGalleryForChecking(videoPath, "VcheckVideo${System.currentTimeMillis()}")
         }
     }
 

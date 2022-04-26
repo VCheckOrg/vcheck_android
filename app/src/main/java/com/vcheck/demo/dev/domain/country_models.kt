@@ -10,12 +10,13 @@ data class CountriesResponse (
     @SerializedName("error_code")
     var errorCode: Int = 0,
     @SerializedName("message")
-    var message: String = ""
-)
+    var message: String = "")
 
 data class Country(
     @SerializedName("code")
-    val code: String)
+    val code: String,
+    @SerializedName("is_blocked")
+    val isBlocked: Boolean)
 
 @Parcelize
-data class CountryTO(val name: String, val code: String, val flag: String): Parcelable
+data class CountryTO(val name: String, val code: String, val flag: String, val isBlocked : Boolean): Parcelable
