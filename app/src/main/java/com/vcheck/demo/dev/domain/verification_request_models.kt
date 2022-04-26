@@ -15,7 +15,7 @@ data class CreateVerificationRequestBody(
     val timestamp: Long =
         (Calendar.getInstance(TimeZone.getTimeZone("UTC")).timeInMillis / 1000) - 3,
     @SerializedName("locale")
-    val locale: String = "ru",
+    val locale: String,
     @SerializedName("sign")
     val sign: String = generateSHA256Hash(
         "$partner_application_id$partner_id$partner_user_id$timestamp" + "DWBnN7LbeTaqG9vE")) //DWBnN7LbeTaqG9vE

@@ -1,6 +1,7 @@
 package com.vcheck.demo.dev.data
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.vcheck.demo.dev.domain.*
 import okhttp3.MultipartBody
@@ -16,8 +17,9 @@ class MainRepository(
 //  fun createVerificationRequest(verificationRequestBody: CreateVerificationRequestBody): CreateVerificationAttemptResponse
 //        = remoteData.createVerificationRequest(verificationRequestBody)
 
-    fun createTestVerificationRequest(serviceTS: Long): MutableLiveData<Resource<CreateVerificationAttemptResponse>> =
-        remoteDatasource.createVerificationRequest(CreateVerificationRequestBody(timestamp = serviceTS))
+    fun createTestVerificationRequest(serviceTS: Long, deviceDefaultLocaleCode: String): MutableLiveData<Resource<CreateVerificationAttemptResponse>> =
+        remoteDatasource.createVerificationRequest(
+            CreateVerificationRequestBody(timestamp = serviceTS, locale = deviceDefaultLocaleCode))
 
     fun initVerification(verifToken: String): MutableLiveData<Resource<VerificationInitResponse>> {
         return if (verifToken.isNotEmpty()) {
@@ -125,14 +127,12 @@ class MainRepository(
     }
 
     fun getLocale(ctx: Context): String {
+        Log.d("OkHttp", "----------- ACTUAL LOCALE: ${localDatasource.getLocale(ctx)}")
         return localDatasource.getLocale(ctx)
     }
 
-    fun setLocaleAutoChanged(ctx: Context, value: Boolean) {
-        localDatasource.setLocaleAutoChanged(ctx, value)
-    }
-
-    fun isLocaleAutoChanged(ctx: Context): Boolean {
-        return localDatasource.isLocaleAutoChanged(ctx)
+    fun resetCacheOnStartup(ctx: Context) {
+        Log.d("OkHttp", "----------- RESET CACHE ON STARTUP")
+        localDatasource.resetCacheOnStartup(ctx)
     }
 }

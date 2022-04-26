@@ -25,10 +25,10 @@ class ChooseCountryFragment : Fragment(R.layout.choose_country_fragment) {
         super.onCreate(savedInstanceState)
         appContainer = (activity?.application as VcheckDemoApp).appContainer
 
-        if (!appContainer.mainRepository.isLocaleAutoChanged(activity as MainActivity)) {
-            appContainer.mainRepository.setLocaleAutoChanged(activity as MainActivity, true)
-            (activity as MainActivity).recreate()
-        }
+//        if (!appContainer.mainRepository.isLocaleAutoChanged(activity as MainActivity)) {
+//            appContainer.mainRepository.setLocaleAutoChanged(activity as MainActivity, true)
+//            (activity as MainActivity).recreate()
+//        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

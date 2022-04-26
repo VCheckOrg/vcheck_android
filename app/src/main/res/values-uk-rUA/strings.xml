@@ -39,7 +39,7 @@
     <string name="fail_verification_support_button">Звернутися в службу підтримки…</string>
     <string name="fail_verification_title">Верифікація неуспішна</string>
     <string name="frame_interference_button">Спробувати знову</string>
-    <string name="start_demo_flow">Start Demo Flow</string>
+    <string name="start_demo_flow">Спробувати демо</string>
     <string name="photo_instructions_title">Вимоги до фото</string>
     <string name="photo_instructions_description">Фото вашого документа має відповідати таким вимогам:</string>
     <string name="wrong_move_description">Рух, який потрібно було виконати не був виконаний коректно. Намагайтеся робити саме ті рухи, які запитують. Рухи мають бути плавними та своєчасними.</string>
@@ -55,8 +55,8 @@
     <string name="photo_upload_title_foreign">Повний розворот закордонного паспорта (видно обидві сторінки)</string>
     <string name="check_filled_data_description">Перевірте, чи всі дані документа були розпізнані коректно?</string>
     <string name="check_filled_data_title">Перевірка / заповнення даних</string>
-    <string name="photo_upload_title_id_card_forward">Передня сторона ID картки</string>
-    <string name="photo_upload_title_id_card_back">Задня сторона ID картки</string>
+    <string name="photo_upload_title_id_card_forward">Передня сторона ID-картки</string>
+    <string name="photo_upload_title_id_card_back">Задня сторона ID-картки</string>
     <string name="check_info_confirm_button">Все вірно! Продовжити</string>
     <string name="in_process_button">Чудово</string>
     <string name="frame_interference_title">У кадрі багато перешкод</string>
@@ -115,4 +115,5 @@
     <string name="liveness_stage_open_mouth">Відкрийте ріт</string>
     <string name="wait_for_liveness_start">Будь ласка, зачекайте</string>
     <string name="unavailable_country">На даний момент недоступно</string>
+    <string name="launch_liveness_demo">Тільки Liveness</string>
 </resources>

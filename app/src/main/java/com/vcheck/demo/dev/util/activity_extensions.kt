@@ -9,7 +9,9 @@ import com.vcheck.demo.dev.presentation.MainActivity
 import java.util.*
 
 fun MainActivity.setLocaleAndLangSpinner(appContainer: AppContainer) {
+
     val languageCode = appContainer.mainRepository.getLocale(applicationContext)
+
     val locale = Locale(languageCode)
     Locale.setDefault(locale)
 

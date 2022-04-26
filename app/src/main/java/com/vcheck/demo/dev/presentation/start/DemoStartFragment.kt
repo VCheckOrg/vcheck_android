@@ -2,7 +2,6 @@ package com.vcheck.demo.dev.presentation.start
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -18,7 +17,6 @@ import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.databinding.FragmentDemoStartBinding
 import com.vcheck.demo.dev.domain.CountryTO
 import com.vcheck.demo.dev.presentation.MainActivity
-import com.vcheck.demo.dev.presentation.liveness.LivenessActivity
 import com.vcheck.demo.dev.presentation.transferrable_objects.CountriesListTO
 import com.vcheck.demo.dev.util.toFlagEmoji
 import java.util.*
@@ -79,8 +77,7 @@ class DemoStartFragment : Fragment() {
                     Toast.makeText(
                         (activity as MainActivity),
                         "Error: Cannot retrieve verification token",
-                        Toast.LENGTH_LONG
-                    ).show()
+                        Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -92,11 +89,12 @@ class DemoStartFragment : Fragment() {
                             "return_url : ${it.data.data.returnUrl} | stage: ${it.data.data.stage}" +
                             "| locale: ${it.data.data.locale}"
 
-                if (it.data.data.locale != null) {
-                    _viewModel.repository.setLocale((activity as MainActivity),
-                        if (it.data.data.locale == "ua") "uk" else it.data.data.locale)
-                    //check for possible alt. ua locale option
-                }
+                // obsolete:
+//                if (it.data.data.locale != null) {
+//                    _viewModel.repository.setLocale((activity as MainActivity),
+//                        if (it.data.data.locale == "ua") "uk" else it.data.data.locale)
+//                    //check for possible alt. ua locale option
+//                }
 
                 _viewModel.getCountriesList()
             }
@@ -128,10 +126,11 @@ class DemoStartFragment : Fragment() {
 
         _binding!!.btnStartDemoFlow.setOnClickListener {
             _binding!!.startCallChainLoadingIndicator.isVisible = true
-            _viewModel.createTestVerificationRequest()
+            _viewModel.createTestVerificationRequest(_viewModel.repository
+                .getLocale(activity as MainActivity))
         }
 
-        //FOR TEST
+        //! FOR TEST
         _binding!!.btnLaunchMediaPipeDemo.setOnClickListener {
             //TEMP nav action:
             findNavController().navigate(R.id.action_demoStartFragment_to_livenessInstructionsFragment)

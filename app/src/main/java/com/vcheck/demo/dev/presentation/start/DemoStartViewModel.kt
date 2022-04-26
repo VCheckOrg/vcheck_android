@@ -22,10 +22,10 @@ class DemoStartViewModel (val repository: MainRepository) : ViewModel() {
         verifToken = token
     }
 
-    fun createTestVerificationRequest() {
+    fun createTestVerificationRequest(deviceDefaultLocaleCode: String) {
         repository.getActualServiceTimestamp().observeForever { ts ->
             if (ts.data != null) {
-                repository.createTestVerificationRequest(ts.data.toLong()).observeForever {
+                repository.createTestVerificationRequest(ts.data.toLong(), deviceDefaultLocaleCode).observeForever {
                     processCreateVerifResponse(it)
                 }
             }

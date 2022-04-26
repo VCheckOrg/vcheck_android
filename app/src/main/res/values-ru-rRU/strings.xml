@@ -69,8 +69,8 @@
     <string name="docMethodIdCard">Биометрический паспорт (ID-карта)</string>
     <string name="check_info_confirm_button">Все верно! Продолжить</string>
     <string name="photo_upload_title_foreign">Полный разворот загранпаспорта (видны обе страницы)</string>
-    <string name="photo_upload_title_id_card_forward">Передняя сторона ID карты</string>
-    <string name="photo_upload_title_id_card_back">Задняя сторона ID карты</string>
+    <string name="photo_upload_title_id_card_forward">Передняя сторона ID-карты</string>
+    <string name="photo_upload_title_id_card_back">Задняя сторона ID-карты</string>
     <string name="photo_upload_title_common_forward">Фотография первой страницы/стороны документа (с вашим фото).</string>
     <string name="photo_upload_title_common_back">Фотография последней страницы/стороны с вашей фотографией (если у вас несколько фотографий в документе).</string>
     <string name="photo_upload_wait_disclaimer">Пожалуйста, подождите. Идет загрузка и обработка фото вашего документа. Это может занять от нескольких секунд до минуты.</string>
@@ -85,7 +85,7 @@
     <string name="choose_country_card_title">Страна</string>
     <string name="take_photo_title">Сделать фото</string>
     <string name="country_name">Страна</string>
-    <string name="start_demo_flow">Start Demo Flow</string>
+    <string name="start_demo_flow">Попробовать демо</string>
     <string name="face_check_title">Проверка лица</string>
     <string name="face_check_description">Сначала разместите лицо по центру кадра, затем двигайте головой в заданом направлении, как на примере ниже, чтобы показать свое лицо со всех углов.</string>
     <string name="requested_movements_text">выполняйте только запрашиваемые движения</string>
@@ -115,5 +115,6 @@
     <string name="liveness_stage_open_mouth">Откройте рот</string>
     <string name="wait_for_liveness_start">Пожалуйста, подождите</string>
     <string name="unavailable_country">В данный момент недоступно</string>
+    <string name="launch_liveness_demo">Только Liveness</string>
 
 </resources>

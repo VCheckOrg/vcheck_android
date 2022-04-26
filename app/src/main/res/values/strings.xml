@@ -125,4 +125,5 @@
     <string name="liveness_stage_open_mouth">Open mouth</string>
     <string name="wait_for_liveness_start">Please, wait…</string>
     <string name="unavailable_country">Currently unavailable</string>
+    <string name="launch_liveness_demo">Launch Liveness Demo</string>
 </resources>
