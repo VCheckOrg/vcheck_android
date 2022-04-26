@@ -47,16 +47,23 @@ import java.util.concurrent.TimeUnit
  *
  * Instantiated by newInstance.
  */
-@SuppressLint("ValidFragment")
-class CameraConnectionFragment @SuppressLint("ValidFragment") private constructor(
-    private val cameraConnectionCallback: ConnectionCallback,
-    /** A [OnImageAvailableListener] to receive frames as they are available.  */
-    private val imageListener: OnImageAvailableListener,
-    /** The layout identifier to inflate for this Fragment.  */
-    private val layout: Int,
-    /** The input size in pixels desired by TensorFlow (width and height of a square bitmap).  */
-    //private val inputSize: Size
-) : Fragment() {
+//@SuppressLint("ValidFragment")
+class CameraConnectionFragment() : Fragment() {
+
+    private var cameraConnectionCallback: ConnectionCallback? = null
+    private var imageListener: OnImageAvailableListener? = null
+
+
+//    @SuppressLint("ValidFragment") constructor(
+//
+//        /** A [OnImageAvailableListener] to receive frames as they are available.  */
+//
+//        /** The layout identifier to inflate for this Fragment.  */
+//
+//        /** The input size in pixels desired by TensorFlow (width and height of a square bitmap).  */
+//        //private val inputSize: Size
+//    ) : this()
+
     companion object {
         /**
          * The camera preview size will be chosen to be the smallest frame by pixel size capable of
@@ -73,10 +80,13 @@ class CameraConnectionFragment @SuppressLint("ValidFragment") private constructo
         fun newInstance(
             callback: ConnectionCallback,
             imageListener: OnImageAvailableListener,
-            layout: Int,
+            //layout: Int,
             //inputSize: Size
         ): CameraConnectionFragment {
-            return CameraConnectionFragment(callback, imageListener, layout)
+            val fragment = CameraConnectionFragment()
+            fragment.cameraConnectionCallback = callback
+            fragment.imageListener = imageListener
+            return fragment
         }
 
         init {
@@ -180,7 +190,7 @@ class CameraConnectionFragment @SuppressLint("ValidFragment") private constructo
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
-        return inflater.inflate(layout, container, false)
+        return inflater.inflate(R.layout.camera_fragment, container, false)
     }
 
     override fun onViewCreated(
@@ -254,7 +264,7 @@ class CameraConnectionFragment @SuppressLint("ValidFragment") private constructo
                 .show(childFragmentManager, FRAGMENT_DIALOG)
             throw IllegalStateException("getString(R.string.tfe_ic_camera_error)")
         }
-        cameraConnectionCallback.onPreviewSizeChosen(previewSize, sensorOrientation!!)
+        cameraConnectionCallback!!.onPreviewSizeChosen(previewSize, sensorOrientation!!)
     }
 
     @SuppressLint("MissingPermission")
@@ -368,7 +378,7 @@ class CameraConnectionFragment @SuppressLint("ValidFragment") private constructo
 
             // Here, we create a CameraCaptureSession for camera preview.
             cameraDevice!!.createCaptureSession(
-                Arrays.asList(surface, previewReader!!.surface),
+                listOf(surface, previewReader!!.surface),
                 object : CameraCaptureSession.StateCallback() {
                     override fun onConfigured(cameraCaptureSession: CameraCaptureSession) {
                         // The camera is already closed

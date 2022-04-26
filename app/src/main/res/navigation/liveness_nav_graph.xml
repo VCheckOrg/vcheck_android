@@ -40,7 +40,11 @@
         android:id="@+id/noTimeFragment"
         android:name="com.vcheck.demo.dev.presentation.liveness.ui.NoTimeFragment"
         android:label="no_time_fragment"
-        tools:layout="@layout/no_time_fragment" />
+        tools:layout="@layout/no_time_fragment" >
+        <action
+            android:id="@+id/action_noTimeFragment_to_inProcessFragment"
+            app:destination="@id/inProcessFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/successFragment"

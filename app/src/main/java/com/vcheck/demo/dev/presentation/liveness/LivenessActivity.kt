@@ -35,8 +35,10 @@ import org.jetbrains.kotlinx.multik.ndarray.data.get
 import org.jetbrains.kotlinx.multik.ndarray.data.set
 import java.io.File
 import java.io.IOException
-import java.lang.IllegalArgumentException
+import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
+import kotlin.collections.ArrayList
+
 
 class LivenessActivity : AppCompatActivity(),
     ImageReader.OnImageAvailableListener,
@@ -101,11 +103,27 @@ class LivenessActivity : AppCompatActivity(),
         isLivenessSessionFinished = true
     }
 
+    fun delayedResetCameraStreamProcessing() {
+        Timer().schedule(object : TimerTask() {
+            override fun run() {
+                bitmapArray = ArrayList()
+                setCameraFragment()
+            }
+        }, 1200)
+    }
+
     private fun setUpMuxer() {
+
+        //TODO (?) add logic for increasing framesPerImage / FPS based on of factors:
+//        val finalSessionTime = getActualSessionTimeInSecs()
+//        val snapshotsSize = bitmapArray.size
+
+        val framesPerImage = 1
+        val framesPerSecond = 24F
+
         val muxerConfig = MuxerConfig(createVideoFile(),
             720, 960, MediaFormat.MIMETYPE_VIDEO_AVC,
-            1, 24F, 2500000, iFrameInterval = 1) //3, 32F, 2500000, iFrameInterval = 50 (10))
-        //TODO check number of output bitmaps in list on different devices after 15 seconds!
+            framesPerImage, framesPerSecond, 2500000, iFrameInterval = 1) //3, 32F, 2500000, iFrameInterval = 50 (10))
         muxer = Muxer(this@LivenessActivity, muxerConfig)
     }
 
@@ -158,6 +176,10 @@ class LivenessActivity : AppCompatActivity(),
                 GestureMilestoneType.MouthOpenMilestone -> {
                     binding!!.livenessCosmeticsHolder.isVisible = false
                     vibrateDevice(this@LivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
+
+                    Log.d(TAG, "================== FINISHED SESSION - SUCCESS")
+                    Log.d(TAG, "================== ACTUAL TIME: ${getActualSessionTimeInSecs()} sec")
+
                     try {
                         findNavController(R.id.liveness_host_fragment)
                             .navigate(R.id.action_dummyLivenessStartDestFragment_to_inProcessFragment)
@@ -198,6 +220,10 @@ class LivenessActivity : AppCompatActivity(),
 
     private fun enoughTimeForNextGesture(): Boolean {
         return SystemClock.elapsedRealtime() - livenessSessionLimitCheckTime <= LIVENESS_TIME_LIMIT_MILLIS
+    }
+
+    private fun getActualSessionTimeInSecs(): Double {
+        return (SystemClock.elapsedRealtime() - livenessSessionLimitCheckTime).toDouble() / 1000.0
     }
 
     private fun get2DArrayFromMotionUpdate(result: FaceMeshResult?) : D2Array<Double>? {
@@ -248,9 +274,7 @@ class LivenessActivity : AppCompatActivity(),
                     openLivenessCameraParams.sensorOrientation = cameraRotation - getScreenOrientation()
                 }
             },
-            this,
-            R.layout.camera_fragment)
-            //Size(960, 720) //640x480
+            this@LivenessActivity)
 
         camera2Fragment.setCamera(cameraId)
         fragment = camera2Fragment
@@ -283,12 +307,6 @@ class LivenessActivity : AppCompatActivity(),
             muxer.mux(finalList)
         }.start()
     }
-
-//    private var idx: Int = 0
-//
-//    idx += 1
-//
-//    Log.d(TAG, "------- IDX: $idx")
 
     fun processImage() {
         openLivenessCameraParams.apply {
@@ -418,4 +436,13 @@ class LivenessActivity : AppCompatActivity(),
     //" | pitch: ${eulerAnglesResultArr[0]}")  // from -30.0 to 30.0 degrees
     //" | yaw: ${eulerAnglesResultArr[1]}" +
     //" | roll: ${eulerAnglesResultArr[2]}")
+
+    //        object : CountDownTimer(15000, 1000) {
+    //            override fun onTick(duration: Long) {
+    //            }
+    //
+    //            override fun onFinish() {
+    //                Log.d(TAG,  "======================================================== FINISH")
+    //            }
+    //        }.start()
 }
