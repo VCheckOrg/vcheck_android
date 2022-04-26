@@ -93,7 +93,7 @@
     <string name="fail_verification_description">На жаль, нам не вдалося верифікувати вашу заявку. Якщо ви не погоджуєтесь з цим рішенням, прохання звернутися до служби підтримки</string>
     <string name="photo_upload_wait_disclaimer">Будь ласка, зачекайте. Йде завантаження та обробка фото вашого документа. Це може тривати від кількох секунд до хвилини.</string>
     <string name="photo_upload_title_common_back">Фотографія останньої сторінки/сторони з вашою фотографією (якщо у вас є кілька фотографій у документі).</string>
-    <string name="success_description">Таким чином, постійне інформаційно-пропагандистське забезпечення нашої діяльності відіграє важливу роль у формуванні суттєвих фінансових та адміністративних умов.</string>
+    <string name="success_description">Усі необхідні дані по заявці на верифікацію надіслані на наші сервиси та знаходяться у фінальній стадії обробки. Ви можете повернутись до партнерського сервісу.</string>
     <string name="choose_method_title">Виберіть метод верифікації</string>
     <string name="choose_method_description">З іншого боку рамки та місце навчання кадрів дозволяє виконувати важливі завдання щодо розробки напрямів прогресивного розвитку.</string>
     <string name="doc_field_title">Назва поля</string>
@@ -115,5 +115,6 @@
     <string name="liveness_stage_open_mouth">Відкрийте ріт</string>
     <string name="wait_for_liveness_start">Будь ласка, зачекайте</string>
     <string name="unavailable_country">На даний момент недоступно</string>
-    <string name="launch_liveness_demo">Тільки Liveness</string>
+    <string name="launch_liveness_demo">Liveness(Локально!)</string>
+    <string name="application_success">Заявка успішна</string>
 </resources>

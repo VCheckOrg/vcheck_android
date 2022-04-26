@@ -21,6 +21,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
 import android.util.Log
+import android.util.Range
 import android.util.Size
 import android.util.SparseIntArray
 import android.view.LayoutInflater
@@ -38,6 +39,7 @@ import com.vcheck.demo.dev.presentation.liveness.LivenessActivity
 import java.util.*
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
+
 
 /**
  * Camera Connection Fragment that captures images from camera.
@@ -66,59 +68,7 @@ class CameraConnectionFragment @SuppressLint("ValidFragment") private constructo
         private val ORIENTATIONS = SparseIntArray()
         private const val FRAGMENT_DIALOG = "dialog"
 
-        /**
-         * Given `choices` of `Size`s supported by a camera, chooses the smallest one whose
-         * width and height are at least as large as the minimum of both, or an exact match if possible.
-         *
-         * @param choices The list of sizes that the camera supports for the intended output class
-         * @param width The minimum desired width
-         * @param height The minimum desired height
-         * @return The optimal `Size`, or an arbitrary one if none were big enough
-         */
-//        protected fun chooseOptimalSize(
-//            choices: Array<Size>,
-//            width: Int,
-//            height: Int
-//        ): Size {
-//            val minSize = Math.max(
-//                Math.min(width, height),
-//                MINIMUM_PREVIEW_SIZE
-//            )
-//            val desiredSize = Size(width, height)
-//
-//            // Collect the supported resolutions that are at least as big as the preview Surface
-//            var exactSizeFound = false
-//            val bigEnough: MutableList<Size> =
-//                ArrayList()
-//            val tooSmall: MutableList<Size> =
-//                ArrayList()
-//            for (option in choices) {
-//                if (option == desiredSize) {
-//                    // Set the size but don't return yet so that remaining sizes will still be logged.
-//                    exactSizeFound = true
-//                }
-//                if (option.height >= minSize && option.width >= minSize) {
-//                    bigEnough.add(option)
-//                } else {
-//                    tooSmall.add(option)
-//                }
-//            }
-//            if (exactSizeFound) {
-//                return desiredSize
-//            }
-//
-//            // Pick the smallest of those, assuming we found any
-//            return if (bigEnough.size > 0) {
-//                // LOGGER.i("Chosen size: " + chosenSize.getWidth() + "x" + chosenSize.getHeight());
-//                Collections.min(
-//                    bigEnough,
-//                    CompareSizesByArea()
-//                )
-//            } else {
-//                // LOGGER.e("Couldn't find any suitable preview size");
-//                choices[0]
-//            }
-//        }
+        //removed chooseOptimalSize() !
 
         fun newInstance(
             callback: ConnectionCallback,
@@ -386,9 +336,15 @@ class CameraConnectionFragment @SuppressLint("ValidFragment") private constructo
             val surface = Surface(texture)
 
             // We set up a CaptureRequest.Builder with the output Surface.
+
             previewRequestBuilder =
                 cameraDevice!!.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW)
+
             previewRequestBuilder!!.addTarget(surface)
+
+            //!
+            val fpsRange: Range<Int> = Range(24, 26)
+            previewRequestBuilder!!.set(CaptureRequest.CONTROL_AE_TARGET_FPS_RANGE, fpsRange)
 
             // LOGGER.i("Opening camera preview: " + previewSize.getWidth() + "x" + previewSize.getHeight());
 
@@ -397,6 +353,17 @@ class CameraConnectionFragment @SuppressLint("ValidFragment") private constructo
                 previewSize!!.width, previewSize!!.height, ImageFormat.YUV_420_888, 2
             )
             previewReader!!.setOnImageAvailableListener(imageListener, backgroundHandler)
+
+            //----------------------------
+            //FOR TEST:
+//            var idx = 0
+//            previewReader!!.setOnImageAvailableListener({ reader ->
+//                reader.acquireLatestImage().close()
+//                idx += 1
+//                Log.d(TAG, "-------------------- GOT IMAGE: idx ${idx}")
+//            }, backgroundHandler)
+            //----------------------------
+
             previewRequestBuilder!!.addTarget(previewReader!!.surface)
 
             // Here, we create a CameraCaptureSession for camera preview.
@@ -526,3 +493,57 @@ class CameraConnectionFragment @SuppressLint("ValidFragment") private constructo
     }
 
 }
+
+/**
+ * Given `choices` of `Size`s supported by a camera, chooses the smallest one whose
+ * width and height are at least as large as the minimum of both, or an exact match if possible.
+ *
+ * @param choices The list of sizes that the camera supports for the intended output class
+ * @param width The minimum desired width
+ * @param height The minimum desired height
+ * @return The optimal `Size`, or an arbitrary one if none were big enough
+ */
+//        protected fun chooseOptimalSize(
+//            choices: Array<Size>,
+//            width: Int,
+//            height: Int
+//        ): Size {
+//            val minSize = Math.max(
+//                Math.min(width, height),
+//                MINIMUM_PREVIEW_SIZE
+//            )
+//            val desiredSize = Size(width, height)
+//
+//            // Collect the supported resolutions that are at least as big as the preview Surface
+//            var exactSizeFound = false
+//            val bigEnough: MutableList<Size> =
+//                ArrayList()
+//            val tooSmall: MutableList<Size> =
+//                ArrayList()
+//            for (option in choices) {
+//                if (option == desiredSize) {
+//                    // Set the size but don't return yet so that remaining sizes will still be logged.
+//                    exactSizeFound = true
+//                }
+//                if (option.height >= minSize && option.width >= minSize) {
+//                    bigEnough.add(option)
+//                } else {
+//                    tooSmall.add(option)
+//                }
+//            }
+//            if (exactSizeFound) {
+//                return desiredSize
+//            }
+//
+//            // Pick the smallest of those, assuming we found any
+//            return if (bigEnough.size > 0) {
+//                // LOGGER.i("Chosen size: " + chosenSize.getWidth() + "x" + chosenSize.getHeight());
+//                Collections.min(
+//                    bigEnough,
+//                    CompareSizesByArea()
+//                )
+//            } else {
+//                // LOGGER.e("Couldn't find any suitable preview size");
+//                choices[0]
+//            }
+//        }

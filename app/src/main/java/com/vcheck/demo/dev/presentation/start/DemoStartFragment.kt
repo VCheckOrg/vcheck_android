@@ -89,13 +89,6 @@ class DemoStartFragment : Fragment() {
                             "return_url : ${it.data.data.returnUrl} | stage: ${it.data.data.stage}" +
                             "| locale: ${it.data.data.locale}"
 
-                // obsolete:
-//                if (it.data.data.locale != null) {
-//                    _viewModel.repository.setLocale((activity as MainActivity),
-//                        if (it.data.data.locale == "ua") "uk" else it.data.data.locale)
-//                    //check for possible alt. ua locale option
-//                }
-
                 _viewModel.getCountriesList()
             }
         }

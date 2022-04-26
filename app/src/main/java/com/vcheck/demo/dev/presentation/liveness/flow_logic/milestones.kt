@@ -12,6 +12,11 @@ enum class GestureMilestoneType {
     MouthClosedMilestone
 }
 
+const val LEFT_PITCH_PASS_ANGLE = -30.0
+const val RIGHT_PITCH_PASS_ANGLE = 30.0
+const val MOUTH_OPEN_PASS_FACTOR = 0.41  //reduced from 0.55 !
+
+
 open class GestureMilestone(val milestoneType: GestureMilestoneType) {
 
     companion object {
@@ -27,8 +32,8 @@ open class GestureMilestone(val milestoneType: GestureMilestoneType) {
 class HeadPitchGestureMilestone(val gestureMilestoneType: GestureMilestoneType)
     : GestureMilestone(gestureMilestoneType) {
 
-    private val leftPitchPassAngle: Double = -30.0
-    private val rightPitchPassAngle: Double = 30.0
+    private val leftPitchPassAngle: Double = LEFT_PITCH_PASS_ANGLE
+    private val rightPitchPassAngle: Double = RIGHT_PITCH_PASS_ANGLE
 
     init {
         if (gestureMilestoneType != GestureMilestoneType.InnerHeadPitchMilestone
@@ -53,7 +58,7 @@ class HeadPitchGestureMilestone(val gestureMilestoneType: GestureMilestoneType)
 class MouthGestureMilestone(val gestureMilestoneType: GestureMilestoneType)
     : GestureMilestone(gestureMilestoneType) {
 
-    private val mouthOpenPassFactor: Double = 0.41 //reduced from 0.55 !
+    private val mouthOpenPassFactor: Double = MOUTH_OPEN_PASS_FACTOR
 
     init {
         if (gestureMilestoneType != GestureMilestoneType.MouthClosedMilestone

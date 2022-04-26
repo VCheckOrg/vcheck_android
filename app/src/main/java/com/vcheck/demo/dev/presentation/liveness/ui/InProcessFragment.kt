@@ -36,19 +36,30 @@ class InProcessFragment : Fragment(R.layout.in_process_fragment), VideoProcessin
 
         _binding = InProcessFragmentBinding.bind(view)
 
+        Log.d("mux", "=========== IN PROCESS FRAGMENT START!")
+
         _binding!!.uploadVideoLoadingIndicator.isVisible = true
 
         (activity as LivenessActivity).finishLivenessSession()
 
         (activity as LivenessActivity).processVideoOnResult(this@InProcessFragment)
 
-        _viewModel.uploadResponse.observe(viewLifecycleOwner) {
-            if (it) {
-                //TODO: NO navigation on success!
-                // we need to display 'Proceed' button which will restart the app/session (AKA back to partner)
-                //findNavController().navigate(R.id.action_inProcessFragment_to_successFragment)
-                findNavController().navigate(R.id.action_inProcessFragment_to_livenessResultVideoViewFragment)
+        val token = ((activity as LivenessActivity).application as VcheckDemoApp)
+            .appContainer.mainRepository.getVerifToken(activity as LivenessActivity)
+
+        if (token.isNotEmpty()) {
+            _viewModel.uploadResponse.observe(viewLifecycleOwner) {
+                if (it?.apiError != null) {
+                    findNavController().navigate(R.id.action_inProcessFragment_to_livenessResultVideoViewFragment)
+
+                    //findNavController().navigate(R.id.action_inProcessFragment_to_successFragment)
+                } else {
+                    findNavController().navigate(R.id.action_inProcessFragment_to_failVideoUploadFragment)
+                }
             }
+        } else {
+            Toast.makeText((activity as LivenessActivity),
+                "Local(test) Liveness demo is running; skipping video upload request!", Toast.LENGTH_LONG).show()
         }
 
         _viewModel.clientError.observe(viewLifecycleOwner) {
@@ -57,16 +68,24 @@ class InProcessFragment : Fragment(R.layout.in_process_fragment), VideoProcessin
     }
 
     override fun onVideoProcessed(videoPath: String) {
-        //findNavController().navigate(R.id.action_inProcessFragment_to_livenessResultVideoViewFragment)
 
         val videoFile = File(videoPath)
 
         Log.d("mux", getFolderSizeLabel(videoFile))
 
-        val partVideo: MultipartBody.Part = MultipartBody.Part.createFormData(
-            "video.mp4", videoFile.name, videoFile.asRequestBody("video/mp4".toMediaType()))
+        val token = ((activity as LivenessActivity).application as VcheckDemoApp)
+            .appContainer.mainRepository.getVerifToken(activity as LivenessActivity)
 
-        _viewModel.uploadLivenessVideo(_viewModel.repository.getVerifToken(activity as LivenessActivity),
-            partVideo)
+        if (token.isNotEmpty()) {
+            val partVideo: MultipartBody.Part = MultipartBody.Part.createFormData(
+                "video.mp4", videoFile.name, videoFile.asRequestBody("video/mp4".toMediaType()))
+
+            _viewModel.uploadLivenessVideo(_viewModel.repository.getVerifToken(activity as LivenessActivity),
+                partVideo)
+        } else {
+//            Toast.makeText((activity as LivenessActivity),
+//                "Local(test) Liveness demo is running; skipping video upload request!", Toast.LENGTH_LONG).show()
+            findNavController().navigate(R.id.action_inProcessFragment_to_livenessResultVideoViewFragment)
+        }
     }
 }

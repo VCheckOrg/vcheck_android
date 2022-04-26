@@ -48,7 +48,7 @@ class LivenessActivity : AppCompatActivity(),
         private const val STATIC_PIPELINE_IMAGE_MODE = true
         private const val REFINE_PIPELINE_LANDMARKS = false
         private const val MAX_MILESTONES_NUM = 468
-        private const val DEBOUNCE_PROCESS_MILLIS = 400 //may reduce a bit
+        private const val DEBOUNCE_PROCESS_MILLIS = 200 //may reduce a bit
         private const val LIVENESS_TIME_LIMIT_MILLIS = 15000
         private const val BLOCK_PIPELINE_TIME_MILLIS: Long = 1400 //may reduce a bit
         private const val STAGE_VIBRATION_DURATION_MILLIS: Long = 100
@@ -127,6 +127,7 @@ class LivenessActivity : AppCompatActivity(),
             } else {
                 if (!isLivenessSessionFinished && !blockProcessingByUI) {
                     runOnUiThread {
+                        Log.d("mux", "!isLivenessSessionFinished && !blockProcessingByUI")
                         livenessSessionLimitCheckTime = SystemClock.elapsedRealtime()
                         binding!!.livenessCosmeticsHolder.isVisible = false
                         findNavController(R.id.liveness_host_fragment)
@@ -283,8 +284,15 @@ class LivenessActivity : AppCompatActivity(),
         }.start()
     }
 
+//    private var idx: Int = 0
+//
+//    idx += 1
+//
+//    Log.d(TAG, "------- IDX: $idx")
+
     fun processImage() {
         openLivenessCameraParams.apply {
+
             imageConverter!!.run()
             rgbFrameBitmap = Bitmap.createBitmap(previewWidth, previewHeight, Bitmap.Config.ARGB_8888)
             rgbFrameBitmap?.setPixels(rgbBytes, 0, previewWidth, 0, 0, previewWidth, previewHeight)
@@ -296,9 +304,10 @@ class LivenessActivity : AppCompatActivity(),
             //bitmapArray.add(bitmap!!)
 
             bitmapArray.add(rotateBitmap(bitmap!!)!!)
-            //Log.d(TAG, "------------- PUT BITMAP TO ARRAY. SIZE: ${bitmapArray.size}")
+            Log.d(TAG, "------------- PUT BITMAP TO ARRAY. SIZE: ${bitmapArray.size}")
 
             postInferenceCallback!!.run()
+
         }
     }
 

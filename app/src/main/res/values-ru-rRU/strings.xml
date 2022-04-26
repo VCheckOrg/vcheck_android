@@ -6,7 +6,7 @@
     <string name="wrong_move_correct_text">Все было пройдено корректно, отправить на проверку</string>
     <string name="wrong_move_repeat_button">Попробовать снова</string>
     <string name="success_button">Отлично</string>
-    <string name="success_description">Таким образом постоянное информационно-пропагандистское обеспечение нашей деятельности играет важную роль в формировании существенных финансовых и административных условий.</string>
+    <string name="success_description">Все необходимые данные по заявке на верификацию отправлены на наши сервисы и находятся на финальной стадии обработки. Вы можете вернуться к партнерскому сервису.</string>
     <string name="success_title">Верификация успешна</string>
     <string name="proceed">Продолжить</string>
     <string name="make_photo_button">Сделать фото</string>
@@ -115,6 +115,6 @@
     <string name="liveness_stage_open_mouth">Откройте рот</string>
     <string name="wait_for_liveness_start">Пожалуйста, подождите</string>
     <string name="unavailable_country">В данный момент недоступно</string>
-    <string name="launch_liveness_demo">Только Liveness</string>
-
+    <string name="launch_liveness_demo">Liveness(Локально!)</string>
+    <string name="application_success">Заявка успешна</string>
 </resources>

@@ -26,6 +26,12 @@
             android:id="@+id/action_inProcessFragment_to_livenessResultVideoViewFragment"
             app:destination="@id/livenessResultVideoViewFragment" />
         <action
+            android:id="@+id/action_inProcessFragment_to_failVerificationFragment"
+            app:destination="@id/failVerificationFragment" />
+        <action
+            android:id="@+id/action_inProcessFragment_to_failVideoUploadFragment"
+            app:destination="@id/failVideoUploadFragment" />
+        <action
             android:id="@+id/action_inProcessFragment_to_successFragment"
             app:destination="@id/successFragment" />
     </fragment>
@@ -70,5 +76,10 @@
         android:name="com.vcheck.demo.dev.presentation.liveness.ui.LivenessResultVideoViewFragment"
         android:label="fragment_liveness_result_video_view"
         tools:layout="@layout/fragment_liveness_result_video_view" />
+    <fragment
+        android:id="@+id/failVideoUploadFragment"
+        android:name="com.vcheck.demo.dev.presentation.liveness.ui.FailVideoUploadFragment"
+        android:label="FailVideoUploadFragment"
+        tools:layout="@layout/fragment_fail_video_upload"/>
 
 </navigation>

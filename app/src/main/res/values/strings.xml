@@ -70,7 +70,7 @@
     <string name="photo_upload_wait_disclaimer">Please, wait. The photo of your document is being loaded and processed. This may take from a few seconds to a minute.</string>
     <string name="check_photo_description">Check the readability of the information in the photo. Make sure all 4 corners of the document are visible in the photo.</string>
     <string name="error_description">For some reason, we were unable to load the content of this page. Try reloading the page</string>
-    <string name="fail_verification_description">Unfortunately, we were unable to verify your application. If you do not agree with this decision, please contact support</string>
+    <string name="fail_verification_description">Unfortunately, we were unable to verify your application:  If you do not agree with this decision, please contact support.</string>
     <string name="frame_interference_send_text">Everything was completed correctly, send for verification</string>
     <string name="frame_interference_title">There are a lot of obstacles in the frame</string>
     <string name="in_process_button">Excellent!</string>
@@ -92,7 +92,7 @@
     <string name="in_process_subtitle">The verification request has been sent for review. You will be notified of the result very soon.</string>
     <string name="look_stratight_error_subtitle">The face was not captured right in the frame at the right moment for this. Try to strictly adhere to the instructions at the time of the verification. Try again.</string>
     <string name="no_camera_description">The camera was not found or you have denied access to it. If the camera works correctly, give access to it and try again. If the problem persists, try to copy the verification link and continue on a different device.</string>
-    <string name="success_description">Thus, the constant promotion of our activities plays an important role in the formation of significant financial and administrative conditions.</string>
+    <string name="success_description">While all application data sent to our services is being processed, you may return to the partner service.</string>
     <string name="face_check_title">Face checking</string>
     <string name="face_check_description">First, place your face in the center of the frame, then perform the requested movements.</string>
     <string name="requested_movements_text">perform only requested movements</string>
@@ -125,5 +125,6 @@
     <string name="liveness_stage_open_mouth">Open mouth</string>
     <string name="wait_for_liveness_start">Please, wait…</string>
     <string name="unavailable_country">Currently unavailable</string>
-    <string name="launch_liveness_demo">Launch Liveness Demo</string>
+    <string name="launch_liveness_demo">Local Liveness Demo</string>
+    <string name="application_success">Application success</string>
 </resources>
