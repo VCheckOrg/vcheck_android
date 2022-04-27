@@ -68,7 +68,7 @@
     <string name="docMethodForeignPassport">Загранпаспорт</string>
     <string name="docMethodIdCard">Биометрический паспорт (ID-карта)</string>
     <string name="check_info_confirm_button">Все верно! Продолжить</string>
-    <string name="photo_upload_title_foreign">Полный разворот загранпаспорта (видны обе страницы)</string>
+    <string name="photo_upload_title_foreign">Полный разворот документа с вашим фото</string>
     <string name="photo_upload_title_id_card_forward">Передняя сторона ID-карты</string>
     <string name="photo_upload_title_id_card_back">Задняя сторона ID-карты</string>
     <string name="photo_upload_title_common_forward">Фотография первой страницы/стороны документа (с вашим фото).</string>
@@ -117,4 +117,5 @@
     <string name="unavailable_country">В данный момент недоступно</string>
     <string name="launch_liveness_demo">Liveness(Локально!)</string>
     <string name="application_success">Заявка успешна</string>
+    <string name="video_upload_error_descr">При загрузке видео возникла проблема. Проверьте подключение к Интернету и повторите попытку, не переводя приложение в фоновый режим.</string>
 </resources>

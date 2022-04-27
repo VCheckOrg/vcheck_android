@@ -28,22 +28,23 @@ open class NetworkCall<T> {
             t.printStackTrace()
         }
 
-        override fun onResponse(call: Call<T>, response: Response<T>) {
-            if (response.isSuccessful)
+        override fun onResponse(call: Call<T>, response: Response<T>?) {
+            if (response != null && response.isSuccessful)
                 result.value = Resource.success(response.body())
             else {
+                if (response != null) {
+                    val errorResponse: BaseClientResponseModel = try {
+                        Gson().fromJson(response.errorBody()!!.charStream(),
+                            BaseClientResponseModel::class.java)
+                    } catch (e: Exception) {
+                        Log.w("OkHttpClient", "Error parsing JSON on non-0 code")
+                        BaseClientResponseModel(null, response.code(), "")
+                    }
 
-                val errorResponse: BaseClientResponseModel = try {
-                    Gson().fromJson(response.errorBody()!!.charStream(),
-                        BaseClientResponseModel::class.java)
-                } catch (e: Exception) {
-                    Log.w("OkHttpClient", "Error parsing JSON on non-0 code")
-                    BaseClientResponseModel(null, response.code(), "")
+                    result.value = Resource.error(
+                        ApiError("Error [${response.code()}] : ${errorResponse.message}"))
                 }
 
-                result.value = Resource.error(
-                    ApiError("Error [${response.code()}] : ${errorResponse.message}")
-                )
             }
         }
     }

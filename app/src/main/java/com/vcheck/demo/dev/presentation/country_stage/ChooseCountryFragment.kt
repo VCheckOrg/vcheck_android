@@ -2,6 +2,7 @@ package com.vcheck.demo.dev.presentation.country_stage
 
 import android.os.Bundle
 import android.view.View
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -24,11 +25,6 @@ class ChooseCountryFragment : Fragment(R.layout.choose_country_fragment) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         appContainer = (activity?.application as VcheckDemoApp).appContainer
-
-//        if (!appContainer.mainRepository.isLocaleAutoChanged(activity as MainActivity)) {
-//            appContainer.mainRepository.setLocaleAutoChanged(activity as MainActivity, true)
-//            (activity as MainActivity).recreate()
-//        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -37,6 +33,10 @@ class ChooseCountryFragment : Fragment(R.layout.choose_country_fragment) {
         val countryList = args.countriesListTO.countriesList
 
         binding = ChooseCountryFragmentBinding.bind(view)
+
+        requireActivity().onBackPressedDispatcher.addCallback {
+            //Stub; no back press needed here
+        }
 
         binding.chooseCountryCard.setOnClickListener {
             val action =

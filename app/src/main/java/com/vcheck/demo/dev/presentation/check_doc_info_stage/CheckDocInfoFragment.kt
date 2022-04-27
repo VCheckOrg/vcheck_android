@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -39,6 +40,10 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
         super.onViewCreated(view, savedInstanceState)
 
         binding = CheckDocInfoFragmentBinding.bind(view)
+
+        requireActivity().onBackPressedDispatcher.addCallback {
+            //Stub; no back press needed here
+        }
 
         val currentLocaleCode = viewModel.repository.getLocale(activity as MainActivity)
 
@@ -85,14 +90,6 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
                 viewModel.updateAndConfirmDocument(viewModel.repository.getVerifToken(activity as MainActivity),
                     args.checkDocInfoDataTO.docId, composeConfirmedDocFieldsData())
             }
-        }
-
-        binding.backArrow.setOnClickListener {
-            //TODO make another approach
-            findNavController().popBackStack()
-            findNavController().popBackStack()
-            findNavController().popBackStack()
-            findNavController().popBackStack()
         }
     }
 

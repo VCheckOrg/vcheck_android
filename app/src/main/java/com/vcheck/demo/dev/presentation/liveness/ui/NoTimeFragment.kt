@@ -20,14 +20,12 @@ class NoTimeFragment : Fragment(R.layout.no_time_fragment) {
         (activity as LivenessActivity).finishLivenessSession()
 
         _binding!!.tryAgainButton.setOnClickListener {
-//            (activity as LivenessActivity).resetMilestonesForNewLivenessSession()
-//            (activity as LivenessActivity).resetUIForNewLivenessSession()
             findNavController().popBackStack()
             (activity as LivenessActivity).recreate()
         }
 
         _binding!!.noTimeCorrectTextButton.setOnClickListener {
-            //TODO test
+            (activity as LivenessActivity).finishLivenessSession()
             findNavController().navigate(R.id.action_noTimeFragment_to_inProcessFragment)
         }
     }

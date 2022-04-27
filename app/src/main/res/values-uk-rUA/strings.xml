@@ -52,7 +52,7 @@
     <string name="no_foreign_objects_text">немає сторонніх об\'єктів: обкладинки, пальців, скріпок тощо</string>
     <string name="original_doc_text">сфотографовані або відскановані з оригіналів</string>
     <string name="photo_upload_title_common_forward">Фотографія першої сторінки/сторони документа (з вашим фото).</string>
-    <string name="photo_upload_title_foreign">Повний розворот закордонного паспорта (видно обидві сторінки)</string>
+    <string name="photo_upload_title_foreign">Повний розворот документа з вашим фото</string>
     <string name="check_filled_data_description">Перевірте, чи всі дані документа були розпізнані коректно?</string>
     <string name="check_filled_data_title">Перевірка / заповнення даних</string>
     <string name="photo_upload_title_id_card_forward">Передня сторона ID-картки</string>
@@ -117,4 +117,5 @@
     <string name="unavailable_country">На даний момент недоступно</string>
     <string name="launch_liveness_demo">Liveness(Локально!)</string>
     <string name="application_success">Заявка успішна</string>
+    <string name="video_upload_error_descr">Під час завантаження відео виникла проблема. Перевірте підключення до Інтернету та повторіть спробу, не переміщаючи програму у фоновий режим.</string>
 </resources>

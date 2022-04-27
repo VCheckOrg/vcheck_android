@@ -92,7 +92,7 @@ class LivenessActivity : AppCompatActivity(),
         initSetupUI()
     }
 
-    fun resetMilestonesForNewLivenessSession() {
+    private fun resetMilestonesForNewLivenessSession() {
         milestoneFlow = StandardMilestoneFlow(this@LivenessActivity)
         livenessSessionLimitCheckTime = SystemClock.elapsedRealtime()
         faceCheckDebounceTime = SystemClock.elapsedRealtime()
@@ -117,6 +117,7 @@ class LivenessActivity : AppCompatActivity(),
         //TODO (?) add logic for increasing framesPerImage / FPS based on of factors:
 //        val finalSessionTime = getActualSessionTimeInSecs()
 //        val snapshotsSize = bitmapArray.size
+        //TODO add little delay for mouth video to capture in problematic cases!
 
         val framesPerImage = 1
         val framesPerSecond = 24F
@@ -177,14 +178,14 @@ class LivenessActivity : AppCompatActivity(),
                     binding!!.livenessCosmeticsHolder.isVisible = false
                     vibrateDevice(this@LivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
 
-                    Log.d(TAG, "================== FINISHED SESSION - SUCCESS")
-                    Log.d(TAG, "================== ACTUAL TIME: ${getActualSessionTimeInSecs()} sec")
+//                    Log.d(TAG, "================== FINISHED SESSION - SUCCESS")
+//                    Log.d(TAG, "================== ACTUAL TIME: ${getActualSessionTimeInSecs()} sec")
 
                     try {
                         findNavController(R.id.liveness_host_fragment)
                             .navigate(R.id.action_dummyLivenessStartDestFragment_to_inProcessFragment)
                     } catch (e: IllegalArgumentException) {
-                        Log.d(TAG, "Attempt to nev to success was made, but was already on another fragment")
+                        Log.d(TAG, "Attempt of nav to success was made, but was already on another fragment")
                     }
                 }
                 else -> {

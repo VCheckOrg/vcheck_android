@@ -34,7 +34,7 @@
     <string name="make_document_photo_title">Take a photo of a document</string>
     <string name="photo_upload_title_common_forward">Photo of the first page / side of the document (with your photo)</string>
     <string name="photo_upload_title_common_back">Photo of the last page / side with your photo (if you have multiple photos in the document)</string>
-    <string name="photo_upload_title_foreign">Photo of the full spread of the foreign passport (both pages are visible)</string>
+    <string name="photo_upload_title_foreign">Full spread of the document with your photo</string>
     <string name="take_photo_title">Take a photo</string>
     <string name="check_filled_data_description">Check if all the data on the document was recognized correctly.</string>
     <string name="check_filled_data_title">Reconciliation / filling of data</string>
@@ -127,4 +127,5 @@
     <string name="unavailable_country">Currently unavailable</string>
     <string name="launch_liveness_demo">Local Liveness Demo</string>
     <string name="application_success">Application success</string>
+    <string name="video_upload_error_descr">There was an issue while uploading a video. Please check your internet connection and try again without moving an app to the background.</string>
 </resources>
