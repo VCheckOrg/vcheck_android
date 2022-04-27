@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.media.Image
 import android.media.ImageReader
-import android.util.Log
 import android.view.Surface
 import com.vcheck.demo.dev.presentation.liveness.LivenessActivity
 import com.vcheck.demo.dev.util.ImageUtils
@@ -83,7 +82,7 @@ fun LivenessActivity.getScreenOrientation(): Int {
 //Most phone cameras are landscape, meaning if you take the photo in portrait, the resulting photos will be rotated 90 degrees.
 fun LivenessActivity.rotateBitmap(input: Bitmap): Bitmap? {
     openLivenessCameraParams.apply {
-        Log.d("trySensor", sensorOrientation.toString() + " " + getScreenOrientation())
+        //Log.d("trySensor", sensorOrientation.toString() + " " + getScreenOrientation())
         val rotationMatrix = Matrix()
         rotationMatrix.setRotate(sensorOrientation.toFloat())
         return Bitmap.createBitmap(input, 0, 0, input.width, input.height, rotationMatrix, true)

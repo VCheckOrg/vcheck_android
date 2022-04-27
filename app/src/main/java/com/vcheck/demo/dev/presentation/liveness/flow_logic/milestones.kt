@@ -12,6 +12,14 @@ enum class GestureMilestoneType {
     MouthClosedMilestone
 }
 
+enum class ObstacleType {
+    YAW_ANGLE,
+    WRONG_GESTURE,
+    MULTIPLE_FACES_DETECTED,
+    NO_STRAIGHT_FACE_DETECTED
+}
+
+const val YAW_PASS_ANGLE_ABS = 20.0
 const val LEFT_PITCH_PASS_ANGLE = -30.0
 const val RIGHT_PITCH_PASS_ANGLE = 30.0
 const val MOUTH_OPEN_PASS_FACTOR = 0.41  //reduced from 0.55 !
@@ -24,16 +32,13 @@ open class GestureMilestone(val milestoneType: GestureMilestoneType) {
     }
 
     //can also add end extend yaw/roll if needed in the future
-    open fun isMet(pitchAngle: Double, mouthFactor: Double) : Boolean {
+    open fun isMet(pitchAngle: Double, mouthFactor: Double, yawAbsAngle: Double) : Boolean {
        throw NotImplementedError()
     }
 }
 
 class HeadPitchGestureMilestone(val gestureMilestoneType: GestureMilestoneType)
     : GestureMilestone(gestureMilestoneType) {
-
-    private val leftPitchPassAngle: Double = LEFT_PITCH_PASS_ANGLE
-    private val rightPitchPassAngle: Double = RIGHT_PITCH_PASS_ANGLE
 
     init {
         if (gestureMilestoneType != GestureMilestoneType.InnerHeadPitchMilestone
@@ -44,12 +49,16 @@ class HeadPitchGestureMilestone(val gestureMilestoneType: GestureMilestoneType)
         }
     }
 
-    override fun isMet(pitchAngle: Double, mouthFactor: Double): Boolean {
+    override fun isMet(pitchAngle: Double, mouthFactor: Double, yawAbsAngle: Double): Boolean {
         return when(gestureMilestoneType) {
             GestureMilestoneType.InnerHeadPitchMilestone ->
-                (pitchAngle < rightPitchPassAngle && pitchAngle > leftPitchPassAngle)
-            GestureMilestoneType.OuterLeftHeadPitchMilestone -> pitchAngle < leftPitchPassAngle
-            GestureMilestoneType.OuterRightHeadPitchMilestone -> pitchAngle > rightPitchPassAngle
+                (pitchAngle < RIGHT_PITCH_PASS_ANGLE
+                        && pitchAngle > LEFT_PITCH_PASS_ANGLE
+                        && yawAbsAngle < YAW_PASS_ANGLE_ABS)
+            GestureMilestoneType.OuterLeftHeadPitchMilestone ->
+                pitchAngle < LEFT_PITCH_PASS_ANGLE && yawAbsAngle < YAW_PASS_ANGLE_ABS
+            GestureMilestoneType.OuterRightHeadPitchMilestone ->
+                pitchAngle > RIGHT_PITCH_PASS_ANGLE && yawAbsAngle < YAW_PASS_ANGLE_ABS
             else -> false
         }
     }
@@ -58,8 +67,6 @@ class HeadPitchGestureMilestone(val gestureMilestoneType: GestureMilestoneType)
 class MouthGestureMilestone(val gestureMilestoneType: GestureMilestoneType)
     : GestureMilestone(gestureMilestoneType) {
 
-    private val mouthOpenPassFactor: Double = MOUTH_OPEN_PASS_FACTOR
-
     init {
         if (gestureMilestoneType != GestureMilestoneType.MouthClosedMilestone
             && gestureMilestoneType != GestureMilestoneType.MouthOpenMilestone) {
@@ -67,10 +74,12 @@ class MouthGestureMilestone(val gestureMilestoneType: GestureMilestoneType)
         }
     }
 
-    override fun isMet(pitchAngle: Double, mouthFactor: Double): Boolean {
+    override fun isMet(pitchAngle: Double, mouthFactor: Double, yawAbsAngle: Double): Boolean {
         return when (gestureMilestoneType) {
-            GestureMilestoneType.MouthOpenMilestone -> mouthFactor >= mouthOpenPassFactor
-            GestureMilestoneType.MouthClosedMilestone -> mouthFactor < mouthOpenPassFactor
+            GestureMilestoneType.MouthOpenMilestone ->
+                mouthFactor >= MOUTH_OPEN_PASS_FACTOR && yawAbsAngle < YAW_PASS_ANGLE_ABS
+            GestureMilestoneType.MouthClosedMilestone ->
+                mouthFactor < MOUTH_OPEN_PASS_FACTOR && yawAbsAngle < YAW_PASS_ANGLE_ABS
             else -> false
         }
     }
@@ -94,11 +103,12 @@ class CheckOverallHeadPositionMilestone(val gestureMilestoneType: GestureMilesto
             && mouthClosedMilestone.gestureMilestoneType == GestureMilestoneType.MouthClosedMilestone
     }
 
-    override fun isMet(pitchAngle: Double, mouthFactor: Double): Boolean {
+    override fun isMet(pitchAngle: Double, mouthFactor: Double, yawAbsAngle: Double): Boolean {
         return if (!areMilestoneTypesMet()) {
             false
         } else {
-            pitchStableMilestone.isMet(pitchAngle, mouthFactor) && mouthClosedMilestone.isMet(pitchAngle, mouthFactor)
+            pitchStableMilestone.isMet(pitchAngle, mouthFactor, yawAbsAngle)
+                    && mouthClosedMilestone.isMet(pitchAngle, mouthFactor, yawAbsAngle)
         }
     }
 }
@@ -112,13 +122,28 @@ class StandardMilestoneFlow(private val milestoneResultListener: MilestoneResult
         MouthGestureMilestone(GestureMilestoneType.MouthOpenMilestone)
     )
 
-    private var currentStage: Int = 0
+    private var currentStageIdx: Int = 0
 
-    fun checkCurrentStage(pitchAngle: Double, mouthFactor: Double) {
+    fun getCurrentStage(): GestureMilestone {
+        return stagesList[currentStageIdx]
+    }
+
+    fun checkCurrentStage(pitchAngle: Double, mouthFactor: Double, yawAbsAngle: Double) {
         try {
-            if (stagesList[currentStage].isMet(pitchAngle, mouthFactor)) {
-                milestoneResultListener.onMilestoneResult(stagesList[currentStage].milestoneType)
-                currentStage += 1
+            if (yawAbsAngle > YAW_PASS_ANGLE_ABS) {
+                milestoneResultListener.onObstacleMet(ObstacleType.YAW_ANGLE)
+            } else {
+                if (stagesList[currentStageIdx].isMet(pitchAngle, mouthFactor, yawAbsAngle)) {
+                    milestoneResultListener.onMilestoneResult(stagesList[currentStageIdx].milestoneType)
+                    currentStageIdx += 1
+                } else {
+                    stagesList.forEachIndexed { idx, stage ->
+                        if (idx != 0 && idx != currentStageIdx
+                            && stage.isMet(pitchAngle, mouthFactor, yawAbsAngle)) {
+                            milestoneResultListener.onObstacleMet(ObstacleType.WRONG_GESTURE)
+                        }
+                    }
+                }
             }
         } catch (e: IndexOutOfBoundsException) {
             Log.d("Liveness", "MILESTONES ERROR: IndexOutOfBoundsException for stages list!")
@@ -129,5 +154,7 @@ class StandardMilestoneFlow(private val milestoneResultListener: MilestoneResult
 interface MilestoneResultListener {
 
     fun onMilestoneResult(gestureMilestoneType: GestureMilestoneType)
+
+    fun onObstacleMet(obstacleType: ObstacleType)
 }
 

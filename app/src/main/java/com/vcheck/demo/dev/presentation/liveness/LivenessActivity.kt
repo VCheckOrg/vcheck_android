@@ -35,7 +35,6 @@ import org.jetbrains.kotlinx.multik.ndarray.data.get
 import org.jetbrains.kotlinx.multik.ndarray.data.set
 import java.io.File
 import java.io.IOException
-import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.collections.ArrayList
 
@@ -54,11 +53,13 @@ class LivenessActivity : AppCompatActivity(),
         private const val LIVENESS_TIME_LIMIT_MILLIS = 15000
         private const val BLOCK_PIPELINE_TIME_MILLIS: Long = 1400 //may reduce a bit
         private const val STAGE_VIBRATION_DURATION_MILLIS: Long = 100
+        private const val MAX_FRAMES_W_O_FATAL_OBSTACLES = 12
+        private const val MIN_FRAMES_FOR_MINOR_OBSTACLES = 4
     }
 
-    var bitmapArray: ArrayList<Bitmap> = ArrayList()
+    private var bitmapArray: ArrayList<Bitmap> = ArrayList()
     private lateinit var muxer: Muxer
-    var videoPath: String? = null
+    var videoPath: String? = null //make private!
 
     //refactor to protected
     val openLivenessCameraParams: LivenessCameraParams = LivenessCameraParams()
@@ -68,6 +69,10 @@ class LivenessActivity : AppCompatActivity(),
     private var livenessSessionLimitCheckTime: Long = 0
     private var isLivenessSessionFinished: Boolean = false
     private var blockProcessingByUI: Boolean = false
+
+    private var multiFaceFrameCounter: Int = 0
+    private var noFaceFrameCounter: Int = 0
+    private var minorObstacleFrameCounter: Int = 0
 
     private var binding: ActivityLivenessBinding? = null
 
@@ -103,15 +108,6 @@ class LivenessActivity : AppCompatActivity(),
         isLivenessSessionFinished = true
     }
 
-    fun delayedResetCameraStreamProcessing() {
-        Timer().schedule(object : TimerTask() {
-            override fun run() {
-                bitmapArray = ArrayList()
-                setCameraFragment()
-            }
-        }, 1200)
-    }
-
     private fun setUpMuxer() {
 
         //TODO (?) add logic for increasing framesPerImage / FPS based on of factors:
@@ -135,7 +131,7 @@ class LivenessActivity : AppCompatActivity(),
                 .setStaticImageMode(STATIC_PIPELINE_IMAGE_MODE)
                 .setRefineLandmarks(REFINE_PIPELINE_LANDMARKS)
                 .setRunOnGpu(RUN_PIPELINE_ON_GPU)
-                .setMaxNumFaces(1)
+                .setMaxNumFaces(2) //TODO try to add 2+ faces and check outer array size!
                 .build())
         facemesh!!.setErrorListener { message: String, e: RuntimeException? ->
             Log.e(TAG, "======= MediaPipe Face Mesh error : $message")
@@ -146,12 +142,36 @@ class LivenessActivity : AppCompatActivity(),
             } else {
                 if (!isLivenessSessionFinished && !blockProcessingByUI) {
                     runOnUiThread {
-                        Log.d("mux", "!isLivenessSessionFinished && !blockProcessingByUI")
                         livenessSessionLimitCheckTime = SystemClock.elapsedRealtime()
                         binding!!.livenessCosmeticsHolder.isVisible = false
                         findNavController(R.id.liveness_host_fragment)
                             .navigate(R.id.action_dummyLivenessStartDestFragment_to_noTimeFragment)
                     }
+                }
+            }
+        }
+    }
+
+    override fun onObstacleMet(obstacleType: ObstacleType) {
+        runOnUiThread {
+            when (obstacleType) {
+                ObstacleType.YAW_ANGLE -> {
+                    minorObstacleFrameCounter += 1
+                    if (minorObstacleFrameCounter > MIN_FRAMES_FOR_MINOR_OBSTACLES) {
+                        binding!!.checkFaceTitle.setTextColor(resources.getColor(R.color.errorLight))
+                        binding!!.checkFaceTitle.text = getString(R.string.line_face_obstacle)
+                        delayedResetUIAfterObstacle()
+                        minorObstacleFrameCounter = 0
+                    }
+                }
+                ObstacleType.WRONG_GESTURE -> {
+                    onFatalObstacleWorthRetry(R.id.action_dummyLivenessStartDestFragment_to_wrongMoveFragment)
+                }
+                ObstacleType.MULTIPLE_FACES_DETECTED -> {
+                    onFatalObstacleWorthRetry(R.id.action_dummyLivenessStartDestFragment_to_frameInterferenceFragment)
+                }
+                ObstacleType.NO_STRAIGHT_FACE_DETECTED -> {
+                    onFatalObstacleWorthRetry(R.id.action_dummyLivenessStartDestFragment_to_lookStraightErrorFragment)
                 }
             }
         }
@@ -198,19 +218,33 @@ class LivenessActivity : AppCompatActivity(),
     private fun processLandmarks(faceMeshResult: FaceMeshResult) {
         // convert markers to 2DArray each 1 second or less (may vary)
         if (mayProcessNextLandmarkArray()) {
-            val convertResult = get2DArrayFromMotionUpdate(faceMeshResult)
-            if (convertResult != null) {
-                val pitchAngle = LandmarksProcessingUtil.landmarksToEulerAngles(convertResult)[0]
-                val mouthAspectRatio = LandmarksProcessingUtil.landmarksToMouthAspectRatio(convertResult)
+            Log.d(TAG, "======== FACES: ${faceMeshResult.multiFaceLandmarks().size}")
+            if (faceMeshResult.multiFaceLandmarks().size >= 2) {
+                multiFaceFrameCounter += 1
+                if (multiFaceFrameCounter >= MAX_FRAMES_W_O_FATAL_OBSTACLES) {
+                    onObstacleMet(ObstacleType.MULTIPLE_FACES_DETECTED)
+                }
+            } else if (faceMeshResult.multiFaceLandmarks().isEmpty()) {
+                noFaceFrameCounter += 1
+                if (noFaceFrameCounter >= MAX_FRAMES_W_O_FATAL_OBSTACLES) {
+                    onObstacleMet(ObstacleType.NO_STRAIGHT_FACE_DETECTED)
+                }
+            } else {
+                noFaceFrameCounter = 0
+                multiFaceFrameCounter = 0
+                val convertResult = get2DArrayFromMotionUpdate(faceMeshResult)
+                if (convertResult != null) {
+                    val faceAnglesCalcResultArr = LandmarksProcessingUtil.landmarksToEulerAngles(convertResult)
+                    val pitchAngle = faceAnglesCalcResultArr[0]
+                    val yawAngleAbs = kotlin.math.abs(faceAnglesCalcResultArr[1])
+                    val mouthAspectRatio = LandmarksProcessingUtil.landmarksToMouthAspectRatio(convertResult)
 
-                //TODO optimize values!  + add yaw check:
-                // по поворотам не больше 20 yaw и больше 30 pitch
-                // + deal with freezes on time out -> navigating back!
+                    Log.d(TAG, "========= MOUTH ASPECT RATIO: $mouthAspectRatio | PITCH: $pitchAngle | YAW(abs) : $yawAngleAbs")
 
-                //Log.d(TAG, "========= MOUTH ASPECT RATIO: $mouthAspectRatio | PITCH: $pitchAngle")
-                milestoneFlow.checkCurrentStage(pitchAngle, mouthAspectRatio)
+                    milestoneFlow.checkCurrentStage(pitchAngle, mouthAspectRatio, yawAngleAbs)
+                }
+                faceCheckDebounceTime = SystemClock.elapsedRealtime()
             }
-            faceCheckDebounceTime = SystemClock.elapsedRealtime()
         }
     }
 
@@ -243,8 +277,8 @@ class LivenessActivity : AppCompatActivity(),
                     twoDimArray[idx] = arr
                 }
             } catch (e: IndexOutOfBoundsException) {
-                //Stub; ignoring exception as at real-time matrix
-                //may not contain all of MAX_MILESTONES_NUM
+                //Stub; ignoring exception as matrix
+                //may not contain all of MAX_MILESTONES_NUM in real-time
             }
         }
         return twoDimArray
@@ -317,13 +351,13 @@ class LivenessActivity : AppCompatActivity(),
             rgbFrameBitmap?.setPixels(rgbBytes, 0, previewWidth, 0, 0, previewWidth, previewHeight)
 
             val bitmap = rgbFrameBitmap
+
             //sending bitmap to FaceMesh to process
-
             facemesh!!.send(bitmap)
-            //bitmapArray.add(bitmap!!)
 
+            //bitmapArray.add(bitmap!!)
             bitmapArray.add(rotateBitmap(bitmap!!)!!)
-            Log.d(TAG, "------------- PUT BITMAP TO ARRAY. SIZE: ${bitmapArray.size}")
+            //Log.d(TAG, "------------- PUT BITMAP TO ARRAY. SIZE: ${bitmapArray.size}")
 
             postInferenceCallback!!.run()
 
@@ -341,19 +375,6 @@ class LivenessActivity : AppCompatActivity(),
         binding!!.arrowAnimationView.rotation = 0F
         binding!!.arrowAnimationView.isVisible = false
     }
-
-    fun resetUIForNewLivenessSession() {
-        binding!!.stageSuccessAnimBorder.isVisible = false
-        binding!!.livenessCosmeticsHolder.isVisible = true
-        binding!!.checkFaceTitle.text = getString(R.string.liveness_stage_check_face_pos)
-        binding!!.faceAnimationView.cancelAnimation()
-        binding!!.arrowAnimationView.cancelAnimation()
-        binding!!.arrowAnimationView.rotation = 0F
-        binding!!.arrowAnimationView.setMargins(300, null,
-            null, null)
-        binding!!.arrowAnimationView.isVisible = false
-    }
-
 
     private fun setUIOnCheckHeadPositionMilestone() {
         binding!!.imgViewStaticStageIndication.isVisible = false
@@ -403,6 +424,34 @@ class LivenessActivity : AppCompatActivity(),
         }, BLOCK_PIPELINE_TIME_MILLIS)
     }
 
+    private fun delayedResetUIAfterObstacle() {
+        Handler(Looper.getMainLooper()).postDelayed ({
+            binding!!.checkFaceTitle.setTextColor(resources.getColor(R.color.white))
+            when(milestoneFlow.getCurrentStage().milestoneType) {
+                GestureMilestoneType.CheckHeadPositionMilestone -> {
+                    binding!!.checkFaceTitle.text = getString(R.string.liveness_stage_face_left)
+                }
+                GestureMilestoneType.OuterLeftHeadPitchMilestone -> {
+                    binding!!.checkFaceTitle.text = getString(R.string.liveness_stage_face_right)
+                }
+                GestureMilestoneType.OuterRightHeadPitchMilestone -> {
+                    binding!!.checkFaceTitle.text = getString(R.string.liveness_stage_open_mouth)
+                }
+                else -> {
+                    // Stub
+                }
+            }
+        }, 1200)
+    }
+
+    private fun onFatalObstacleWorthRetry(actionIdForNav: Int) {
+        vibrateDevice(this@LivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
+        finishLivenessSession()
+        livenessSessionLimitCheckTime = SystemClock.elapsedRealtime()
+        binding!!.livenessCosmeticsHolder.isVisible = false
+        findNavController(R.id.liveness_host_fragment).navigate(actionIdForNav)
+    }
+
     private fun animateStageSuccessFrame() {
         binding!!.stageSuccessAnimBorder.animate().alpha(1F).setDuration(
             BLOCK_PIPELINE_TIME_MILLIS / 2).setInterpolator(
@@ -413,6 +462,8 @@ class LivenessActivity : AppCompatActivity(),
                     .setInterpolator(AccelerateInterpolator()).start()
             }.start()
     }
+
+    // UTIL ---------------------------------------
 
     @Throws(IOException::class)
     private fun createVideoFile(): File {
@@ -446,4 +497,16 @@ class LivenessActivity : AppCompatActivity(),
     //                Log.d(TAG,  "======================================================== FINISH")
     //            }
     //        }.start()
+
+    //    fun resetUIForNewLivenessSession() {
+    //        binding!!.stageSuccessAnimBorder.isVisible = false
+    //        binding!!.livenessCosmeticsHolder.isVisible = true
+    //        binding!!.checkFaceTitle.text = getString(R.string.liveness_stage_check_face_pos)
+    //        binding!!.faceAnimationView.cancelAnimation()
+    //        binding!!.arrowAnimationView.cancelAnimation()
+    //        binding!!.arrowAnimationView.rotation = 0F
+    //        binding!!.arrowAnimationView.setMargins(300, null,
+    //            null, null)
+    //        binding!!.arrowAnimationView.isVisible = false
+    //    }
 }

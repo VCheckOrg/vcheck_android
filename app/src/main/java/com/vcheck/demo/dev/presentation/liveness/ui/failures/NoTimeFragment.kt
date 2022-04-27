@@ -1,4 +1,4 @@
-package com.vcheck.demo.dev.presentation.liveness.ui
+package com.vcheck.demo.dev.presentation.liveness.ui.failures
 
 import android.os.Bundle
 import android.view.View

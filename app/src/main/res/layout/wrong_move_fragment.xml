@@ -6,12 +6,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:scrollbars="none"
-    tools:context=".presentation.screens.WrongMoveFragment"
+    tools:context=".presentation.liveness.ui.failures.WrongMoveFragment"
     android:background="#2A2A2A">
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="616dp"
+            android:layout_height="560dp"
             android:layout_marginStart="12dp"
             android:layout_marginTop="14dp"
             android:layout_marginEnd="12dp"
@@ -44,7 +44,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="2dp"
+                    android:layout_marginTop="22dp"
                     android:layout_marginEnd="16dp"
                     android:gravity="center"
                     android:text="@string/wrong_move_title"
@@ -73,37 +73,20 @@
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/wrong_move_repeat_button"
-                    android:layout_width="264dp"
+                    android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="44dp"
                     android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="20dp"
+                    android:layout_marginBottom="24dp"
                     android:background="@drawable/shape_for_blue_button"
                     android:text="@string/wrong_move_repeat_button"
                     android:textAllCaps="false"
                     android:textSize="16sp"
-                    app:layout_constraintBottom_toTopOf="@+id/wrong_move_correct_text"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/wrong_move_description" />
+                    app:layout_constraintBottom_toBottomOf="parent" />
 
-                <TextView
-                    android:id="@+id/wrong_move_correct_text"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="24dp"
-                    android:gravity="center"
-                    android:text="@string/wrong_move_correct_text"
-                    android:textColor="@color/white"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

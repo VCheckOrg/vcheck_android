@@ -6,12 +6,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="none"
-        tools:context=".presentation.screens.LookStraightErrorFragment"
+        tools:context=".presentation.liveness.ui.failures.LookStraightErrorFragment"
         android:background="#2A2A2A">
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="580dp"
+            android:layout_height="560dp"
             android:layout_marginStart="12dp"
             android:layout_marginTop="14dp"
             android:layout_marginEnd="12dp"
@@ -44,7 +44,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="2dp"
+                    android:layout_marginTop="22dp"
                     android:layout_marginEnd="16dp"
                     android:gravity="center"
                     android:text="@string/look_stratight_error_title"
@@ -78,31 +78,30 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="44dp"
                     android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="20dp"
+                    android:layout_marginBottom="24dp"
                     android:background="@drawable/shape_for_blue_button"
                     android:text="@string/look_stratight_error_button"
                     android:textAllCaps="false"
                     android:textSize="16sp"
-                    app:layout_constraintBottom_toTopOf="@+id/look_stratight_error_send_text"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/look_stratight_error_subtitle" />
+                    app:layout_constraintBottom_toBottomOf="parent" />
 
-                <TextView
-                    android:id="@+id/look_stratight_error_send_text"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="24dp"
-                    android:gravity="center"
-                    android:text="@string/look_stratight_error_send_text"
-                    android:textColor="@color/white"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+<!--                <TextView-->
+<!--                    android:id="@+id/look_stratight_error_send_text"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginStart="16dp"-->
+<!--                    android:layout_marginEnd="16dp"-->
+<!--                    android:layout_marginBottom="24dp"-->
+<!--                    android:gravity="center"-->
+<!--                    android:text="@string/look_stratight_error_send_text"-->
+<!--                    android:textColor="@color/white"-->
+<!--                    android:textSize="14sp"-->
+<!--                    android:textStyle="bold"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintStart_toStartOf="parent" />-->
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

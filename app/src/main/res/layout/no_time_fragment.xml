@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:scrollbars="none"
-    tools:context=".presentation.liveness.ui.NoTimeFragment"
+    tools:context=".presentation.liveness.ui.failures.NoTimeFragment"
     android:background="#2A2A2A">
 
         <androidx.cardview.widget.CardView

@@ -118,4 +118,6 @@
     <string name="launch_liveness_demo">Liveness(Локально!)</string>
     <string name="application_success">Заявка успешна</string>
     <string name="video_upload_error_descr">При загрузке видео возникла проблема. Проверьте подключение к Интернету и повторите попытку, не переводя приложение в фоновый режим.</string>
+    <string name="line_face_obstacle">Смотрите прямо</string>
+    <string name="wrong_movement_obstacle">Неверное движение</string>
 </resources>

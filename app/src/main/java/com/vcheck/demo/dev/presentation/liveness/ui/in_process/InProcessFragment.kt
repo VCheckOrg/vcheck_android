@@ -1,8 +1,6 @@
-package com.vcheck.demo.dev.presentation.liveness.ui
+package com.vcheck.demo.dev.presentation.liveness.ui.in_process
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -40,8 +38,6 @@ class InProcessFragment : Fragment(R.layout.in_process_fragment), VideoProcessin
         super.onViewCreated(view, savedInstanceState)
 
         _binding = InProcessFragmentBinding.bind(view)
-
-        Log.d("mux", "============================ IN PROCESS FRAGMENT START!")
 
         _binding!!.uploadVideoLoadingIndicator.isVisible = true
 

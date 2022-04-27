@@ -6,12 +6,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:scrollbars="none"
-    tools:context=".presentation.screens.FrameInterferenceFragment"
+    tools:context=".presentation.liveness.ui.failures.FrameInterferenceFragment"
         android:background="#2A2A2A">
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="596dp"
+            android:layout_height="560dp"
             android:layout_marginStart="12dp"
             android:layout_marginTop="14dp"
             android:layout_marginEnd="12dp"
@@ -44,7 +44,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="2dp"
+                    android:layout_marginTop="22dp"
                     android:layout_marginEnd="16dp"
                     android:gravity="center"
                     android:text="@string/frame_interference_title"
@@ -78,31 +78,30 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="44dp"
                     android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="20dp"
+                    android:layout_marginBottom="24dp"
                     android:background="@drawable/shape_for_blue_button"
                     android:text="@string/frame_interference_button"
                     android:textAllCaps="false"
                     android:textSize="16sp"
-                    app:layout_constraintBottom_toTopOf="@+id/frame_interference_send_text"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/frame_interference_description" />
+                    app:layout_constraintBottom_toBottomOf="parent" />
 
-                <TextView
-                    android:id="@+id/frame_interference_send_text"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="24dp"
-                    android:gravity="center"
-                    android:text="@string/frame_interference_send_text"
-                    android:textColor="@color/white"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+<!--                <TextView-->
+<!--                    android:id="@+id/frame_interference_send_text"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginStart="16dp"-->
+<!--                    android:layout_marginEnd="16dp"-->
+<!--                    android:layout_marginBottom="24dp"-->
+<!--                    android:gravity="center"-->
+<!--                    android:text="@string/frame_interference_send_text"-->
+<!--                    android:textColor="@color/white"-->
+<!--                    android:textSize="14sp"-->
+<!--                    android:textStyle="bold"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintStart_toStartOf="parent" />-->
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

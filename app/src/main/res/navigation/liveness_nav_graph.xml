@@ -15,11 +15,20 @@
         <action
             android:id="@+id/action_dummyLivenessStartDestFragment_to_noTimeFragment"
             app:destination="@id/noTimeFragment" />
+        <action
+            android:id="@+id/action_dummyLivenessStartDestFragment_to_frameInterferenceFragment"
+            app:destination="@id/frameInterferenceFragment" />
+        <action
+            android:id="@+id/action_dummyLivenessStartDestFragment_to_lookStraightErrorFragment"
+            app:destination="@id/lookStraightErrorFragment" />
+        <action
+            android:id="@+id/action_dummyLivenessStartDestFragment_to_wrongMoveFragment"
+            app:destination="@id/wrongMoveFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/inProcessFragment"
-        android:name="com.vcheck.demo.dev.presentation.liveness.ui.InProcessFragment"
+        android:name="com.vcheck.demo.dev.presentation.liveness.ui.in_process.InProcessFragment"
         android:label="in_process_fragment"
         tools:layout="@layout/in_process_fragment" >
         <action
@@ -38,7 +47,7 @@
 
     <fragment
         android:id="@+id/noTimeFragment"
-        android:name="com.vcheck.demo.dev.presentation.liveness.ui.NoTimeFragment"
+        android:name="com.vcheck.demo.dev.presentation.liveness.ui.failures.NoTimeFragment"
         android:label="no_time_fragment"
         tools:layout="@layout/no_time_fragment" >
         <action
@@ -54,19 +63,19 @@
 
     <fragment
         android:id="@+id/lookStraightErrorFragment"
-        android:name="com.vcheck.demo.dev.presentation.screens.LookStraightErrorFragment"
+        android:name="com.vcheck.demo.dev.presentation.liveness.ui.failures.LookStraightErrorFragment"
         android:label="look_straight_error_fragment"
         tools:layout="@layout/look_straight_error_fragment" />
 
     <fragment
         android:id="@+id/frameInterferenceFragment"
-        android:name="com.vcheck.demo.dev.presentation.screens.FrameInterferenceFragment"
+        android:name="com.vcheck.demo.dev.presentation.liveness.ui.failures.FrameInterferenceFragment"
         android:label="frame_interference_fragment"
         tools:layout="@layout/frame_interference_fragment" />
 
     <fragment
         android:id="@+id/wrongMoveFragment"
-        android:name="com.vcheck.demo.dev.presentation.screens.WrongMoveFragment"
+        android:name="com.vcheck.demo.dev.presentation.liveness.ui.failures.WrongMoveFragment"
         android:label="wrong_move_fragment"
         tools:layout="@layout/wrong_move_fragment" />
 
@@ -77,12 +86,12 @@
         tools:layout="@layout/fail_verification_fragment" />
     <fragment
         android:id="@+id/livenessResultVideoViewFragment"
-        android:name="com.vcheck.demo.dev.presentation.liveness.ui.LivenessResultVideoViewFragment"
+        android:name="com.vcheck.demo.dev.presentation.liveness.ui.failures.LivenessResultVideoViewFragment"
         android:label="fragment_liveness_result_video_view"
         tools:layout="@layout/fragment_liveness_result_video_view" />
     <fragment
         android:id="@+id/failVideoUploadFragment"
-        android:name="com.vcheck.demo.dev.presentation.liveness.ui.FailVideoUploadFragment"
+        android:name="com.vcheck.demo.dev.presentation.liveness.ui.failures.FailVideoUploadFragment"
         android:label="FailVideoUploadFragment"
         tools:layout="@layout/fragment_fail_video_upload"/>
 

@@ -1,4 +1,4 @@
-package com.vcheck.demo.dev.presentation.liveness.ui
+package com.vcheck.demo.dev.presentation.liveness.ui.in_process
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData

@@ -128,4 +128,6 @@
     <string name="launch_liveness_demo">Local Liveness Demo</string>
     <string name="application_success">Application success</string>
     <string name="video_upload_error_descr">There was an issue while uploading a video. Please check your internet connection and try again without moving an app to the background.</string>
+    <string name="line_face_obstacle">Don\'t look up or down</string>
+    <string name="wrong_movement_obstacle">Wrong movement</string>
 </resources>
