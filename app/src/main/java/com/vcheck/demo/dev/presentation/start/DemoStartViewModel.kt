@@ -24,11 +24,7 @@ class DemoStartViewModel (val repository: MainRepository) : ViewModel() {
 
     fun createTestVerificationRequest(deviceDefaultLocaleCode: String) {
         repository.getActualServiceTimestamp().observeForever { ts ->
-            if (ts.data != null) {
-                repository.createTestVerificationRequest(ts.data.toLong(), deviceDefaultLocaleCode).observeForever {
-                    processCreateVerifResponse(it)
-                }
-            }
+            processTimestampResponse(ts, deviceDefaultLocaleCode)
         }
     }
 
@@ -41,6 +37,24 @@ class DemoStartViewModel (val repository: MainRepository) : ViewModel() {
     fun getCountriesList() {
         repository.getCountries(verifToken).observeForever {
             processGetCountriesResponse(it)
+        }
+    }
+
+    private fun processTimestampResponse(response: Resource<String>, deviceDefaultLocaleCode: String){
+        when(response.status) {
+            Resource.Status.LOADING -> {
+            }
+            Resource.Status.SUCCESS -> {
+                if (response.data != null) {
+                    repository.createTestVerificationRequest(response.data.toLong(),
+                        deviceDefaultLocaleCode).observeForever {
+                            processCreateVerifResponse(it)
+                        }
+                }
+            }
+            Resource.Status.ERROR -> {
+                clientError.value = response.apiError!!.errorText
+            }
         }
     }
 

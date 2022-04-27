@@ -118,7 +118,7 @@ class MainRepository(
         localDatasource.setSelectedDocTypeWithData(data)
     }
 
-    fun getSelectedDocTypeWithData(): DocTypeData {
+    fun getSelectedDocTypeWithData(): DocTypeData? {
         return localDatasource.getSelectedDocTypeWithData()
     }
 
@@ -127,12 +127,10 @@ class MainRepository(
     }
 
     fun getLocale(ctx: Context): String {
-        //Log.d("OkHttp", "----------- ACTUAL LOCALE: ${localDatasource.getLocale(ctx)}")
         return localDatasource.getLocale(ctx)
     }
 
     fun resetCacheOnStartup(ctx: Context) {
-        //Log.d("OkHttp", "----------- RESET CACHE ON STARTUP")
         localDatasource.resetCacheOnStartup(ctx)
     }
 }

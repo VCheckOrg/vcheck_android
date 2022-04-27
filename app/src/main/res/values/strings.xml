@@ -89,7 +89,7 @@
     <string name="no_time_subtitle">You did not have time to complete the correct movement. Try to strictly adhere to the instructions at the time of the verification. Try again.</string>
     <string name="look_stratight_error_send_text">Everything was completed correctly, send for verification</string>
     <string name="frame_interference_description">There could be several people in the frame, or foreign objects. When re-checking, try so that only your face is in the frame and you can see it as clearly as possible..</string>
-    <string name="in_process_subtitle">The verification request has been sent for review. You will be notified of the result very soon.</string>
+    <string name="in_process_subtitle">The verification request is being composed for review. Please, wait.</string>
     <string name="look_stratight_error_subtitle">The face was not captured right in the frame at the right moment for this. Try to strictly adhere to the instructions at the time of the verification. Try again.</string>
     <string name="no_camera_description">The camera was not found or you have denied access to it. If the camera works correctly, give access to it and try again. If the problem persists, try to copy the verification link and continue on a different device.</string>
     <string name="success_description">While all application data sent to our services is being processed, you may return to the partner service.</string>

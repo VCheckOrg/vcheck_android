@@ -42,7 +42,7 @@
     <string name="look_stratight_error_title">Вы не смотрели прямо</string>
     <string name="look_stratight_error_button">Попробовать снова</string>
     <string name="in_process_title">Заявка отправлена на проверку</string>
-    <string name="in_process_subtitle">Заявка на верификацию отправлена на проверку. Очень скоро Вас уведомят о результате.</string>
+    <string name="in_process_subtitle">Идет подготовка заявки на верификацию. Пожалкйста, подождите.</string>
     <string name="in_process_button">Отлично</string>
     <string name="frame_interference_description">В кадре могло быть несколько людей, либо посторонние предметы. При повторной проверке постарайтесь, что бы в кадре было только ваше лицо и его было видно как можно четче.</string>
     <string name="frame_interference_title">В кадре много помех</string>

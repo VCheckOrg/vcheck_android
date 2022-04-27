@@ -1,6 +1,5 @@
 package com.vcheck.demo.dev.presentation.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.widget.doOnTextChanged
@@ -8,7 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.databinding.DocInfoRowBinding
 import com.vcheck.demo.dev.domain.DocFieldWitOptPreFilledData
+import com.vcheck.demo.dev.domain.DocType
 import com.vcheck.demo.dev.presentation.check_doc_info_stage.CheckDocInfoFragment
+import com.vcheck.demo.dev.util.isValidDocRelatedDate
 import kotlin.collections.ArrayList
 
 class CheckDocInfoAdapter(private val documentInfoList: ArrayList<DocFieldWitOptPreFilledData>,
@@ -45,12 +46,30 @@ class CheckDocInfoAdapter(private val documentInfoList: ArrayList<DocFieldWitOpt
             binding.docFieldTitle.text = title
             binding.infoField.setText(documentInfo.autoParsedValue)
 
+            if ((documentInfo.name == "date_of_birth" || documentInfo.name == "date_of_expiry")) {
+                binding.infoField.hint = "YYYY-MM-DD"
+            } else {
+                binding.infoField.hint = ""
+            }
+
             binding.infoField.doOnTextChanged { text, start, before, count ->
-                if (text != null && text.isNotEmpty() && documentInfo.regex != null
-                    && !text.matches(Regex(documentInfo.regex))) {
-                        //TODO test
-                    binding.infoField.error = (docInfoEditCallback as CheckDocInfoFragment).getString(
-                        R.string.check_doc_fields_validation_error)
+                if (text != null && text.isNotEmpty()) {
+                    if (documentInfo.regex != null
+                        && !text.matches(Regex(documentInfo.regex))) {
+                        binding.infoField.error = (docInfoEditCallback as CheckDocInfoFragment).getString(
+                            R.string.check_doc_fields_validation_error)
+                    } else {
+                        if ((documentInfo.name == "date_of_birth" || documentInfo.name == "date_of_expiry")
+                            && !isValidDocRelatedDate(text.toString())) {
+                                binding.infoField.error = (docInfoEditCallback as CheckDocInfoFragment).getString(
+                                    R.string.check_doc_fields_validation_error)
+                        } else {
+                            if (text.length < 3) {
+                                binding.infoField.error = (docInfoEditCallback as CheckDocInfoFragment).getString(
+                                    R.string.check_doc_fields_validation_error)
+                            }
+                        }
+                    }
                 }
                 docInfoEditCallback.onFieldInfoEdited(documentInfo.name, text.toString())
             }

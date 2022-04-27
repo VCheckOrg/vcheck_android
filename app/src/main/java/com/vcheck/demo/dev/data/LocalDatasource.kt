@@ -10,7 +10,7 @@ import java.util.*
 class LocalDatasource {
 
     //TODO think of optimal way of caching single object:
-    private lateinit var _selectedDocTypeWithData: DocTypeData
+    private var _selectedDocTypeWithData: DocTypeData? = null
 
     private fun getSharedPreferences(ctx: Context): SharedPreferences =
         ctx.getSharedPreferences("vcheck_private_prefs", MODE_PRIVATE)
@@ -49,7 +49,7 @@ class LocalDatasource {
         _selectedDocTypeWithData = data
     }
 
-    fun getSelectedDocTypeWithData(): DocTypeData {
+    fun getSelectedDocTypeWithData(): DocTypeData? {
         return _selectedDocTypeWithData
     }
 
@@ -57,6 +57,7 @@ class LocalDatasource {
         getSharedPreferences(ctx).edit().remove("verif_token").apply()
         getSharedPreferences(ctx).edit().remove("locale").apply()
         getSharedPreferences(ctx).edit().remove("selected_country_code").apply()
+        _selectedDocTypeWithData = null
     }
 
 //    fun setLocaleAutoChanged(ctx: Context, value: Boolean) {

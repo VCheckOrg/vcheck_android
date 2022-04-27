@@ -33,18 +33,19 @@ open class NetworkCall<T> {
                 result.value = Resource.success(response.body())
             else {
                 if (response != null) {
-                    val errorResponse: BaseClientResponseModel = try {
-                        Gson().fromJson(response.errorBody()!!.charStream(),
-                            BaseClientResponseModel::class.java)
-                    } catch (e: Exception) {
-                        Log.w("OkHttpClient", "Error parsing JSON on non-0 code")
-                        BaseClientResponseModel(null, response.code(), "")
-                    }
-
+//                    result.value = Resource.error(
+//                        ApiError("Error [${response.code()}]"))
+                    val errorResponse: BaseClientResponseModel =
+                        try {
+                            Gson().fromJson(response.errorBody()!!.charStream(),
+                                BaseClientResponseModel::class.java)
+                        } catch (e: Exception) {
+                            Log.w("OkHttpClient", "Error parsing JSON on non-0 code")
+                            BaseClientResponseModel(null, response.code(), "${response.code()}")
+                        }
                     result.value = Resource.error(
-                        ApiError("Error [${response.code()}] : ${errorResponse.message}"))
+                        ApiError("Error: [${response.code()}] | ${errorResponse.message}"))
                 }
-
             }
         }
     }

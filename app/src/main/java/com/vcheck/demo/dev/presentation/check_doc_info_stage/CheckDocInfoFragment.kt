@@ -13,10 +13,7 @@ import androidx.navigation.fragment.navArgs
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VcheckDemoApp
 import com.vcheck.demo.dev.databinding.CheckDocInfoFragmentBinding
-import com.vcheck.demo.dev.domain.DocField
-import com.vcheck.demo.dev.domain.DocFieldWitOptPreFilledData
-import com.vcheck.demo.dev.domain.ParsedDocFieldsData
-import com.vcheck.demo.dev.domain.PreProcessedDocData
+import com.vcheck.demo.dev.domain.*
 import com.vcheck.demo.dev.presentation.MainActivity
 import com.vcheck.demo.dev.presentation.adapters.CheckDocInfoAdapter
 import com.vcheck.demo.dev.presentation.adapters.DocInfoEditCallback
@@ -63,8 +60,8 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
         }
 
         dataList = mutableListOf()
-        val adapter = CheckDocInfoAdapter(ArrayList(), this@CheckDocInfoFragment,
-            currentLocaleCode)
+        val adapter = CheckDocInfoAdapter(ArrayList(),
+            this@CheckDocInfoFragment, currentLocaleCode)
         binding.docInfoList.adapter = adapter
 
         viewModel.documentInfoResponse.observe(viewLifecycleOwner) {
@@ -74,7 +71,7 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
         }
 
         viewModel.confirmedDocResponse.observe(viewLifecycleOwner) {
-            if (it) {
+            if (it != null) {
                 findNavController().navigate(R.id.livenessInstructionsFragment)
             }
         }
@@ -90,6 +87,10 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
                 viewModel.updateAndConfirmDocument(viewModel.repository.getVerifToken(activity as MainActivity),
                     args.checkDocInfoDataTO.docId, composeConfirmedDocFieldsData())
             }
+        }
+
+        viewModel.clientError.observe(viewLifecycleOwner) {
+            if (it != null) Toast.makeText(activity, it, Toast.LENGTH_LONG).show()
         }
     }
 

@@ -60,80 +60,87 @@ class PhotoUploadFragment : Fragment() {
         _binding = PhotoUploadFragmentBinding.bind(view)
 
         val docTypeWithData = _viewModel.repository.getSelectedDocTypeWithData()
+
+        if (docTypeWithData == null) {
+            Toast.makeText((activity as MainActivity),
+                "Error: document type & data have not been initialized.", Toast.LENGTH_LONG).show()
+        } else {
+
         _docType = docCategoryIdxToType(docTypeWithData.category)
 
-        _binding!!.apply {
+            _binding!!.apply {
 
-            photoUploadContinueButton.setBackgroundResource(R.drawable.shape_for_inactive_button)
-            methodCard1.isVisible = false
-            methodCard2.isVisible = false
-            imgPhoto1.isVisible = false
-            imgPhoto2.isVisible = false
-            deletePhotoButton1.isVisible = false
-            deletePhotoButton2.isVisible = false
+                photoUploadContinueButton.setBackgroundResource(R.drawable.shape_for_inactive_button)
+                methodCard1.isVisible = false
+                methodCard2.isVisible = false
+                imgPhoto1.isVisible = false
+                imgPhoto2.isVisible = false
+                deletePhotoButton1.isVisible = false
+                deletePhotoButton2.isVisible = false
 
-            backArrow.setOnClickListener {
-                findNavController().popBackStack()
-            }
-
-            when (_docType) {
-                DocType.FOREIGN_PASSPORT -> {
-                    methodCard1.isVisible = true
-                    methodCard2.isVisible = false
-                    verifMethodTitle1.text =
-                        getString(R.string.photo_upload_title_foreign)
-
-                    if (docTypeWithData.country == "ua") {
-                        verifMethodIcon1.setImageResource(R.drawable.doc_ua_international_passport)
-                    } else {
-                        verifMethodIcon1.isVisible = false
-                    }
-                    makePhotoButton1.setOnClickListener {
-                        dispatchTakePictureIntent(1)
-                    }
+                backArrow.setOnClickListener {
+                    findNavController().popBackStack()
                 }
-                DocType.INNER_PASSPORT_OR_COMMON -> {
-                    methodCard1.isVisible = true
-                    methodCard2.isVisible = true
-                    verifMethodIcon1.isVisible = false
-                    verifMethodIcon2.isVisible = false
 
-                    verifMethodTitle1.text =
-                        getString(R.string.photo_upload_title_common_forward)
-                    verifMethodTitle2.text =
-                        getString(R.string.photo_upload_title_common_back)
+                when (_docType) {
+                    DocType.FOREIGN_PASSPORT -> {
+                        methodCard1.isVisible = true
+                        methodCard2.isVisible = false
+                        verifMethodTitle1.text =
+                            getString(R.string.photo_upload_title_foreign)
 
-                    makePhotoButton1.setOnClickListener {
-                        dispatchTakePictureIntent(1)
+                        if (docTypeWithData.country == "ua") {
+                            verifMethodIcon1.setImageResource(R.drawable.doc_ua_international_passport)
+                        } else {
+                            verifMethodIcon1.isVisible = false
+                        }
+                        makePhotoButton1.setOnClickListener {
+                            dispatchTakePictureIntent(1)
+                        }
                     }
-                    makePhotoButton2.setOnClickListener {
-                        dispatchTakePictureIntent(2)
-                    }
-                }
-                DocType.ID_CARD -> {
-                    methodCard1.isVisible = true
-                    methodCard2.isVisible = true
-
-                    if (docTypeWithData.country == "ua") {
-                        verifMethodIcon1.isVisible = true
-                        verifMethodIcon2.isVisible = true
-                        verifMethodIcon1.setImageResource(R.drawable.doc_id_card_front)
-                        verifMethodIcon2.setImageResource(R.drawable.doc_id_card_back)
-                    } else {
+                    DocType.INNER_PASSPORT_OR_COMMON -> {
+                        methodCard1.isVisible = true
+                        methodCard2.isVisible = true
                         verifMethodIcon1.isVisible = false
                         verifMethodIcon2.isVisible = false
-                    }
 
-                    verifMethodTitle1.text =
-                        getString(R.string.photo_upload_title_id_card_forward)
-                    verifMethodTitle2.text =
-                        getString(R.string.photo_upload_title_id_card_back)
+                        verifMethodTitle1.text =
+                            getString(R.string.photo_upload_title_common_forward)
+                        verifMethodTitle2.text =
+                            getString(R.string.photo_upload_title_common_back)
 
-                    makePhotoButton1.setOnClickListener {
-                        dispatchTakePictureIntent(1)
+                        makePhotoButton1.setOnClickListener {
+                            dispatchTakePictureIntent(1)
+                        }
+                        makePhotoButton2.setOnClickListener {
+                            dispatchTakePictureIntent(2)
+                        }
                     }
-                    makePhotoButton2.setOnClickListener {
-                        dispatchTakePictureIntent(2)
+                    DocType.ID_CARD -> {
+                        methodCard1.isVisible = true
+                        methodCard2.isVisible = true
+
+                        if (docTypeWithData.country == "ua") {
+                            verifMethodIcon1.isVisible = true
+                            verifMethodIcon2.isVisible = true
+                            verifMethodIcon1.setImageResource(R.drawable.doc_id_card_front)
+                            verifMethodIcon2.setImageResource(R.drawable.doc_id_card_back)
+                        } else {
+                            verifMethodIcon1.isVisible = false
+                            verifMethodIcon2.isVisible = false
+                        }
+
+                        verifMethodTitle1.text =
+                            getString(R.string.photo_upload_title_id_card_forward)
+                        verifMethodTitle2.text =
+                            getString(R.string.photo_upload_title_id_card_back)
+
+                        makePhotoButton1.setOnClickListener {
+                            dispatchTakePictureIntent(1)
+                        }
+                        makePhotoButton2.setOnClickListener {
+                            dispatchTakePictureIntent(2)
+                        }
                     }
                 }
             }
@@ -209,9 +216,13 @@ class PhotoUploadFragment : Fragment() {
                 Toast.makeText(activity, R.string.error_make_at_least_one_photo, Toast.LENGTH_LONG).show()
             }
         } else if (_docType == DocType.INNER_PASSPORT_OR_COMMON) {
-            if (_photo1Path != null && _photo2Path != null) {
+            if (_photo1Path != null) {
                 prepareForNavigation(true)
-            } else if (_photo1Path != null) {
+            } else if (_photo2Path != null && _photo1Path == null) {
+                _photo1Path = _photo2Path
+                _photo2Path = null
+                prepareForNavigation(true)
+            } else if (_photo2Path != null && _photo1Path != null) {
                 prepareForNavigation(false)
             } else {
                 Toast.makeText(activity, R.string.error_make_at_least_one_photo, Toast.LENGTH_LONG).show()
