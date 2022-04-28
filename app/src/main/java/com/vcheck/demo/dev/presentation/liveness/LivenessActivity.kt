@@ -49,8 +49,8 @@ class LivenessActivity : AppCompatActivity(),
         private const val STATIC_PIPELINE_IMAGE_MODE = true
         private const val REFINE_PIPELINE_LANDMARKS = false
         private const val MAX_MILESTONES_NUM = 468
-        private const val DEBOUNCE_PROCESS_MILLIS = 200 //may reduce a bit
-        private const val LIVENESS_TIME_LIMIT_MILLIS = 15000
+        private const val DEBOUNCE_PROCESS_MILLIS = 100 //may reduce a bit
+        private const val LIVENESS_TIME_LIMIT_MILLIS = 14000 //max is 15000
         private const val BLOCK_PIPELINE_TIME_MILLIS: Long = 1400 //may reduce a bit
         private const val STAGE_VIBRATION_DURATION_MILLIS: Long = 100
         private const val MAX_FRAMES_W_O_FATAL_OBSTACLES = 12
@@ -113,7 +113,7 @@ class LivenessActivity : AppCompatActivity(),
         //TODO (?) add logic for increasing framesPerImage / FPS based on of factors:
 //        val finalSessionTime = getActualSessionTimeInSecs()
 //        val snapshotsSize = bitmapArray.size
-        //TODO add little delay for mouth video to capture in problematic cases!
+        //TODO add little delay for MOUTH(last) video to capture in problematic cases!
 
         val framesPerImage = 1
         val framesPerSecond = 24F
@@ -183,7 +183,6 @@ class LivenessActivity : AppCompatActivity(),
         runOnUiThread {
             binding!!.faceAnimationView.isVisible = false
             binding!!.arrowAnimationView.isVisible = false
-
             when (gestureMilestoneType) {
                 GestureMilestoneType.CheckHeadPositionMilestone -> {
                     setUIOnCheckHeadPositionMilestone()
@@ -195,18 +194,7 @@ class LivenessActivity : AppCompatActivity(),
                     setUIOnOuterRightHeadPitchMilestone()
                 }
                 GestureMilestoneType.MouthOpenMilestone -> {
-                    binding!!.livenessCosmeticsHolder.isVisible = false
-                    vibrateDevice(this@LivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
-
-//                    Log.d(TAG, "================== FINISHED SESSION - SUCCESS")
-//                    Log.d(TAG, "================== ACTUAL TIME: ${getActualSessionTimeInSecs()} sec")
-
-                    try {
-                        findNavController(R.id.liveness_host_fragment)
-                            .navigate(R.id.action_dummyLivenessStartDestFragment_to_inProcessFragment)
-                    } catch (e: IllegalArgumentException) {
-                        Log.d(TAG, "Attempt of nav to success was made, but was already on another fragment")
-                    }
+                    delayedNavigateOnLivenessSessionEnd()
                 }
                 else -> {
                     //Stub. Cases in which results we are not straightly concerned
@@ -218,7 +206,8 @@ class LivenessActivity : AppCompatActivity(),
     private fun processLandmarks(faceMeshResult: FaceMeshResult) {
         // convert markers to 2DArray each 1 second or less (may vary)
         if (mayProcessNextLandmarkArray()) {
-            Log.d(TAG, "======== FACES: ${faceMeshResult.multiFaceLandmarks().size}")
+            //Log.d(TAG, "======== FACES: ${faceMeshResult.multiFaceLandmarks().size}")
+
             if (faceMeshResult.multiFaceLandmarks().size >= 2) {
                 multiFaceFrameCounter += 1
                 if (multiFaceFrameCounter >= MAX_FRAMES_W_O_FATAL_OBSTACLES) {
@@ -364,6 +353,18 @@ class LivenessActivity : AppCompatActivity(),
         }
     }
 
+    @Throws(IOException::class)
+    private fun createVideoFile(): File {
+        val storageDir: File =
+            this@LivenessActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
+        return File.createTempFile(
+            "faceVideo${System.currentTimeMillis()}", ".mp4", storageDir
+        ).apply {
+            videoPath = this.path
+            Log.d("VIDEO", "SAVING A FILE: ${this.path}")
+        }
+    }
+
     /// -------------------------------------------- UI functions
 
     private fun initSetupUI() {
@@ -424,6 +425,25 @@ class LivenessActivity : AppCompatActivity(),
         }, BLOCK_PIPELINE_TIME_MILLIS)
     }
 
+    private fun delayedNavigateOnLivenessSessionEnd() {
+        vibrateDevice(this@LivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
+        binding!!.imgViewStaticStageIndication.isVisible = true
+        binding!!.stageSuccessAnimBorder.isVisible = true
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            binding!!.livenessCosmeticsHolder.isVisible = false
+
+//          Log.d(TAG, "================== FINISHED SESSION - SUCCESS")
+//          Log.d(TAG, "================== ACTUAL TIME: ${getActualSessionTimeInSecs()} sec")
+            try {
+                findNavController(R.id.liveness_host_fragment)
+                    .navigate(R.id.action_dummyLivenessStartDestFragment_to_inProcessFragment)
+            } catch (e: IllegalArgumentException) {
+                Log.d(TAG, "Attempt of nav to success was made, but was already on another fragment")
+            }
+        }, 1000)
+    }
+
     private fun delayedResetUIAfterObstacle() {
         Handler(Looper.getMainLooper()).postDelayed ({
             binding!!.checkFaceTitle.setTextColor(resources.getColor(R.color.white))
@@ -461,20 +481,6 @@ class LivenessActivity : AppCompatActivity(),
                     BLOCK_PIPELINE_TIME_MILLIS / 2)
                     .setInterpolator(AccelerateInterpolator()).start()
             }.start()
-    }
-
-    // UTIL ---------------------------------------
-
-    @Throws(IOException::class)
-    private fun createVideoFile(): File {
-        val storageDir: File =
-            this@LivenessActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
-        return File.createTempFile(
-            "faceVideo${System.currentTimeMillis()}", ".mp4", storageDir
-        ).apply {
-            videoPath = this.path
-            Log.d("VIDEO", "SAVING A FILE: ${this.path}")
-        }
     }
 
     override fun onDestroy() {

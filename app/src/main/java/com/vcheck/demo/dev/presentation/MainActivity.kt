@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Vi
         if (mLangReceiver == null) {
             mLangReceiver = object : BroadcastReceiver() {
                 override fun onReceive(context: Context?, intent: Intent?) {
-                    Log.d("OkHttp", "======== LANG CHANGED")
+                    //Log.d("OkHttp", "======== LANG CHANGED")
                     recreate()
                 }
             }

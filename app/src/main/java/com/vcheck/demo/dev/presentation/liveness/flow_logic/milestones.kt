@@ -22,7 +22,7 @@ enum class ObstacleType {
 const val YAW_PASS_ANGLE_ABS = 20.0
 const val LEFT_PITCH_PASS_ANGLE = -30.0
 const val RIGHT_PITCH_PASS_ANGLE = 30.0
-const val MOUTH_OPEN_PASS_FACTOR = 0.41  //reduced from 0.55 !
+const val MOUTH_OPEN_PASS_FACTOR = 0.39  //reduced from 0.55 !
 
 
 open class GestureMilestone(val milestoneType: GestureMilestoneType) {

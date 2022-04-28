@@ -90,9 +90,10 @@
         <entry key="app/src/main/res/layout/fragment_demo_start.xml" value="0.32083333333333336" />
         <entry key="app/src/main/res/layout/fragment_doc_verification_not_successful.xml" value="0.21294403076171872" />
         <entry key="app/src/main/res/layout/fragment_dumme_lineness_start_dest.xml" value="0.2828125" />
+        <entry key="app/src/main/res/layout/fragment_dummy_liveness_start_dest.xml" value="0.3171875" />
         <entry key="app/src/main/res/layout/fragment_fail_video_upload.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/layout/fragment_liveness.xml" value="0.3223958333333333" />
-        <entry key="app/src/main/res/layout/fragment_liveness_result_video_view.xml" value="0.33695652173913043" />
+        <entry key="app/src/main/res/layout/fragment_liveness_result_video_view.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_start.xml" value="0.33469202898550726" />
         <entry key="app/src/main/res/layout/frame_interference_fragment.xml" value="0.290625" />
         <entry key="app/src/main/res/layout/id_card_photo_upload_fragment.xml" value="0.24211730957031252" />

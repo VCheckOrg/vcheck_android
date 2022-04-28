@@ -1,6 +1,7 @@
 package com.vcheck.demo.dev.presentation.liveness.ui.failures
 
 import android.content.ContentValues
+import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -10,9 +11,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.VideoView
+import androidx.appcompat.widget.AppCompatButton
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import com.vcheck.demo.dev.R
+import com.vcheck.demo.dev.presentation.StartupActivity
 import com.vcheck.demo.dev.presentation.liveness.LivenessActivity
 import java.io.File
 import java.io.FileInputStream
@@ -36,6 +39,13 @@ class LivenessResultVideoViewFragment : Fragment() {
 
         val videoView: VideoView = view.findViewById(R.id.videoView)
 
+//        val restartBtn: AppCompatButton = view.findViewById(R.id.btnRestart)
+//
+//        restartBtn.setOnClickListener {
+//            videoView.stopPlayback()
+//            resetApplication()
+//        }
+
         if (videoPath != null) {
             val video: Uri = videoPath.toUri()
             videoView.setVideoURI(video)
@@ -47,6 +57,19 @@ class LivenessResultVideoViewFragment : Fragment() {
             //Log.d("mux", getFolderSizeLabel(File(videoPath)))
             saveVideoTOGalleryForChecking(videoPath, "VcheckVideo${System.currentTimeMillis()}")
         }
+    }
+
+    private fun resetApplication() {
+        val resetApplicationIntent = (activity as StartupActivity).applicationContext
+            .packageManager.getLaunchIntentForPackage(
+                (activity as StartupActivity).applicationContext.packageName)
+
+        if (resetApplicationIntent != null) {
+            resetApplicationIntent.flags =
+                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        (activity as LivenessActivity).startActivity(resetApplicationIntent)
+        (context as LivenessActivity).overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
     }
 
     private fun saveVideoTOGalleryForChecking(filePath: String?, fileName: String) {

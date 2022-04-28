@@ -8,6 +8,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.databinding.SuccessFragmentBinding
+import com.vcheck.demo.dev.presentation.StartupActivity
 import com.vcheck.demo.dev.presentation.liveness.LivenessActivity
 
 
@@ -31,9 +32,9 @@ class SuccessFragment : Fragment(R.layout.success_fragment) {
     }
 
     private fun resetApplication() {
-        val resetApplicationIntent = (activity as LivenessActivity).applicationContext
+        val resetApplicationIntent = (activity as StartupActivity).applicationContext
             .packageManager.getLaunchIntentForPackage(
-            (activity as LivenessActivity).applicationContext.packageName)
+            (activity as StartupActivity).applicationContext.packageName)
 
         if (resetApplicationIntent != null) {
             resetApplicationIntent.flags =
