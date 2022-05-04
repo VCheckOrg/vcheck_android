@@ -87,7 +87,7 @@
     <string name="country_name">Страна</string>
     <string name="start_demo_flow">Попробовать демо</string>
     <string name="face_check_title">Проверка лица</string>
-    <string name="face_check_description">Сначала разместите лицо по центру кадра, затем двигайте головой в заданом направлении, как на примере ниже, чтобы показать свое лицо со всех углов.</string>
+    <string name="face_check_description">Сначала разместите лицо по центру кадра, затем двигайте головой в заданном направлении, как на примере ниже, чтобы показать свое лицо со всех углов.</string>
     <string name="requested_movements_text">выполняйте только запрашиваемые движения</string>
     <string name="smooth_movements_text">движения должны быть четкими и плавными</string>
     <string name="no_interference_text">в кадре не должно быть помех</string>

@@ -12,8 +12,8 @@ data class CreateVerificationRequestBody(
     @SerializedName("partner_user_id")
     val partner_user_id: String = Date().time.toString(),
     @SerializedName("timestamp")
-    val timestamp: Long =
-        (Calendar.getInstance(TimeZone.getTimeZone("UTC")).timeInMillis / 1000) - 3,
+    val timestamp: Long,
+    //= (Calendar.getInstance(TimeZone.getTimeZone("UTC")).timeInMillis / 1000) - 3,
     @SerializedName("locale")
     val locale: String,
     @SerializedName("sign")

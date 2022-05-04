@@ -20,8 +20,6 @@ class AppContainer(val app: VcheckDemoApp) {
     init {
         val logging = HttpLoggingInterceptor()
 
-        //logging.setLevel(HttpLoggingInterceptor.Level.BODY) //when having debug issue change to BODY
-
         val httpClient = OkHttpClient.Builder()
 
         httpClient.addInterceptor { chain ->
@@ -39,7 +37,7 @@ class AppContainer(val app: VcheckDemoApp) {
         retrofit = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .client(httpClient.build())
-            .baseUrl("https://test-verification.vycheck.com/api/") //TEST(DEV)
+            .baseUrl(RemoteDatasource.API_BASE_URL) //TEST(DEV)
             .build()
     }
 

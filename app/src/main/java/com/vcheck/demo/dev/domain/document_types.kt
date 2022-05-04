@@ -1,13 +1,5 @@
 package com.vcheck.demo.dev.domain
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
-
-@Parcelize
-data class DocTypeTO(
-    val docType: DocType
-) : Parcelable
-
 enum class DocType {
     INNER_PASSPORT_OR_COMMON,
     FOREIGN_PASSPORT,

@@ -1,6 +1,5 @@
 package com.vcheck.demo.dev.presentation.start
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.vcheck.demo.dev.data.MainRepository
 import com.vcheck.demo.dev.data.Resource

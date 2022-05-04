@@ -4,11 +4,12 @@ import androidx.lifecycle.MutableLiveData
 import com.vcheck.demo.dev.domain.*
 import okhttp3.MultipartBody
 import retrofit2.Response
-import retrofit2.http.Header
-import retrofit2.http.Part
-import retrofit2.http.Path
 
 class RemoteDatasource(private val apiClient: ApiClient) {
+
+    companion object {
+        const val API_BASE_URL = "https://test-verification.vycheck.com/api/"
+    }
 
     fun createVerificationRequest(verificationRequestBody: CreateVerificationRequestBody):
             MutableLiveData<Resource<CreateVerificationAttemptResponse>> {

@@ -28,6 +28,7 @@ import com.vcheck.demo.dev.presentation.transferrable_objects.CheckPhotoDataTO
 import java.io.File
 import java.io.IOException
 
+//TODO rename to "TakePhotoFragment"
 class PhotoUploadFragment : Fragment() {
 
     private var _binding: PhotoUploadFragmentBinding? = null

@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.util.Log
 import androidx.core.content.ContextCompat.getSystemService
 import java.io.File
 import java.security.MessageDigest
@@ -13,16 +12,10 @@ import java.util.regex.Pattern
 
 fun generateSHA256Hash(strToHash: String): String {
 
-    Log.d("VERIF_ATTEMPT", "FULL STR TO HASH : $strToHash")
-
     val bytes = strToHash.toByteArray()
     val md = MessageDigest.getInstance("SHA-256")
     val digest = md.digest(bytes)
-    val result = digest.fold("") { str, it -> str + "%02x".format(it) }
-
-    Log.d("VERIF_ATTEMPT", "FIRST HASH : $result")
-
-    return result
+    return digest.fold("") { str, it -> str + "%02x".format(it) }
 }
 
 
@@ -92,62 +85,4 @@ fun isValidDocRelatedDate(date: String): Boolean {
     }
 }
 
-
-
-//private val foreignDocsAndIDsDatePattern: Pattern = Pattern.compile(DATE_PATTERN_1)
-//private const val DATE_PATTERN_1 = "(0?[1-9]|[12][0-9]|3[01])-(0?[1-9]|1[012])-((19|20)\\d\\d)"
-//fun isValidForeignDocOrIDCardDate(date: String): Boolean {
-//    val foreignDocsAndIDsDateMatcher: Matcher = foreignDocsAndIDsDatePattern.matcher(date)
-//    return if (foreignDocsAndIDsDateMatcher.matches()) {
-//        foreignDocsAndIDsDateMatcher.reset()
-//        if (foreignDocsAndIDsDateMatcher.find()) {
-//            val day: String = foreignDocsAndIDsDateMatcher.group(1)!!
-//            val month: String = foreignDocsAndIDsDateMatcher.group(2)!!
-//            val year: Int = foreignDocsAndIDsDateMatcher.group(3)!!.toInt()
-//            if (date == "31" && (month == "4" || month == "6" || month == "9" || month == "11" || month == "04" || month == "06" || month == "09")) {
-//                false
-//            } else if (month == "2" || month == "02") {
-//                if (year % 4 == 0) {
-//                    !(day == "30" || day == "31")
-//                } else {
-//                    !(day == "29" || day == "30" || day == "31")
-//                }
-//            } else {
-//                true
-//            }
-//        } else {
-//            false
-//        }
-//    } else {
-//        false
-//    }
-//}
-
-//val commonInnerDocDateMatcher: Matcher = commonInnerDocDatePattern.matcher(date)
-
-
-//class CustomInputFilter : InputFilter {
-//
-//    private var regex = Pattern.compile("^[A-Z0-9]*$")
-//
-//    fun setRegex(customRegex: String) {
-//        regex = Pattern.compile(customRegex)
-//    }
-//
-//    override fun filter(
-//        source: CharSequence,
-//        start: Int,
-//        end: Int,
-//        dest: Spanned?,
-//        dstart: Int,
-//        dend: Int
-//    ): CharSequence? {
-//        val matcher = regex.matcher(source)
-//        return if (matcher.find()) {
-//            null
-//        } else {
-//            ""
-//        }
-//    }
-//}
 

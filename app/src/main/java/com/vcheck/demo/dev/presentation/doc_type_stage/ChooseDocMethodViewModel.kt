@@ -45,16 +45,4 @@ class ChooseDocMethodViewModel (val repository: MainRepository) : ViewModel() {
     private fun setError(message: String) {
         clientError.value = message
     }
-
-//    private fun setSuccess() {
-//        isLoading.value = false
-//        isSuccess.value = true
-//        isError.value = false
-//    }
-//
-//    private fun setLoading() {
-//        isLoading.value = true
-//        isSuccess.value = false
-//        isError.value = false
-//    }
 }
