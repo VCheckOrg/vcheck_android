@@ -4,16 +4,16 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.vcheck.demo.dev.VcheckDemoApp
 import com.vcheck.demo.dev.R
+import com.vcheck.demo.dev.VcheckDemoApp
 import com.vcheck.demo.dev.databinding.FragmentDemoStartBinding
 import com.vcheck.demo.dev.domain.CountryTO
 import com.vcheck.demo.dev.presentation.MainActivity
@@ -67,9 +67,11 @@ class DemoStartFragment : Fragment() {
                             "redirect_url : ${it.data.data.redirectUrl}" //+create_time
 
                 if (it.data.data.redirectUrl != null) {
-                    _viewModel.repository.storeVerifToken((activity as MainActivity),
+                    _viewModel.repository.storeVerifToken(
+                        (activity as MainActivity),
                         it.data.data.redirectUrl!!.substringAfterLast("/", "")
-                            .substringBefore("?id"))
+                            .substringBefore("?id")
+                    )
                     _viewModel.setVerifToken(_viewModel.repository.getVerifToken((activity as MainActivity)))
 
                     _viewModel.initVerification()
@@ -77,7 +79,8 @@ class DemoStartFragment : Fragment() {
                     Toast.makeText(
                         (activity as MainActivity),
                         "Error: Cannot retrieve verification token",
-                        Toast.LENGTH_LONG).show()
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
         }
@@ -98,17 +101,26 @@ class DemoStartFragment : Fragment() {
                 _binding!!.startCallChainLoadingIndicator.isVisible = false
                 Log.d(
                     "COUNTRIES",
-                    "GOT COUNTRIES: ${it.data.data.map { country -> country.code }.toList()}")
+                    "GOT COUNTRIES: ${it.data.data.map { country -> country.code }.toList()}"
+                )
 
                 val countryList = it.data.data.map { country ->
                     val locale = Locale("", country.code)
                     val flag = locale.country.toFlagEmoji()
-                    CountryTO(locale.displayCountry, country.code, flag, country.isBlocked)
+
+                    CountryTO(
+                        locale.displayCountry,
+                        country.code,
+                        flag,
+                        country.isBlocked
+                    )
+
                 }.toList() as ArrayList<CountryTO>
 
                 val action =
                     DemoStartFragmentDirections.actionDemoStartFragmentToChooseCountryFragment(
-                        CountriesListTO(countryList))
+                        CountriesListTO(countryList)
+                    )
                 findNavController().navigate(action)
             }
         }
@@ -119,8 +131,10 @@ class DemoStartFragment : Fragment() {
 
         _binding!!.btnStartDemoFlow.setOnClickListener {
             _binding!!.startCallChainLoadingIndicator.isVisible = true
-            _viewModel.createTestVerificationRequest(_viewModel.repository
-                .getLocale(activity as MainActivity))
+            _viewModel.createTestVerificationRequest(
+                _viewModel.repository
+                    .getLocale(activity as MainActivity)
+            )
         }
 
         //! FOR TEST

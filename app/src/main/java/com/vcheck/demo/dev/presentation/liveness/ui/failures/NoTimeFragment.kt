@@ -24,9 +24,9 @@ class NoTimeFragment : Fragment(R.layout.no_time_fragment) {
             (activity as LivenessActivity).recreate()
         }
 
-        _binding!!.noTimeCorrectTextButton.setOnClickListener {
-            (activity as LivenessActivity).finishLivenessSession()
-            findNavController().navigate(R.id.action_noTimeFragment_to_inProcessFragment)
-        }
+//        _binding!!.noTimeCorrectTextButton.setOnClickListener {
+//            (activity as LivenessActivity).finishLivenessSession()
+//            findNavController().navigate(R.id.action_noTimeFragment_to_inProcessFragment)
+//        }
     }
 }
