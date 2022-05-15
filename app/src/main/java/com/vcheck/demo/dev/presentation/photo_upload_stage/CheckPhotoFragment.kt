@@ -136,7 +136,7 @@ class CheckPhotoFragment : Fragment() {
     private fun handleDocUploadResponse(resource: Resource<DocumentUploadResponse>) {
         if (resource.data?.data != null) {
             if (resource.data.errorCode != 0 || resource.data.data.status != 0) {
-                if (codeIdxToVerificationCode(resource.data.errorCode) == DocumentVerificationCode.UploadAttemptsExceeded) {
+                if (codeIdxToVerificationCode(resource.data.data.status) == DocumentVerificationCode.UploadAttemptsExceeded) {
                     val action = CheckPhotoFragmentDirections
                         .actionCheckPhotoFragmentToCheckInfoFragment(
                             CheckDocInfoDataTO(args.checkPhotoDataTO.selectedDocType,
