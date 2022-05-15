@@ -100,13 +100,13 @@ class CheckPhotoFragment : Fragment() {
                 val multipartList: ArrayList<MultipartBody.Part> = ArrayList()
                 val photoFile1 = File(args.checkPhotoDataTO.photo1Path)
                 val filePartPhoto1: MultipartBody.Part = createFormData(
-                    "1.jpg", photoFile1.name, photoFile1.asRequestBody("image/jpeg".toMediaType())) // image/*
+                    "0.jpg", photoFile1.name, photoFile1.asRequestBody("image/jpeg".toMediaType())) // image/*
                 multipartList.add(filePartPhoto1)
 
                 if (args.checkPhotoDataTO.photo2Path != null) {
                     val photoFile2 = File(args.checkPhotoDataTO.photo2Path!!)
                     val filePartPhoto2: MultipartBody.Part = createFormData(
-                        "2.jpg", photoFile2.name, photoFile2.asRequestBody("image/jpeg".toMediaType())) // image/*
+                        "1.jpg", photoFile2.name, photoFile2.asRequestBody("image/jpeg".toMediaType())) // image/*
                     multipartList.add(filePartPhoto2)
                 }
 

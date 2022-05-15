@@ -44,7 +44,7 @@
     <string name="make_document_photo_description">Make sure every photo taken is readable (all 4 corners of the document are visible, fingers are not obstructing the data)</string>
     <string name="photo_upload_title">Upload a photo of the document</string>
     <string name="no_camera_permission_button">Give access to the camera</string>
-    <string name="no_camera_title">Camera not available</string>
+    <string name="no_camera_title">Webcam not available</string>
     <string name="no_time_button">Try again</string>
     <string name="not_found_button">To home</string>
     <string name="os_not_support_back_button">Back</string>
@@ -79,9 +79,9 @@
     <string name="photo_upload_description">Acceptable image format: JPG, JPEG</string>
     <string name="os_not_support_copy_button">Сopy link</string>
     <string name="not_found_title">We didn\'t find a page with that address :(</string>
-    <string name="look_stratight_error_title">You didn\'t look straight</string>
+    <string name="look_stratight_error_title">Failed to focus on face</string>
     <string name="no_time_title">The time to complete the movement has expired</string>
-    <string name="in_process_title">Application sent for verification</string>
+    <string name="in_process_title">Your application is at the processing stage or has already been processed.</string>
     <string name="no_time_correct_text"><u>Everything was completed correctly, send for verification</u></string>
     <string name="no_camera_link_button">Copy link</string>
     <string name="passport_title">Upload a photo of the front spread (spread with your photo).</string>
@@ -90,7 +90,7 @@
     <string name="look_stratight_error_send_text">Everything was completed correctly, send for verification</string>
     <string name="frame_interference_description">There could be several people in the frame, or foreign objects. When re-checking, try so that only your face is in the frame and you can see it as clearly as possible..</string>
     <string name="in_process_subtitle">The verification request is being composed for review. Please, wait.</string>
-    <string name="look_stratight_error_subtitle">The face was not captured right in the frame at the right moment for this. Try to strictly adhere to the instructions at the time of the verification. Try again.</string>
+    <string name="look_stratight_error_subtitle">The face was not found in the frame. Try to focus the camera so that the face is in the center. Try again.</string>
     <string name="no_camera_description">The camera was not found or you have denied access to it. If the camera works correctly, give access to it and try again. If the problem persists, try to copy the verification link and continue on a different device.</string>
     <string name="success_description">While all application data sent to our services is being processed, you may return to the partner service.</string>
     <string name="face_check_title">Face checking</string>
@@ -130,4 +130,19 @@
     <string name="video_upload_error_descr">There was an issue while uploading a video. Please check your internet connection and try again without moving an app to the background.</string>
     <string name="line_face_obstacle">Don\'t look up or down</string>
     <string name="wrong_movement_obstacle">Wrong movement</string>
+    <string name="united_states_of_america">United States of America</string>
+    <string name="bermuda">Bermuda</string>
+    <string name="east_timor">East Timor</string>
+    <string name="surname_cyrillic_validation_error">Please enter a valid surname in Cyrillic</string>
+    <string name="surname_latin_validation_error">Please enter a valid Latin surname</string>
+    <string name="name_cyrillic_validation_error">Please enter a valid name in Cyrillic</string>
+    <string name="name_latin_validation_error">Please enter a valid Latin name</string>
+    <string name="number_of_document_validation_error">Please enter a valid series and document number</string>
+    <string name="yyyymmdd">YYYYMMDD</string>
+    <string name="too_fast_movements_title">Too fast movements</string>
+    <string name="too_fast_movements_description">Try to move smoothly. Try again.</string>
+    <string name="too_dark_title">To dark</string>
+    <string name="too_dark_description">The test cannot be performed because it is too dark. Try again with good lighting.</string>
+    <string name="date_of_birth_validation_error">Please enter a valid date of birth</string>
+    <string name="date_of_expiry_validation_error">Please enter a valid document expiration date</string>
 </resources>

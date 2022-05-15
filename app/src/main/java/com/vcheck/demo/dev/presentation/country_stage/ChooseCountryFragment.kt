@@ -10,6 +10,7 @@ import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VcheckDemoApp
 import com.vcheck.demo.dev.databinding.ChooseCountryFragmentBinding
 import com.vcheck.demo.dev.di.AppContainer
+import com.vcheck.demo.dev.domain.CountryTO
 import com.vcheck.demo.dev.presentation.MainActivity
 import com.vcheck.demo.dev.presentation.transferrable_objects.CountriesListTO
 import com.vcheck.demo.dev.util.toFlagEmoji
@@ -55,11 +56,43 @@ class ChooseCountryFragment : Fragment(R.layout.choose_country_fragment) {
         super.onResume()
         country = appContainer.mainRepository.getSelectedCountryCode(activity as MainActivity)
 
-        val locale = Locale("", country)
+        when (country) {
+            "us" -> {
+                val locale = Locale("", country)
 
-        val flag = locale.country.toFlagEmoji()
+                val flag = locale.country.toFlagEmoji()
 
-        binding.countryTitle.text = locale.displayCountry
-        binding.flagEmoji.text = flag
+                binding.countryTitle.text = getString(R.string.united_states_of_america)
+                binding.flagEmoji.text = flag
+            }
+
+            "bm" -> {
+                val locale = Locale("", country)
+
+                val flag = locale.country.toFlagEmoji()
+
+                binding.countryTitle.text = getString(R.string.bermuda)
+                binding.flagEmoji.text = flag
+            }
+
+            "tl" -> {
+                val locale = Locale("", country)
+
+                val flag = locale.country.toFlagEmoji()
+
+                binding.countryTitle.text = getString(R.string.east_timor)
+                binding.flagEmoji.text = flag
+            }
+
+            else -> {
+                val locale = Locale("", country)
+
+                val flag = locale.country.toFlagEmoji()
+
+                binding.countryTitle.text = locale.displayCountry.replace("&", "and")
+                binding.flagEmoji.text = flag
+            }
+        }
+
     }
 }
