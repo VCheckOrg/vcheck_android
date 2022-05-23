@@ -2,8 +2,6 @@ package com.vcheck.demo.dev.presentation.liveness.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.vcheck.demo.dev.R
@@ -25,10 +23,6 @@ class SuccessFragment : Fragment(R.layout.success_fragment) {
             //FOR TEST
             resetApplication()
         }
-
-//        Handler(Looper.getMainLooper()).postDelayed({
-//            resetApplication()
-//        }, 3000)
     }
 
     private fun resetApplication() {

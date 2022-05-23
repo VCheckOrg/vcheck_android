@@ -2,6 +2,10 @@ package com.vcheck.demo.dev.presentation.liveness
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
 import android.media.ImageReader
@@ -19,10 +23,12 @@ import com.google.mediapipe.solutions.facemesh.FaceMesh
 import com.google.mediapipe.solutions.facemesh.FaceMeshOptions
 import com.google.mediapipe.solutions.facemesh.FaceMeshResult
 import com.vcheck.demo.dev.R
+import com.vcheck.demo.dev.VcheckDemoApp
 import com.vcheck.demo.dev.databinding.ActivityLivenessBinding
 import com.vcheck.demo.dev.presentation.liveness.flow_logic.*
 import com.vcheck.demo.dev.presentation.liveness.ui.CameraConnectionFragment
 import com.vcheck.demo.dev.util.setMargins
+import com.vcheck.demo.dev.util.shouldDecreaseVideoStreamQuality
 import com.vcheck.demo.dev.util.vibrateDevice
 import com.vcheck.demo.dev.util.video.Muxer
 import com.vcheck.demo.dev.util.video.MuxerConfig
@@ -55,13 +61,16 @@ class LivenessActivity : AppCompatActivity(),
         private const val STAGE_VIBRATION_DURATION_MILLIS: Long = 100
         private const val MAX_FRAMES_W_O_FATAL_OBSTACLES = 12
         private const val MIN_FRAMES_FOR_MINOR_OBSTACLES = 4
+        private const val MIN_AFFORDABLE_BRIGHTNESS_VALUE = 60
     }
 
+    private var binding: ActivityLivenessBinding? = null
+
+    var streamSize: Size = Size(720, 960)
     private var bitmapArray: ArrayList<Bitmap> = ArrayList()
     private lateinit var muxer: Muxer
     var videoPath: String? = null //make private!
 
-    //refactor to protected
     val openLivenessCameraParams: LivenessCameraParams = LivenessCameraParams()
 
     private var facemesh: FaceMesh? = null
@@ -74,7 +83,8 @@ class LivenessActivity : AppCompatActivity(),
     private var noFaceFrameCounter: Int = 0
     private var minorObstacleFrameCounter: Int = 0
 
-    private var binding: ActivityLivenessBinding? = null
+    private var sensorManager: SensorManager? = null
+    private var lightSensor: Sensor? = null
 
     private var milestoneFlow: StandardMilestoneFlow =
         StandardMilestoneFlow(this@LivenessActivity)
@@ -86,7 +96,11 @@ class LivenessActivity : AppCompatActivity(),
         val view = binding!!.root
         setContentView(view)
 
+        determineAndSetStreamSize()
+
         setUpMuxer()
+
+        setupBrightnessLevelListener()
 
         resetMilestonesForNewLivenessSession()
 
@@ -110,7 +124,7 @@ class LivenessActivity : AppCompatActivity(),
 
     private fun setUpMuxer() {
 
-        //TODO (?) add logic for increasing framesPerImage / FPS based on of factors:
+        //TODO (?) add logic for increasing framesPerImage / FPS based on one of factors:
 //        val finalSessionTime = getActualSessionTimeInSecs()
 //        val snapshotsSize = bitmapArray.size
         //TODO add little delay for MOUTH(last) video to capture in problematic cases!
@@ -119,7 +133,7 @@ class LivenessActivity : AppCompatActivity(),
         val framesPerSecond = 24F
 
         val muxerConfig = MuxerConfig(createVideoFile(),
-            720, 960, MediaFormat.MIMETYPE_VIDEO_AVC,
+            streamSize.height, streamSize.width, MediaFormat.MIMETYPE_VIDEO_AVC,
             framesPerImage, framesPerSecond, 2500000, iFrameInterval = 1) //3, 32F, 2500000, iFrameInterval = 50 (10))
         muxer = Muxer(this@LivenessActivity, muxerConfig)
     }
@@ -131,7 +145,7 @@ class LivenessActivity : AppCompatActivity(),
                 .setStaticImageMode(STATIC_PIPELINE_IMAGE_MODE)
                 .setRefineLandmarks(REFINE_PIPELINE_LANDMARKS)
                 .setRunOnGpu(RUN_PIPELINE_ON_GPU)
-                .setMaxNumFaces(2) //TODO try to add 2+ faces and check outer array size!
+                .setMaxNumFaces(2)
                 .build())
         facemesh!!.setErrorListener { message: String, e: RuntimeException? ->
             Log.e(TAG, "======= MediaPipe Face Mesh error : $message")
@@ -144,8 +158,7 @@ class LivenessActivity : AppCompatActivity(),
                     runOnUiThread {
                         livenessSessionLimitCheckTime = SystemClock.elapsedRealtime()
                         binding!!.livenessCosmeticsHolder.isVisible = false
-                        findNavController(R.id.liveness_host_fragment)
-                            .navigate(R.id.action_dummyLivenessStartDestFragment_to_noTimeFragment)
+                        safeNavigateToResultDestination(R.id.action_dummyLivenessStartDestFragment_to_noTimeFragment)
                     }
                 }
             }
@@ -172,6 +185,12 @@ class LivenessActivity : AppCompatActivity(),
                 }
                 ObstacleType.NO_STRAIGHT_FACE_DETECTED -> {
                     onFatalObstacleWorthRetry(R.id.action_dummyLivenessStartDestFragment_to_lookStraightErrorFragment)
+                }
+                ObstacleType.BRIGHTNESS_LEVEL_IS_LOW -> {
+                    onFatalObstacleWorthRetry(R.id.action_dummyLivenessStartDestFragment_to_tooDarkFragment)
+                }
+                ObstacleType.MOTIONS_ARE_TOO_SHARP -> {
+                    //TODO: discuss w/Vadim
                 }
             }
         }
@@ -207,7 +226,6 @@ class LivenessActivity : AppCompatActivity(),
         // convert markers to 2DArray each 1 second or less (may vary)
         if (mayProcessNextLandmarkArray()) {
             //Log.d(TAG, "======== FACES: ${faceMeshResult.multiFaceLandmarks().size}")
-
             if (faceMeshResult.multiFaceLandmarks().size >= 2) {
                 multiFaceFrameCounter += 1
                 if (multiFaceFrameCounter >= MAX_FRAMES_W_O_FATAL_OBSTACLES) {
@@ -228,8 +246,7 @@ class LivenessActivity : AppCompatActivity(),
                     val yawAngleAbs = kotlin.math.abs(faceAnglesCalcResultArr[1])
                     val mouthAspectRatio = LandmarksProcessingUtil.landmarksToMouthAspectRatio(convertResult)
 
-                    Log.d(TAG, "========= MOUTH ASPECT RATIO: $mouthAspectRatio | PITCH: $pitchAngle | YAW(abs) : $yawAngleAbs")
-
+                    //Log.d(TAG, "========= MOUTH ASPECT RATIO: $mouthAspectRatio | PITCH: $pitchAngle | YAW(abs) : $yawAngleAbs")
                     milestoneFlow.checkCurrentStage(pitchAngle, mouthAspectRatio, yawAngleAbs)
                 }
                 faceCheckDebounceTime = SystemClock.elapsedRealtime()
@@ -349,8 +366,27 @@ class LivenessActivity : AppCompatActivity(),
             //Log.d(TAG, "------------- PUT BITMAP TO ARRAY. SIZE: ${bitmapArray.size}")
 
             postInferenceCallback!!.run()
-
         }
+    }
+
+    private fun setupBrightnessLevelListener() {
+        sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
+        lightSensor = (sensorManager as SensorManager).getDefaultSensor(Sensor.TYPE_LIGHT)
+
+        val listener = object : SensorEventListener {
+            override fun onSensorChanged(event: SensorEvent) {
+                val lightQuantity = event.values[0]
+                //Log.d("PERFORMANCE", "-------- BRIGHTNESS: $lightQuantity")
+                if (lightQuantity < MIN_AFFORDABLE_BRIGHTNESS_VALUE) {
+                    onObstacleMet(ObstacleType.BRIGHTNESS_LEVEL_IS_LOW)
+                }
+            }
+            override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+                //Stub?
+            }
+        }
+        sensorManager!!.registerListener(
+            listener, lightSensor, SensorManager.SENSOR_DELAY_UI);
     }
 
     @Throws(IOException::class)
@@ -432,22 +468,24 @@ class LivenessActivity : AppCompatActivity(),
 
         Handler(Looper.getMainLooper()).postDelayed({
             binding!!.livenessCosmeticsHolder.isVisible = false
-
 //          Log.d(TAG, "================== FINISHED SESSION - SUCCESS")
 //          Log.d(TAG, "================== ACTUAL TIME: ${getActualSessionTimeInSecs()} sec")
-            try {
-                findNavController(R.id.liveness_host_fragment)
-                    .navigate(R.id.action_dummyLivenessStartDestFragment_to_inProcessFragment)
-            } catch (e: IllegalArgumentException) {
-                Log.d(TAG, "Attempt of nav to success was made, but was already on another fragment")
-            }
+            safeNavigateToResultDestination(R.id.action_dummyLivenessStartDestFragment_to_inProcessFragment)
         }, 1000)
+    }
+
+    private fun safeNavigateToResultDestination(actionIdForNav: Int) {
+        try {
+            findNavController(R.id.liveness_host_fragment).navigate(actionIdForNav)
+        } catch (e: IllegalArgumentException) {
+            Log.d(TAG, "Attempt of nav to major obstacle was made, but was already on another fragment")
+        }
     }
 
     private fun delayedResetUIAfterObstacle() {
         Handler(Looper.getMainLooper()).postDelayed ({
             binding!!.checkFaceTitle.setTextColor(resources.getColor(R.color.white))
-            when(milestoneFlow.getCurrentStage().milestoneType) {
+            when(milestoneFlow.getUndoneStage().milestoneType) {
                 GestureMilestoneType.CheckHeadPositionMilestone -> {
                     binding!!.checkFaceTitle.text = getString(R.string.liveness_stage_face_left)
                 }
@@ -465,11 +503,21 @@ class LivenessActivity : AppCompatActivity(),
     }
 
     private fun onFatalObstacleWorthRetry(actionIdForNav: Int) {
-        vibrateDevice(this@LivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
-        finishLivenessSession()
-        livenessSessionLimitCheckTime = SystemClock.elapsedRealtime()
-        binding!!.livenessCosmeticsHolder.isVisible = false
-        findNavController(R.id.liveness_host_fragment).navigate(actionIdForNav)
+        val actualAttemptsNum = (application as VcheckDemoApp).appContainer.mainRepository
+            .getActualLivenessLocalAttempts(this@LivenessActivity)
+        val maxAttemptsNum = (application as VcheckDemoApp).appContainer.mainRepository
+            .getMaxLivenessLocalAttempts(this@LivenessActivity)
+        if (actualAttemptsNum < maxAttemptsNum) {
+            (application as VcheckDemoApp).appContainer.mainRepository
+                .incrementActualLivenessLocalAttempts(this@LivenessActivity)
+            vibrateDevice(this@LivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
+            finishLivenessSession()
+            livenessSessionLimitCheckTime = SystemClock.elapsedRealtime()
+            binding!!.livenessCosmeticsHolder.isVisible = false
+            safeNavigateToResultDestination(actionIdForNav)
+        } else {
+            delayedNavigateOnLivenessSessionEnd()
+        }
     }
 
     private fun animateStageSuccessFrame() {
@@ -481,6 +529,14 @@ class LivenessActivity : AppCompatActivity(),
                     BLOCK_PIPELINE_TIME_MILLIS / 2)
                     .setInterpolator(AccelerateInterpolator()).start()
             }.start()
+    }
+
+    private fun determineAndSetStreamSize() {
+        streamSize = if (shouldDecreaseVideoStreamQuality()) {
+            Size(320, 240)
+        } else {
+            Size(960, 720)
+        }
     }
 
     override fun onDestroy() {

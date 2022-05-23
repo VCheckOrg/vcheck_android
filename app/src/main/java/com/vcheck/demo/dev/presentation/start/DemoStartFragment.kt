@@ -68,10 +68,8 @@ class DemoStartFragment : Fragment() {
 
                 if (it.data.data.redirectUrl != null) {
                     _viewModel.repository.storeVerifToken(
-                        (activity as MainActivity),
-                        it.data.data.redirectUrl!!.substringAfterLast("/", "")
-                            .substringBefore("?id")
-                    )
+                        (activity as MainActivity), it.data.data.token)
+
                     _viewModel.setVerifToken(_viewModel.repository.getVerifToken((activity as MainActivity)))
 
                     _viewModel.initVerification()
@@ -92,6 +90,8 @@ class DemoStartFragment : Fragment() {
                             "return_url : ${it.data.data.returnUrl} | stage: ${it.data.data.stage}" +
                             "| locale: ${it.data.data.locale}"
 
+                _viewModel.repository.storeMaxLivenessLocalAttempts(
+                    (activity as MainActivity), it.data.data.livenessAttempts)
                 _viewModel.getCountriesList()
             }
         }
@@ -99,22 +99,17 @@ class DemoStartFragment : Fragment() {
         _viewModel.countriesResponse.observe(viewLifecycleOwner) {
             if (it.data?.data != null) {
                 _binding!!.startCallChainLoadingIndicator.isVisible = false
-                Log.d(
-                    "COUNTRIES",
-                    "GOT COUNTRIES: ${it.data.data.map { country -> country.code }.toList()}"
-                )
+                Log.d("COUNTRIES",
+                    "GOT COUNTRIES: ${it.data.data.map { country -> country.code }.toList()}")
 
                 val countryList = it.data.data.map { country ->
                     val locale = Locale("", country.code)
                     val flag = locale.country.toFlagEmoji()
-
                     CountryTO(
                         locale.displayCountry,
                         country.code,
                         flag,
-                        country.isBlocked
-                    )
-
+                        country.isBlocked)
                 }.toList() as ArrayList<CountryTO>
 
                 val action =

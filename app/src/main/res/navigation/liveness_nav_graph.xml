@@ -24,6 +24,12 @@
         <action
             android:id="@+id/action_dummyLivenessStartDestFragment_to_wrongMoveFragment"
             app:destination="@id/wrongMoveFragment" />
+        <action
+            android:id="@+id/action_dummyLivenessStartDestFragment_to_tooDarkFragment"
+            app:destination="@id/tooDarkFragment" />
+        <action
+            android:id="@+id/action_dummyLivenessStartDestFragment_to_tooFastMovementsFragment"
+            app:destination="@id/tooFastMovementsFragment" />
     </fragment>
 
     <fragment
@@ -94,5 +100,15 @@
         android:name="com.vcheck.demo.dev.presentation.liveness.ui.failures.FailVideoUploadFragment"
         android:label="FailVideoUploadFragment"
         tools:layout="@layout/fragment_fail_video_upload"/>
+    <fragment
+        android:id="@+id/tooDarkFragment"
+        android:name="com.vcheck.demo.dev.presentation.liveness.ui.failures.TooDarkFragment"
+        android:label="too_dark_fragment"
+        tools:layout="@layout/too_dark_fragment" />
+    <fragment
+        android:id="@+id/tooFastMovementsFragment"
+        android:name="com.vcheck.demo.dev.presentation.liveness.ui.failures.TooFastMovementsFragment"
+        android:label="too_fast_movements_fragment"
+        tools:layout="@layout/too_fast_movements_fragment" />
 
 </navigation>

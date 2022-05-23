@@ -133,4 +133,20 @@ class MainRepository(
     fun resetCacheOnStartup(ctx: Context) {
         localDatasource.resetCacheOnStartup(ctx)
     }
+
+    fun storeMaxLivenessLocalAttempts(ctx: Context, attempts: Int) {
+        localDatasource.storeMaxLivenessLocalAttempts(ctx, attempts)
+    }
+
+    fun getMaxLivenessLocalAttempts(ctx: Context): Int {
+        return localDatasource.getMaxLivenessLocalAttempts(ctx)
+    }
+
+    fun incrementActualLivenessLocalAttempts(ctx: Context) {
+        localDatasource.incrementActualLivenessLocalAttempts(ctx)
+    }
+
+    fun getActualLivenessLocalAttempts(ctx: Context): Int {
+        return localDatasource.getActualLivenessLocalAttempts(ctx)
+    }
 }

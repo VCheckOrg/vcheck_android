@@ -1,14 +1,21 @@
 package com.vcheck.demo.dev.util
 
+import android.app.ActivityManager
 import android.content.Context
+import android.content.Context.ACTIVITY_SERVICE
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.util.Log
 import androidx.core.content.ContextCompat.getSystemService
+import com.vcheck.demo.dev.presentation.liveness.LivenessActivity
 import java.io.File
 import java.security.MessageDigest
+import java.util.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
+import kotlin.math.max
+
 
 fun generateSHA256Hash(strToHash: String): String {
 
@@ -86,3 +93,52 @@ fun isValidDocRelatedDate(date: String): Boolean {
 }
 
 
+fun getCPUCoreNum(): Int {
+    try {
+        val pattern = Pattern.compile("cpu[0-9]+")
+        val cpuNum = max(
+            File("/sys/devices/system/cpu/")
+                .walk()
+                .maxDepth(1)
+                .count { pattern.matcher(it.name).matches() },
+            Runtime.getRuntime().availableProcessors())
+        Log.d("PERFORMANCE", "================ CPU NUM: $cpuNum")
+        return cpuNum
+    } catch (e: Exception) {
+        Log.d("PERFORMANCE", "================ CAUGHT EXCEPTION WHILE REQUESTING CPU NUM! RETURNING 1")
+        return 3
+    }
+}
+
+fun LivenessActivity.getAvailableDeviceRAM(): Long {
+    val mi = ActivityManager.MemoryInfo()
+    val activityManager = getSystemService(ACTIVITY_SERVICE) as ActivityManager?
+    activityManager!!.getMemoryInfo(mi)
+    val memInMB = mi.totalMem / (1024 * 1024)
+    Log.d("PERFORMANCE", "================ MEM IN MB : ${bytesToHuman(mi.totalMem)}")
+    return memInMB
+}
+
+fun LivenessActivity.shouldDecreaseVideoStreamQuality(): Boolean {
+    return (getCPUCoreNum() < 3 || getAvailableDeviceRAM() < 1000)
+}
+
+private fun floatForm(d: Double): String {
+    return String.format(Locale.US, "%.2f", d)
+}
+
+private fun bytesToHuman(size: Long): String {
+    val Kb: Long = 1024
+    val Mb = Kb * 1024
+    val Gb = Mb * 1024
+    val Tb = Gb * 1024
+    val Pb = Tb * 1024
+    val Eb = Pb * 1024
+    if (size < Kb) return floatForm(size.toDouble()) + " byte"
+    if (size in Kb until Mb) return floatForm(size.toDouble() / Kb) + " KB"
+    if (size in Mb until Gb) return floatForm(size.toDouble() / Mb) + " MB"
+    if (size in Gb until Tb) return floatForm(size.toDouble() / Gb) + " GB"
+    if (size in Tb until Pb) return floatForm(size.toDouble() / Tb) + " TB"
+    if (size in Pb until Eb) return floatForm(size.toDouble() / Pb) + " Pb"
+    return if (size >= Eb) floatForm(size.toDouble() / Eb) + " Eb" else "0"
+}

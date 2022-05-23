@@ -244,7 +244,7 @@ class CameraConnectionFragment() : Fragment() {
 //                inputSize.width,
 //                inputSize.height)
 
-            previewSize = Size(960, 720)
+            previewSize = activity.streamSize
 
             Log.d("mux", "------------ SIZE: width ${previewSize!!.width} | height: ${previewSize!!.height}")
 
@@ -258,8 +258,7 @@ class CameraConnectionFragment() : Fragment() {
         } catch (e: CameraAccessException) {
             //  LOGGER.e(e, "Exception!");
         } catch (e: NullPointerException) {
-            // Currently an NPE is thrown when the Camera2API is used but not supported on the
-            // device this code runs.
+            // Currently an NPE is thrown when the Camera2API is used but not supported on the device this code runs.
             ErrorDialog.newInstance("getString(R.string.tfe_ic_camera_error)")
                 .show(childFragmentManager, FRAGMENT_DIALOG)
             throw IllegalStateException("getString(R.string.tfe_ic_camera_error)")
