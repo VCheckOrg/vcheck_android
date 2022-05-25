@@ -49,6 +49,10 @@
         <action
             android:id="@+id/action_inProcessFragment_to_successFragment"
             app:destination="@id/successFragment" />
+        <argument
+            android:name="retry"
+            app:argType="boolean"
+            android:defaultValue="false" />
     </fragment>
 
     <fragment
@@ -99,7 +103,11 @@
         android:id="@+id/failVideoUploadFragment"
         android:name="com.vcheck.demo.dev.presentation.liveness.ui.failures.FailVideoUploadFragment"
         android:label="FailVideoUploadFragment"
-        tools:layout="@layout/fragment_fail_video_upload"/>
+        tools:layout="@layout/fragment_fail_video_upload">
+        <action
+            android:id="@+id/action_failVideoUploadFragment_to_inProcessFragment2"
+            app:destination="@id/inProcessFragment" />
+    </fragment>
     <fragment
         android:id="@+id/tooDarkFragment"
         android:name="com.vcheck.demo.dev.presentation.liveness.ui.failures.TooDarkFragment"

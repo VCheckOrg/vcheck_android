@@ -132,9 +132,6 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
             if (docField.name == "date_of_birth") {
                 data.dateOfBirth = docField.autoParsedValue
             }
-            if (docField.name == "date_of_expiry") {
-                data.dateOfExpiry = docField.autoParsedValue
-            }
             if (docField.name == "name") {
                 data.name = docField.autoParsedValue
             }
@@ -143,12 +140,6 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
             }
             if (docField.name == "number") {
                 data.number = docField.autoParsedValue
-            }
-            if (docField.name == "og_name") {
-                data.ogName = docField.autoParsedValue
-            }
-            if (docField.name == "og_surname") {
-                data.ogSurname = docField.autoParsedValue
             }
         }
         return data
@@ -163,9 +154,6 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
             if (docField.name == "date_of_birth" && parsedDocFieldsData.dateOfBirth != null) {
                 optParsedData = parsedDocFieldsData.dateOfBirth!!
             }
-            if (docField.name == "date_of_expiry" && parsedDocFieldsData.dateOfExpiry != null) {
-                optParsedData = parsedDocFieldsData.dateOfExpiry!!
-            }
             if (docField.name == "name" && parsedDocFieldsData.name != null) {
                 optParsedData = parsedDocFieldsData.name!!
             }
@@ -175,15 +163,21 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
             if (docField.name == "number" && parsedDocFieldsData.number != null) {
                 optParsedData = parsedDocFieldsData.number!!
             }
-            if (docField.name == "og_name" && parsedDocFieldsData.ogName != null) {
-                optParsedData = parsedDocFieldsData.ogName!!
-            }
-            if (docField.name == "og_surname" && parsedDocFieldsData.ogSurname != null) {
-                optParsedData = parsedDocFieldsData.ogSurname!!
-            }
             return DocFieldWitOptPreFilledData(
                 docField.name, docField.title, docField.type, docField.regex, optParsedData
             )
         }
     }
 }
+
+// Deprecated fields / checks:
+
+//            if (docField.name == "date_of_expiry" && parsedDocFieldsData.dateOfExpiry != null) {
+//                optParsedData = parsedDocFieldsData.dateOfExpiry!!
+//            }
+//            if (docField.name == "og_name" && parsedDocFieldsData.ogName != null) {
+//                optParsedData = parsedDocFieldsData.ogName!!
+//            }
+//            if (docField.name == "og_surname" && parsedDocFieldsData.ogSurname != null) {
+//                optParsedData = parsedDocFieldsData.ogSurname!!
+//            }

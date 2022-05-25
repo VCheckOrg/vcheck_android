@@ -220,6 +220,12 @@ class CameraConnectionFragment() : Fragment() {
         super.onPause()
     }
 
+//    override fun onDestroy() {
+//        closeCamera()
+//        stopBackgroundThread()
+//        super.onDestroy()
+//    }
+
     fun setCamera(cameraId: String?) {
         this.cameraId = cameraId
     }
@@ -232,9 +238,10 @@ class CameraConnectionFragment() : Fragment() {
             activity.getSystemService(Context.CAMERA_SERVICE) as CameraManager
         try {
             val characteristics = manager.getCameraCharacteristics(cameraId!!)
-            val map =
-                characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
             sensorOrientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION)
+
+//            val map =
+//                characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
 
             // Danger, W.R.! Attempting to use too large a preview size could  exceed the camera
             // bus' bandwidth limitation, resulting in gorgeous previews but the storage of

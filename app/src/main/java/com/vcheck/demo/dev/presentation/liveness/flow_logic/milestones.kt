@@ -14,11 +14,12 @@ enum class GestureMilestoneType {
 
 enum class ObstacleType {
     YAW_ANGLE,
-    WRONG_GESTURE,
     MULTIPLE_FACES_DETECTED,
-    NO_STRAIGHT_FACE_DETECTED,
-    BRIGHTNESS_LEVEL_IS_LOW,
-    MOTIONS_ARE_TOO_SHARP
+    NO_OR_PARTIAL_FACE_DETECTED,
+    BRIGHTNESS_LEVEL_IS_LOW
+    //PARTIAL_FACE_DETECTED,
+    //WRONG_GESTURE, //deprecated for now
+    //MOTIONS_ARE_TOO_SHARP //deprecated for now
 }
 
 const val YAW_PASS_ANGLE_ABS = 20.0
@@ -145,47 +146,12 @@ class StandardMilestoneFlow(private val milestoneResultListener: MilestoneResult
                 if (stagesList[currentStageIdx].isMet(pitchAngle, mouthFactor, yawAbsAngle)) {
                     milestoneResultListener.onMilestoneResult(stagesList[currentStageIdx].milestoneType)
                     currentStageIdx += 1
-                } else {
-                    stagesList.forEachIndexed { idx, stage ->
-                        if (idx != 0 && idx != currentStageIdx
-                            && stage.isMet(pitchAngle, mouthFactor, yawAbsAngle)) {
-                            milestoneResultListener.onObstacleMet(ObstacleType.WRONG_GESTURE)
-                        }
-                    }
                 }
             }
         } catch (e: IndexOutOfBoundsException) {
             Log.d("Liveness", "MILESTONES ERROR: IndexOutOfBoundsException for stages list!")
         }
     }
-
-//    func hasExtensivePitchDiff(pitchAngle: Float) -> Bool {
-//        if ((pitchAngle < 0 && recentFramePitchAngle < 0) || (pitchAngle > 0 && recentFramePitchAngle > 0)) {
-////            let diff = abs(abs(pitchAngle) - abs(recentFramePitchAngle))
-////            print("PITCH DIFF: \(diff)")
-//            return abs(abs(pitchAngle) - abs(recentFramePitchAngle)) > MilestoneConstraints.NEXT_FRAME_MAX_PITCH_DIFF
-//        } else if (pitchAngle != 0.0 && recentFrameYawAngle != 0.0) {
-////            let diff = (abs(pitchAngle) + abs(recentFramePitchAngle))
-////            print("PITCH DIFF: \(diff)")
-//            return (abs(pitchAngle) + abs(recentFramePitchAngle)) > MilestoneConstraints.NEXT_FRAME_MAX_PITCH_DIFF
-//        } else {
-//            return false
-//        }
-//    }
-//
-//    func hasExtensiveYawDiff(yawAngle: Float) -> Bool {
-//        if ((yawAngle < 0 && recentFrameYawAngle < 0) || (yawAngle > 0 && recentFrameYawAngle > 0)) {
-////            let diff = abs(abs(yawAngle) - abs(recentFrameYawAngle))
-////            print("YAW DIFF: \(diff)")
-//            return abs(abs(yawAngle) - abs(recentFrameYawAngle)) > MilestoneConstraints.NEXT_FRAME_MAX_PITCH_DIFF
-//        } else if (yawAngle != 0.0 && recentFrameYawAngle != 0.0) {
-////            let diff = (abs(yawAngle) + abs(recentFrameYawAngle))
-////            print("YAW DIFF: \(diff)")
-//            return (abs(yawAngle) + abs(recentFrameYawAngle)) > MilestoneConstraints.NEXT_FRAME_MAX_YAW_DIFF
-//        } else {
-//            return false
-//        }
-//    }
 }
 
 interface MilestoneResultListener {

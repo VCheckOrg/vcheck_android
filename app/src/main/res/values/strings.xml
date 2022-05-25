@@ -145,4 +145,5 @@
     <string name="too_dark_description">The test cannot be performed because it is too dark. Try again with good lighting.</string>
     <string name="date_of_birth_validation_error">Please enter a valid date of birth</string>
     <string name="date_of_expiry_validation_error">Please enter a valid document expiration date</string>
+    <string name="retry">Retry</string>
 </resources>

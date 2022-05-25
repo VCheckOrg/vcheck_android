@@ -59,9 +59,9 @@ class LivenessActivity : AppCompatActivity(),
         private const val LIVENESS_TIME_LIMIT_MILLIS = 14000 //max is 15000
         private const val BLOCK_PIPELINE_TIME_MILLIS: Long = 1400 //may reduce a bit
         private const val STAGE_VIBRATION_DURATION_MILLIS: Long = 100
-        private const val MAX_FRAMES_W_O_FATAL_OBSTACLES = 12
+        private const val MAX_FRAMES_W_O_MAJOR_OBSTACLES = 12
         private const val MIN_FRAMES_FOR_MINOR_OBSTACLES = 4
-        private const val MIN_AFFORDABLE_BRIGHTNESS_VALUE = 60
+        private const val MIN_AFFORDABLE_BRIGHTNESS_VALUE = 50
     }
 
     private var binding: ActivityLivenessBinding? = null
@@ -81,10 +81,18 @@ class LivenessActivity : AppCompatActivity(),
 
     private var multiFaceFrameCounter: Int = 0
     private var noFaceFrameCounter: Int = 0
+    private var lowBrightnessFrameCounter: Int = 0
     private var minorObstacleFrameCounter: Int = 0
 
     private var sensorManager: SensorManager? = null
     private var lightSensor: Sensor? = null
+    private val brightnessListener = object : SensorEventListener {
+        override fun onSensorChanged(event: SensorEvent) {
+            val lightQuantity = event.values[0]
+            onBrightnessChanged(lightQuantity)
+        }
+        override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {} //Stub
+    }
 
     private var milestoneFlow: StandardMilestoneFlow =
         StandardMilestoneFlow(this@LivenessActivity)
@@ -156,9 +164,7 @@ class LivenessActivity : AppCompatActivity(),
             } else {
                 if (!isLivenessSessionFinished && !blockProcessingByUI) {
                     runOnUiThread {
-                        livenessSessionLimitCheckTime = SystemClock.elapsedRealtime()
-                        binding!!.livenessCosmeticsHolder.isVisible = false
-                        safeNavigateToResultDestination(R.id.action_dummyLivenessStartDestFragment_to_noTimeFragment)
+                        onFatalObstacleWorthRetry(R.id.action_dummyLivenessStartDestFragment_to_noTimeFragment)
                     }
                 }
             }
@@ -177,20 +183,15 @@ class LivenessActivity : AppCompatActivity(),
                         minorObstacleFrameCounter = 0
                     }
                 }
-                ObstacleType.WRONG_GESTURE -> {
-                    onFatalObstacleWorthRetry(R.id.action_dummyLivenessStartDestFragment_to_wrongMoveFragment)
-                }
                 ObstacleType.MULTIPLE_FACES_DETECTED -> {
                     onFatalObstacleWorthRetry(R.id.action_dummyLivenessStartDestFragment_to_frameInterferenceFragment)
                 }
-                ObstacleType.NO_STRAIGHT_FACE_DETECTED -> {
+                ObstacleType.NO_OR_PARTIAL_FACE_DETECTED -> {
                     onFatalObstacleWorthRetry(R.id.action_dummyLivenessStartDestFragment_to_lookStraightErrorFragment)
                 }
                 ObstacleType.BRIGHTNESS_LEVEL_IS_LOW -> {
+                    sensorManager?.unregisterListener(brightnessListener)
                     onFatalObstacleWorthRetry(R.id.action_dummyLivenessStartDestFragment_to_tooDarkFragment)
-                }
-                ObstacleType.MOTIONS_ARE_TOO_SHARP -> {
-                    //TODO: discuss w/Vadim
                 }
             }
         }
@@ -228,13 +229,16 @@ class LivenessActivity : AppCompatActivity(),
             //Log.d(TAG, "======== FACES: ${faceMeshResult.multiFaceLandmarks().size}")
             if (faceMeshResult.multiFaceLandmarks().size >= 2) {
                 multiFaceFrameCounter += 1
-                if (multiFaceFrameCounter >= MAX_FRAMES_W_O_FATAL_OBSTACLES) {
+                if (multiFaceFrameCounter >= MAX_FRAMES_W_O_MAJOR_OBSTACLES) {
+                    multiFaceFrameCounter = 0
                     onObstacleMet(ObstacleType.MULTIPLE_FACES_DETECTED)
                 }
             } else if (faceMeshResult.multiFaceLandmarks().isEmpty()) {
                 noFaceFrameCounter += 1
-                if (noFaceFrameCounter >= MAX_FRAMES_W_O_FATAL_OBSTACLES) {
-                    onObstacleMet(ObstacleType.NO_STRAIGHT_FACE_DETECTED)
+                Log.d("LIVENESS", "-------- ___NO___ FACE DETECTED - FRAME COUNT: $noFaceFrameCounter")
+                if (noFaceFrameCounter >= MAX_FRAMES_W_O_MAJOR_OBSTACLES) {
+                    noFaceFrameCounter = 0
+                    onObstacleMet(ObstacleType.NO_OR_PARTIAL_FACE_DETECTED)
                 }
             } else {
                 noFaceFrameCounter = 0
@@ -245,7 +249,6 @@ class LivenessActivity : AppCompatActivity(),
                     val pitchAngle = faceAnglesCalcResultArr[0]
                     val yawAngleAbs = kotlin.math.abs(faceAnglesCalcResultArr[1])
                     val mouthAspectRatio = LandmarksProcessingUtil.landmarksToMouthAspectRatio(convertResult)
-
                     //Log.d(TAG, "========= MOUTH ASPECT RATIO: $mouthAspectRatio | PITCH: $pitchAngle | YAW(abs) : $yawAngleAbs")
                     milestoneFlow.checkCurrentStage(pitchAngle, mouthAspectRatio, yawAngleAbs)
                 }
@@ -277,7 +280,7 @@ class LivenessActivity : AppCompatActivity(),
             val arr = mk.ndarray(doubleArrayOf(
                 landmark.x.toDouble(),
                 landmark.y.toDouble(),
-                (1 - landmark.z).toDouble()))  //was Float typing!
+                (1 - landmark.z).toDouble()))
             try {
                 if (!arr.isEmpty()) {
                     twoDimArray[idx] = arr
@@ -372,21 +375,20 @@ class LivenessActivity : AppCompatActivity(),
     private fun setupBrightnessLevelListener() {
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         lightSensor = (sensorManager as SensorManager).getDefaultSensor(Sensor.TYPE_LIGHT)
+        sensorManager?.registerListener(
+            brightnessListener, lightSensor, SensorManager.SENSOR_DELAY_UI);
+    }
 
-        val listener = object : SensorEventListener {
-            override fun onSensorChanged(event: SensorEvent) {
-                val lightQuantity = event.values[0]
-                //Log.d("PERFORMANCE", "-------- BRIGHTNESS: $lightQuantity")
-                if (lightQuantity < MIN_AFFORDABLE_BRIGHTNESS_VALUE) {
-                    onObstacleMet(ObstacleType.BRIGHTNESS_LEVEL_IS_LOW)
-                }
-            }
-            override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
-                //Stub?
+    private fun onBrightnessChanged(lightQuantity: Float) {
+        //Log.d("LIVENESS", "-------- BRIGHTNESS: $lightQuantity")
+        if (lightQuantity < MIN_AFFORDABLE_BRIGHTNESS_VALUE) {
+            lowBrightnessFrameCounter += 1
+            //Log.d("LIVENESS", "-------- LOW BRIGHTNESS - FRAME COUNT: $lowBrightnessFrameCounter")
+            if (lowBrightnessFrameCounter >= MAX_FRAMES_W_O_MAJOR_OBSTACLES) {
+                lowBrightnessFrameCounter = 0
+                onObstacleMet(ObstacleType.BRIGHTNESS_LEVEL_IS_LOW)
             }
         }
-        sensorManager!!.registerListener(
-            listener, lightSensor, SensorManager.SENSOR_DELAY_UI);
     }
 
     @Throws(IOException::class)
@@ -479,6 +481,8 @@ class LivenessActivity : AppCompatActivity(),
             findNavController(R.id.liveness_host_fragment).navigate(actionIdForNav)
         } catch (e: IllegalArgumentException) {
             Log.d(TAG, "Attempt of nav to major obstacle was made, but was already on another fragment")
+        } catch (e: IllegalStateException) {
+            Log.d(TAG, "Caught exception: Liveness Activity does not have a NavController set!")
         }
     }
 
@@ -505,9 +509,10 @@ class LivenessActivity : AppCompatActivity(),
     private fun onFatalObstacleWorthRetry(actionIdForNav: Int) {
         val actualAttemptsNum = (application as VcheckDemoApp).appContainer.mainRepository
             .getActualLivenessLocalAttempts(this@LivenessActivity)
+        Log.d("LIVENESS", "========== ACTUAL ATTEMPTS NUM : $actualAttemptsNum")
         val maxAttemptsNum = (application as VcheckDemoApp).appContainer.mainRepository
             .getMaxLivenessLocalAttempts(this@LivenessActivity)
-        if (actualAttemptsNum < maxAttemptsNum) {
+        if (actualAttemptsNum < maxAttemptsNum && !isLivenessSessionFinished) {
             (application as VcheckDemoApp).appContainer.mainRepository
                 .incrementActualLivenessLocalAttempts(this@LivenessActivity)
             vibrateDevice(this@LivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
@@ -541,7 +546,10 @@ class LivenessActivity : AppCompatActivity(),
 
     override fun onDestroy() {
         super.onDestroy()
-        //TODO
+
+        sensorManager = null
+        lightSensor = null
+        facemesh?.close()
     }
 
     //            Log.i(TAG, "--------------- IDX: $idx")
@@ -571,4 +579,25 @@ class LivenessActivity : AppCompatActivity(),
     //            null, null)
     //        binding!!.arrowAnimationView.isVisible = false
     //    }
+
+//    private fun isFacePartiallyVisible(faceMeshResult: FaceMeshResult): Boolean {
+//        //1, 17, 159, 386
+//        //TODO test!
+//        Log.d("LIVENESS", "LEFT EYE VIS: x - ${result.multiFaceLandmarks()[0].landmarkList[52].hasX()}" +
+//                " y - ${result.multiFaceLandmarks()[0].landmarkList[52].hasY()}" +
+//                " z - ${result.multiFaceLandmarks()[0].landmarkList[52].hasZ()}")
+//        Log.d("LIVENESS", "RIGHT EYE VIS: x - ${result.multiFaceLandmarks()[0].landmarkList[282].hasX()}" +
+//                " y - ${result.multiFaceLandmarks()[0].landmarkList[282].hasY()}" +
+//                " z - ${result.multiFaceLandmarks()[0].landmarkList[282].hasZ()}")
+//        Log.d("LIVENESS", "MOUTH VIS: x - ${result.multiFaceLandmarks()[0].landmarkList[17].hasX()}" +
+//                " y - ${result.multiFaceLandmarks()[0].landmarkList[17].hasY()}" +
+//                " z - ${result.multiFaceLandmarks()[0].landmarkList[17].hasZ()}")
+//        Log.d("LIVENESS", "LEFT EYE VIS: ${faceMeshResult.multiFaceLandmarks()[0].landmarkList[52].visibility}")
+//        Log.d("LIVENESS", "RIGHT EYE VIS: ${faceMeshResult.multiFaceLandmarks()[0].landmarkList[282].visibility}")
+//        Log.d("LIVENESS", "MOUTH VIS: ${faceMeshResult.multiFaceLandmarks()[0].landmarkList[17].visibility}")
+//        return !faceMeshResult.multiFaceLandmarks()[0].landmarkList[52].isInitialized
+//                || !faceMeshResult.multiFaceLandmarks()[0].landmarkList[282].isInitialized
+//                || !faceMeshResult.multiFaceLandmarks()[0].landmarkList[17].isInitialized
+//    }
+
 }

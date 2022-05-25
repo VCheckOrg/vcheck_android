@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VcheckDemoApp
 import com.vcheck.demo.dev.databinding.InProcessFragmentBinding
@@ -20,12 +21,15 @@ import java.io.File
 
 class InProcessFragment : Fragment(R.layout.in_process_fragment), VideoProcessingListener {
 
+    private val args: InProcessFragmentArgs by navArgs()
+
     private var _binding: InProcessFragmentBinding? = null
 
     private lateinit var _viewModel: InProcessViewModel
 
     //counting video upload chained api responses; 1st one is ping; we need 2nd to claim result
     private var lazyUploadResponseCounter = 0
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,9 +45,12 @@ class InProcessFragment : Fragment(R.layout.in_process_fragment), VideoProcessin
 
         _binding!!.uploadVideoLoadingIndicator.isVisible = true
 
-        (activity as LivenessActivity).finishLivenessSession()
-
-        (activity as LivenessActivity).processVideoOnResult(this@InProcessFragment)
+        if (args.retry) {
+            onVideoProcessed((activity as LivenessActivity).videoPath!!)
+        } else {
+            (activity as LivenessActivity).finishLivenessSession()
+            (activity as LivenessActivity).processVideoOnResult(this@InProcessFragment)
+        }
 
         val token = ((activity as LivenessActivity).application as VcheckDemoApp)
             .appContainer.mainRepository.getVerifToken(activity as LivenessActivity)
