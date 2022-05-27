@@ -11,6 +11,8 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.squareup.picasso.MemoryPolicy
+import com.squareup.picasso.Picasso
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VcheckDemoApp
 import com.vcheck.demo.dev.data.Resource
@@ -24,6 +26,7 @@ import okhttp3.MultipartBody
 import okhttp3.MultipartBody.Part.Companion.createFormData
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
+import java.lang.Exception
 
 
 class CheckPhotoFragment : Fragment() {
@@ -63,15 +66,21 @@ class CheckPhotoFragment : Fragment() {
 
             photoCard2.isVisible = false
 
-            val docImage1File = BitmapFactory.decodeFile(args.checkPhotoDataTO.photo1Path)
-            passportImage1.setImageBitmap(docImage1File)
+            try {
+                val docPhoto1File = File(args.checkPhotoDataTO.photo1Path)
+                Picasso.get().load(docPhoto1File).fit().centerInside().into(passportImage1)
 
-            if (args.checkPhotoDataTO.photo2Path != null) {
-                photoCard2.isVisible = true
-                val docImage2File = BitmapFactory.decodeFile(args.checkPhotoDataTO.photo2Path)
-                passportImage2.setImageBitmap(docImage2File)
-            } else {
-                photoCard2.isVisible = false
+                if (args.checkPhotoDataTO.photo2Path != null) {
+                    photoCard2.isVisible = true
+                    val docPhoto2File = File(args.checkPhotoDataTO.photo2Path!!)
+                    Picasso.get().load(docPhoto2File).fit().centerInside().into(passportImage2)
+                } else {
+                    photoCard2.isVisible = false
+                }
+            } catch (e: Error) {
+                Toast.makeText(requireActivity(), e.localizedMessage, Toast.LENGTH_LONG).show()
+            } catch (e: Exception) {
+                Toast.makeText(requireActivity(), e.localizedMessage, Toast.LENGTH_LONG).show()
             }
 
             zoomIcon1.setOnClickListener {

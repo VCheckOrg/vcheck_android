@@ -15,9 +15,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.FileProvider
+import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.squareup.picasso.MemoryPolicy
+import com.squareup.picasso.Picasso
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VcheckDemoApp
 import com.vcheck.demo.dev.databinding.PhotoUploadFragmentBinding
@@ -150,62 +153,68 @@ class PhotoUploadFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
-        if (resultCode == Activity.RESULT_OK) {
+        try {
+            if (resultCode == Activity.RESULT_OK) {
 
-            var docPhotoBitmap: Bitmap? = null
+                var docPhotoFile: File? = null
 
-            _binding!!.apply {
-                if (requestCode == 1) {
-                    Log.i("PHOTO", "---------------- REQUEST CODE 1")
-                    imgPhoto1.isVisible = true
-                    verifMethodTitle1.isVisible = false
-                    verifMethodIcon1.isVisible = false
-                    makePhotoButton1.isVisible = false
+                _binding!!.apply {
+                    if (requestCode == 1) {
+                        Log.i("PHOTO", "---------------- REQUEST CODE 1 | PHOTO 1 PATH: $_photo1Path")
+                        imgPhoto1.isVisible = true
+                        verifMethodTitle1.isVisible = false
+                        verifMethodIcon1.isVisible = false
+                        makePhotoButton1.isVisible = false
 
-                    docPhotoBitmap = BitmapFactory.decodeFile(_photo1Path!!)
-                    imgPhoto1.setImageBitmap(docPhotoBitmap)
-                    deletePhotoButton1.isVisible = true
-                    deletePhotoButton1.setOnClickListener {
-                        imgPhoto1.isVisible = false
-                        _photo1Path = null
-                        deletePhotoButton1.isVisible = false
-                        verifMethodTitle1.isVisible = true
-                        verifMethodIcon1.isVisible = true
-                        makePhotoButton1.isVisible = true
-                        photoUploadContinueButton.setBackgroundResource(R.drawable.shape_for_inactive_button)
-                        photoUploadContinueButton.setOnClickListener {}
+                        docPhotoFile = File(_photo1Path!!)
+                        Picasso.get().load(docPhotoFile!!).memoryPolicy(MemoryPolicy.NO_CACHE)
+                            .fit().centerInside().into(imgPhoto1)
+                        deletePhotoButton1.isVisible = true
+                        deletePhotoButton1.setOnClickListener {
+                            imgPhoto1.isVisible = false
+                            _photo1Path = null
+                            deletePhotoButton1.isVisible = false
+                            verifMethodTitle1.isVisible = true
+                            verifMethodIcon1.isVisible = true
+                            makePhotoButton1.isVisible = true
+                            photoUploadContinueButton.setBackgroundResource(R.drawable.shape_for_inactive_button)
+                            photoUploadContinueButton.setOnClickListener {}
+                        }
                     }
-                }
-                if (requestCode == 2) {
-                    Log.i("PHOTO", "---------------- REQUEST CODE 2")
-                    imgPhoto2.isVisible = true
-                    verifMethodTitle2.isVisible = false
-                    verifMethodIcon2.isVisible = false
-                    makePhotoButton2.isVisible = false
+                    if (requestCode == 2) {
+                        Log.i("PHOTO", "---------------- REQUEST CODE 2 | PHOTO 2 PATH: $_photo2Path")
+                        imgPhoto2.isVisible = true
+                        verifMethodTitle2.isVisible = false
+                        verifMethodIcon2.isVisible = false
+                        makePhotoButton2.isVisible = false
 
-                    docPhotoBitmap = BitmapFactory.decodeFile(_photo2Path!!)
-                    imgPhoto2.setImageBitmap(docPhotoBitmap)
-                    deletePhotoButton2.isVisible = true
-                    deletePhotoButton2.setOnClickListener {
-                        imgPhoto2.isVisible = false
-                        _photo2Path = null
-                        deletePhotoButton2.isVisible = false
-                        verifMethodTitle2.isVisible = true
-                        verifMethodIcon2.isVisible = true
-                        makePhotoButton2.isVisible = true
-                        photoUploadContinueButton.setBackgroundResource(R.drawable.shape_for_inactive_button)
-                        photoUploadContinueButton.setOnClickListener {}
+                        docPhotoFile = File(_photo2Path!!)
+                        Picasso.get().load(docPhotoFile!!).memoryPolicy(MemoryPolicy.NO_CACHE)
+                            .fit().centerInside().into(imgPhoto2)
+                        deletePhotoButton2.isVisible = true
+                        deletePhotoButton2.setOnClickListener {
+                            imgPhoto2.isVisible = false
+                            _photo2Path = null
+                            deletePhotoButton2.isVisible = false
+                            verifMethodTitle2.isVisible = true
+                            verifMethodIcon2.isVisible = true
+                            makePhotoButton2.isVisible = true
+                            photoUploadContinueButton.setBackgroundResource(R.drawable.shape_for_inactive_button)
+                            photoUploadContinueButton.setOnClickListener {}
+                        }
+                    } else {
+                        //Stub
                     }
-                } else {
-                    //Stub
-                }
 
-                if (docPhotoBitmap != null) {
-                    checkPhotoCompletenessAndSetProceedClickListener()
-                } else {
-                    Log.i("PHOTO", "BITMAP FILE IS NULL!")
+                    if (docPhotoFile != null) {
+                        checkPhotoCompletenessAndSetProceedClickListener()
+                    } else {
+                        Log.i("PHOTO", "BITMAP FILE IS NULL!")
+                    }
                 }
             }
+        } catch (e: Exception) {
+            Toast.makeText(requireActivity(), e.localizedMessage, Toast.LENGTH_LONG).show()
         }
     }
 

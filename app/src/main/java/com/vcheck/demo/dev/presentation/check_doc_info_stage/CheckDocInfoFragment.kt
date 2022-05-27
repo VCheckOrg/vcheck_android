@@ -10,6 +10,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.squareup.picasso.Picasso
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VcheckDemoApp
 import com.vcheck.demo.dev.databinding.CheckDocInfoFragmentBinding
@@ -17,6 +18,7 @@ import com.vcheck.demo.dev.domain.*
 import com.vcheck.demo.dev.presentation.MainActivity
 import com.vcheck.demo.dev.presentation.adapters.CheckDocInfoAdapter
 import com.vcheck.demo.dev.presentation.adapters.DocInfoEditCallback
+import java.io.File
 
 class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfoEditCallback {
 
@@ -47,13 +49,13 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
         binding.apply {
             photoCard2.isVisible = false
 
-            val docImage1File = BitmapFactory.decodeFile(args.checkDocInfoDataTO.photo1Path)
-            passportImage1.setImageBitmap(docImage1File)
+            val docPhoto1File = File(args.checkDocInfoDataTO.photo1Path)
+            Picasso.get().load(docPhoto1File).fit().centerInside().into(passportImage1)
 
             if (args.checkDocInfoDataTO.photo2Path != null) {
                 photoCard2.isVisible = true
-                val docImage2File = BitmapFactory.decodeFile(args.checkDocInfoDataTO.photo2Path)
-                passportImage2.setImageBitmap(docImage2File)
+                val docPhoto2File = File(args.checkDocInfoDataTO.photo2Path!!)
+                Picasso.get().load(docPhoto2File).fit().centerInside().into(passportImage2)
             } else {
                 photoCard2.isVisible = false
             }

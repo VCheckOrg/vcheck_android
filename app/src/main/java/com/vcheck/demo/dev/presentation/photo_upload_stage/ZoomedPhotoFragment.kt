@@ -1,13 +1,15 @@
 package com.vcheck.demo.dev.presentation.photo_upload_stage
 
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.squareup.picasso.MemoryPolicy
+import com.squareup.picasso.Picasso
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.databinding.ZoomedPhotoFragmentBinding
+import java.io.File
 
 class ZoomedPhotoFragment : Fragment(R.layout.zoomed_photo_fragment) {
 
@@ -24,13 +26,14 @@ class ZoomedPhotoFragment : Fragment(R.layout.zoomed_photo_fragment) {
         }
 
         if (args.zoomPhotoTO.photo2Path == null) {
-            val docImage1File = BitmapFactory.decodeFile(args.zoomPhotoTO.photo1Path)
-            _binding.zoomedPhoto.setImageBitmap(docImage1File)
+            val docPhotoFile = File(args.zoomPhotoTO.photo1Path!!)
+            Picasso.get().load(docPhotoFile).memoryPolicy(MemoryPolicy.NO_CACHE)
+                .fit().centerInside().into(_binding.zoomedPhoto)
         } else {
-            val docImage2File = BitmapFactory.decodeFile(args.zoomPhotoTO.photo2Path)
-            _binding.zoomedPhoto.setImageBitmap(docImage2File)
+            val docPhotoFile = File(args.zoomPhotoTO.photo2Path!!)
+            Picasso.get().load(docPhotoFile).memoryPolicy(MemoryPolicy.NO_CACHE)
+                .fit().centerInside().into(_binding.zoomedPhoto)
         }
-
     }
 
 }

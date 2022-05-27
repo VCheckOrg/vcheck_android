@@ -15,6 +15,7 @@ import android.util.Log
 import android.util.Size
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -61,7 +62,7 @@ class LivenessActivity : AppCompatActivity(),
         private const val STAGE_VIBRATION_DURATION_MILLIS: Long = 100
         private const val MAX_FRAMES_W_O_MAJOR_OBSTACLES = 12
         private const val MIN_FRAMES_FOR_MINOR_OBSTACLES = 4
-        private const val MIN_AFFORDABLE_BRIGHTNESS_VALUE = 50
+        private const val MIN_AFFORDABLE_BRIGHTNESS_VALUE = 50.0 // on some old devices, values are really low!
     }
 
     private var binding: ActivityLivenessBinding? = null
@@ -376,12 +377,12 @@ class LivenessActivity : AppCompatActivity(),
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         lightSensor = (sensorManager as SensorManager).getDefaultSensor(Sensor.TYPE_LIGHT)
         sensorManager?.registerListener(
-            brightnessListener, lightSensor, SensorManager.SENSOR_DELAY_UI);
+            brightnessListener, lightSensor, SensorManager.SENSOR_DELAY_UI)
     }
 
     private fun onBrightnessChanged(lightQuantity: Float) {
-        //Log.d("LIVENESS", "-------- BRIGHTNESS: $lightQuantity")
-        if (lightQuantity < MIN_AFFORDABLE_BRIGHTNESS_VALUE) {
+        Log.d("LIVENESS", "-------- BRIGHTNESS: $lightQuantity")
+        if (lightQuantity > 25.0 && lightQuantity < MIN_AFFORDABLE_BRIGHTNESS_VALUE) {
             lowBrightnessFrameCounter += 1
             //Log.d("LIVENESS", "-------- LOW BRIGHTNESS - FRAME COUNT: $lowBrightnessFrameCounter")
             if (lowBrightnessFrameCounter >= MAX_FRAMES_W_O_MAJOR_OBSTACLES) {
@@ -519,6 +520,7 @@ class LivenessActivity : AppCompatActivity(),
             finishLivenessSession()
             livenessSessionLimitCheckTime = SystemClock.elapsedRealtime()
             binding!!.livenessCosmeticsHolder.isVisible = false
+            sensorManager?.unregisterListener(brightnessListener)
             safeNavigateToResultDestination(actionIdForNav)
         } else {
             delayedNavigateOnLivenessSessionEnd()
@@ -542,6 +544,8 @@ class LivenessActivity : AppCompatActivity(),
         } else {
             Size(960, 720)
         }
+        Toast.makeText(this@LivenessActivity, "[TEST] setting resolution to : " +
+                "${streamSize.width}x${streamSize.height}", Toast.LENGTH_LONG).show()
     }
 
     override fun onDestroy() {

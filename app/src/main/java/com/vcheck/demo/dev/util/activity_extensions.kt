@@ -1,6 +1,7 @@
 package com.vcheck.demo.dev.util
 
 import android.content.res.Configuration
+import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import com.vcheck.demo.dev.R
@@ -8,8 +9,7 @@ import com.vcheck.demo.dev.di.AppContainer
 import com.vcheck.demo.dev.presentation.MainActivity
 import java.util.*
 
-fun MainActivity.setLocaleAndLangSpinner(appContainer: AppContainer) {
-
+fun MainActivity.setLocale(appContainer: AppContainer) {
     val languageCode = appContainer.mainRepository.getLocale(applicationContext)
 
     val locale = Locale(languageCode)
@@ -19,6 +19,13 @@ fun MainActivity.setLocaleAndLangSpinner(appContainer: AppContainer) {
     val config = Configuration(res.configuration)
     config.locale = locale
     res.updateConfiguration(config, res.displayMetrics)
+
+    Log.d("OkHttp", "UPDATED DEFAULT LOCALE TO ${locale.language}")
+}
+
+fun MainActivity.setLangSpinner(appContainer: AppContainer) {
+
+    val languageCode = appContainer.mainRepository.getLocale(applicationContext)
 
     val langSpinner = findViewById<Spinner>(R.id.lang_spinner)
 

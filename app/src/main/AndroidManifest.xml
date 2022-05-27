@@ -39,7 +39,9 @@
         android:theme="@style/Theme.VCheckAndroidSDKDemo">
         <activity
             android:name=".presentation.StartupActivity"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -47,9 +49,15 @@
         </activity>
         <activity
             android:name=".presentation.liveness.LivenessActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity"
+            android:largeHeap="true"/>
         <activity
-            android:name=".presentation.MainActivity">
+            android:name=".presentation.MainActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity"
+            android:largeHeap="true">
         </activity>
 
         <provider
@@ -61,6 +69,16 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
+<!--        <receiver-->
+<!--            android:name=".util.LangChangeReceiver"-->
+<!--            android:enabled="true"-->
+<!--            android:exported="true">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.LOCALE_CHANGED" />-->
+<!--            </intent-filter>-->
+<!--        </receiver>-->
+
     </application>
 
 </manifest>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<ScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
@@ -8,11 +8,15 @@
         tools:context=".presentation.screens.FailVerificationFragment"
         android:background="#2A2A2A">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="580dp"
             android:layout_marginStart="12dp"
-            android:layout_marginTop="14dp"
+            android:layout_marginTop="34dp"
             android:layout_marginEnd="12dp"
             android:layout_marginBottom="49dp"
             app:cardBackgroundColor="#3C3C3C"
@@ -105,5 +109,7 @@
         </androidx.cardview.widget.CardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
 
 

@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
@@ -13,7 +14,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VcheckDemoApp
 import com.vcheck.demo.dev.di.AppContainer
-import com.vcheck.demo.dev.util.setLocaleAndLangSpinner
+import com.vcheck.demo.dev.util.setLangSpinner
+import com.vcheck.demo.dev.util.setLocale
 
 
 class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, View.OnTouchListener {
@@ -24,10 +26,13 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Vi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
         appContainer = (application as VcheckDemoApp).appContainer
-        setLocaleAndLangSpinner(appContainer)
+        setLocale(appContainer)
+
+        setContentView(R.layout.activity_main)
+
+        setLangSpinner(appContainer)
 
         setupLangReceiver()
     }
@@ -50,11 +55,21 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Vi
         return false
     }
 
+    //TODO: locale setup/change not working on 6.0.1+ !
+    override fun applyOverrideConfiguration(overrideConfiguration: Configuration?) {
+        if (overrideConfiguration != null) {
+            val uiMode: Int = overrideConfiguration.uiMode
+            overrideConfiguration.setTo(baseContext.resources.configuration)
+            overrideConfiguration.uiMode = uiMode
+        }
+        super.applyOverrideConfiguration(overrideConfiguration)
+    }
+
     private fun setupLangReceiver(): BroadcastReceiver? {
         if (mLangReceiver == null) {
             mLangReceiver = object : BroadcastReceiver() {
                 override fun onReceive(context: Context?, intent: Intent?) {
-                    //Log.d("OkHttp", "======== LANG CHANGED")
+                    Log.d("OkHttp", "======== LANG CHANGED")
                     recreate()
                 }
             }

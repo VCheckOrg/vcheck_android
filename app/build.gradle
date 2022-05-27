@@ -21,11 +21,13 @@ android {
         applicationId "com.vcheck.demo.dev"
         minSdk 21
         targetSdk 31
-        versionCode 6
-        versionName "1.1.6"
+        versionCode 7
+        versionName "1.1.7"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.debug
+
+        resConfigs "en", "uk", "ru"
     }
 
     buildFeatures {
@@ -77,6 +79,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.9.3'
+    implementation 'com.squareup.picasso:picasso:2.8'
 
     implementation 'com.airbnb.android:lottie:5.0.3'
 }

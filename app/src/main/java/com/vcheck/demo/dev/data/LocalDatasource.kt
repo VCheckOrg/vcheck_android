@@ -28,7 +28,7 @@ class LocalDatasource {
     }
 
     fun getLocale(ctx: Context): String {
-        //Log.d("OkHttp","========================= DEFAULT LOCALE: ${Locale.getDefault().language}")
+        Log.d("OkHttp","========================= DEFAULT LOCALE: ${Locale.getDefault().language}")
         val defaultLocale = when(Locale.getDefault().language)  {
             "uk" -> "uk"
             "ru" -> "ru"
