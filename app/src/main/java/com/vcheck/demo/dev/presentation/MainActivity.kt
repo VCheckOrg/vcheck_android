@@ -1,10 +1,6 @@
 package com.vcheck.demo.dev.presentation
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
-import android.content.res.Configuration
+import android.content.*
 import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
@@ -14,9 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VcheckDemoApp
 import com.vcheck.demo.dev.di.AppContainer
-import com.vcheck.demo.dev.util.setLangSpinner
-import com.vcheck.demo.dev.util.setLocale
-
+import com.vcheck.demo.dev.util.ContextUtils
 
 class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, View.OnTouchListener {
 
@@ -28,11 +22,13 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Vi
         super.onCreate(savedInstanceState)
 
         appContainer = (application as VcheckDemoApp).appContainer
-        setLocale(appContainer)
+
+        val languageCode = ContextUtils.getSavedLanguage(this@MainActivity)
+        ContextUtils.updateLocale(this@MainActivity, languageCode)
 
         setContentView(R.layout.activity_main)
 
-        setLangSpinner(appContainer)
+        setLangSpinner()
 
         setupLangReceiver()
     }
@@ -40,9 +36,18 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Vi
     override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
         if (wasLocaleSelectedByUser) {
             when (position) {
-                0 -> appContainer.mainRepository.setLocale(applicationContext, "uk")
-                1 -> appContainer.mainRepository.setLocale(applicationContext, "en")
-                2 -> appContainer.mainRepository.setLocale(applicationContext, "ru")
+                0 -> {
+                    ContextUtils.setSavedLanguage(this@MainActivity, "uk")
+                    ContextUtils.updateLocale(this@MainActivity, "uk")
+                }
+                1 -> {
+                    ContextUtils.setSavedLanguage(this@MainActivity, "en")
+                    ContextUtils.updateLocale(this@MainActivity, "en")
+                }
+                2 -> {
+                    ContextUtils.setSavedLanguage(this@MainActivity, "ru")
+                    ContextUtils.updateLocale(this@MainActivity, "ru")
+                }
             }
             recreate()
         }
@@ -55,21 +60,19 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Vi
         return false
     }
 
-    //TODO: locale setup/change not working on 6.0.1+ !
-    override fun applyOverrideConfiguration(overrideConfiguration: Configuration?) {
-        if (overrideConfiguration != null) {
-            val uiMode: Int = overrideConfiguration.uiMode
-            overrideConfiguration.setTo(baseContext.resources.configuration)
-            overrideConfiguration.uiMode = uiMode
-        }
-        super.applyOverrideConfiguration(overrideConfiguration)
+    override fun attachBaseContext(newBase: Context) {
+        val localeToSwitchTo: String = ContextUtils.getSavedLanguage(newBase)
+        Log.d("Ok", "======== attachBaseContext[MainActivity] LOCALE TO SWITCH TO : $localeToSwitchTo")
+        val localeUpdatedContext: ContextWrapper =
+            ContextUtils.updateLocale(newBase, localeToSwitchTo)
+        super.attachBaseContext(localeUpdatedContext)
     }
 
     private fun setupLangReceiver(): BroadcastReceiver? {
         if (mLangReceiver == null) {
             mLangReceiver = object : BroadcastReceiver() {
                 override fun onReceive(context: Context?, intent: Intent?) {
-                    Log.d("OkHttp", "======== LANG CHANGED")
+                    Log.d("OkHttp", "======== LANG CHANGED VIA RECEIVER")
                     recreate()
                 }
             }
@@ -77,5 +80,36 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Vi
         }
         return mLangReceiver
     }
-}
 
+    private fun setLangSpinner() {
+
+        val languageCode = ContextUtils.getSavedLanguage(this@MainActivity)
+
+        val langSpinner = findViewById<Spinner>(R.id.lang_spinner)
+
+        val adapter = ArrayAdapter.createFromResource(this@MainActivity,
+            R.array.languages, android.R.layout.simple_spinner_item)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+        langSpinner.adapter = adapter
+        langSpinner.onItemSelectedListener = this@MainActivity
+        langSpinner.setOnTouchListener(this@MainActivity)
+
+        langSpinner.post {
+            when (languageCode) {
+                "uk" -> {
+                    langSpinner.setSelection(0)
+                }
+                "en" -> {
+                    langSpinner.setSelection(1)
+                }
+                "ru" -> {
+                    langSpinner.setSelection(2)
+                }
+                else -> {
+                    langSpinner.setSelection(1)
+                }
+            }
+        }
+    }
+}

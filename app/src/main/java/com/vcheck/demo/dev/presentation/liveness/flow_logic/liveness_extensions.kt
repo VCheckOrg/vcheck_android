@@ -11,7 +11,7 @@ import com.vcheck.demo.dev.util.ImageUtils
 
 fun LivenessActivity.onImageAvailableImpl(reader: ImageReader?) {
     // We need wait until we have some size from onPreviewSizeChosen
-    openLivenessCameraParams.apply {
+    openLivenessCameraParams?.apply {
         if (previewWidth == 0 || previewHeight == 0) {
             return
         }
@@ -81,10 +81,7 @@ fun LivenessActivity.getScreenOrientation(): Int {
 //TODO rotate image if image captured on samsung devices (?)
 //Most phone cameras are landscape, meaning if you take the photo in portrait, the resulting photos will be rotated 90 degrees.
 fun LivenessActivity.rotateBitmap(input: Bitmap): Bitmap? {
-    openLivenessCameraParams.apply {
-        //Log.d("trySensor", sensorOrientation.toString() + " " + getScreenOrientation())
-        val rotationMatrix = Matrix()
-        rotationMatrix.setRotate(sensorOrientation.toFloat())
-        return Bitmap.createBitmap(input, 0, 0, input.width, input.height, rotationMatrix, true)
-    }
+    val rotationMatrix = Matrix()
+    rotationMatrix.setRotate(openLivenessCameraParams!!.sensorOrientation.toFloat())
+    return Bitmap.createBitmap(input, 0, 0, input.width, input.height, rotationMatrix, true)
 }

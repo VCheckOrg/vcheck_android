@@ -18,6 +18,7 @@ import com.vcheck.demo.dev.databinding.FragmentDemoStartBinding
 import com.vcheck.demo.dev.domain.CountryTO
 import com.vcheck.demo.dev.presentation.MainActivity
 import com.vcheck.demo.dev.presentation.transferrable_objects.CountriesListTO
+import com.vcheck.demo.dev.util.ContextUtils
 import com.vcheck.demo.dev.util.toFlagEmoji
 import java.util.*
 
@@ -127,8 +128,7 @@ class DemoStartFragment : Fragment() {
         _binding!!.btnStartDemoFlow.setOnClickListener {
             _binding!!.startCallChainLoadingIndicator.isVisible = true
             _viewModel.createTestVerificationRequest(
-                _viewModel.repository
-                    .getLocale(activity as MainActivity)
+                ContextUtils.getSavedLanguage(activity as MainActivity)
             )
         }
 

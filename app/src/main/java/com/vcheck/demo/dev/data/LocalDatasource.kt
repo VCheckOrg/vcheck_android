@@ -23,19 +23,19 @@ class LocalDatasource {
         return getSharedPreferences(ctx).getString("verif_token", "")!!
     }
 
-    fun setLocale(ctx: Context, locale: String) {
-        getSharedPreferences(ctx).edit().putString("locale", locale).apply()
-    }
-
-    fun getLocale(ctx: Context): String {
-        Log.d("OkHttp","========================= DEFAULT LOCALE: ${Locale.getDefault().language}")
-        val defaultLocale = when(Locale.getDefault().language)  {
-            "uk" -> "uk"
-            "ru" -> "ru"
-            else -> "en"
-        }
-        return getSharedPreferences(ctx).getString("locale", defaultLocale)!!
-    }
+//    fun setLocale(ctx: Context, locale: String) {
+//        getSharedPreferences(ctx).edit().putString("locale", locale).apply()
+//    }
+//
+//    fun getLocale(ctx: Context): String {
+//        Log.d("OkHttp","========================= DEFAULT LOCALE: ${Locale.getDefault().language}")
+//        val defaultLocale = when(Locale.getDefault().language)  {
+//            "uk" -> "uk"
+//            "ru" -> "ru"
+//            else -> "en"
+//        }
+//        return getSharedPreferences(ctx).getString("locale", defaultLocale)!!
+//    }
 
     fun storeSelectedCountryCode(ctx: Context, countryCode: String) {
         getSharedPreferences(ctx).edit().putString("selected_country_code", countryCode).apply()

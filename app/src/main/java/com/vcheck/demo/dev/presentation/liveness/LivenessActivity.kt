@@ -1,6 +1,8 @@
 package com.vcheck.demo.dev.presentation.liveness
 
+import android.app.ActivityManager
 import android.content.Context
+import android.content.ContextWrapper
 import android.graphics.Bitmap
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -28,6 +30,7 @@ import com.vcheck.demo.dev.VcheckDemoApp
 import com.vcheck.demo.dev.databinding.ActivityLivenessBinding
 import com.vcheck.demo.dev.presentation.liveness.flow_logic.*
 import com.vcheck.demo.dev.presentation.liveness.ui.CameraConnectionFragment
+import com.vcheck.demo.dev.util.ContextUtils
 import com.vcheck.demo.dev.util.setMargins
 import com.vcheck.demo.dev.util.shouldDecreaseVideoStreamQuality
 import com.vcheck.demo.dev.util.vibrateDevice
@@ -43,7 +46,6 @@ import org.jetbrains.kotlinx.multik.ndarray.data.set
 import java.io.File
 import java.io.IOException
 import java.util.concurrent.CopyOnWriteArrayList
-import kotlin.collections.ArrayList
 
 
 class LivenessActivity : AppCompatActivity(),
@@ -56,23 +58,24 @@ class LivenessActivity : AppCompatActivity(),
         private const val STATIC_PIPELINE_IMAGE_MODE = true
         private const val REFINE_PIPELINE_LANDMARKS = false
         private const val MAX_MILESTONES_NUM = 468
-        private const val DEBOUNCE_PROCESS_MILLIS = 100 //may reduce a bit
+        private const val DEBOUNCE_PROCESS_MILLIS = 50 //may reduce a bit
         private const val LIVENESS_TIME_LIMIT_MILLIS = 14000 //max is 15000
         private const val BLOCK_PIPELINE_TIME_MILLIS: Long = 1400 //may reduce a bit
         private const val STAGE_VIBRATION_DURATION_MILLIS: Long = 100
         private const val MAX_FRAMES_W_O_MAJOR_OBSTACLES = 12
         private const val MIN_FRAMES_FOR_MINOR_OBSTACLES = 4
-        private const val MIN_AFFORDABLE_BRIGHTNESS_VALUE = 50.0 // on some old devices, values are really low!
+        private const val MIN_AFFORDABLE_BRIGHTNESS_VALUE = 12.0 // on some old devices, values are really low!
     }
 
     private var binding: ActivityLivenessBinding? = null
+    private var mToast: Toast? = null
 
     var streamSize: Size = Size(720, 960)
-    private var bitmapArray: ArrayList<Bitmap> = ArrayList()
-    private lateinit var muxer: Muxer
+    private var bitmapArray: ArrayList<Bitmap>? = ArrayList()
+    private var muxer: Muxer? = null
     var videoPath: String? = null //make private!
 
-    val openLivenessCameraParams: LivenessCameraParams = LivenessCameraParams()
+    var openLivenessCameraParams: LivenessCameraParams? = LivenessCameraParams()
 
     private var facemesh: FaceMesh? = null
     private var faceCheckDebounceTime: Long = 0
@@ -107,8 +110,6 @@ class LivenessActivity : AppCompatActivity(),
 
         determineAndSetStreamSize()
 
-        setUpMuxer()
-
         setupBrightnessLevelListener()
 
         resetMilestonesForNewLivenessSession()
@@ -131,22 +132,6 @@ class LivenessActivity : AppCompatActivity(),
         isLivenessSessionFinished = true
     }
 
-    private fun setUpMuxer() {
-
-        //TODO (?) add logic for increasing framesPerImage / FPS based on one of factors:
-//        val finalSessionTime = getActualSessionTimeInSecs()
-//        val snapshotsSize = bitmapArray.size
-        //TODO add little delay for MOUTH(last) video to capture in problematic cases!
-
-        val framesPerImage = 1
-        val framesPerSecond = 24F
-
-        val muxerConfig = MuxerConfig(createVideoFile(),
-            streamSize.height, streamSize.width, MediaFormat.MIMETYPE_VIDEO_AVC,
-            framesPerImage, framesPerSecond, 2500000, iFrameInterval = 1) //3, 32F, 2500000, iFrameInterval = 50 (10))
-        muxer = Muxer(this@LivenessActivity, muxerConfig)
-    }
-
     private fun setupStreamingModePipeline() {
         facemesh = FaceMesh(
             this@LivenessActivity,
@@ -160,14 +145,21 @@ class LivenessActivity : AppCompatActivity(),
             Log.e(TAG, "======= MediaPipe Face Mesh error : $message")
         }
         facemesh!!.setResultListener { faceMeshResult: FaceMeshResult ->
-            if (!isLivenessSessionFinished && !blockProcessingByUI && enoughTimeForNextGesture()) {
-                processLandmarks(faceMeshResult)
-            } else {
-                if (!isLivenessSessionFinished && !blockProcessingByUI) {
-                    runOnUiThread {
-                        onFatalObstacleWorthRetry(R.id.action_dummyLivenessStartDestFragment_to_noTimeFragment)
+            // Before doing something that requires a lot of memory,
+            // check to see whether the device is in a low memory state.
+            val memoryInfo: ActivityManager.MemoryInfo = getAvailableMemory()
+            if (!memoryInfo.lowMemory) {
+                if (!isLivenessSessionFinished && !blockProcessingByUI && enoughTimeForNextGesture()) {
+                    processLandmarks(faceMeshResult)
+                } else {
+                    if (!isLivenessSessionFinished && !blockProcessingByUI) {
+                        runOnUiThread {
+                            onFatalObstacleWorthRetry(R.id.action_dummyLivenessStartDestFragment_to_noTimeFragment)
+                        }
                     }
                 }
+            } else {
+                showSingleToast("[TEST] LOW MEMORY; pausing face processing for a while")
             }
         }
     }
@@ -215,7 +207,7 @@ class LivenessActivity : AppCompatActivity(),
                     setUIOnOuterRightHeadPitchMilestone()
                 }
                 GestureMilestoneType.MouthOpenMilestone -> {
-                    delayedNavigateOnLivenessSessionEnd()
+                    delayedNavigateOnLivenessSessionEnd(true)
                 }
                 else -> {
                     //Stub. Cases in which results we are not straightly concerned
@@ -314,9 +306,9 @@ class LivenessActivity : AppCompatActivity(),
             object :
                 CameraConnectionFragment.ConnectionCallback {
                 override fun onPreviewSizeChosen(size: Size?, cameraRotation: Int) {
-                    openLivenessCameraParams.previewHeight = size!!.height
-                    openLivenessCameraParams.previewWidth = size.width
-                    openLivenessCameraParams.sensorOrientation = cameraRotation - getScreenOrientation()
+                    openLivenessCameraParams?.previewHeight = size!!.height
+                    openLivenessCameraParams?.previewWidth = size.width
+                    openLivenessCameraParams?.sensorOrientation = cameraRotation - getScreenOrientation()
                 }
             },
             this@LivenessActivity)
@@ -334,7 +326,9 @@ class LivenessActivity : AppCompatActivity(),
     }
 
     fun processVideoOnResult(videoProcessingListener: VideoProcessingListener) {
-        muxer.setOnMuxingCompletedListener(object : MuxingCompletionListener {
+        setUpMuxer()
+
+        muxer!!.setOnMuxingCompletedListener(object : MuxingCompletionListener {
             override fun onVideoSuccessful(file: File) {
                 Log.d(TAG, "Video muxed - file path: ${file.absolutePath}")
                 runOnUiThread {
@@ -346,15 +340,31 @@ class LivenessActivity : AppCompatActivity(),
             }
         })
 
-        val finalList = CopyOnWriteArrayList(bitmapArray)
+        val finalList = CopyOnWriteArrayList(bitmapArray!!)
         Thread {
             Log.d(TAG, "-------------------- MUXING......")
-            muxer.mux(finalList)
+            muxer!!.mux(finalList)
         }.start()
     }
 
+    private fun setUpMuxer() {
+
+        //TODO (?) add logic for increasing framesPerImage / FPS based on one of factors:
+        //        val finalSessionTime = getActualSessionTimeInSecs()
+        //        val snapshotsSize = bitmapArray.size
+        //TODO add little delay for MOUTH(last) video to capture in problematic cases!
+
+        val framesPerImage = 1
+        val framesPerSecond = 24F
+
+        val muxerConfig = MuxerConfig(createVideoFile(),
+            streamSize.height, streamSize.width, MediaFormat.MIMETYPE_VIDEO_AVC,
+            framesPerImage, framesPerSecond, 2500000, iFrameInterval = 1) //3, 32F, 2500000, iFrameInterval = 50 (10))
+        muxer = Muxer(this@LivenessActivity, muxerConfig)
+    }
+
     fun processImage() {
-        openLivenessCameraParams.apply {
+        openLivenessCameraParams?.apply {
 
             imageConverter!!.run()
             rgbFrameBitmap = Bitmap.createBitmap(previewWidth, previewHeight, Bitmap.Config.ARGB_8888)
@@ -366,7 +376,7 @@ class LivenessActivity : AppCompatActivity(),
             facemesh!!.send(bitmap)
 
             //bitmapArray.add(bitmap!!)
-            bitmapArray.add(rotateBitmap(bitmap!!)!!)
+            bitmapArray?.add(rotateBitmap(bitmap!!)!!)
             //Log.d(TAG, "------------- PUT BITMAP TO ARRAY. SIZE: ${bitmapArray.size}")
 
             postInferenceCallback!!.run()
@@ -375,20 +385,33 @@ class LivenessActivity : AppCompatActivity(),
 
     private fun setupBrightnessLevelListener() {
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
-        lightSensor = (sensorManager as SensorManager).getDefaultSensor(Sensor.TYPE_LIGHT)
-        sensorManager?.registerListener(
-            brightnessListener, lightSensor, SensorManager.SENSOR_DELAY_UI)
+        if (sensorManager!!.getDefaultSensor(Sensor.TYPE_LIGHT) != null) {
+            // Success! Light sensor exists.
+            lightSensor = (sensorManager as SensorManager).getDefaultSensor(Sensor.TYPE_LIGHT)
+            sensorManager?.registerListener(
+                brightnessListener, lightSensor, SensorManager.SENSOR_DELAY_UI)
+            Log.d(TAG,"Light sensor is available")
+        }
+        else {
+            // Failure! Light sensor not available.
+            Handler(Looper.getMainLooper()).postDelayed({
+                Toast.makeText(this@LivenessActivity,
+                    "[Info] Light sensor not available for current device", Toast.LENGTH_LONG).show()
+            },2000)
+        }
     }
 
     private fun onBrightnessChanged(lightQuantity: Float) {
         Log.d("LIVENESS", "-------- BRIGHTNESS: $lightQuantity")
-        if (lightQuantity > 25.0 && lightQuantity < MIN_AFFORDABLE_BRIGHTNESS_VALUE) {
+        if (lightQuantity < MIN_AFFORDABLE_BRIGHTNESS_VALUE && (lightQuantity > 5.0 || lightQuantity < 0.0)) {
             lowBrightnessFrameCounter += 1
             //Log.d("LIVENESS", "-------- LOW BRIGHTNESS - FRAME COUNT: $lowBrightnessFrameCounter")
             if (lowBrightnessFrameCounter >= MAX_FRAMES_W_O_MAJOR_OBSTACLES) {
                 lowBrightnessFrameCounter = 0
                 onObstacleMet(ObstacleType.BRIGHTNESS_LEVEL_IS_LOW)
             }
+        } else {
+            lowBrightnessFrameCounter = 0
         }
     }
 
@@ -464,15 +487,22 @@ class LivenessActivity : AppCompatActivity(),
         }, BLOCK_PIPELINE_TIME_MILLIS)
     }
 
-    private fun delayedNavigateOnLivenessSessionEnd() {
-        vibrateDevice(this@LivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
-        binding!!.imgViewStaticStageIndication.isVisible = true
-        binding!!.stageSuccessAnimBorder.isVisible = true
-
+    private fun delayedNavigateOnLivenessSessionEnd(isVerificationSuccessful: Boolean) {
+        binding!!.checkFaceTitle.text = getString(R.string.wait_for_liveness_start)
+        if (isVerificationSuccessful) {
+            vibrateDevice(this@LivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
+            binding!!.imgViewStaticStageIndication.isVisible = true
+            binding!!.stageSuccessAnimBorder.isVisible = true
+        } else {
+            binding!!.stageSuccessAnimBorder.isVisible = false
+            binding!!.imgViewStaticStageIndication.isVisible = false
+            binding!!.arrowAnimationView.cancelAnimation()
+            binding!!.faceAnimationView.cancelAnimation()
+            binding!!.arrowAnimationView.isVisible = false
+            binding!!.faceAnimationView.isVisible = false
+        }
         Handler(Looper.getMainLooper()).postDelayed({
             binding!!.livenessCosmeticsHolder.isVisible = false
-//          Log.d(TAG, "================== FINISHED SESSION - SUCCESS")
-//          Log.d(TAG, "================== ACTUAL TIME: ${getActualSessionTimeInSecs()} sec")
             safeNavigateToResultDestination(R.id.action_dummyLivenessStartDestFragment_to_inProcessFragment)
         }, 1000)
     }
@@ -523,7 +553,7 @@ class LivenessActivity : AppCompatActivity(),
             sensorManager?.unregisterListener(brightnessListener)
             safeNavigateToResultDestination(actionIdForNav)
         } else {
-            delayedNavigateOnLivenessSessionEnd()
+            delayedNavigateOnLivenessSessionEnd(false)
         }
     }
 
@@ -538,14 +568,38 @@ class LivenessActivity : AppCompatActivity(),
             }.start()
     }
 
+    private fun showSingleToast(message: String?) {
+        if (mToast != null) {
+            mToast?.cancel()
+        }
+        mToast = Toast.makeText(this, message, Toast.LENGTH_LONG)
+        mToast?.show()
+    }
+
+
     private fun determineAndSetStreamSize() {
         streamSize = if (shouldDecreaseVideoStreamQuality()) {
             Size(320, 240)
         } else {
             Size(960, 720)
         }
-        Toast.makeText(this@LivenessActivity, "[TEST] setting resolution to : " +
-                "${streamSize.width}x${streamSize.height}", Toast.LENGTH_LONG).show()
+        showSingleToast("[TEST] setting resolution to : ${streamSize.width}x${streamSize.height}")
+    }
+
+    override fun attachBaseContext(newBase: Context) {
+        val localeToSwitchTo: String = ContextUtils.getSavedLanguage(newBase)
+        Log.d("Ok", "======== attachBaseContext[LivenessActivity] LOCALE TO SWITCH TO : $localeToSwitchTo")
+        val localeUpdatedContext: ContextWrapper =
+            ContextUtils.updateLocale(newBase, localeToSwitchTo)
+        super.attachBaseContext(localeUpdatedContext)
+    }
+
+    // Get a MemoryInfo object for the device's current memory status.
+    private fun getAvailableMemory(): ActivityManager.MemoryInfo {
+        val activityManager = this.getSystemService(ACTIVITY_SERVICE) as ActivityManager
+        val memoryInfo = ActivityManager.MemoryInfo()
+        activityManager.getMemoryInfo(memoryInfo)
+        return memoryInfo
     }
 
     override fun onDestroy() {
@@ -554,6 +608,9 @@ class LivenessActivity : AppCompatActivity(),
         sensorManager = null
         lightSensor = null
         facemesh?.close()
+        bitmapArray = null
+        muxer = null
+        openLivenessCameraParams = null
     }
 
     //            Log.i(TAG, "--------------- IDX: $idx")

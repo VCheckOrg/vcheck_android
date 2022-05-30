@@ -84,6 +84,8 @@ class InProcessFragment : Fragment(R.layout.in_process_fragment), VideoProcessin
 
         val videoFile = File(videoPath)
 
+        Log.d("Ok", "======== VIDEO FILE FILL PATH: ${videoFile.path}")
+
         Log.d("mux", getFolderSizeLabel(videoFile))
 
         val token = ((activity as LivenessActivity).application as VcheckDemoApp)
@@ -97,8 +99,6 @@ class InProcessFragment : Fragment(R.layout.in_process_fragment), VideoProcessin
                 _viewModel.uploadLivenessVideo(_viewModel.repository.getVerifToken(activity as LivenessActivity),
                     partVideo)
             } else {
-//            Toast.makeText((activity as LivenessActivity),
-//                "Local(test) Liveness demo is running; skipping video upload request!", Toast.LENGTH_LONG).show()
                 findNavController().navigate(R.id.action_inProcessFragment_to_livenessResultVideoViewFragment)
             }
         }

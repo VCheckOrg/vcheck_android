@@ -122,13 +122,13 @@ class MainRepository(
         return localDatasource.getSelectedDocTypeWithData()
     }
 
-    fun setLocale(ctx: Context, locale: String) {
-        localDatasource.setLocale(ctx, locale)
-    }
-
-    fun getLocale(ctx: Context): String {
-        return localDatasource.getLocale(ctx)
-    }
+//    fun setLocale(ctx: Context, locale: String) {
+//        localDatasource.setLocale(ctx, locale)
+//    }
+//
+//    fun getLocale(ctx: Context): String {
+//        return localDatasource.getLocale(ctx)
+//    }
 
     fun resetCacheOnStartup(ctx: Context) {
         localDatasource.resetCacheOnStartup(ctx)
