@@ -377,6 +377,7 @@ class LivenessActivity : AppCompatActivity(),
 
             //bitmapArray.add(bitmap!!)
             bitmapArray?.add(rotateBitmap(bitmap!!)!!)
+            //bitmapArray?.add(bitmap!!)
             //Log.d(TAG, "------------- PUT BITMAP TO ARRAY. SIZE: ${bitmapArray.size}")
 
             postInferenceCallback!!.run()

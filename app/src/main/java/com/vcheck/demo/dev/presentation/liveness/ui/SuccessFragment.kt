@@ -8,8 +8,6 @@ import androidx.fragment.app.Fragment
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.databinding.SuccessFragmentBinding
 import com.vcheck.demo.dev.presentation.StartupActivity
-import com.vcheck.demo.dev.presentation.liveness.LivenessActivity
-
 
 class SuccessFragment : Fragment(R.layout.success_fragment) {
 
@@ -27,15 +25,6 @@ class SuccessFragment : Fragment(R.layout.success_fragment) {
     }
 
     private fun resetApplication() {
-//        val resetApplicationIntent = requireActivity().applicationContext
-//            .packageManager.getLaunchIntentForPackage(requireActivity().applicationContext.packageName)
-//
-//        if (resetApplicationIntent != null) {
-//            resetApplicationIntent.flags =
-//                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-//        }
-//        (activity as LivenessActivity).startActivity(resetApplicationIntent)
-//        (context as LivenessActivity).overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
 
         val intent = Intent(context, StartupActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

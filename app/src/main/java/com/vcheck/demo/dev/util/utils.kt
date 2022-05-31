@@ -1,5 +1,6 @@
 package com.vcheck.demo.dev.util
 
+import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Context.ACTIVITY_SERVICE
@@ -29,6 +30,8 @@ fun generateSHA256Hash(strToHash: String): String {
 
 
 // Vibrates the device for 100 milliseconds.
+// Vibrate Permission is already in Manifest
+@SuppressLint("MissingPermission")
 fun vibrateDevice(context: Context, duration: Long) {
     val vibrator = getSystemService(context, Vibrator::class.java)
     vibrator?.let {
@@ -94,24 +97,6 @@ fun isValidDocRelatedDate(date: String): Boolean {
     }
 }
 
-
-fun getCPUCoreNum(): Int {
-    try {
-        val pattern = Pattern.compile("cpu[0-9]+")
-        val cpuNum = max(
-            File("/sys/devices/system/cpu/")
-                .walk()
-                .maxDepth(1)
-                .count { pattern.matcher(it.name).matches() },
-            Runtime.getRuntime().availableProcessors())
-        Log.d("PERFORMANCE", "================ CPU NUM: $cpuNum")
-        return cpuNum
-    } catch (e: Exception) {
-        Log.d("PERFORMANCE", "================ CAUGHT EXCEPTION WHILE REQUESTING CPU NUM! RETURNING 1")
-        return 3
-    }
-}
-
 fun LivenessActivity.getAvailableDeviceRAM(): Long {
     val mi = ActivityManager.MemoryInfo()
     val activityManager = getSystemService(ACTIVITY_SERVICE) as ActivityManager?
@@ -122,7 +107,7 @@ fun LivenessActivity.getAvailableDeviceRAM(): Long {
 }
 
 fun LivenessActivity.shouldDecreaseVideoStreamQuality(): Boolean {
-    return (getCPUCoreNum() < 3 || getAvailableDeviceRAM() < 1000)
+    return (getAvailableDeviceRAM() < 2000)
 }
 
 private fun floatForm(d: Double): String {
@@ -144,3 +129,20 @@ private fun bytesToHuman(size: Long): String {
     if (size in Pb until Eb) return floatForm(size.toDouble() / Pb) + " Pb"
     return if (size >= Eb) floatForm(size.toDouble() / Eb) + " Eb" else "0"
 }
+
+//fun getCPUCoreNum(): Int {
+//    try {
+//        val pattern = Pattern.compile("cpu[0-9]+")
+//        val cpuNum = max(
+//            File("/sys/devices/system/cpu/")
+//                .walk()
+//                .maxDepth(1)
+//                .count { pattern.matcher(it.name).matches() },
+//            Runtime.getRuntime().availableProcessors())
+//        Log.d("PERFORMANCE", "================ CPU NUM: $cpuNum")
+//        return cpuNum
+//    } catch (e: Exception) {
+//        Log.d("PERFORMANCE", "================ CAUGHT EXCEPTION WHILE REQUESTING CPU NUM! RETURNING 1")
+//        return 3
+//    }
+//}

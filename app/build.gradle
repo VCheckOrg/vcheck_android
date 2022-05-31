@@ -1,10 +1,11 @@
 plugins {
     id 'com.android.application'
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'kotlin-parcelize'
     id 'androidx.navigation.safeargs'
-    id 'com.google.firebase.crashlytics'
 }
 
 android {
@@ -22,8 +23,8 @@ android {
         applicationId "com.vcheck.demo.dev"
         minSdk 21
         targetSdk 31
-        versionCode 7
-        versionName "1.1.7"
+        versionCode 11
+        versionName "1.1.11"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.debug

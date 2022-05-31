@@ -7,30 +7,23 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.content.pm.PackageManager
-import android.content.res.Configuration
 import android.graphics.ImageFormat
 import android.graphics.Matrix
-import android.graphics.RectF
 import android.graphics.SurfaceTexture
 import android.hardware.camera2.*
 import android.hardware.camera2.CameraCaptureSession.CaptureCallback
 import android.media.ImageReader
 import android.media.ImageReader.OnImageAvailableListener
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
 import android.util.Log
-import android.util.Range
 import android.util.Size
-import android.util.SparseIntArray
 import android.view.LayoutInflater
 import android.view.Surface
 import android.view.TextureView.SurfaceTextureListener
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -53,30 +46,10 @@ class CameraConnectionFragment() : Fragment() {
     private var cameraConnectionCallback: ConnectionCallback? = null
     private var imageListener: OnImageAvailableListener? = null
 
-
-//    @SuppressLint("ValidFragment") constructor(
-//
-//        /** A [OnImageAvailableListener] to receive frames as they are available.  */
-//
-//        /** The layout identifier to inflate for this Fragment.  */
-//
-//        /** The input size in pixels desired by TensorFlow (width and height of a square bitmap).  */
-//        //private val inputSize: Size
-//    ) : this()
-
     companion object {
-        /**
-         * The camera preview size will be chosen to be the smallest frame by pixel size capable of
-         * containing a DESIRED_SIZE x DESIRED_SIZE square.
-         */
-        //private const val MINIMUM_PREVIEW_SIZE = 640  // was 320 by default
-
-        /** Conversion from screen rotation to JPEG orientation.  */
-        private val ORIENTATIONS = SparseIntArray()
         private const val FRAGMENT_DIALOG = "dialog"
 
         //removed chooseOptimalSize() !
-
         fun newInstance(
             callback: ConnectionCallback,
             imageListener: OnImageAvailableListener,
@@ -88,21 +61,6 @@ class CameraConnectionFragment() : Fragment() {
             fragment.imageListener = imageListener
             return fragment
         }
-
-        init {
-            ORIENTATIONS.append(
-                Surface.ROTATION_0,
-                90)
-            ORIENTATIONS.append(
-                Surface.ROTATION_90,
-                0)
-            ORIENTATIONS.append(
-                Surface.ROTATION_180,
-                270)
-            ORIENTATIONS.append(
-                Surface.ROTATION_270,
-                180)
-        }
     }
 
     /** A [Semaphore] to prevent the app from exiting before closing the camera.  */
@@ -113,15 +71,15 @@ class CameraConnectionFragment() : Fragment() {
         override fun onCaptureProgressed(
             session: CameraCaptureSession,
             request: CaptureRequest,
-            partialResult: CaptureResult
-        ) {
+            partialResult: CaptureResult) {
+            //Stub
         }
 
         override fun onCaptureCompleted(
             session: CameraCaptureSession,
             request: CaptureRequest,
-            result: TotalCaptureResult
-        ) {
+            result: TotalCaptureResult) {
+            //Stub
         }
     }
     private var cameraId: String? = null
@@ -134,15 +92,12 @@ class CameraConnectionFragment() : Fragment() {
     private var backgroundHandler: Handler? = null
     private val surfaceTextureListener: SurfaceTextureListener = object : SurfaceTextureListener {
         override fun onSurfaceTextureAvailable(
-            texture: SurfaceTexture, width: Int, height: Int
-        ) {
+            texture: SurfaceTexture, width: Int, height: Int) {
             openCamera(width, height)
         }
-
         override fun onSurfaceTextureSizeChanged(
-            texture: SurfaceTexture, width: Int, height: Int
-        ) {
-            configureTransform(width, height)
+            texture: SurfaceTexture, width: Int, height: Int) {
+            //configureTransform(width, height)
         }
 
         override fun onSurfaceTextureDestroyed(texture: SurfaceTexture): Boolean {
@@ -175,16 +130,6 @@ class CameraConnectionFragment() : Fragment() {
             val activity = activity
             activity?.finish()
         }
-    }
-
-    /**
-     * Shows a [Toast] on the UI thread.
-     *
-     * @param text The message to show
-     */
-    private fun showToast(text: String) {
-        val activity = activity
-        activity?.runOnUiThread { Toast.makeText(activity, text, Toast.LENGTH_SHORT).show() }
     }
 
     override fun onCreateView(
@@ -231,18 +176,16 @@ class CameraConnectionFragment() : Fragment() {
     }
 
     /** Sets up member variables related to camera.  */
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private fun setUpCameraOutputs() {
         val activity = activity as LivenessActivity
-        val manager =
-            activity.getSystemService(Context.CAMERA_SERVICE) as CameraManager
+//        val manager =
+//            activity.getSystemService(Context.CAMERA_SERVICE) as CameraManager
         try {
-            val characteristics = manager.getCameraCharacteristics(cameraId!!)
-            sensorOrientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION)
+            sensorOrientation = 270 //was CameraCharacteristics.SENSOR_ORIENTATION
 
+            //val characteristics = manager.getCameraCharacteristics(cameraId!!)
 //            val map =
 //                characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
-
             // Danger, W.R.! Attempting to use too large a preview size could  exceed the camera
             // bus' bandwidth limitation, resulting in gorgeous previews but the storage of
             // garbage capture data.
@@ -253,22 +196,17 @@ class CameraConnectionFragment() : Fragment() {
 
             previewSize = activity.streamSize
 
-            Log.d("mux", "------------ SIZE: width ${previewSize!!.width} | height: ${previewSize!!.height}")
+            Log.d("Ok", "------------ SIZE: width ${previewSize!!.width} | height: ${previewSize!!.height}")
 
-            // We fit the aspect ratio of TextureView to the size of preview we picked.
-            val orientation = resources.configuration.orientation
-            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                textureView!!.setAspectRatio(previewSize!!.width, previewSize!!.height)
-            } else {
-                textureView!!.setAspectRatio(previewSize!!.height, previewSize!!.width)
-            }
+            textureView!!.setAspectRatio(previewSize!!.height, previewSize!!.width)
+
         } catch (e: CameraAccessException) {
-            //  LOGGER.e(e, "Exception!");
+            ErrorDialog.newInstance("Camera access error")
+                .show(childFragmentManager, FRAGMENT_DIALOG)
         } catch (e: NullPointerException) {
             // Currently an NPE is thrown when the Camera2API is used but not supported on the device this code runs.
-            ErrorDialog.newInstance("getString(R.string.tfe_ic_camera_error)")
+            ErrorDialog.newInstance("Camera2API is used but not supported on the device this code runs.")
                 .show(childFragmentManager, FRAGMENT_DIALOG)
-            throw IllegalStateException("getString(R.string.tfe_ic_camera_error)")
         }
         cameraConnectionCallback!!.onPreviewSizeChosen(previewSize, sensorOrientation!!)
     }
@@ -276,25 +214,34 @@ class CameraConnectionFragment() : Fragment() {
     @SuppressLint("MissingPermission")
     private fun openCamera(width: Int, height: Int) {
         setUpCameraOutputs()
-        configureTransform(width, height)
-        val activity = activity as LivenessActivity
-        val manager =
-            activity.getSystemService(Context.CAMERA_SERVICE) as CameraManager
-        try {
-            if (!cameraOpenCloseLock.tryAcquire(2500, TimeUnit.MILLISECONDS)) {
-                throw RuntimeException("Time out waiting to lock camera opening.")
+        //configureTransform(width, height)
+
+        textureView!!.post {
+            backgroundHandler!!.post {
+                val activity = activity as LivenessActivity
+                val manager =
+                    activity.getSystemService(Context.CAMERA_SERVICE) as CameraManager
+                try {
+                    if (!cameraOpenCloseLock.tryAcquire(4500, TimeUnit.MILLISECONDS)) {
+                        ErrorDialog.newInstance("Opening Camera from lock has not been triggered.")
+                            .show(childFragmentManager, FRAGMENT_DIALOG)
+                    }
+                    if (ActivityCompat.checkSelfPermission(
+                            activity,
+                            Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                        ErrorDialog.newInstance("Camera permission not granted. " +
+                                "Please, go to Settings and grant Camera permission for this app.")
+                            .show(childFragmentManager, FRAGMENT_DIALOG)
+                    }
+                    manager.openCamera(cameraId!!, stateCallback, backgroundHandler)
+                } catch (e: CameraAccessException) {
+                    ErrorDialog.newInstance("Camera access error")
+                        .show(childFragmentManager, FRAGMENT_DIALOG)
+                } catch (e: InterruptedException) {
+                    ErrorDialog.newInstance("Interrupted while trying to lock camera opening.")
+                        .show(childFragmentManager, FRAGMENT_DIALOG)
+                }
             }
-            if (ActivityCompat.checkSelfPermission(
-                    activity,
-                    Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling ActivityCompat#requestPermissions
-                return
-            }
-            manager.openCamera(cameraId!!, stateCallback, backgroundHandler)
-        } catch (e: CameraAccessException) {
-            // LOGGER.e(e, "Exception!");
-        } catch (e: InterruptedException) {
-            throw RuntimeException("Interrupted while trying to lock camera opening.", e)
         }
     }
 
@@ -336,7 +283,7 @@ class CameraConnectionFragment() : Fragment() {
             backgroundThread = null
             backgroundHandler = null
         } catch (e: InterruptedException) {
-            //    LOGGER.e(e, "Exception!");
+            ErrorDialog.newInstance("Interrupted while stopping backgraound thread.")
         }
     }
 
@@ -352,33 +299,14 @@ class CameraConnectionFragment() : Fragment() {
             val surface = Surface(texture)
 
             // We set up a CaptureRequest.Builder with the output Surface.
-
             previewRequestBuilder =
                 cameraDevice!!.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW)
-
             previewRequestBuilder!!.addTarget(surface)
-
-            //!
-            val fpsRange: Range<Int> = Range(24, 26)
-            previewRequestBuilder!!.set(CaptureRequest.CONTROL_AE_TARGET_FPS_RANGE, fpsRange)
-
-            // LOGGER.i("Opening camera preview: " + previewSize.getWidth() + "x" + previewSize.getHeight());
 
             // Create the reader for the preview frames.
             previewReader = ImageReader.newInstance(
-                previewSize!!.width, previewSize!!.height, ImageFormat.YUV_420_888, 2
-            )
+                previewSize!!.width, previewSize!!.height, ImageFormat.YUV_420_888, 1)
             previewReader!!.setOnImageAvailableListener(imageListener, backgroundHandler)
-
-            //----------------------------
-            //FOR TEST:
-//            var idx = 0
-//            previewReader!!.setOnImageAvailableListener({ reader ->
-//                reader.acquireLatestImage().close()
-//                idx += 1
-//                Log.d(TAG, "-------------------- GOT IMAGE: idx ${idx}")
-//            }, backgroundHandler)
-            //----------------------------
 
             previewRequestBuilder!!.addTarget(previewReader!!.surface)
 
@@ -391,78 +319,38 @@ class CameraConnectionFragment() : Fragment() {
                         if (null == cameraDevice) {
                             return
                         }
-
                         // When the session is ready, we start displaying the preview.
                         captureSession = cameraCaptureSession
                         try {
                             // Auto focus should be continuous for camera preview.
                             previewRequestBuilder!!.set(
                                 CaptureRequest.CONTROL_AF_MODE,
-                                CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE
-                            )
+                                CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE)
                             // Flash is automatically enabled when necessary.
                             previewRequestBuilder!!.set(
                                 CaptureRequest.CONTROL_AE_MODE,
-                                CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH
-                            )
-
+                                CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH)
                             // Finally, we start displaying the camera preview.
                             previewRequest = previewRequestBuilder!!.build()
                             captureSession!!.setRepeatingRequest(
-                                previewRequest!!, captureCallback, backgroundHandler
-                            )
+                                previewRequest!!, captureCallback, backgroundHandler)
                         } catch (e: CameraAccessException) {
-                            //       LOGGER.e(e, "Exception!");
+                            ErrorDialog.newInstance("Camera access exception occured from onConfigured()")
+                                .show(childFragmentManager, FRAGMENT_DIALOG)
                         }
                     }
 
                     override fun onConfigureFailed(cameraCaptureSession: CameraCaptureSession) {
-                        showToast("Failed")
+                        ErrorDialog.newInstance("Failed to configure camera")
+                            .show(childFragmentManager, FRAGMENT_DIALOG)
                     }
                 },
                 null
             )
         } catch (e: CameraAccessException) {
-            //        LOGGER.e(e, "Exception!");
+            ErrorDialog.newInstance("Camera access is required, but got error")
+                .show(childFragmentManager, FRAGMENT_DIALOG)
         }
-    }
-
-    /**
-     * Configures the necessary [Matrix] transformation to `mTextureView`. This method should be
-     * called after the camera preview size is determined in setUpCameraOutputs and also the size of
-     * `mTextureView` is fixed.
-     *
-     * @param viewWidth The width of `mTextureView`
-     * @param viewHeight The height of `mTextureView`
-     */
-    private fun configureTransform(viewWidth: Int, viewHeight: Int) {
-        val activity = activity
-        if (null == textureView || null == previewSize || null == activity) {
-            return
-        }
-        val rotation = activity.windowManager.defaultDisplay.rotation
-        val matrix = Matrix()
-        val viewRect = RectF(0F, 0F, viewWidth.toFloat(), viewHeight.toFloat())
-        val bufferRect = RectF(
-            0F, 0F,
-            previewSize!!.height.toFloat(),
-            previewSize!!.width.toFloat()
-        )
-        val centerX = viewRect.centerX()
-        val centerY = viewRect.centerY()
-        if (Surface.ROTATION_90 == rotation || Surface.ROTATION_270 == rotation) {
-            bufferRect.offset(centerX - bufferRect.centerX(), centerY - bufferRect.centerY())
-            matrix.setRectToRect(viewRect, bufferRect, Matrix.ScaleToFit.FILL)
-            val scale = Math.max(
-                viewHeight.toFloat() / previewSize!!.height,
-                viewWidth.toFloat() / previewSize!!.width
-            )
-            matrix.postScale(scale, scale, centerX, centerY)
-            matrix.postRotate(90 * (rotation - 2).toFloat(), centerX, centerY)
-        } else if (Surface.ROTATION_180 == rotation) {
-            matrix.postRotate(180f, centerX, centerY)
-        }
-        textureView!!.setTransform(matrix)
     }
 
     /**
@@ -494,7 +382,6 @@ class CameraConnectionFragment() : Fragment() {
                 ) { _, _ -> activity.finish() }
                 .create()
         }
-
         companion object {
             private const val ARG_MESSAGE = "message"
             fun newInstance(message: String?): ErrorDialog {
@@ -509,6 +396,65 @@ class CameraConnectionFragment() : Fragment() {
     }
 
 }
+
+
+/**
+ * The camera preview size will be chosen to be the smallest frame by pixel size capable of
+ * containing a DESIRED_SIZE x DESIRED_SIZE square.
+ */
+//private const val MINIMUM_PREVIEW_SIZE = 640  // was 320 by default
+
+/** Conversion from screen rotation to JPEG orientation.  */
+//private val ORIENTATIONS = SparseIntArray()
+
+
+//    @SuppressLint("ValidFragment") constructor(
+//
+//        /** A [OnImageAvailableListener] to receive frames as they are available.  */
+//
+//        /** The layout identifier to inflate for this Fragment.  */
+//
+//        /** The input size in pixels desired by TensorFlow (width and height of a square bitmap).  */
+//        //private val inputSize: Size
+//    ) : this()
+
+/**
+ * Configures the necessary [Matrix] transformation to `mTextureView`. This method should be
+ * called after the camera preview size is determined in setUpCameraOutputs and also the size of
+ * `mTextureView` is fixed.
+ *
+ * @param viewWidth The width of `mTextureView`
+ * @param viewHeight The height of `mTextureView`
+ */
+//    private fun configureTransform(viewWidth: Int, viewHeight: Int) {
+//        val activity = activity
+//        if (null == textureView || null == previewSize || null == activity) {
+//            return
+//        }
+//        //val rotation = activity.windowManager.defaultDisplay.rotation
+//        val matrix = Matrix()
+//        val viewRect = RectF(0F, 0F, viewWidth.toFloat(), viewHeight.toFloat())
+//        val bufferRect = RectF(
+//            0F, 0F,
+//            previewSize!!.height.toFloat(),
+//            previewSize!!.width.toFloat())
+//        val centerX = viewRect.centerX()
+//        val centerY = viewRect.centerY()
+//        //Log.d("Ok", "============ ROTATION: $rotation")
+////        if (Surface.ROTATION_90 == rotation || Surface.ROTATION_270 == rotation) {
+////            Log.d("Ok", "============ ROTATION: Surface.ROTATION_90 == rotation || Surface.ROTATION_270 == rotation")
+//            bufferRect.offset(centerX - bufferRect.centerX(), centerY - bufferRect.centerY())
+//            matrix.setRectToRect(viewRect, bufferRect, Matrix.ScaleToFit.FILL)
+//            val scale = max(
+//                viewHeight.toFloat() / previewSize!!.height,
+//                viewWidth.toFloat() / previewSize!!.width)
+//            matrix.postScale(scale, scale, centerX, centerY)
+//            //matrix.postRotate(90 * (rotation - 2).toFloat(), centerX, centerY)
+////        } else if (Surface.ROTATION_180 == rotation) {
+////            matrix.postRotate(180f, centerX, centerY)
+////        }
+//        textureView!!.setTransform(matrix)
+//    }
 
 /**
  * Given `choices` of `Size`s supported by a camera, chooses the smallest one whose
