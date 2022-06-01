@@ -11,6 +11,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.content.ContextCompat.getSystemService
 import com.vcheck.demo.dev.R
+import com.vcheck.demo.dev.presentation.MainActivity
 import com.vcheck.demo.dev.presentation.liveness.LivenessActivity
 import java.io.File
 import java.security.MessageDigest
@@ -97,6 +98,15 @@ fun isValidDocRelatedDate(date: String): Boolean {
     }
 }
 
+fun MainActivity.getAvailableDeviceRAM(): Long {
+    val mi = ActivityManager.MemoryInfo()
+    val activityManager = getSystemService(ACTIVITY_SERVICE) as ActivityManager?
+    activityManager!!.getMemoryInfo(mi)
+    val memInMB = mi.totalMem / (1024 * 1024)
+    Log.d("PERFORMANCE", "================ MEM IN MB : ${bytesToHuman(mi.totalMem)}")
+    return memInMB
+}
+
 fun LivenessActivity.getAvailableDeviceRAM(): Long {
     val mi = ActivityManager.MemoryInfo()
     val activityManager = getSystemService(ACTIVITY_SERVICE) as ActivityManager?
@@ -107,7 +117,7 @@ fun LivenessActivity.getAvailableDeviceRAM(): Long {
 }
 
 fun LivenessActivity.shouldDecreaseVideoStreamQuality(): Boolean {
-    return (getAvailableDeviceRAM() < 2000)
+    return (getAvailableDeviceRAM() <= 2000)
 }
 
 private fun floatForm(d: Double): String {

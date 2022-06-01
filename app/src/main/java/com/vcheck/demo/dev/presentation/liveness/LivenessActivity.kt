@@ -22,6 +22,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.firebase.crashlytics.internal.common.CrashlyticsCore
+import com.google.firebase.crashlytics.internal.model.CrashlyticsReport
 import com.google.mediapipe.solutions.facemesh.FaceMesh
 import com.google.mediapipe.solutions.facemesh.FaceMeshOptions
 import com.google.mediapipe.solutions.facemesh.FaceMeshResult
@@ -70,7 +73,7 @@ class LivenessActivity : AppCompatActivity(),
     private var binding: ActivityLivenessBinding? = null
     private var mToast: Toast? = null
 
-    var streamSize: Size = Size(720, 960)
+    var streamSize: Size = Size(320, 240)
     private var bitmapArray: ArrayList<Bitmap>? = ArrayList()
     private var muxer: Muxer? = null
     var videoPath: String? = null //make private!
@@ -108,7 +111,7 @@ class LivenessActivity : AppCompatActivity(),
         val view = binding!!.root
         setContentView(view)
 
-        determineAndSetStreamSize()
+        //determineAndSetStreamSize()
 
         setupBrightnessLevelListener()
 
@@ -143,23 +146,30 @@ class LivenessActivity : AppCompatActivity(),
                 .build())
         facemesh!!.setErrorListener { message: String, e: RuntimeException? ->
             Log.e(TAG, "======= MediaPipe Face Mesh error : $message")
+            FirebaseCrashlytics.getInstance().recordException(RuntimeException("MediaPipe Face Mesh error : $message"))
         }
         facemesh!!.setResultListener { faceMeshResult: FaceMeshResult ->
             // Before doing something that requires a lot of memory,
             // check to see whether the device is in a low memory state.
             val memoryInfo: ActivityManager.MemoryInfo = getAvailableMemory()
             if (!memoryInfo.lowMemory) {
-                if (!isLivenessSessionFinished && !blockProcessingByUI && enoughTimeForNextGesture()) {
-                    processLandmarks(faceMeshResult)
-                } else {
-                    if (!isLivenessSessionFinished && !blockProcessingByUI) {
-                        runOnUiThread {
-                            onFatalObstacleWorthRetry(R.id.action_dummyLivenessStartDestFragment_to_noTimeFragment)
+                try {
+                    if (!isLivenessSessionFinished && !blockProcessingByUI && enoughTimeForNextGesture()) {
+                        processLandmarks(faceMeshResult)
+                    } else {
+                        if (!isLivenessSessionFinished && !blockProcessingByUI) {
+                            runOnUiThread {
+                                onFatalObstacleWorthRetry(R.id.action_dummyLivenessStartDestFragment_to_noTimeFragment)
+                            }
                         }
                     }
+                } catch (e: Exception) {
+                    FirebaseCrashlytics.getInstance().recordException(RuntimeException("Error in top-level" +
+                            "MediaPipe setResultListener: ${e.message} | ${e.cause}"))
                 }
             } else {
                 showSingleToast("[TEST] LOW MEMORY; pausing face processing for a while")
+                FirebaseCrashlytics.getInstance().recordException(Exception("Low memory caught!"))
             }
         }
     }
@@ -299,6 +309,7 @@ class LivenessActivity : AppCompatActivity(),
             }
         } catch (e: Exception) {
             Log.e(TAG, "FRONT CAMERA DETECTION ERROR: ${e.message}")
+            FirebaseCrashlytics.getInstance().recordException(e)
         }
 
         val fragment: Fragment
@@ -337,6 +348,7 @@ class LivenessActivity : AppCompatActivity(),
             }
             override fun onVideoError(error: Throwable) {
                 Log.e(TAG, "There was an error muxing the video")
+                FirebaseCrashlytics.getInstance().recordException(error)
             }
         })
 
@@ -357,30 +369,38 @@ class LivenessActivity : AppCompatActivity(),
         val framesPerImage = 1
         val framesPerSecond = 24F
 
-        val muxerConfig = MuxerConfig(createVideoFile(),
+        val muxerConfig = MuxerConfig(createVideoFile() ?: File.createTempFile(
+            "faceVideo${System.currentTimeMillis()}", ".mp4",
+                this@LivenessActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES)),
             streamSize.height, streamSize.width, MediaFormat.MIMETYPE_VIDEO_AVC,
             framesPerImage, framesPerSecond, 2500000, iFrameInterval = 1) //3, 32F, 2500000, iFrameInterval = 50 (10))
         muxer = Muxer(this@LivenessActivity, muxerConfig)
     }
 
     fun processImage() {
-        openLivenessCameraParams?.apply {
+        try {
+            openLivenessCameraParams?.apply {
 
-            imageConverter!!.run()
-            rgbFrameBitmap = Bitmap.createBitmap(previewWidth, previewHeight, Bitmap.Config.ARGB_8888)
-            rgbFrameBitmap?.setPixels(rgbBytes, 0, previewWidth, 0, 0, previewWidth, previewHeight)
+                imageConverter!!.run()
+                rgbFrameBitmap = Bitmap.createBitmap(previewWidth, previewHeight, Bitmap.Config.ARGB_8888)
+                rgbFrameBitmap?.setPixels(rgbBytes, 0, previewWidth, 0, 0, previewWidth, previewHeight)
 
-            val bitmap = rgbFrameBitmap
+                val bitmap = rgbFrameBitmap
 
-            //sending bitmap to FaceMesh to process
-            facemesh!!.send(bitmap)
+                //sending bitmap to FaceMesh to process
+                facemesh!!.send(bitmap)
+                //bitmapArray.add(bitmap!!)
+                bitmapArray?.add(rotateBitmap(bitmap!!)!!)
+                //Log.d(TAG, "------------- PUT BITMAP TO ARRAY. SIZE: ${bitmapArray.size}")
 
-            //bitmapArray.add(bitmap!!)
-            bitmapArray?.add(rotateBitmap(bitmap!!)!!)
-            //bitmapArray?.add(bitmap!!)
-            //Log.d(TAG, "------------- PUT BITMAP TO ARRAY. SIZE: ${bitmapArray.size}")
-
-            postInferenceCallback!!.run()
+                postInferenceCallback!!.run()
+            }
+        } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
+            showSingleToast("[TEST]: ${e.message}")
+        } catch (e: Error) {
+            FirebaseCrashlytics.getInstance().recordException(e)
+            showSingleToast("[TEST]: ${e.message}")
         }
     }
 
@@ -416,15 +436,20 @@ class LivenessActivity : AppCompatActivity(),
         }
     }
 
-    @Throws(IOException::class)
-    private fun createVideoFile(): File {
-        val storageDir: File =
-            this@LivenessActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
-        return File.createTempFile(
-            "faceVideo${System.currentTimeMillis()}", ".mp4", storageDir
-        ).apply {
-            videoPath = this.path
-            Log.d("VIDEO", "SAVING A FILE: ${this.path}")
+    //@Throws(IOException::class)
+    private fun createVideoFile(): File? {
+        try {
+            val storageDir: File =
+                this@LivenessActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
+            return File.createTempFile(
+                "faceVideo${System.currentTimeMillis()}", ".mp4", storageDir
+            ).apply {
+                videoPath = this.path
+                Log.d("VIDEO", "SAVING A FILE: ${this.path}")
+            }
+        } catch (e: IOException) {
+            FirebaseCrashlytics.getInstance().recordException(e)
+            return null
         }
     }
 
@@ -515,6 +540,8 @@ class LivenessActivity : AppCompatActivity(),
             Log.d(TAG, "Attempt of nav to major obstacle was made, but was already on another fragment")
         } catch (e: IllegalStateException) {
             Log.d(TAG, "Caught exception: Liveness Activity does not have a NavController set!")
+        } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
         }
     }
 
@@ -578,14 +605,14 @@ class LivenessActivity : AppCompatActivity(),
     }
 
 
-    private fun determineAndSetStreamSize() {
-        streamSize = if (shouldDecreaseVideoStreamQuality()) {
-            Size(320, 240)
-        } else {
-            Size(960, 720)
-        }
-        showSingleToast("[TEST] setting resolution to : ${streamSize.width}x${streamSize.height}")
-    }
+//    private fun determineAndSetStreamSize() {
+//        streamSize = if (shouldDecreaseVideoStreamQuality()) {
+//            Size(320, 240)
+//        } else {
+//            Size(960, 720)
+//        }
+//        showSingleToast("[TEST] setting resolution to : ${streamSize.width}x${streamSize.height}")
+//    }
 
     override fun attachBaseContext(newBase: Context) {
         val localeToSwitchTo: String = ContextUtils.getSavedLanguage(newBase)

@@ -11,6 +11,7 @@ import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VcheckDemoApp
 import com.vcheck.demo.dev.di.AppContainer
 import com.vcheck.demo.dev.util.ContextUtils
+import com.vcheck.demo.dev.util.getAvailableDeviceRAM
 
 class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, View.OnTouchListener {
 
@@ -31,6 +32,10 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Vi
         setLangSpinner()
 
         setupLangReceiver()
+
+        //TEST:
+        val avMemMB = getAvailableDeviceRAM()
+        Toast.makeText(this@MainActivity, "Av mem (total): $avMemMB MB", Toast.LENGTH_LONG).show()
     }
 
     override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
