@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.VideoView
+import androidx.activity.addCallback
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import com.vcheck.demo.dev.R
@@ -33,16 +34,13 @@ class LivenessResultVideoViewFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            //Stub; not going back from here
+        }
+
         val videoPath = (activity as LivenessActivity).videoPath
 
         val videoView: VideoView = view.findViewById(R.id.videoView)
-
-//        val restartBtn: AppCompatButton = view.findViewById(R.id.btnRestart)
-//
-//        restartBtn.setOnClickListener {
-//            videoView.stopPlayback()
-//            resetApplication()
-//        }
 
         if (videoPath != null) {
             val video: Uri = videoPath.toUri()
@@ -52,7 +50,6 @@ class LivenessResultVideoViewFragment : Fragment() {
                 videoView.start()
             }
 
-            //Log.d("mux", getFolderSizeLabel(File(videoPath)))
             saveVideoTOGalleryForChecking(videoPath, "VcheckVideo${System.currentTimeMillis()}")
         }
     }

@@ -1,5 +1,7 @@
 package com.vcheck.demo.dev.presentation.liveness.ui.in_process
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -11,6 +13,7 @@ import androidx.navigation.fragment.navArgs
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VcheckDemoApp
 import com.vcheck.demo.dev.databinding.InProcessFragmentBinding
+import com.vcheck.demo.dev.presentation.StartupActivity
 import com.vcheck.demo.dev.presentation.liveness.LivenessActivity
 import com.vcheck.demo.dev.presentation.liveness.flow_logic.VideoProcessingListener
 import com.vcheck.demo.dev.util.getFolderSizeLabel
@@ -43,6 +46,9 @@ class InProcessFragment : Fragment(R.layout.in_process_fragment), VideoProcessin
 
         _binding = InProcessFragmentBinding.bind(view)
 
+        _binding!!.successButton.isVisible = false
+        _binding!!.inProcessTitle.isVisible = false
+        _binding!!.inProcessSubtitle.isVisible = false
         _binding!!.uploadVideoLoadingIndicator.isVisible = true
 
         if (args.retry) {
@@ -58,8 +64,13 @@ class InProcessFragment : Fragment(R.layout.in_process_fragment), VideoProcessin
         if (token.isNotEmpty()) {
             _viewModel.uploadResponse.observe(viewLifecycleOwner) {
                 if (lazyUploadResponseCounter == 1) {
-                    //findNavController().navigate(R.id.action_inProcessFragment_to_livenessResultVideoViewFragment)
-                    findNavController().navigate(R.id.action_inProcessFragment_to_successFragment)
+                    _binding!!.uploadVideoLoadingIndicator.isVisible = false
+                    _binding!!.successButton.isVisible = true
+                    _binding!!.inProcessTitle.isVisible = true
+                    _binding!!.successButton.isVisible = true
+                    _binding!!.successButton.setOnClickListener {
+                        resetApplication()
+                    }
                 }
                 lazyUploadResponseCounter =+ 1
             }
@@ -70,7 +81,8 @@ class InProcessFragment : Fragment(R.layout.in_process_fragment), VideoProcessin
                     try {
                         findNavController().navigate(R.id.action_inProcessFragment_to_failVideoUploadFragment)
                     } catch (e: IllegalArgumentException) {
-                        Log.d(LivenessActivity.TAG, "Attempt of nav to success was made, but was already on another fragment")
+                        Log.d(LivenessActivity.TAG,
+                            "Attempt of nav to success was made, but was already on another fragment")
                     }
                 }
             }
@@ -84,8 +96,6 @@ class InProcessFragment : Fragment(R.layout.in_process_fragment), VideoProcessin
 
         val videoFile = File(videoPath)
 
-        Log.d("Ok", "======== VIDEO FILE FILL PATH: ${videoFile.path}")
-
         Log.d("mux", getFolderSizeLabel(videoFile))
 
         val token = ((activity as LivenessActivity).application as VcheckDemoApp)
@@ -95,13 +105,21 @@ class InProcessFragment : Fragment(R.layout.in_process_fragment), VideoProcessin
             if (token.isNotEmpty()) {
                 val partVideo: MultipartBody.Part = MultipartBody.Part.createFormData(
                     "video.mp4", videoFile.name, videoFile.asRequestBody("video/mp4".toMediaType()))
-
-                _viewModel.uploadLivenessVideo(_viewModel.repository.getVerifToken(activity as LivenessActivity),
-                    partVideo)
+                _viewModel.uploadLivenessVideo(_viewModel.repository
+                    .getVerifToken(activity as LivenessActivity), partVideo)
             } else {
                 findNavController().navigate(R.id.action_inProcessFragment_to_livenessResultVideoViewFragment)
             }
         }
+    }
 
+    private fun resetApplication() {
+        val intent = Intent(context, StartupActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        requireActivity().startActivity(intent)
+        if (context is Activity) {
+            (context as Activity).finish()
+        }
+        Runtime.getRuntime().exit(0)
     }
 }

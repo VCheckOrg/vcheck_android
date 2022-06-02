@@ -1,6 +1,5 @@
 package com.vcheck.demo.dev.presentation.liveness.ui
 
-
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
@@ -17,7 +16,6 @@ import android.media.ImageReader.OnImageAvailableListener
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
-import android.util.Log
 import android.util.Size
 import android.view.LayoutInflater
 import android.view.Surface
@@ -34,7 +32,6 @@ import java.util.*
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
 
-
 /**
  * Camera Connection Fragment that captures images from camera.
  * Instantiated by newInstance.
@@ -48,7 +45,7 @@ class CameraConnectionFragment() : Fragment() {
     companion object {
         private const val FRAGMENT_DIALOG = "dialog"
 
-        //removed chooseOptimalSize() !
+        //removed chooseOptimalSize()
         fun newInstance(
             callback: ConnectionCallback,
             imageListener: OnImageAvailableListener,
@@ -164,12 +161,6 @@ class CameraConnectionFragment() : Fragment() {
         super.onPause()
     }
 
-//    override fun onDestroy() {
-//        closeCamera()
-//        stopBackgroundThread()
-//        super.onDestroy()
-//    }
-
     fun setCamera(cameraId: String?) {
         this.cameraId = cameraId
     }
@@ -177,25 +168,10 @@ class CameraConnectionFragment() : Fragment() {
     /** Sets up member variables related to camera.  */
     private fun setUpCameraOutputs() {
         val activity = activity as LivenessActivity
-//        val manager =
-//            activity.getSystemService(Context.CAMERA_SERVICE) as CameraManager
         try {
             sensorOrientation = 270 //was CameraCharacteristics.SENSOR_ORIENTATION
 
-            //val characteristics = manager.getCameraCharacteristics(cameraId!!)
-//            val map =
-//                characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
-            // Danger, W.R.! Attempting to use too large a preview size could  exceed the camera
-            // bus' bandwidth limitation, resulting in gorgeous previews but the storage of
-            // garbage capture data.
-//            previewSize = chooseOptimalSize(
-//                map!!.getOutputSizes(SurfaceTexture::class.java),
-//                inputSize.width,
-//                inputSize.height)
-
             previewSize = activity.streamSize
-
-            Log.d("Ok", "------------ SIZE: width ${previewSize!!.width} | height: ${previewSize!!.height}")
 
             textureView!!.setAspectRatio(previewSize!!.height, previewSize!!.width)
 
@@ -206,21 +182,16 @@ class CameraConnectionFragment() : Fragment() {
         } catch (e: NullPointerException) {
             FirebaseCrashlytics.getInstance().recordException(e)
             // Currently an NPE is thrown when the Camera2API is used but not supported on the device this code runs.
-            ErrorDialog.newInstance("Camera2API is used but not supported on the device this code runs.")
+            ErrorDialog.newInstance("Camera2API is used but not supported on the device.")
                 .show(childFragmentManager, FRAGMENT_DIALOG)
         }
         cameraConnectionCallback!!.onPreviewSizeChosen(previewSize, sensorOrientation!!)
     }
 
     @SuppressLint("MissingPermission")
-    //width: Int, height: Int)
     private fun openCamera() {
         setUpCameraOutputs()
         //configureTransform(width, height)
-
-//        ErrorDialog.newInstance("Camera opening...")
-//            .show(childFragmentManager, FRAGMENT_DIALOG)
-//        FirebaseCrashlytics.getInstance().recordException(Exception("TEST"))
 
         textureView!!.post {
             backgroundHandler!!.post {
@@ -276,7 +247,6 @@ class CameraConnectionFragment() : Fragment() {
             FirebaseCrashlytics.getInstance().recordException(e)
             ErrorDialog.newInstance("Interrupted while trying to lock camera closing.")
                 .show(childFragmentManager, FRAGMENT_DIALOG)
-            //throw RuntimeException("Interrupted while trying to lock camera closing.", e)
         } finally {
             cameraOpenCloseLock.release()
         }
@@ -380,15 +350,6 @@ class CameraConnectionFragment() : Fragment() {
         fun onPreviewSizeChosen(size: Size?, cameraRotation: Int)
     }
 
-    /** Compares two `Size`s based on their areas.  */
-    internal class CompareSizesByArea : Comparator<Size?> {
-        override fun compare(lhs: Size?, rhs: Size?): Int {
-            return java.lang.Long.signum(
-                lhs!!.width.toLong() * lhs.height - rhs!!.width.toLong() * rhs.height
-            )
-        }
-    }
-
     /** Shows an error message dialog.  */
     class ErrorDialog : DialogFragment() {
 
@@ -399,7 +360,7 @@ class CameraConnectionFragment() : Fragment() {
                 .setPositiveButton(
                     android.R.string.ok
                 ) { _, _ ->
-                    //activity.finish()
+                    //activity.finish() //!
                     dismiss()
                 }
                 .create()
@@ -419,6 +380,36 @@ class CameraConnectionFragment() : Fragment() {
 
 }
 
+// ------ Deprecated/obsolete logic:
+
+//    override fun onDestroy() {
+//        closeCamera()
+//        stopBackgroundThread()
+//        super.onDestroy()
+//    }
+
+// Deprecated from setupCameraOutputs():
+//          val manager =
+//            activity.getSystemService(Context.CAMERA_SERVICE) as CameraManager
+//          val characteristics = manager.getCameraCharacteristics(cameraId!!)
+//            val map =
+//                characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
+// Danger, W.R.! Attempting to use too large a preview size could  exceed the camera
+// bus' bandwidth limitation, resulting in gorgeous previews but the storage of
+// garbage capture data.
+//            previewSize = chooseOptimalSize(
+//                map!!.getOutputSizes(SurfaceTexture::class.java),
+//                inputSize.width,
+//                inputSize.height)
+//Log.d("Ok", "------------ SIZE: width ${previewSize!!.width} | height: ${previewSize!!.height}")
+
+/** Compares two `Size`s based on their areas.  */
+//internal class CompareSizesByArea : Comparator<Size?> {
+//    override fun compare(lhs: Size?, rhs: Size?): Int {
+//        return java.lang.Long.signum(
+//            lhs!!.width.toLong() * lhs.height - rhs!!.width.toLong() * rhs.height)
+//    }
+//}
 
 /**
  * The camera preview size will be chosen to be the smallest frame by pixel size capable of
