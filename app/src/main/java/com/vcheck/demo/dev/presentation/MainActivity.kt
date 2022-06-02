@@ -1,5 +1,7 @@
 package com.vcheck.demo.dev.presentation
 
+import android.app.AlertDialog
+import android.app.Dialog
 import android.content.*
 import android.os.Bundle
 import android.util.Log
@@ -7,11 +9,12 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.DialogFragment
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VcheckDemoApp
 import com.vcheck.demo.dev.di.AppContainer
+import com.vcheck.demo.dev.presentation.liveness.LivenessActivity
 import com.vcheck.demo.dev.util.ContextUtils
-import com.vcheck.demo.dev.util.getAvailableDeviceRAM
 
 class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, View.OnTouchListener {
 
@@ -34,8 +37,8 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Vi
         setupLangReceiver()
 
         //TEST:
-        val avMemMB = getAvailableDeviceRAM()
-        Toast.makeText(this@MainActivity, "Av mem (total): $avMemMB MB", Toast.LENGTH_LONG).show()
+        // val avMemMB = getAvailableDeviceRAM()
+        // Toast.makeText(this@MainActivity, "Av mem (total): $avMemMB MB", Toast.LENGTH_LONG).show()
     }
 
     override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {

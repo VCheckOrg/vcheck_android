@@ -41,8 +41,8 @@
     <string name="look_stratight_error_subtitle">Лицо не было найдено в кадре. Старайтесь сфокусировать камеру так, чтобы лицо было по центру. Попробуйте снова.</string>
     <string name="look_stratight_error_title">Не удалось сфокусироваться на лице</string>
     <string name="look_stratight_error_button">Попробовать снова</string>
-    <string name="in_process_title">Ваша заявка на стадии обработки либо уже была обработана.</string>
-    <string name="in_process_subtitle">Идет подготовка заявки на верификацию. Пожалуйста, подождите.</string>
+    <string name="in_process_title">Ваша заявка отправлена на финальную стадии верификации.</string>
+    <string name="in_process_subtitle">Это может занять некоторое время. Теперь вы можете вернуться к основному сервису.</string>
     <string name="in_process_button">Отлично</string>
     <string name="frame_interference_description">В кадре могло быть несколько людей, либо посторонние предметы. При повторной проверке постарайтесь, чтобы в кадре было только ваше лицо и его было видно как можно четче.</string>
     <string name="frame_interference_title">В кадре много помех</string>

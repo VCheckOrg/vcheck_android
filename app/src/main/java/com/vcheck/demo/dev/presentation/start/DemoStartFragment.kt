@@ -2,6 +2,8 @@ package com.vcheck.demo.dev.presentation.start
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.vcheck.demo.dev.R
@@ -17,6 +20,7 @@ import com.vcheck.demo.dev.VcheckDemoApp
 import com.vcheck.demo.dev.databinding.FragmentDemoStartBinding
 import com.vcheck.demo.dev.domain.CountryTO
 import com.vcheck.demo.dev.presentation.MainActivity
+import com.vcheck.demo.dev.presentation.liveness.ui.CameraConnectionFragment
 import com.vcheck.demo.dev.presentation.transferrable_objects.CountriesListTO
 import com.vcheck.demo.dev.util.ContextUtils
 import com.vcheck.demo.dev.util.toFlagEmoji
@@ -28,11 +32,10 @@ class DemoStartFragment : Fragment() {
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             if (permissions.all { it.value }) {
                 //Stub; all is ok
-            } else Toast.makeText(
-                (activity as MainActivity),
-                R.string.permissions_denied,
-                Toast.LENGTH_LONG
-            ).show()
+            } else {
+                PermissionErrDialog.newInstance(getString(R.string.permissions_denied))
+                    .show(childFragmentManager, "permission_err_dialog")
+            }
         }
 
     private var _binding: FragmentDemoStartBinding? = null
@@ -122,7 +125,10 @@ class DemoStartFragment : Fragment() {
         }
 
         _viewModel.clientError.observe(viewLifecycleOwner) {
-            if (it != null) Toast.makeText(activity, it, Toast.LENGTH_LONG).show()
+            if (it != null) {
+                _binding!!.startCallChainLoadingIndicator.isVisible = false
+                Toast.makeText(activity, it, Toast.LENGTH_LONG).show()
+            }
         }
 
         _binding!!.btnStartDemoFlow.setOnClickListener {
@@ -142,9 +148,36 @@ class DemoStartFragment : Fragment() {
         requestPermissionsLauncher.launch(
             arrayOf(
                 Manifest.permission.CAMERA,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            )
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
         )
+    }
+
+    /** Shows an error message dialog.  */
+    class PermissionErrDialog : DialogFragment() {
+
+        override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+            val activity = activity as MainActivity
+            return AlertDialog.Builder(activity)
+                .setMessage(arguments?.getString(ARG_MESSAGE))
+                .setPositiveButton(
+                    android.R.string.ok
+                ) { _, _ ->
+                    //activity.finish() //!
+                    dismiss()
+                }
+                .create()
+        }
+        companion object {
+            private const val ARG_MESSAGE = "message"
+            fun newInstance(message: String?): PermissionErrDialog {
+                val dialog =
+                    PermissionErrDialog()
+                val args = Bundle()
+                args.putString(ARG_MESSAGE, message)
+                dialog.arguments = args
+                return dialog
+            }
+        }
     }
 
 }

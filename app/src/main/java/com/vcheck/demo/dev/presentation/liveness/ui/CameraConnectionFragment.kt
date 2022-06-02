@@ -43,15 +43,13 @@ class CameraConnectionFragment() : Fragment() {
     private var imageListener: OnImageAvailableListener? = null
 
     companion object {
-        private const val FRAGMENT_DIALOG = "dialog"
+        private const val FRAGMENT_DIALOG = "camera_dialog"
 
         //removed chooseOptimalSize()
         fun newInstance(
             callback: ConnectionCallback,
-            imageListener: OnImageAvailableListener,
-            //layout: Int,
-            //inputSize: Size
-        ): CameraConnectionFragment {
+            imageListener: OnImageAvailableListener)
+        : CameraConnectionFragment {
             val fragment = CameraConnectionFragment()
             fragment.cameraConnectionCallback = callback
             fragment.imageListener = imageListener

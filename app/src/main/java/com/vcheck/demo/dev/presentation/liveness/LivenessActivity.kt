@@ -63,7 +63,7 @@ class LivenessActivity : AppCompatActivity(),
         private const val MAX_MILESTONES_NUM = 468
         private const val DEBOUNCE_PROCESS_MILLIS = 50 //may reduce a bit
         private const val LIVENESS_TIME_LIMIT_MILLIS = 14000 //max is 15000
-        private const val BLOCK_PIPELINE_TIME_MILLIS: Long = 1400 //may reduce a bit
+        private const val BLOCK_PIPELINE_TIME_MILLIS: Long = 1200 //may reduce a bit
         private const val STAGE_VIBRATION_DURATION_MILLIS: Long = 100
         private const val MAX_FRAMES_W_O_MAJOR_OBSTACLES = 12
         private const val MIN_FRAMES_FOR_MINOR_OBSTACLES = 4
@@ -202,7 +202,6 @@ class LivenessActivity : AppCompatActivity(),
 
     override fun onMilestoneResult(gestureMilestoneType: GestureMilestoneType) {
         blockProcessingByUI = true
-
         runOnUiThread {
             binding!!.faceAnimationView.isVisible = false
             binding!!.arrowAnimationView.isVisible = false
@@ -385,13 +384,13 @@ class LivenessActivity : AppCompatActivity(),
                 rgbFrameBitmap = Bitmap.createBitmap(previewWidth, previewHeight, Bitmap.Config.ARGB_8888)
                 rgbFrameBitmap?.setPixels(rgbBytes, 0, previewWidth, 0, 0, previewWidth, previewHeight)
 
-                val bitmap = rgbFrameBitmap
-
                 //sending bitmap to FaceMesh to process
-                facemesh!!.send(bitmap)
+                facemesh!!.send(rgbFrameBitmap!!)
                 //bitmapArray.add(bitmap!!)
-                bitmapArray?.add(rotateBitmap(bitmap!!)!!)
+                bitmapArray?.add(rotateBitmap(rgbFrameBitmap!!)!!)
                 //Log.d(TAG, "------------- PUT BITMAP TO ARRAY. SIZE: ${bitmapArray.size}")
+
+                rgbFrameBitmap!!.recycle() //test!
 
                 postInferenceCallback!!.run()
             }
@@ -604,16 +603,6 @@ class LivenessActivity : AppCompatActivity(),
         mToast?.show()
     }
 
-
-//    private fun determineAndSetStreamSize() {
-//        streamSize = if (shouldDecreaseVideoStreamQuality()) {
-//            Size(320, 240)
-//        } else {
-//            Size(960, 720)
-//        }
-//        showSingleToast("[TEST] setting resolution to : ${streamSize.width}x${streamSize.height}")
-//    }
-
     override fun attachBaseContext(newBase: Context) {
         val localeToSwitchTo: String = ContextUtils.getSavedLanguage(newBase)
         Log.d("Ok", "======== attachBaseContext[LivenessActivity] LOCALE TO SWITCH TO : $localeToSwitchTo")
@@ -640,6 +629,16 @@ class LivenessActivity : AppCompatActivity(),
         muxer = null
         openLivenessCameraParams = null
     }
+
+    // !
+    //    private fun determineAndSetStreamSize() {
+    //        streamSize = if (shouldDecreaseVideoStreamQuality()) {
+    //            Size(320, 240)
+    //        } else {
+    //            Size(960, 720)
+    //        }
+    //        showSingleToast("[TEST] setting resolution to : ${streamSize.width}x${streamSize.height}")
+    //    }
 
     //            Log.i(TAG, "--------------- IDX: $idx")
     //            Log.i(TAG, "--------------- x: ${arr[0]} | y: ${arr[1]} | z: ${arr[2]}")
