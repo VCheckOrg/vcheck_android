@@ -86,7 +86,7 @@ class MainRepository(
     }
 
     fun uploadLivenessVideo(verifToken: String, video: MultipartBody.Part)
-        : MutableLiveData<Resource<Response<Void>>> {
+        : MutableLiveData<Resource<LivenessUploadResponse>> {
         return if (verifToken.isNotEmpty()) {
             remoteDatasource.uploadLivenessVideo(verifToken, video)
         } else MutableLiveData(Resource.error(ApiError(BaseClientErrors.NO_TOKEN_AVAILABLE)))

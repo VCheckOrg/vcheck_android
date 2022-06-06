@@ -66,9 +66,9 @@ class DemoStartFragment : Fragment() {
 
         _viewModel.verifResponse.observe(viewLifecycleOwner) {
             if (it.data?.data != null) {
-                _binding!!.tvCreateVerificationResultInfo.text =
-                    "CREATED VERIFICATION REQUEST: application_id : ${it.data.data.applicationId} |" +
-                            "redirect_url : ${it.data.data.redirectUrl}" //+create_time
+//                _binding!!.tvCreateVerificationResultInfo.text =
+//                    "CREATED VERIFICATION REQUEST: application_id : ${it.data.data.applicationId} |" +
+//                            "redirect_url : ${it.data.data.redirectUrl}" //+create_time
 
                 if (it.data.data.redirectUrl != null) {
                     _viewModel.repository.storeVerifToken(
@@ -89,10 +89,10 @@ class DemoStartFragment : Fragment() {
 
         _viewModel.initResponse.observe(viewLifecycleOwner) {
             if (it.data?.data != null) {
-                _binding!!.tvInitVerificationResultInfo.text =
-                    "INITIALIZED VERIFICATION: document : ${it.data.data.document} |" +
-                            "return_url : ${it.data.data.returnUrl} | stage: ${it.data.data.stage}" +
-                            "| locale: ${it.data.data.locale}"
+//                _binding!!.tvInitVerificationResultInfo.text =
+//                    "INITIALIZED VERIFICATION: document : ${it.data.data.document} |" +
+//                            "return_url : ${it.data.data.returnUrl} | stage: ${it.data.data.stage}" +
+//                            "| locale: ${it.data.data.locale}"
 
                 _viewModel.repository.storeMaxLivenessLocalAttempts(
                     (activity as MainActivity), it.data.data.livenessAttempts)

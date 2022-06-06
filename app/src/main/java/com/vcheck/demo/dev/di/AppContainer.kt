@@ -18,19 +18,19 @@ class AppContainer(val app: VcheckDemoApp) {
     private var retrofit: Retrofit
 
     init {
-        val logging = HttpLoggingInterceptor()
+        //val logging = HttpLoggingInterceptor()
 
         val httpClient = OkHttpClient.Builder()
 
-        httpClient.addInterceptor { chain ->
-            val original: Request = chain.request()
-            val request: Request = original.newBuilder().build()
-            val hasMultipart: Boolean = request.headers.names().contains("multipart")
-            logging.setLevel(if (hasMultipart) HttpLoggingInterceptor.Level.HEADERS else HttpLoggingInterceptor.Level.BODY)
-            chain.proceed(request)
-        }.build()
+//        httpClient.addInterceptor { chain ->
+//            val original: Request = chain.request()
+//            val request: Request = original.newBuilder().build()
+//            val hasMultipart: Boolean = request.headers.names().contains("multipart")
+//            logging.setLevel(if (hasMultipart) HttpLoggingInterceptor.Level.HEADERS else HttpLoggingInterceptor.Level.BODY)
+//            chain.proceed(request)
+//        }.build()
 
-        httpClient.addInterceptor(logging)
+        //httpClient.addInterceptor(logging)
         httpClient.readTimeout(180, TimeUnit.SECONDS) //3min
         httpClient.connectTimeout(180, TimeUnit.SECONDS) //3min
 

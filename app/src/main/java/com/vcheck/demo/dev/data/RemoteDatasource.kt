@@ -97,8 +97,8 @@ class RemoteDatasource(private val apiClient: ApiClient) {
     }
 
     fun uploadLivenessVideo(verifToken: String, video: MultipartBody.Part)
-        : MutableLiveData<Resource<Response<Void>>> {
-        return NetworkCall<Response<Void>>().makeCall(apiClient.uploadLivenessVideo(
+        : MutableLiveData<Resource<LivenessUploadResponse>> {
+        return NetworkCall<LivenessUploadResponse>().makeCall(apiClient.uploadLivenessVideo(
             verifToken, video))
     }
 }

@@ -1,7 +1,5 @@
 package com.vcheck.demo.dev.presentation.liveness.ui.in_process
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -13,7 +11,10 @@ import androidx.navigation.fragment.navArgs
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VcheckDemoApp
 import com.vcheck.demo.dev.databinding.InProcessFragmentBinding
-import com.vcheck.demo.dev.presentation.StartupActivity
+import com.vcheck.demo.dev.domain.LivenessChallengeStatus
+import com.vcheck.demo.dev.domain.LivenessFailureReason
+import com.vcheck.demo.dev.domain.statusCodeToLivenessChallengeStatus
+import com.vcheck.demo.dev.domain.strCodeToLivenessFailureReason
 import com.vcheck.demo.dev.presentation.liveness.LivenessActivity
 import com.vcheck.demo.dev.presentation.liveness.flow_logic.VideoProcessingListener
 import com.vcheck.demo.dev.util.getFolderSizeLabel
@@ -21,6 +22,8 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
+import kotlin.system.exitProcess
+import kotlin.time.Duration.Companion.days
 
 class InProcessFragment : Fragment(R.layout.in_process_fragment), VideoProcessingListener {
 
@@ -63,33 +66,60 @@ class InProcessFragment : Fragment(R.layout.in_process_fragment), VideoProcessin
 
         if (token.isNotEmpty()) {
             _viewModel.uploadResponse.observe(viewLifecycleOwner) {
-                if (lazyUploadResponseCounter == 1) {
-                    _binding!!.uploadVideoLoadingIndicator.isVisible = false
-                    _binding!!.successButton.isVisible = true
-                    _binding!!.inProcessTitle.isVisible = true
-                    _binding!!.inProcessSubtitle.isVisible = true
-                    _binding!!.successButton.isVisible = true
-                    _binding!!.successButton.setOnClickListener {
-                        resetApplication()
+                Log.d(LivenessActivity.TAG,
+                    "UPL COUNTER: $lazyUploadResponseCounter")
+                if (lazyUploadResponseCounter == 1 && it.data != null) {
+                    Log.d(LivenessActivity.TAG, "DATA: ${it.data}")
+                    if (it.data.isFinal) {
+                        Toast.makeText(activity, "[TODO] This upload response is final!",
+                            Toast.LENGTH_LONG).show()
+                    } else if (statusCodeToLivenessChallengeStatus(it.data.status) == LivenessChallengeStatus.FAIL) {
+                        if (it.data.reason != null && it.data.reason.isNotEmpty()) {
+                            when(strCodeToLivenessFailureReason(it.data.reason)) {
+//                                LivenessFailureReason.DISCONNECTED -> {
+//                                    //TODO
+//                                }
+                            }
+                        } else {
+                            navigateToVideoUploadFailFragment()
+                        }
+                    } else {
+                        onVideoUploadResponseSuccess()
                     }
+                } else {
+                    lazyUploadResponseCounter =+ 1
                 }
-                lazyUploadResponseCounter =+ 1
             }
 
             _viewModel.clientError.observe(viewLifecycleOwner) {
                 if (it != null) {
                     Toast.makeText(activity, it, Toast.LENGTH_LONG).show()
-                    try {
-                        findNavController().navigate(R.id.action_inProcessFragment_to_failVideoUploadFragment)
-                    } catch (e: IllegalArgumentException) {
-                        Log.d(LivenessActivity.TAG,
-                            "Attempt of nav to success was made, but was already on another fragment")
-                    }
+                    navigateToVideoUploadFailFragment()
                 }
             }
         } else {
             Toast.makeText((activity as LivenessActivity),
                 "Local(test) Liveness demo is running; skipping video upload request!", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun onVideoUploadResponseSuccess() {
+        _binding!!.uploadVideoLoadingIndicator.isVisible = false
+        _binding!!.successButton.isVisible = true
+        _binding!!.inProcessTitle.isVisible = true
+        _binding!!.inProcessSubtitle.isVisible = true
+        _binding!!.successButton.isVisible = true
+        _binding!!.successButton.setOnClickListener {
+            quitTestApplication()
+        }
+    }
+
+    private fun navigateToVideoUploadFailFragment() {
+        try {
+            findNavController().navigate(R.id.action_inProcessFragment_to_failVideoUploadFragment)
+        } catch (e: IllegalArgumentException) {
+            Log.d(LivenessActivity.TAG,
+                "Attempt of nav to success was made, but was already on another fragment")
         }
     }
 
@@ -114,13 +144,8 @@ class InProcessFragment : Fragment(R.layout.in_process_fragment), VideoProcessin
         }
     }
 
-    private fun resetApplication() {
-        val intent = Intent(context, StartupActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        requireActivity().startActivity(intent)
-        if (context is Activity) {
-            (context as Activity).finish()
-        }
-        Runtime.getRuntime().exit(0)
+    private fun quitTestApplication() {
+        (activity as LivenessActivity).finishAffinity()
+        exitProcess(0)
     }
 }

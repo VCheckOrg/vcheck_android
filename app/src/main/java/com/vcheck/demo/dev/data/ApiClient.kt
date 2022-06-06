@@ -74,5 +74,5 @@ interface ApiClient {
     fun uploadLivenessVideo(
         @Header("Authorization") verifToken: String,
         @Part video: MultipartBody.Part
-    ) : Call<Response<Void>>
+    ) : Call<LivenessUploadResponse>
 }

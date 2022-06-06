@@ -4,10 +4,6 @@ import android.app.ActivityManager
 import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.Bitmap
-import android.hardware.Sensor
-import android.hardware.SensorEvent
-import android.hardware.SensorEventListener
-import android.hardware.SensorManager
 import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
 import android.media.ImageReader
@@ -23,8 +19,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.google.firebase.crashlytics.internal.common.CrashlyticsCore
-import com.google.firebase.crashlytics.internal.model.CrashlyticsReport
 import com.google.mediapipe.solutions.facemesh.FaceMesh
 import com.google.mediapipe.solutions.facemesh.FaceMeshOptions
 import com.google.mediapipe.solutions.facemesh.FaceMeshResult
@@ -35,7 +29,6 @@ import com.vcheck.demo.dev.presentation.liveness.flow_logic.*
 import com.vcheck.demo.dev.presentation.liveness.ui.CameraConnectionFragment
 import com.vcheck.demo.dev.util.ContextUtils
 import com.vcheck.demo.dev.util.setMargins
-import com.vcheck.demo.dev.util.shouldDecreaseVideoStreamQuality
 import com.vcheck.demo.dev.util.vibrateDevice
 import com.vcheck.demo.dev.util.video.Muxer
 import com.vcheck.demo.dev.util.video.MuxerConfig
@@ -61,13 +54,13 @@ class LivenessActivity : AppCompatActivity(),
         private const val STATIC_PIPELINE_IMAGE_MODE = true
         private const val REFINE_PIPELINE_LANDMARKS = false
         private const val MAX_MILESTONES_NUM = 468
-        private const val DEBOUNCE_PROCESS_MILLIS = 50 //may reduce a bit
+        private const val DEBOUNCE_PROCESS_MILLIS = 70 //may reduce a bit
         private const val LIVENESS_TIME_LIMIT_MILLIS = 14000 //max is 15000
         private const val BLOCK_PIPELINE_TIME_MILLIS: Long = 1200 //may reduce a bit
         private const val STAGE_VIBRATION_DURATION_MILLIS: Long = 100
         private const val MAX_FRAMES_W_O_MAJOR_OBSTACLES = 12
         private const val MIN_FRAMES_FOR_MINOR_OBSTACLES = 4
-        private const val MIN_AFFORDABLE_BRIGHTNESS_VALUE = 12.0 // on some old devices, values are really low!
+        //private const val MIN_AFFORDABLE_BRIGHTNESS_VALUE = 12.0 // on some old devices, values are really low!
     }
 
     private var binding: ActivityLivenessBinding? = null
@@ -80,6 +73,8 @@ class LivenessActivity : AppCompatActivity(),
 
     var openLivenessCameraParams: LivenessCameraParams? = LivenessCameraParams()
 
+    private var camera2Fragment: CameraConnectionFragment? = null
+
     private var facemesh: FaceMesh? = null
     private var faceCheckDebounceTime: Long = 0
     private var livenessSessionLimitCheckTime: Long = 0
@@ -88,18 +83,8 @@ class LivenessActivity : AppCompatActivity(),
 
     private var multiFaceFrameCounter: Int = 0
     private var noFaceFrameCounter: Int = 0
-    private var lowBrightnessFrameCounter: Int = 0
+    //private var lowBrightnessFrameCounter: Int = 0
     private var minorObstacleFrameCounter: Int = 0
-
-    private var sensorManager: SensorManager? = null
-    private var lightSensor: Sensor? = null
-    private val brightnessListener = object : SensorEventListener {
-        override fun onSensorChanged(event: SensorEvent) {
-            val lightQuantity = event.values[0]
-            onBrightnessChanged(lightQuantity)
-        }
-        override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {} //Stub
-    }
 
     private var milestoneFlow: StandardMilestoneFlow =
         StandardMilestoneFlow(this@LivenessActivity)
@@ -111,9 +96,8 @@ class LivenessActivity : AppCompatActivity(),
         val view = binding!!.root
         setContentView(view)
 
-        //determineAndSetStreamSize()
-
-        setupBrightnessLevelListener()
+        //determineAndSetStreamSize() //!
+        //setupBrightnessLevelListener()
 
         resetMilestonesForNewLivenessSession()
 
@@ -151,8 +135,7 @@ class LivenessActivity : AppCompatActivity(),
         facemesh!!.setResultListener { faceMeshResult: FaceMeshResult ->
             // Before doing something that requires a lot of memory,
             // check to see whether the device is in a low memory state.
-            val memoryInfo: ActivityManager.MemoryInfo = getAvailableMemory()
-            if (!memoryInfo.lowMemory) {
+            if (!getAvailableMemory().lowMemory) {
                 try {
                     if (!isLivenessSessionFinished && !blockProcessingByUI && enoughTimeForNextGesture()) {
                         processLandmarks(faceMeshResult)
@@ -193,7 +176,7 @@ class LivenessActivity : AppCompatActivity(),
                     onFatalObstacleWorthRetry(R.id.action_dummyLivenessStartDestFragment_to_lookStraightErrorFragment)
                 }
                 ObstacleType.BRIGHTNESS_LEVEL_IS_LOW -> {
-                    sensorManager?.unregisterListener(brightnessListener)
+                    //sensorManager?.unregisterListener(brightnessListener)
                     onFatalObstacleWorthRetry(R.id.action_dummyLivenessStartDestFragment_to_tooDarkFragment)
                 }
             }
@@ -311,8 +294,7 @@ class LivenessActivity : AppCompatActivity(),
             FirebaseCrashlytics.getInstance().recordException(e)
         }
 
-        val fragment: Fragment
-        val camera2Fragment = CameraConnectionFragment.newInstance(
+        camera2Fragment = CameraConnectionFragment.newInstance(
             object :
                 CameraConnectionFragment.ConnectionCallback {
                 override fun onPreviewSizeChosen(size: Size?, cameraRotation: Int) {
@@ -323,8 +305,9 @@ class LivenessActivity : AppCompatActivity(),
             },
             this@LivenessActivity)
 
-        camera2Fragment.setCamera(cameraId)
-        fragment = camera2Fragment
+        camera2Fragment!!.setCamera(cameraId)
+
+        val fragment: Fragment = camera2Fragment!!
         supportFragmentManager.beginTransaction().replace(R.id.container, fragment).commit()
     }
 
@@ -396,42 +379,10 @@ class LivenessActivity : AppCompatActivity(),
             }
         } catch (e: Exception) {
             FirebaseCrashlytics.getInstance().recordException(e)
-            showSingleToast("[TEST]: ${e.message}")
+            showSingleToast("[TEST-processImage ex]: ${e.message}")
         } catch (e: Error) {
             FirebaseCrashlytics.getInstance().recordException(e)
-            showSingleToast("[TEST]: ${e.message}")
-        }
-    }
-
-    private fun setupBrightnessLevelListener() {
-        sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
-        if (sensorManager!!.getDefaultSensor(Sensor.TYPE_LIGHT) != null) {
-            // Success! Light sensor exists.
-            lightSensor = (sensorManager as SensorManager).getDefaultSensor(Sensor.TYPE_LIGHT)
-            sensorManager?.registerListener(
-                brightnessListener, lightSensor, SensorManager.SENSOR_DELAY_UI)
-            Log.d(TAG,"Light sensor is available")
-        }
-        else {
-            // Failure! Light sensor not available.
-            Handler(Looper.getMainLooper()).postDelayed({
-                Toast.makeText(this@LivenessActivity,
-                    "[Info] Light sensor not available for current device", Toast.LENGTH_LONG).show()
-            },2000)
-        }
-    }
-
-    private fun onBrightnessChanged(lightQuantity: Float) {
-        Log.d("LIVENESS", "-------- BRIGHTNESS: $lightQuantity")
-        if (lightQuantity < MIN_AFFORDABLE_BRIGHTNESS_VALUE && (lightQuantity > 5.0 || lightQuantity < 0.0)) {
-            lowBrightnessFrameCounter += 1
-            //Log.d("LIVENESS", "-------- LOW BRIGHTNESS - FRAME COUNT: $lowBrightnessFrameCounter")
-            if (lowBrightnessFrameCounter >= MAX_FRAMES_W_O_MAJOR_OBSTACLES) {
-                lowBrightnessFrameCounter = 0
-                onObstacleMet(ObstacleType.BRIGHTNESS_LEVEL_IS_LOW)
-            }
-        } else {
-            lowBrightnessFrameCounter = 0
+            showSingleToast("[TEST-processImage err]: ${e.message}")
         }
     }
 
@@ -528,6 +479,7 @@ class LivenessActivity : AppCompatActivity(),
         }
         Handler(Looper.getMainLooper()).postDelayed({
             binding!!.livenessCosmeticsHolder.isVisible = false
+            camera2Fragment?.onPause() //!
             safeNavigateToResultDestination(R.id.action_dummyLivenessStartDestFragment_to_inProcessFragment)
         }, 1000)
     }
@@ -577,7 +529,7 @@ class LivenessActivity : AppCompatActivity(),
             finishLivenessSession()
             livenessSessionLimitCheckTime = SystemClock.elapsedRealtime()
             binding!!.livenessCosmeticsHolder.isVisible = false
-            sensorManager?.unregisterListener(brightnessListener)
+            //sensorManager?.unregisterListener(brightnessListener)
             safeNavigateToResultDestination(actionIdForNav)
         } else {
             delayedNavigateOnLivenessSessionEnd(false)
@@ -621,13 +573,12 @@ class LivenessActivity : AppCompatActivity(),
 
     override fun onDestroy() {
         super.onDestroy()
-
-        sensorManager = null
-        lightSensor = null
         facemesh?.close()
         bitmapArray = null
         muxer = null
         openLivenessCameraParams = null
+//        sensorManager = null
+//        lightSensor = null
     }
 
     // !
@@ -688,4 +639,48 @@ class LivenessActivity : AppCompatActivity(),
 //                || !faceMeshResult.multiFaceLandmarks()[0].landmarkList[17].isInitialized
 //    }
 
+
+// BRIGHTNESS SENSOR (OBSOLETE)
+
+//    private var sensorManager: SensorManager? = null
+//    private var lightSensor: Sensor? = null
+//    private val brightnessListener = object : SensorEventListener {
+//        override fun onSensorChanged(event: SensorEvent) {
+//            val lightQuantity = event.values[0]
+//            onBrightnessChanged(lightQuantity)
+//        }
+//        override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {} //Stub
+//    }
+
+//    private fun setupBrightnessLevelListener() {
+//        sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
+//        if (sensorManager!!.getDefaultSensor(Sensor.TYPE_LIGHT) != null) {
+//            // Success! Light sensor exists.
+//            lightSensor = (sensorManager as SensorManager).getDefaultSensor(Sensor.TYPE_LIGHT)
+//            sensorManager?.registerListener(
+//                brightnessListener, lightSensor, SensorManager.SENSOR_DELAY_UI)
+//            Log.d(TAG,"Light sensor is available")
+//        }
+//        else {
+//            // Failure! Light sensor not available.
+//            Handler(Looper.getMainLooper()).postDelayed({
+//                Toast.makeText(this@LivenessActivity,
+//                    "[Info] Light sensor not available for current device", Toast.LENGTH_LONG).show()
+//            },2000)
+//        }
+//    }
+
+//    private fun onBrightnessChanged(lightQuantity: Float) {
+//        //Log.d("LIVENESS", "-------- BRIGHTNESS: $lightQuantity")
+//        if (lightQuantity < MIN_AFFORDABLE_BRIGHTNESS_VALUE && (lightQuantity > 5.0 || lightQuantity < 0.0)) {
+//            lowBrightnessFrameCounter += 1
+//            //Log.d("LIVENESS", "-------- LOW BRIGHTNESS - FRAME COUNT: $lowBrightnessFrameCounter")
+//            if (lowBrightnessFrameCounter >= MAX_FRAMES_W_O_MAJOR_OBSTACLES) {
+//                lowBrightnessFrameCounter = 0
+//                onObstacleMet(ObstacleType.BRIGHTNESS_LEVEL_IS_LOW)
+//            }
+//        } else {
+//            lowBrightnessFrameCounter = 0
+//        }
+//    }
 }
