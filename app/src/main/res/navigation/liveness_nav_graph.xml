@@ -50,6 +50,21 @@
             android:name="retry"
             app:argType="boolean"
             android:defaultValue="false" />
+        <action
+            android:id="@+id/action_inProcessFragment_to_wrongMoveFragment"
+            app:destination="@id/wrongMoveFragment" />
+        <action
+            android:id="@+id/action_inProcessFragment_to_tooFastMovementsFragment"
+            app:destination="@id/tooFastMovementsFragment" />
+        <action
+            android:id="@+id/action_inProcessFragment_to_frameInterferenceFragment"
+            app:destination="@id/frameInterferenceFragment" />
+        <action
+            android:id="@+id/action_inProcessFragment_to_tooDarkFragment"
+            app:destination="@id/tooDarkFragment" />
+        <action
+            android:id="@+id/action_inProcessFragment_to_lookStraightErrorFragment"
+            app:destination="@id/lookStraightErrorFragment" />
     </fragment>
 
     <fragment
@@ -66,19 +81,34 @@
         android:id="@+id/lookStraightErrorFragment"
         android:name="com.vcheck.demo.dev.presentation.liveness.ui.failures.LookStraightErrorFragment"
         android:label="look_straight_error_fragment"
-        tools:layout="@layout/look_straight_error_fragment" />
+        tools:layout="@layout/look_straight_error_fragment" >
+        <argument
+            android:name="isFromUploadResponse"
+            app:argType="boolean"
+            android:defaultValue="false" />
+    </fragment>
 
     <fragment
         android:id="@+id/frameInterferenceFragment"
         android:name="com.vcheck.demo.dev.presentation.liveness.ui.failures.FrameInterferenceFragment"
         android:label="frame_interference_fragment"
-        tools:layout="@layout/frame_interference_fragment" />
+        tools:layout="@layout/frame_interference_fragment" >
+        <argument
+            android:name="isFromUploadResponse"
+            app:argType="boolean"
+            android:defaultValue="false" />
+    </fragment>
 
     <fragment
         android:id="@+id/wrongMoveFragment"
         android:name="com.vcheck.demo.dev.presentation.liveness.ui.failures.WrongMoveFragment"
         android:label="wrong_move_fragment"
-        tools:layout="@layout/wrong_move_fragment" />
+        tools:layout="@layout/wrong_move_fragment" >
+        <argument
+            android:name="isFromUploadResponse"
+            app:argType="boolean"
+            android:defaultValue="false" />
+    </fragment>
 
     <fragment
         android:id="@+id/failVerificationFragment"
@@ -103,11 +133,21 @@
         android:id="@+id/tooDarkFragment"
         android:name="com.vcheck.demo.dev.presentation.liveness.ui.failures.TooDarkFragment"
         android:label="too_dark_fragment"
-        tools:layout="@layout/too_dark_fragment" />
+        tools:layout="@layout/too_dark_fragment" >
+        <argument
+            android:name="isFromUploadResponse"
+            app:argType="boolean"
+            android:defaultValue="false" />
+    </fragment>
     <fragment
         android:id="@+id/tooFastMovementsFragment"
         android:name="com.vcheck.demo.dev.presentation.liveness.ui.failures.TooFastMovementsFragment"
         android:label="too_fast_movements_fragment"
-        tools:layout="@layout/too_fast_movements_fragment" />
+        tools:layout="@layout/too_fast_movements_fragment" >
+        <argument
+            android:name="isFromUploadResponse"
+            app:argType="boolean"
+            android:defaultValue="false" />
+    </fragment>
 
 </navigation>

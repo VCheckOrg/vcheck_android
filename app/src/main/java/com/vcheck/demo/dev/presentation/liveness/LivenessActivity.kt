@@ -83,7 +83,6 @@ class LivenessActivity : AppCompatActivity(),
 
     private var multiFaceFrameCounter: Int = 0
     private var noFaceFrameCounter: Int = 0
-    //private var lowBrightnessFrameCounter: Int = 0
     private var minorObstacleFrameCounter: Int = 0
 
     private var milestoneFlow: StandardMilestoneFlow =
@@ -97,7 +96,6 @@ class LivenessActivity : AppCompatActivity(),
         setContentView(view)
 
         //determineAndSetStreamSize() //!
-        //setupBrightnessLevelListener()
 
         resetMilestonesForNewLivenessSession()
 
@@ -176,7 +174,6 @@ class LivenessActivity : AppCompatActivity(),
                     onFatalObstacleWorthRetry(R.id.action_dummyLivenessStartDestFragment_to_lookStraightErrorFragment)
                 }
                 ObstacleType.BRIGHTNESS_LEVEL_IS_LOW -> {
-                    //sensorManager?.unregisterListener(brightnessListener)
                     onFatalObstacleWorthRetry(R.id.action_dummyLivenessStartDestFragment_to_tooDarkFragment)
                 }
             }
@@ -209,9 +206,7 @@ class LivenessActivity : AppCompatActivity(),
     }
 
     private fun processLandmarks(faceMeshResult: FaceMeshResult) {
-        // convert markers to 2DArray each 1 second or less (may vary)
         if (mayProcessNextLandmarkArray()) {
-            //Log.d(TAG, "======== FACES: ${faceMeshResult.multiFaceLandmarks().size}")
             if (faceMeshResult.multiFaceLandmarks().size >= 2) {
                 multiFaceFrameCounter += 1
                 if (multiFaceFrameCounter >= MAX_FRAMES_W_O_MAJOR_OBSTACLES) {
@@ -220,7 +215,6 @@ class LivenessActivity : AppCompatActivity(),
                 }
             } else if (faceMeshResult.multiFaceLandmarks().isEmpty()) {
                 noFaceFrameCounter += 1
-                Log.d("LIVENESS", "-------- ___NO___ FACE DETECTED - FRAME COUNT: $noFaceFrameCounter")
                 if (noFaceFrameCounter >= MAX_FRAMES_W_O_MAJOR_OBSTACLES) {
                     noFaceFrameCounter = 0
                     onObstacleMet(ObstacleType.NO_OR_PARTIAL_FACE_DETECTED)
@@ -295,8 +289,7 @@ class LivenessActivity : AppCompatActivity(),
         }
 
         camera2Fragment = CameraConnectionFragment.newInstance(
-            object :
-                CameraConnectionFragment.ConnectionCallback {
+            object : CameraConnectionFragment.ConnectionCallback {
                 override fun onPreviewSizeChosen(size: Size?, cameraRotation: Int) {
                     openLivenessCameraParams?.previewHeight = size!!.height
                     openLivenessCameraParams?.previewWidth = size.width
@@ -335,10 +328,7 @@ class LivenessActivity : AppCompatActivity(),
         })
 
         val finalList = CopyOnWriteArrayList(bitmapArray!!)
-        Thread {
-            Log.d(TAG, "-------------------- MUXING......")
-            muxer!!.mux(finalList)
-        }.start()
+        Thread { muxer!!.mux(finalList) }.start()
     }
 
     private fun setUpMuxer() {
@@ -367,13 +357,12 @@ class LivenessActivity : AppCompatActivity(),
                 rgbFrameBitmap = Bitmap.createBitmap(previewWidth, previewHeight, Bitmap.Config.ARGB_8888)
                 rgbFrameBitmap?.setPixels(rgbBytes, 0, previewWidth, 0, 0, previewWidth, previewHeight)
 
-                //sending bitmap to FaceMesh to process
+                //sending bitmap to FaceMesh to process:
                 facemesh!!.send(rgbFrameBitmap!!)
-                //bitmapArray.add(bitmap!!)
+                //caching bitmap to array/list:
                 bitmapArray?.add(rotateBitmap(rgbFrameBitmap!!)!!)
-                //Log.d(TAG, "------------- PUT BITMAP TO ARRAY. SIZE: ${bitmapArray.size}")
-
-                rgbFrameBitmap!!.recycle() //test!
+                //recycling bitmap:
+                rgbFrameBitmap!!.recycle()
 
                 postInferenceCallback!!.run()
             }
@@ -386,12 +375,11 @@ class LivenessActivity : AppCompatActivity(),
         }
     }
 
-    //@Throws(IOException::class)
     private fun createVideoFile(): File? {
-        try {
+        return try {
             val storageDir: File =
                 this@LivenessActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
-            return File.createTempFile(
+            File.createTempFile(
                 "faceVideo${System.currentTimeMillis()}", ".mp4", storageDir
             ).apply {
                 videoPath = this.path
@@ -399,7 +387,7 @@ class LivenessActivity : AppCompatActivity(),
             }
         } catch (e: IOException) {
             FirebaseCrashlytics.getInstance().recordException(e)
-            return null
+            null
         }
     }
 
@@ -516,10 +504,11 @@ class LivenessActivity : AppCompatActivity(),
         }, 1200)
     }
 
+    //TODO consider not counting local attempts, back only (?)
     private fun onFatalObstacleWorthRetry(actionIdForNav: Int) {
         val actualAttemptsNum = (application as VcheckDemoApp).appContainer.mainRepository
             .getActualLivenessLocalAttempts(this@LivenessActivity)
-        Log.d("LIVENESS", "========== ACTUAL ATTEMPTS NUM : $actualAttemptsNum")
+        Log.d("LIVENESS", "========== ACTUAL ATTEMPTS NUM (CLIENT OR BACK) : $actualAttemptsNum")
         val maxAttemptsNum = (application as VcheckDemoApp).appContainer.mainRepository
             .getMaxLivenessLocalAttempts(this@LivenessActivity)
         if (actualAttemptsNum < maxAttemptsNum && !isLivenessSessionFinished) {
@@ -529,7 +518,6 @@ class LivenessActivity : AppCompatActivity(),
             finishLivenessSession()
             livenessSessionLimitCheckTime = SystemClock.elapsedRealtime()
             binding!!.livenessCosmeticsHolder.isVisible = false
-            //sensorManager?.unregisterListener(brightnessListener)
             safeNavigateToResultDestination(actionIdForNav)
         } else {
             delayedNavigateOnLivenessSessionEnd(false)
@@ -577,110 +565,15 @@ class LivenessActivity : AppCompatActivity(),
         bitmapArray = null
         muxer = null
         openLivenessCameraParams = null
-//        sensorManager = null
-//        lightSensor = null
     }
-
-    // !
-    //    private fun determineAndSetStreamSize() {
-    //        streamSize = if (shouldDecreaseVideoStreamQuality()) {
-    //            Size(320, 240)
-    //        } else {
-    //            Size(960, 720)
-    //        }
-    //        showSingleToast("[TEST] setting resolution to : ${streamSize.width}x${streamSize.height}")
-    //    }
-
-    //            Log.i(TAG, "--------------- IDX: $idx")
-    //            Log.i(TAG, "--------------- x: ${arr[0]} | y: ${arr[1]} | z: ${arr[2]}")
-    //Log.d(TAG, "=========== EULER ANGLES " +
-    //" | pitch: ${eulerAnglesResultArr[0]}")  // from -30.0 to 30.0 degrees
-    //" | yaw: ${eulerAnglesResultArr[1]}" +
-    //" | roll: ${eulerAnglesResultArr[2]}")
-
-    //        object : CountDownTimer(15000, 1000) {
-    //            override fun onTick(duration: Long) {
-    //            }
-    //
-    //            override fun onFinish() {
-    //                Log.d(TAG,  "======================================================== FINISH")
-    //            }
-    //        }.start()
-
-    //    fun resetUIForNewLivenessSession() {
-    //        binding!!.stageSuccessAnimBorder.isVisible = false
-    //        binding!!.livenessCosmeticsHolder.isVisible = true
-    //        binding!!.checkFaceTitle.text = getString(R.string.liveness_stage_check_face_pos)
-    //        binding!!.faceAnimationView.cancelAnimation()
-    //        binding!!.arrowAnimationView.cancelAnimation()
-    //        binding!!.arrowAnimationView.rotation = 0F
-    //        binding!!.arrowAnimationView.setMargins(300, null,
-    //            null, null)
-    //        binding!!.arrowAnimationView.isVisible = false
-    //    }
-
-//    private fun isFacePartiallyVisible(faceMeshResult: FaceMeshResult): Boolean {
-//        //1, 17, 159, 386
-//        //TODO test!
-//        Log.d("LIVENESS", "LEFT EYE VIS: x - ${result.multiFaceLandmarks()[0].landmarkList[52].hasX()}" +
-//                " y - ${result.multiFaceLandmarks()[0].landmarkList[52].hasY()}" +
-//                " z - ${result.multiFaceLandmarks()[0].landmarkList[52].hasZ()}")
-//        Log.d("LIVENESS", "RIGHT EYE VIS: x - ${result.multiFaceLandmarks()[0].landmarkList[282].hasX()}" +
-//                " y - ${result.multiFaceLandmarks()[0].landmarkList[282].hasY()}" +
-//                " z - ${result.multiFaceLandmarks()[0].landmarkList[282].hasZ()}")
-//        Log.d("LIVENESS", "MOUTH VIS: x - ${result.multiFaceLandmarks()[0].landmarkList[17].hasX()}" +
-//                " y - ${result.multiFaceLandmarks()[0].landmarkList[17].hasY()}" +
-//                " z - ${result.multiFaceLandmarks()[0].landmarkList[17].hasZ()}")
-//        Log.d("LIVENESS", "LEFT EYE VIS: ${faceMeshResult.multiFaceLandmarks()[0].landmarkList[52].visibility}")
-//        Log.d("LIVENESS", "RIGHT EYE VIS: ${faceMeshResult.multiFaceLandmarks()[0].landmarkList[282].visibility}")
-//        Log.d("LIVENESS", "MOUTH VIS: ${faceMeshResult.multiFaceLandmarks()[0].landmarkList[17].visibility}")
-//        return !faceMeshResult.multiFaceLandmarks()[0].landmarkList[52].isInitialized
-//                || !faceMeshResult.multiFaceLandmarks()[0].landmarkList[282].isInitialized
-//                || !faceMeshResult.multiFaceLandmarks()[0].landmarkList[17].isInitialized
-//    }
-
-
-// BRIGHTNESS SENSOR (OBSOLETE)
-
-//    private var sensorManager: SensorManager? = null
-//    private var lightSensor: Sensor? = null
-//    private val brightnessListener = object : SensorEventListener {
-//        override fun onSensorChanged(event: SensorEvent) {
-//            val lightQuantity = event.values[0]
-//            onBrightnessChanged(lightQuantity)
-//        }
-//        override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {} //Stub
-//    }
-
-//    private fun setupBrightnessLevelListener() {
-//        sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
-//        if (sensorManager!!.getDefaultSensor(Sensor.TYPE_LIGHT) != null) {
-//            // Success! Light sensor exists.
-//            lightSensor = (sensorManager as SensorManager).getDefaultSensor(Sensor.TYPE_LIGHT)
-//            sensorManager?.registerListener(
-//                brightnessListener, lightSensor, SensorManager.SENSOR_DELAY_UI)
-//            Log.d(TAG,"Light sensor is available")
-//        }
-//        else {
-//            // Failure! Light sensor not available.
-//            Handler(Looper.getMainLooper()).postDelayed({
-//                Toast.makeText(this@LivenessActivity,
-//                    "[Info] Light sensor not available for current device", Toast.LENGTH_LONG).show()
-//            },2000)
-//        }
-//    }
-
-//    private fun onBrightnessChanged(lightQuantity: Float) {
-//        //Log.d("LIVENESS", "-------- BRIGHTNESS: $lightQuantity")
-//        if (lightQuantity < MIN_AFFORDABLE_BRIGHTNESS_VALUE && (lightQuantity > 5.0 || lightQuantity < 0.0)) {
-//            lowBrightnessFrameCounter += 1
-//            //Log.d("LIVENESS", "-------- LOW BRIGHTNESS - FRAME COUNT: $lowBrightnessFrameCounter")
-//            if (lowBrightnessFrameCounter >= MAX_FRAMES_W_O_MAJOR_OBSTACLES) {
-//                lowBrightnessFrameCounter = 0
-//                onObstacleMet(ObstacleType.BRIGHTNESS_LEVEL_IS_LOW)
-//            }
-//        } else {
-//            lowBrightnessFrameCounter = 0
-//        }
-//    }
 }
+
+// !
+//    private fun determineAndSetStreamSize() {
+//        streamSize = if (shouldDecreaseVideoStreamQuality()) {
+//            Size(320, 240)
+//        } else {
+//            Size(960, 720)
+//        }
+//        showSingleToast("[TEST] setting resolution to : ${streamSize.width}x${streamSize.height}")
+//    }

@@ -259,9 +259,9 @@ class CameraConnectionFragment() : Fragment() {
 
     /** Stops the background thread and its [Handler].  */
     private fun stopBackgroundThread() {
-        backgroundThread!!.quitSafely()
+        backgroundThread?.quitSafely()
         try {
-            backgroundThread!!.join()
+            backgroundThread?.join()
             backgroundThread = null
             backgroundHandler = null
         } catch (e: InterruptedException) {

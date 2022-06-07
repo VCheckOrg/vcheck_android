@@ -1,9 +1,22 @@
 package com.vcheck.demo.dev.domain
 
+import com.google.gson.annotations.SerializedName
 
 data class LivenessUploadResponse(
+    @SerializedName("data")
+    val data: LivenessUploadResponseData,
+    @SerializedName("error_code")
+    var errorCode: Int = 0,
+    @SerializedName("message")
+    var message: String = ""
+)
+
+data class LivenessUploadResponseData(
+    @SerializedName("is_final")
     val isFinal: Boolean,
+    @SerializedName("status")
     val status: Int,
+    @SerializedName("reason")
     val reason: String? //not empty/null if status code corresponds to FAIL
 )
 
@@ -37,16 +50,14 @@ fun livenessChallengeStatusToCode(livenessChallengeStatus: LivenessChallengeStat
 enum class LivenessFailureReason {
     FACE_NOT_FOUND,
     MULTIPLE_FACES,
-    TIMEOUT,
     FAST_MOVEMENT,
     TOO_DARK,
-    DISCONNECTED,
-    NOT_SAME_PERSON,
     INVALID_MOVEMENTS,
     UNKNOWN;
 
     companion object {
-        fun from(type: String?): LivenessFailureReason = values().find { it.name == type } ?: UNKNOWN
+        fun from(type: String?): LivenessFailureReason = values().find {
+            it.name.lowercase() == type?.lowercase() } ?: UNKNOWN
     }
 }
 
@@ -58,6 +69,7 @@ fun livenessFailureReasonToStrCode(r: LivenessFailureReason): String {
     return r.name.lowercase()
 }
 
+//Reasons:
 //FACE_NOT_FOUND = "face_not_found"
 //MULTIPLE_FACES = "multiple_faces"
 //TIMEOUT = "timeout"
@@ -66,3 +78,8 @@ fun livenessFailureReasonToStrCode(r: LivenessFailureReason): String {
 //DISCONNECTED = "disconnected"
 //NOT_SAME_PERSON = "not_same_person"
 //INVALID_MOVEMENTS = "invalid_movements"
+
+// Not used in mobile:
+//TIMEOUT,
+//DISCONNECTED,
+//NOT_SAME_PERSON,
