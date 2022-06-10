@@ -132,7 +132,7 @@
     <string name="too_fast_movements_title">Занадто різкі рухи</string>
     <string name="too_fast_movements_description">Намагайтеся виконувати рухи плавно. Спробуйте знову.</string>
     <string name="too_dark_title">Надто темно</string>
-    <string name="too_dark_description">Перевірка не може виконатися, тому що в кадрі занадто темно. Перейдіть повторно з хорошим освітленням.</string>
+    <string name="too_dark_description">Перевірка не може виконатися, тому що в кадрі занадто темно. Перейдіть у місце з хорошим освітленням.</string>
     <string name="date_of_birth_validation_error">Введіть валідну дату народження</string>
     <string name="date_of_expiry_validation_error">Введіть валідний термін дії документа</string>
     <string name="retry">Спробувати знову</string>

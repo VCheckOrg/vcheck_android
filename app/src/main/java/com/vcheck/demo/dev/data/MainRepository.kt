@@ -1,7 +1,6 @@
 package com.vcheck.demo.dev.data
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.vcheck.demo.dev.domain.*
 import okhttp3.MultipartBody
@@ -122,31 +121,7 @@ class MainRepository(
         return localDatasource.getSelectedDocTypeWithData()
     }
 
-//    fun setLocale(ctx: Context, locale: String) {
-//        localDatasource.setLocale(ctx, locale)
-//    }
-//
-//    fun getLocale(ctx: Context): String {
-//        return localDatasource.getLocale(ctx)
-//    }
-
     fun resetCacheOnStartup(ctx: Context) {
         localDatasource.resetCacheOnStartup(ctx)
-    }
-
-    fun storeMaxLivenessLocalAttempts(ctx: Context, attempts: Int) {
-        localDatasource.storeMaxLivenessLocalAttempts(ctx, attempts)
-    }
-
-    fun getMaxLivenessLocalAttempts(ctx: Context): Int {
-        return localDatasource.getMaxLivenessLocalAttempts(ctx)
-    }
-
-    fun incrementActualLivenessLocalAttempts(ctx: Context) {
-        localDatasource.incrementActualLivenessLocalAttempts(ctx)
-    }
-
-    fun getActualLivenessLocalAttempts(ctx: Context): Int {
-        return localDatasource.getActualLivenessLocalAttempts(ctx)
     }
 }

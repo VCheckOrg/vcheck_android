@@ -23,20 +23,6 @@ class LocalDatasource {
         return getSharedPreferences(ctx).getString("verif_token", "")!!
     }
 
-//    fun setLocale(ctx: Context, locale: String) {
-//        getSharedPreferences(ctx).edit().putString("locale", locale).apply()
-//    }
-//
-//    fun getLocale(ctx: Context): String {
-//        Log.d("OkHttp","========================= DEFAULT LOCALE: ${Locale.getDefault().language}")
-//        val defaultLocale = when(Locale.getDefault().language)  {
-//            "uk" -> "uk"
-//            "ru" -> "ru"
-//            else -> "en"
-//        }
-//        return getSharedPreferences(ctx).getString("locale", defaultLocale)!!
-//    }
-
     fun storeSelectedCountryCode(ctx: Context, countryCode: String) {
         getSharedPreferences(ctx).edit().putString("selected_country_code", countryCode).apply()
     }
@@ -53,37 +39,29 @@ class LocalDatasource {
         return _selectedDocTypeWithData
     }
 
-    fun storeMaxLivenessLocalAttempts(ctx: Context, attempts: Int) {
-        getSharedPreferences(ctx).edit().putInt("max_liveness_attempts", attempts).apply()
-    }
-
-    fun getMaxLivenessLocalAttempts(ctx: Context): Int {
-        return getSharedPreferences(ctx).getInt("max_liveness_attempts", 5)
-    }
-
-    fun incrementActualLivenessLocalAttempts(ctx: Context) {
-        val current = getSharedPreferences(ctx).getInt("curr_liveness_attempts", 1)
-        getSharedPreferences(ctx).edit().putInt("curr_liveness_attempts", current + 1).apply()
-    }
-
-    fun getActualLivenessLocalAttempts(ctx: Context): Int {
-        return getSharedPreferences(ctx).getInt("curr_liveness_attempts", 1)
-    }
-
     fun resetCacheOnStartup(ctx: Context) {
         getSharedPreferences(ctx).edit().remove("verif_token").apply()
         getSharedPreferences(ctx).edit().remove("locale").apply()
         getSharedPreferences(ctx).edit().remove("selected_country_code").apply()
-        getSharedPreferences(ctx).edit().remove("max_liveness_attempts").apply()
-        getSharedPreferences(ctx).edit().remove("curr_liveness_attempts").apply()
         _selectedDocTypeWithData = null
     }
+}
 
-//    fun setLocaleAutoChanged(ctx: Context, value: Boolean) {
-//        getSharedPreferences(ctx).edit().putBoolean("locale_auto_changed", value).apply()
+//Obsolete logic:
+
+//    fun storeMaxLivenessLocalAttempts(ctx: Context, attempts: Int) {
+//        getSharedPreferences(ctx).edit().putInt("max_liveness_attempts", attempts).apply()
 //    }
 //
-//    fun isLocaleAutoChanged(ctx: Context): Boolean {
-//        return getSharedPreferences(ctx).getBoolean("locale_auto_changed", false)
+//    fun getMaxLivenessLocalAttempts(ctx: Context): Int {
+//        return getSharedPreferences(ctx).getInt("max_liveness_attempts", 5)
 //    }
-}
+
+//    fun incrementActualLivenessLocalAttempts(ctx: Context) {
+//        val current = getSharedPreferences(ctx).getInt("curr_liveness_attempts", 1)
+//        getSharedPreferences(ctx).edit().putInt("curr_liveness_attempts", current + 1).apply()
+//    }
+//
+//    fun getActualLivenessLocalAttempts(ctx: Context): Int {
+//        return getSharedPreferences(ctx).getInt("curr_liveness_attempts", 1)
+//    }

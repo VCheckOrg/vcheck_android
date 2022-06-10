@@ -14,16 +14,15 @@ import android.util.Size
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.mediapipe.solutions.facemesh.FaceMesh
 import com.google.mediapipe.solutions.facemesh.FaceMeshOptions
 import com.google.mediapipe.solutions.facemesh.FaceMeshResult
 import com.vcheck.demo.dev.R
-import com.vcheck.demo.dev.VcheckDemoApp
 import com.vcheck.demo.dev.databinding.ActivityLivenessBinding
 import com.vcheck.demo.dev.presentation.liveness.flow_logic.*
 import com.vcheck.demo.dev.presentation.liveness.ui.CameraConnectionFragment
@@ -60,7 +59,6 @@ class LivenessActivity : AppCompatActivity(),
         private const val STAGE_VIBRATION_DURATION_MILLIS: Long = 100
         private const val MAX_FRAMES_W_O_MAJOR_OBSTACLES = 12
         private const val MIN_FRAMES_FOR_MINOR_OBSTACLES = 4
-        //private const val MIN_AFFORDABLE_BRIGHTNESS_VALUE = 12.0 // on some old devices, values are really low!
     }
 
     private var binding: ActivityLivenessBinding? = null
@@ -94,6 +92,9 @@ class LivenessActivity : AppCompatActivity(),
         binding = ActivityLivenessBinding.inflate(layoutInflater)
         val view = binding!!.root
         setContentView(view)
+        onBackPressedDispatcher.addCallback {
+            //Stub; no back press needed throughout liveness flow
+        }
 
         //determineAndSetStreamSize() //!
 
@@ -128,11 +129,10 @@ class LivenessActivity : AppCompatActivity(),
                 .build())
         facemesh!!.setErrorListener { message: String, e: RuntimeException? ->
             Log.e(TAG, "======= MediaPipe Face Mesh error : $message")
-            FirebaseCrashlytics.getInstance().recordException(RuntimeException("MediaPipe Face Mesh error : $message"))
+            showSingleToast("MediaPipe Face Mesh error : $message")
         }
         facemesh!!.setResultListener { faceMeshResult: FaceMeshResult ->
-            // Before doing something that requires a lot of memory,
-            // check to see whether the device is in a low memory state.
+            // Check to see whether the device is in a low memory state:
             if (!getAvailableMemory().lowMemory) {
                 try {
                     if (!isLivenessSessionFinished && !blockProcessingByUI && enoughTimeForNextGesture()) {
@@ -145,12 +145,10 @@ class LivenessActivity : AppCompatActivity(),
                         }
                     }
                 } catch (e: Exception) {
-                    FirebaseCrashlytics.getInstance().recordException(RuntimeException("Error in top-level" +
-                            "MediaPipe setResultListener: ${e.message} | ${e.cause}"))
+                    showSingleToast("Error in top-level MP setResultListener: ${e.message} | ${e.cause}")
                 }
             } else {
-                showSingleToast("[TEST] LOW MEMORY; pausing face processing for a while")
-                FirebaseCrashlytics.getInstance().recordException(Exception("Low memory caught!"))
+                showSingleToast("Low memory caught!")
             }
         }
     }
@@ -173,9 +171,6 @@ class LivenessActivity : AppCompatActivity(),
                 ObstacleType.NO_OR_PARTIAL_FACE_DETECTED -> {
                     onFatalObstacleWorthRetry(R.id.action_dummyLivenessStartDestFragment_to_lookStraightErrorFragment)
                 }
-                ObstacleType.BRIGHTNESS_LEVEL_IS_LOW -> {
-                    onFatalObstacleWorthRetry(R.id.action_dummyLivenessStartDestFragment_to_tooDarkFragment)
-                }
             }
         }
     }
@@ -196,7 +191,7 @@ class LivenessActivity : AppCompatActivity(),
                     setUIOnOuterRightHeadPitchMilestone()
                 }
                 GestureMilestoneType.MouthOpenMilestone -> {
-                    delayedNavigateOnLivenessSessionEnd(true)
+                    delayedNavigateOnLivenessSessionEnd()
                 }
                 else -> {
                     //Stub. Cases in which results we are not straightly concerned
@@ -245,10 +240,6 @@ class LivenessActivity : AppCompatActivity(),
         return SystemClock.elapsedRealtime() - livenessSessionLimitCheckTime <= LIVENESS_TIME_LIMIT_MILLIS
     }
 
-    private fun getActualSessionTimeInSecs(): Double {
-        return (SystemClock.elapsedRealtime() - livenessSessionLimitCheckTime).toDouble() / 1000.0
-    }
-
     private fun get2DArrayFromMotionUpdate(result: FaceMeshResult?) : D2Array<Double>? {
         if (result == null || result.multiFaceLandmarks().isEmpty()) {
             return null
@@ -285,7 +276,7 @@ class LivenessActivity : AppCompatActivity(),
             }
         } catch (e: Exception) {
             Log.e(TAG, "FRONT CAMERA DETECTION ERROR: ${e.message}")
-            FirebaseCrashlytics.getInstance().recordException(e)
+            showSingleToast(e.message)
         }
 
         camera2Fragment = CameraConnectionFragment.newInstance(
@@ -323,7 +314,7 @@ class LivenessActivity : AppCompatActivity(),
             }
             override fun onVideoError(error: Throwable) {
                 Log.e(TAG, "There was an error muxing the video")
-                FirebaseCrashlytics.getInstance().recordException(error)
+                showSingleToast(error.message)
             }
         })
 
@@ -332,20 +323,14 @@ class LivenessActivity : AppCompatActivity(),
     }
 
     private fun setUpMuxer() {
-
-        //TODO (?) add logic for increasing framesPerImage / FPS based on one of factors:
-        //        val finalSessionTime = getActualSessionTimeInSecs()
-        //        val snapshotsSize = bitmapArray.size
-        //TODO add little delay for MOUTH(last) video to capture in problematic cases!
-
         val framesPerImage = 1
         val framesPerSecond = 24F
-
+        val bitrate = 2500000
         val muxerConfig = MuxerConfig(createVideoFile() ?: File.createTempFile(
             "faceVideo${System.currentTimeMillis()}", ".mp4",
                 this@LivenessActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES)),
             streamSize.height, streamSize.width, MediaFormat.MIMETYPE_VIDEO_AVC,
-            framesPerImage, framesPerSecond, 2500000, iFrameInterval = 1) //3, 32F, 2500000, iFrameInterval = 50 (10))
+            framesPerImage, framesPerSecond, bitrate, iFrameInterval = 1) //3, 32F, 2500000, iFrameInterval = 50 (10))
         muxer = Muxer(this@LivenessActivity, muxerConfig)
     }
 
@@ -367,10 +352,10 @@ class LivenessActivity : AppCompatActivity(),
                 postInferenceCallback!!.run()
             }
         } catch (e: Exception) {
-            FirebaseCrashlytics.getInstance().recordException(e)
+            showSingleToast(e.message)
             showSingleToast("[TEST-processImage ex]: ${e.message}")
         } catch (e: Error) {
-            FirebaseCrashlytics.getInstance().recordException(e)
+            showSingleToast(e.message)
             showSingleToast("[TEST-processImage err]: ${e.message}")
         }
     }
@@ -386,7 +371,7 @@ class LivenessActivity : AppCompatActivity(),
                 Log.d("VIDEO", "SAVING A FILE: ${this.path}")
             }
         } catch (e: IOException) {
-            FirebaseCrashlytics.getInstance().recordException(e)
+            showSingleToast(e.message)
             null
         }
     }
@@ -451,20 +436,11 @@ class LivenessActivity : AppCompatActivity(),
         }, BLOCK_PIPELINE_TIME_MILLIS)
     }
 
-    private fun delayedNavigateOnLivenessSessionEnd(isVerificationSuccessful: Boolean) {
+    private fun delayedNavigateOnLivenessSessionEnd() {
         binding!!.checkFaceTitle.text = getString(R.string.wait_for_liveness_start)
-        if (isVerificationSuccessful) {
-            vibrateDevice(this@LivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
-            binding!!.imgViewStaticStageIndication.isVisible = true
-            binding!!.stageSuccessAnimBorder.isVisible = true
-        } else {
-            binding!!.stageSuccessAnimBorder.isVisible = false
-            binding!!.imgViewStaticStageIndication.isVisible = false
-            binding!!.arrowAnimationView.cancelAnimation()
-            binding!!.faceAnimationView.cancelAnimation()
-            binding!!.arrowAnimationView.isVisible = false
-            binding!!.faceAnimationView.isVisible = false
-        }
+        vibrateDevice(this@LivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
+        binding!!.imgViewStaticStageIndication.isVisible = true
+        binding!!.stageSuccessAnimBorder.isVisible = true
         Handler(Looper.getMainLooper()).postDelayed({
             binding!!.livenessCosmeticsHolder.isVisible = false
             camera2Fragment?.onPause() //!
@@ -480,7 +456,7 @@ class LivenessActivity : AppCompatActivity(),
         } catch (e: IllegalStateException) {
             Log.d(TAG, "Caught exception: Liveness Activity does not have a NavController set!")
         } catch (e: Exception) {
-            FirebaseCrashlytics.getInstance().recordException(e)
+            showSingleToast(e.message)
         }
     }
 
@@ -504,24 +480,12 @@ class LivenessActivity : AppCompatActivity(),
         }, 1200)
     }
 
-    //TODO consider not counting local attempts, back only (?)
     private fun onFatalObstacleWorthRetry(actionIdForNav: Int) {
-        val actualAttemptsNum = (application as VcheckDemoApp).appContainer.mainRepository
-            .getActualLivenessLocalAttempts(this@LivenessActivity)
-        Log.d("LIVENESS", "========== ACTUAL ATTEMPTS NUM (CLIENT OR BACK) : $actualAttemptsNum")
-        val maxAttemptsNum = (application as VcheckDemoApp).appContainer.mainRepository
-            .getMaxLivenessLocalAttempts(this@LivenessActivity)
-        if (actualAttemptsNum < maxAttemptsNum && !isLivenessSessionFinished) {
-            (application as VcheckDemoApp).appContainer.mainRepository
-                .incrementActualLivenessLocalAttempts(this@LivenessActivity)
-            vibrateDevice(this@LivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
-            finishLivenessSession()
-            livenessSessionLimitCheckTime = SystemClock.elapsedRealtime()
-            binding!!.livenessCosmeticsHolder.isVisible = false
-            safeNavigateToResultDestination(actionIdForNav)
-        } else {
-            delayedNavigateOnLivenessSessionEnd(false)
-        }
+        vibrateDevice(this@LivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
+        finishLivenessSession()
+        livenessSessionLimitCheckTime = SystemClock.elapsedRealtime()
+        binding!!.livenessCosmeticsHolder.isVisible = false
+        safeNavigateToResultDestination(actionIdForNav)
     }
 
     private fun animateStageSuccessFrame() {
@@ -577,3 +541,11 @@ class LivenessActivity : AppCompatActivity(),
 //        }
 //        showSingleToast("[TEST] setting resolution to : ${streamSize.width}x${streamSize.height}")
 //    }
+
+//Deprecated code from delayedNavigateOnLivenessSessionEnd():
+//            binding!!.stageSuccessAnimBorder.isVisible = false
+//            binding!!.imgViewStaticStageIndication.isVisible = false
+//            binding!!.arrowAnimationView.cancelAnimation()
+//            binding!!.faceAnimationView.cancelAnimation()
+//            binding!!.arrowAnimationView.isVisible = false
+//            binding!!.faceAnimationView.isVisible = false

@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +19,6 @@ import com.vcheck.demo.dev.VcheckDemoApp
 import com.vcheck.demo.dev.databinding.FragmentDemoStartBinding
 import com.vcheck.demo.dev.domain.CountryTO
 import com.vcheck.demo.dev.presentation.MainActivity
-import com.vcheck.demo.dev.presentation.liveness.ui.CameraConnectionFragment
 import com.vcheck.demo.dev.presentation.transferrable_objects.CountriesListTO
 import com.vcheck.demo.dev.util.ContextUtils
 import com.vcheck.demo.dev.util.toFlagEmoji
@@ -49,10 +47,8 @@ class DemoStartFragment : Fragment() {
         _viewModel = DemoStartViewModel(appContainer.mainRepository)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater,
+                              container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_demo_start, container, false)
     }
 
@@ -66,10 +62,6 @@ class DemoStartFragment : Fragment() {
 
         _viewModel.verifResponse.observe(viewLifecycleOwner) {
             if (it.data?.data != null) {
-//                _binding!!.tvCreateVerificationResultInfo.text =
-//                    "CREATED VERIFICATION REQUEST: application_id : ${it.data.data.applicationId} |" +
-//                            "redirect_url : ${it.data.data.redirectUrl}" //+create_time
-
                 if (it.data.data.redirectUrl != null) {
                     _viewModel.repository.storeVerifToken(
                         (activity as MainActivity), it.data.data.token)
@@ -89,13 +81,6 @@ class DemoStartFragment : Fragment() {
 
         _viewModel.initResponse.observe(viewLifecycleOwner) {
             if (it.data?.data != null) {
-//                _binding!!.tvInitVerificationResultInfo.text =
-//                    "INITIALIZED VERIFICATION: document : ${it.data.data.document} |" +
-//                            "return_url : ${it.data.data.returnUrl} | stage: ${it.data.data.stage}" +
-//                            "| locale: ${it.data.data.locale}"
-
-                _viewModel.repository.storeMaxLivenessLocalAttempts(
-                    (activity as MainActivity), it.data.data.livenessAttempts)
                 _viewModel.getCountriesList()
             }
         }
@@ -103,8 +88,6 @@ class DemoStartFragment : Fragment() {
         _viewModel.countriesResponse.observe(viewLifecycleOwner) {
             if (it.data?.data != null) {
                 _binding!!.startCallChainLoadingIndicator.isVisible = false
-                Log.d("COUNTRIES",
-                    "GOT COUNTRIES: ${it.data.data.map { country -> country.code }.toList()}")
 
                 val countryList = it.data.data.map { country ->
                     val locale = Locale("", country.code)
@@ -134,8 +117,7 @@ class DemoStartFragment : Fragment() {
         _binding!!.btnStartDemoFlow.setOnClickListener {
             _binding!!.startCallChainLoadingIndicator.isVisible = true
             _viewModel.createTestVerificationRequest(
-                ContextUtils.getSavedLanguage(activity as MainActivity)
-            )
+                ContextUtils.getSavedLanguage(activity as MainActivity))
         }
 
         //! FOR TEST
@@ -179,5 +161,18 @@ class DemoStartFragment : Fragment() {
             }
         }
     }
-
 }
+
+//Obsolete binding text indications:
+
+//                _binding!!.tvCreateVerificationResultInfo.text =
+//                    "CREATED VERIFICATION REQUEST: application_id : ${it.data.data.applicationId} |" +
+//                            "redirect_url : ${it.data.data.redirectUrl}" //+create_time
+
+//                _binding!!.tvInitVerificationResultInfo.text =
+//                    "INITIALIZED VERIFICATION: document : ${it.data.data.document} |" +
+//                            "return_url : ${it.data.data.returnUrl} | stage: ${it.data.data.stage}" +
+//                            "| locale: ${it.data.data.locale}"
+
+//                Log.d("COUNTRIES",
+//                    "GOT COUNTRIES: ${it.data.data.map { country -> country.code }.toList()}")

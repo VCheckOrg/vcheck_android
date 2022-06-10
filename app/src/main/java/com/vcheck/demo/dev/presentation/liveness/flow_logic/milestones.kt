@@ -16,19 +16,17 @@ enum class ObstacleType {
     YAW_ANGLE,
     MULTIPLE_FACES_DETECTED,
     NO_OR_PARTIAL_FACE_DETECTED,
-    BRIGHTNESS_LEVEL_IS_LOW
-    //PARTIAL_FACE_DETECTED,
-    //WRONG_GESTURE, //deprecated for now
-    //MOTIONS_ARE_TOO_SHARP //deprecated for now
+
+    //Deprecated local checks:
+    //BRIGHTNESS_LEVEL_IS_LOW
+    //WRONG_GESTURE
+    //MOTIONS_ARE_TOO_SHARP
 }
 
 const val YAW_PASS_ANGLE_ABS = 20.0
 const val LEFT_PITCH_PASS_ANGLE = -30.0
 const val RIGHT_PITCH_PASS_ANGLE = 30.0
 const val MOUTH_OPEN_PASS_FACTOR = 0.35  //reduced from 0.55 !
-
-//const val NEXT_FRAME_MAX_PITCH_DIFF = 15.0 // obsolete for now
-//const val NEXT_FRAME_MAX_YAW_DIFF = 8.0
 
 
 open class GestureMilestone(val milestoneType: GestureMilestoneType) {

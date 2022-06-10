@@ -33,8 +33,6 @@ open class NetworkCall<T> {
                 result.value = Resource.success(response.body())
             else {
                 if (response != null) {
-//                    result.value = Resource.error(
-//                        ApiError("Error [${response.code()}]"))
                     val errorResponse: BaseClientResponseModel =
                         try {
                             Gson().fromJson(response.errorBody()!!.charStream(),

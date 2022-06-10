@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.navigation.fragment.findNavController
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.databinding.FragmentFailVideoUploadBinding
@@ -27,6 +28,10 @@ class FailVideoUploadFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         _binding = FragmentFailVideoUploadBinding.bind(view)
+
+        requireActivity().onBackPressedDispatcher.addCallback {
+            //Stub; no back press needed here
+        }
 
         _binding!!.contactSupportButton.setOnClickListener {
             val intent = Intent(Intent.ACTION_SEND)

@@ -25,7 +25,6 @@ import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.presentation.liveness.LivenessActivity
 import java.util.*
@@ -45,7 +44,7 @@ class CameraConnectionFragment() : Fragment() {
     companion object {
         private const val FRAGMENT_DIALOG = "camera_dialog"
 
-        //removed chooseOptimalSize()
+        //removed chooseOptimalSize() !
         fun newInstance(
             callback: ConnectionCallback,
             imageListener: OnImageAvailableListener)
@@ -93,11 +92,9 @@ class CameraConnectionFragment() : Fragment() {
             texture: SurfaceTexture, width: Int, height: Int) {
             //configureTransform(width, height)
         }
-
         override fun onSurfaceTextureDestroyed(texture: SurfaceTexture): Boolean {
             return true
         }
-
         override fun onSurfaceTextureUpdated(texture: SurfaceTexture) {}
     }
     private var previewReader: ImageReader? = null
@@ -167,20 +164,18 @@ class CameraConnectionFragment() : Fragment() {
     private fun setUpCameraOutputs() {
         val activity = activity as LivenessActivity
         try {
-            sensorOrientation = 270 //was CameraCharacteristics.SENSOR_ORIENTATION
+            sensorOrientation = 270 //CameraCharacteristics.SENSOR_ORIENTATION
 
             previewSize = activity.streamSize
 
             textureView!!.setAspectRatio(previewSize!!.height, previewSize!!.width)
 
         } catch (e: CameraAccessException) {
-            FirebaseCrashlytics.getInstance().recordException(e)
             ErrorDialog.newInstance("Camera access error")
                 .show(childFragmentManager, FRAGMENT_DIALOG)
         } catch (e: NullPointerException) {
-            FirebaseCrashlytics.getInstance().recordException(e)
             // Currently an NPE is thrown when the Camera2API is used but not supported on the device this code runs.
-            ErrorDialog.newInstance("Camera2API is used but not supported on the device.")
+            ErrorDialog.newInstance("Camera2 API is not supported on this device.")
                 .show(childFragmentManager, FRAGMENT_DIALOG)
         }
         cameraConnectionCallback!!.onPreviewSizeChosen(previewSize, sensorOrientation!!)
@@ -198,26 +193,20 @@ class CameraConnectionFragment() : Fragment() {
                     activity.getSystemService(Context.CAMERA_SERVICE) as CameraManager
                 try {
                     if (!cameraOpenCloseLock.tryAcquire(4500, TimeUnit.MILLISECONDS)) {
-                        FirebaseCrashlytics.getInstance().recordException(RuntimeException(
-                            "Opening Camera from lock has not been triggered."))
                         ErrorDialog.newInstance("Opening Camera from lock has not been triggered.")
                             .show(childFragmentManager, FRAGMENT_DIALOG)
                     }
                     if (ActivityCompat.checkSelfPermission(activity,
                             Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                        FirebaseCrashlytics.getInstance().recordException(RuntimeException(
-                            "Camera permission not granted."))
                         ErrorDialog.newInstance("Camera permission not granted. " +
                                 "Please, go to Settings and grant Camera permission for this app.")
                             .show(childFragmentManager, FRAGMENT_DIALOG)
                     }
                     manager.openCamera(cameraId!!, stateCallback, backgroundHandler)
                 } catch (e: CameraAccessException) {
-                    FirebaseCrashlytics.getInstance().recordException(e)
                     ErrorDialog.newInstance("Camera access error")
                         .show(childFragmentManager, FRAGMENT_DIALOG)
                 } catch (e: InterruptedException) {
-                    FirebaseCrashlytics.getInstance().recordException(e)
                     ErrorDialog.newInstance("Interrupted while trying to lock camera opening.")
                         .show(childFragmentManager, FRAGMENT_DIALOG)
                 }
@@ -242,7 +231,6 @@ class CameraConnectionFragment() : Fragment() {
                 previewReader = null
             }
         } catch (e: InterruptedException) {
-            FirebaseCrashlytics.getInstance().recordException(e)
             ErrorDialog.newInstance("Interrupted while trying to lock camera closing.")
                 .show(childFragmentManager, FRAGMENT_DIALOG)
         } finally {
@@ -265,8 +253,8 @@ class CameraConnectionFragment() : Fragment() {
             backgroundThread = null
             backgroundHandler = null
         } catch (e: InterruptedException) {
-            FirebaseCrashlytics.getInstance().recordException(e)
-            ErrorDialog.newInstance("Interrupted while stopping backgraound thread.")
+            ErrorDialog.newInstance("Interrupted while stopping background thread.")
+                .show(childFragmentManager, FRAGMENT_DIALOG)
         }
     }
 
@@ -318,15 +306,12 @@ class CameraConnectionFragment() : Fragment() {
                             captureSession!!.setRepeatingRequest(
                                 previewRequest!!, captureCallback, backgroundHandler)
                         } catch (e: CameraAccessException) {
-                            FirebaseCrashlytics.getInstance().recordException(e)
                             ErrorDialog.newInstance("Camera access exception occured from onConfigured()")
                                 .show(childFragmentManager, FRAGMENT_DIALOG)
                         }
                     }
 
                     override fun onConfigureFailed(cameraCaptureSession: CameraCaptureSession) {
-                        FirebaseCrashlytics.getInstance().recordException(
-                            RuntimeException("Failed to configure camera"))
                         ErrorDialog.newInstance("Failed to configure camera")
                             .show(childFragmentManager, FRAGMENT_DIALOG)
                     }
@@ -334,7 +319,6 @@ class CameraConnectionFragment() : Fragment() {
                 null
             )
         } catch (e: CameraAccessException) {
-            FirebaseCrashlytics.getInstance().recordException(e)
             ErrorDialog.newInstance("Camera access is required, but got error")
                 .show(childFragmentManager, FRAGMENT_DIALOG)
         }

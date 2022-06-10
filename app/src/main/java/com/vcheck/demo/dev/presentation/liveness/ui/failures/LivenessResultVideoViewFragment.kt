@@ -100,19 +100,4 @@ class LivenessResultVideoViewFragment : Fragment() {
             //Stub
         }
     }
-
-    private fun resetApplication() {
-        val resetApplicationIntent = (activity as StartupActivity).applicationContext
-            .packageManager.getLaunchIntentForPackage(
-                (activity as StartupActivity).applicationContext.packageName)
-
-        if (resetApplicationIntent != null) {
-            resetApplicationIntent.flags =
-                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
-        (activity as LivenessActivity).startActivity(resetApplicationIntent)
-        (context as LivenessActivity).overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
-    }
-
-
 }

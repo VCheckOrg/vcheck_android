@@ -1,10 +1,10 @@
 package com.vcheck.demo.dev.presentation.liveness.ui.in_process
 
 import android.os.Bundle
-import android.os.SystemClock
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -17,13 +17,11 @@ import com.vcheck.demo.dev.domain.*
 import com.vcheck.demo.dev.presentation.liveness.LivenessActivity
 import com.vcheck.demo.dev.presentation.liveness.flow_logic.VideoProcessingListener
 import com.vcheck.demo.dev.util.getFolderSizeLabel
-import com.vcheck.demo.dev.util.vibrateDevice
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import kotlin.system.exitProcess
-import kotlin.time.Duration.Companion.days
 
 class InProcessFragment : Fragment(R.layout.in_process_fragment), VideoProcessingListener {
 
@@ -48,6 +46,10 @@ class InProcessFragment : Fragment(R.layout.in_process_fragment), VideoProcessin
         super.onViewCreated(view, savedInstanceState)
 
         _binding = InProcessFragmentBinding.bind(view)
+
+        requireActivity().onBackPressedDispatcher.addCallback {
+            //Stub; no back press needed here
+        }
 
         _binding!!.successButton.isVisible = false
         _binding!!.inProcessTitle.isVisible = false
@@ -104,8 +106,6 @@ class InProcessFragment : Fragment(R.layout.in_process_fragment), VideoProcessin
     }
 
     private fun onBackendObstacleMet(reason: LivenessFailureReason) {
-        _viewModel.repository
-            .incrementActualLivenessLocalAttempts(activity as LivenessActivity)
         try {
             when(reason) {
                 LivenessFailureReason.FACE_NOT_FOUND -> {
