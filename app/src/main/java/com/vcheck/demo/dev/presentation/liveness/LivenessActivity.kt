@@ -208,12 +208,12 @@ class LivenessActivity : AppCompatActivity(),
                     multiFaceFrameCounter = 0
                     onObstacleMet(ObstacleType.MULTIPLE_FACES_DETECTED)
                 }
-            } else if (faceMeshResult.multiFaceLandmarks().isEmpty()) {
-                noFaceFrameCounter += 1
-                if (noFaceFrameCounter >= MAX_FRAMES_W_O_MAJOR_OBSTACLES) {
-                    noFaceFrameCounter = 0
-                    onObstacleMet(ObstacleType.NO_OR_PARTIAL_FACE_DETECTED)
-                }
+//            } else if (faceMeshResult.multiFaceLandmarks().isEmpty()) {
+//                noFaceFrameCounter += 1
+//                if (noFaceFrameCounter >= MAX_FRAMES_W_O_MAJOR_OBSTACLES) {
+//                    noFaceFrameCounter = 0
+//                    onObstacleMet(ObstacleType.NO_OR_PARTIAL_FACE_DETECTED)
+//                }
             } else {
                 noFaceFrameCounter = 0
                 multiFaceFrameCounter = 0

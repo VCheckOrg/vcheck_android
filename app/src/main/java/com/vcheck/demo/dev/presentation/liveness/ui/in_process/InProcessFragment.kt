@@ -89,19 +89,20 @@ class InProcessFragment : Fragment(R.layout.in_process_fragment), VideoProcessin
     }
 
     private fun handleVideoUploadResponse(uploadResponse: Resource<LivenessUploadResponse>) {
-            Log.d(LivenessActivity.TAG, "DATA: ${uploadResponse.data}")
+            Log.d(LivenessActivity.TAG, "UPLOAD RESPONSE DATA: ${uploadResponse.data}")
             if (uploadResponse.data!!.data.isFinal) {
                 Toast.makeText(activity, "[TEST] This upload response is final!", Toast.LENGTH_LONG).show()
                 onVideoUploadResponseSuccess()
-            }
-            if (statusCodeToLivenessChallengeStatus(uploadResponse.data.data.status) == LivenessChallengeStatus.FAIL) {
-                if (uploadResponse.data.data.reason != null && uploadResponse.data.data.reason.isNotEmpty()) {
-                    onBackendObstacleMet(strCodeToLivenessFailureReason(uploadResponse.data.data.reason))
+            } else {
+                if (statusCodeToLivenessChallengeStatus(uploadResponse.data.data.status) == LivenessChallengeStatus.FAIL) {
+                    if (uploadResponse.data.data.reason != null && uploadResponse.data.data.reason.isNotEmpty()) {
+                        onBackendObstacleMet(strCodeToLivenessFailureReason(uploadResponse.data.data.reason))
+                    } else {
+                        onVideoUploadResponseSuccess()
+                    }
                 } else {
                     onVideoUploadResponseSuccess()
                 }
-            } else {
-                onVideoUploadResponseSuccess()
             }
     }
 
