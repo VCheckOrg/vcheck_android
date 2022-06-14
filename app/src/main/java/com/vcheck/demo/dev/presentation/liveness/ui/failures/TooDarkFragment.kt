@@ -8,7 +8,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.databinding.TooDarkFragmentBinding
-import com.vcheck.demo.dev.presentation.liveness.LivenessActivity
+import com.vcheck.demo.dev.presentation.liveness.VCheckLivenessActivity
 
 class TooDarkFragment : Fragment(R.layout.too_dark_fragment) {
 
@@ -30,7 +30,7 @@ class TooDarkFragment : Fragment(R.layout.too_dark_fragment) {
                 findNavController().popBackStack()
             }
             findNavController().popBackStack()
-            (activity as LivenessActivity).recreate()
+            (activity as VCheckLivenessActivity).recreate()
         }
     }
 }

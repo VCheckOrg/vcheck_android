@@ -1,6 +1,5 @@
 package com.vcheck.demo.dev.presentation.check_doc_info_stage
 
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -12,10 +11,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.squareup.picasso.Picasso
 import com.vcheck.demo.dev.R
-import com.vcheck.demo.dev.VcheckDemoApp
+import com.vcheck.demo.dev.VCheckSDKApp
 import com.vcheck.demo.dev.databinding.CheckDocInfoFragmentBinding
 import com.vcheck.demo.dev.domain.*
-import com.vcheck.demo.dev.presentation.MainActivity
+import com.vcheck.demo.dev.presentation.VCheckMainActivity
 import com.vcheck.demo.dev.presentation.adapters.CheckDocInfoAdapter
 import com.vcheck.demo.dev.presentation.adapters.DocInfoEditCallback
 import com.vcheck.demo.dev.util.ContextUtils
@@ -31,7 +30,7 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val appContainer = (activity?.application as VcheckDemoApp).appContainer
+        val appContainer = (activity?.application as VCheckSDKApp).appContainer
         viewModel =
             CheckDocInfoViewModel(appContainer.mainRepository)
     }
@@ -45,7 +44,7 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
             //Stub; no back press needed here
         }
 
-        val currentLocaleCode = ContextUtils.getSavedLanguage(activity as MainActivity)
+        val currentLocaleCode = ContextUtils.getSavedLanguage(activity as VCheckMainActivity)
 
         binding.apply {
             photoCard2.isVisible = false
@@ -79,15 +78,15 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
             }
         }
 
-        viewModel.getDocumentInfo(viewModel.repository.getVerifToken(activity as MainActivity),
+        viewModel.getDocumentInfo(viewModel.repository.getVerifToken(activity as VCheckMainActivity),
             args.checkDocInfoDataTO.docId)
 
         binding.checkInfoConfirmButton.setOnClickListener {
             if (checkIfAnyFieldEmpty()) {
-                Toast.makeText((activity as MainActivity),
+                Toast.makeText((activity as VCheckMainActivity),
                     R.string.check_doc_fields_validation_error, Toast.LENGTH_LONG).show()
             } else {
-                viewModel.updateAndConfirmDocument(viewModel.repository.getVerifToken(activity as MainActivity),
+                viewModel.updateAndConfirmDocument(viewModel.repository.getVerifToken(activity as VCheckMainActivity),
                     args.checkDocInfoDataTO.docId, composeConfirmedDocFieldsData())
             }
         }

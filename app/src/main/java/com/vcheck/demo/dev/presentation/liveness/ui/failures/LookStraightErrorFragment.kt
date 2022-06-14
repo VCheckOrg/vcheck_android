@@ -8,7 +8,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.databinding.LookStraightErrorFragmentBinding
-import com.vcheck.demo.dev.presentation.liveness.LivenessActivity
+import com.vcheck.demo.dev.presentation.liveness.VCheckLivenessActivity
 
 class LookStraightErrorFragment : Fragment(R.layout.look_straight_error_fragment) {
 
@@ -30,7 +30,7 @@ class LookStraightErrorFragment : Fragment(R.layout.look_straight_error_fragment
                 findNavController().popBackStack()
             }
             findNavController().popBackStack()
-            (activity as LivenessActivity).recreate()
+            (activity as VCheckLivenessActivity).recreate()
         }
     }
 }

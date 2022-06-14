@@ -7,7 +7,8 @@
     android:layout_height="match_parent"
     android:background="#2A2A2A"
     android:scrollbars="none"
-    tools:context=".presentation.liveness.ui.failures.TooDarkFragment">
+    tools:context=".presentation.liveness.ui.failures.TooDarkFragment"
+    android:theme="@style/Theme.VCheckAndroidSDKDemo">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

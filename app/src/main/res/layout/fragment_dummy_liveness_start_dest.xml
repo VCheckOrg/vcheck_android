@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/transparent"
-    tools:context=".presentation.liveness.ui.DummyLivenessStartDestFragment">
+    tools:context=".presentation.liveness.ui.DummyLivenessStartDestFragment"
+    android:theme="@style/Theme.VCheckAndroidSDKDemo">
 
 </androidx.constraintlayout.widget.ConstraintLayout>

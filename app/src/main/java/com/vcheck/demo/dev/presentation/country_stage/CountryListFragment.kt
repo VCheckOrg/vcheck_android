@@ -7,12 +7,12 @@ import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.vcheck.demo.dev.R
-import com.vcheck.demo.dev.VcheckDemoApp
+import com.vcheck.demo.dev.VCheckSDKApp
 import com.vcheck.demo.dev.presentation.adapters.CountryListAdapter
 import com.vcheck.demo.dev.databinding.CountryListFragmentBinding
 import com.vcheck.demo.dev.di.AppContainer
 import com.vcheck.demo.dev.domain.CountryTO
-import com.vcheck.demo.dev.presentation.MainActivity
+import com.vcheck.demo.dev.presentation.VCheckMainActivity
 import com.vcheck.demo.dev.presentation.adapters.SearchCountryCallback
 import java.text.Collator
 import java.util.*
@@ -27,7 +27,7 @@ class CountryListFragment : Fragment(R.layout.country_list_fragment),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        appContainer = (activity?.application as VcheckDemoApp).appContainer
+        appContainer = (activity?.application as VCheckSDKApp).appContainer
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -100,7 +100,7 @@ class CountryListFragment : Fragment(R.layout.country_list_fragment),
     }
 
     override fun onClick(country: String) {
-        appContainer.mainRepository.storeSelectedCountryCode(activity as MainActivity, country)
+        appContainer.mainRepository.storeSelectedCountryCode(activity as VCheckMainActivity, country)
         findNavController().popBackStack()
     }
 

@@ -9,12 +9,12 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.vcheck.demo.dev.R
-import com.vcheck.demo.dev.VcheckDemoApp
+import com.vcheck.demo.dev.VCheckSDKApp
 import com.vcheck.demo.dev.databinding.ChooseDocMethodFragmentBinding
 import com.vcheck.demo.dev.domain.DocType
 import com.vcheck.demo.dev.domain.DocTypeData
 import com.vcheck.demo.dev.domain.docCategoryIdxToType
-import com.vcheck.demo.dev.presentation.MainActivity
+import com.vcheck.demo.dev.presentation.VCheckMainActivity
 
 class ChooseDocMethodFragment : Fragment() {
 
@@ -25,7 +25,7 @@ class ChooseDocMethodFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val appContainer = (activity?.application as VcheckDemoApp).appContainer
+        val appContainer = (activity?.application as VCheckSDKApp).appContainer
         _viewModel =
             ChooseDocMethodViewModel(appContainer.mainRepository)
     }
@@ -50,9 +50,9 @@ class ChooseDocMethodFragment : Fragment() {
         _binding!!.docMethodIdCard.isVisible = false
 
         val selectedCountryCode =
-            _viewModel.repository.getSelectedCountryCode(activity as MainActivity)
+            _viewModel.repository.getSelectedCountryCode(activity as VCheckMainActivity)
 
-        _viewModel.setVerifToken(_viewModel.repository.getVerifToken((activity as MainActivity)))
+        _viewModel.setVerifToken(_viewModel.repository.getVerifToken((activity as VCheckMainActivity)))
 
         _viewModel.docTypesResponse.observe(viewLifecycleOwner) {
             if (it.data?.data != null) {

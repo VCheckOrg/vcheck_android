@@ -1,6 +1,5 @@
 package com.vcheck.demo.dev.presentation.photo_upload_stage
 
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,14 +10,13 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.Picasso
 import com.vcheck.demo.dev.R
-import com.vcheck.demo.dev.VcheckDemoApp
+import com.vcheck.demo.dev.VCheckSDKApp
 import com.vcheck.demo.dev.data.Resource
 import com.vcheck.demo.dev.databinding.CheckPhotoFragmentBinding
 import com.vcheck.demo.dev.domain.*
-import com.vcheck.demo.dev.presentation.MainActivity
+import com.vcheck.demo.dev.presentation.VCheckMainActivity
 import com.vcheck.demo.dev.presentation.transferrable_objects.CheckDocInfoDataTO
 import com.vcheck.demo.dev.presentation.transferrable_objects.ZoomPhotoTO
 import okhttp3.MediaType.Companion.toMediaType
@@ -40,7 +38,7 @@ class CheckPhotoFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val appContainer = (activity?.application as VcheckDemoApp).appContainer
+        val appContainer = (activity?.application as VCheckSDKApp).appContainer
         _viewModel = CheckPhotoViewModel(appContainer.mainRepository)
     }
 
@@ -103,7 +101,7 @@ class CheckPhotoFragment : Fragment() {
 
             confirmPhotoButton.setOnClickListener {
                 val body = DocumentUploadRequestBody(
-                    _viewModel.repository.getSelectedCountryCode(activity as MainActivity),
+                    _viewModel.repository.getSelectedCountryCode(activity as VCheckMainActivity),
                     args.checkPhotoDataTO.selectedDocType.toCategoryIdx())
 
                 val multipartList: ArrayList<MultipartBody.Part> = ArrayList()
@@ -125,7 +123,7 @@ class CheckPhotoFragment : Fragment() {
                 tvProcessingDisclaimer.isVisible = true
 
                 _viewModel.uploadVerificationDocuments(
-                    _viewModel.repository.getVerifToken(activity as MainActivity), body, multipartList)
+                    _viewModel.repository.getVerifToken(activity as VCheckMainActivity), body, multipartList)
             }
 
             _viewModel.uploadResponse.observe(viewLifecycleOwner) {

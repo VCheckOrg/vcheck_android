@@ -2,8 +2,6 @@ package com.vcheck.demo.dev.presentation.photo_upload_stage
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
@@ -15,18 +13,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.FileProvider
-import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.Picasso
 import com.vcheck.demo.dev.R
-import com.vcheck.demo.dev.VcheckDemoApp
+import com.vcheck.demo.dev.VCheckSDKApp
 import com.vcheck.demo.dev.databinding.PhotoUploadFragmentBinding
 import com.vcheck.demo.dev.domain.DocType
 import com.vcheck.demo.dev.domain.docCategoryIdxToType
-import com.vcheck.demo.dev.presentation.MainActivity
+import com.vcheck.demo.dev.presentation.VCheckMainActivity
 import com.vcheck.demo.dev.presentation.transferrable_objects.CheckPhotoDataTO
 import java.io.File
 import java.io.IOException
@@ -46,7 +43,7 @@ class PhotoUploadFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val appContainer = (activity?.application as VcheckDemoApp).appContainer
+        val appContainer = (activity?.application as VCheckSDKApp).appContainer
         _viewModel =
             PhotoUploadViewModel(appContainer.mainRepository)
     }
@@ -66,7 +63,7 @@ class PhotoUploadFragment : Fragment() {
         val docTypeWithData = _viewModel.repository.getSelectedDocTypeWithData()
 
         if (docTypeWithData == null) {
-            Toast.makeText((activity as MainActivity),
+            Toast.makeText((activity as VCheckMainActivity),
                 "Error: document type & data have not been initialized.", Toast.LENGTH_LONG).show()
         } else {
 
@@ -265,7 +262,7 @@ class PhotoUploadFragment : Fragment() {
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
             // Ensure that there's a camera activity to handle the intent
             //startActivity(takePictureIntent)
-            takePictureIntent.resolveActivity((activity as MainActivity).packageManager)?.also {
+            takePictureIntent.resolveActivity((activity as VCheckMainActivity).packageManager)?.also {
                 // Create the File where the photo should go
                 val photoFile: File? = try {
                     createImageFile(photoIdx)
@@ -277,7 +274,7 @@ class PhotoUploadFragment : Fragment() {
                 // Continue only if the File was successfully created
                 photoFile?.also {
                     val photoURI: Uri = FileProvider.getUriForFile(
-                        (activity as MainActivity),
+                        (activity as VCheckMainActivity),
                         "com.vcheck.demo.dev",
                         it
                     )
@@ -291,7 +288,7 @@ class PhotoUploadFragment : Fragment() {
     @Throws(IOException::class)
     private fun createImageFile(photoIdx: Int): File {
         val storageDir: File =
-            (activity as MainActivity).getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
+            (activity as VCheckMainActivity).getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
         return File.createTempFile(
             "documentPhoto${photoIdx}", ".jpg", storageDir
         ).apply {

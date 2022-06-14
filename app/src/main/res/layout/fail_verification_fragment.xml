@@ -6,7 +6,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".presentation.screens.FailVerificationFragment"
-        android:background="#2A2A2A">
+        android:background="#2A2A2A"
+    android:theme="@style/Theme.VCheckAndroidSDKDemo">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

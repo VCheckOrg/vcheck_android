@@ -1,22 +1,20 @@
 package com.vcheck.demo.dev.presentation
 
-import android.app.AlertDialog
-import android.app.Dialog
 import android.content.*
 import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.DialogFragment
 import com.vcheck.demo.dev.R
-import com.vcheck.demo.dev.VcheckDemoApp
+import com.vcheck.demo.dev.VCheckSDKApp
 import com.vcheck.demo.dev.di.AppContainer
-import com.vcheck.demo.dev.presentation.liveness.LivenessActivity
 import com.vcheck.demo.dev.util.ContextUtils
 
-class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, View.OnTouchListener {
+class VCheckMainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, View.OnTouchListener {
 
     private var wasLocaleSelectedByUser = false
     private lateinit var appContainer: AppContainer
@@ -25,36 +23,32 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Vi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        appContainer = (application as VcheckDemoApp).appContainer
+        appContainer = (application as VCheckSDKApp).appContainer
 
-        val languageCode = ContextUtils.getSavedLanguage(this@MainActivity)
-        ContextUtils.updateLocale(this@MainActivity, languageCode)
+        val languageCode = ContextUtils.getSavedLanguage(this@VCheckMainActivity)
+        ContextUtils.updateLocale(this@VCheckMainActivity, languageCode)
 
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_vcheck_main)
 
         setLangSpinner()
 
         setupLangReceiver()
-
-        //TEST:
-        // val avMemMB = getAvailableDeviceRAM()
-        // Toast.makeText(this@MainActivity, "Av mem (total): $avMemMB MB", Toast.LENGTH_LONG).show()
     }
 
     override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
         if (wasLocaleSelectedByUser) {
             when (position) {
                 0 -> {
-                    ContextUtils.setSavedLanguage(this@MainActivity, "uk")
-                    ContextUtils.updateLocale(this@MainActivity, "uk")
+                    ContextUtils.setSavedLanguage(this@VCheckMainActivity, "uk")
+                    ContextUtils.updateLocale(this@VCheckMainActivity, "uk")
                 }
                 1 -> {
-                    ContextUtils.setSavedLanguage(this@MainActivity, "en")
-                    ContextUtils.updateLocale(this@MainActivity, "en")
+                    ContextUtils.setSavedLanguage(this@VCheckMainActivity, "en")
+                    ContextUtils.updateLocale(this@VCheckMainActivity, "en")
                 }
                 2 -> {
-                    ContextUtils.setSavedLanguage(this@MainActivity, "ru")
-                    ContextUtils.updateLocale(this@MainActivity, "ru")
+                    ContextUtils.setSavedLanguage(this@VCheckMainActivity, "ru")
+                    ContextUtils.updateLocale(this@VCheckMainActivity, "ru")
                 }
             }
             recreate()
@@ -91,17 +85,17 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, Vi
 
     private fun setLangSpinner() {
 
-        val languageCode = ContextUtils.getSavedLanguage(this@MainActivity)
+        val languageCode = ContextUtils.getSavedLanguage(this@VCheckMainActivity)
 
         val langSpinner = findViewById<Spinner>(R.id.lang_spinner)
 
-        val adapter = ArrayAdapter.createFromResource(this@MainActivity,
+        val adapter = ArrayAdapter.createFromResource(this@VCheckMainActivity,
             R.array.languages, android.R.layout.simple_spinner_item)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
         langSpinner.adapter = adapter
-        langSpinner.onItemSelectedListener = this@MainActivity
-        langSpinner.setOnTouchListener(this@MainActivity)
+        langSpinner.onItemSelectedListener = this@VCheckMainActivity
+        langSpinner.setOnTouchListener(this@VCheckMainActivity)
 
         langSpinner.post {
             when (languageCode) {

@@ -7,7 +7,7 @@
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:remove="android:maxSdkVersion" />
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" /> <!-- For using the camera -->
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
     <!-- <uses-permission android:name="android.permission.CAMERA" android:required="true" /> -->
     <uses-permission
         android:name="android.permission.CAMERA"
@@ -28,33 +28,32 @@
     </queries>
 
     <application
-        android:name=".VcheckDemoApp"
+        android:name=".VCheckSDKApp"
         android:allowBackup="true"
         android:configChanges="locale"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
-        android:theme="@style/Theme.VCheckAndroidSDKDemo">
+        android:supportsRtl="true">
+<!--        android:label="@string/sdk_name"-->
         <activity
-            android:name=".presentation.StartupActivity"
+            android:name=".presentation.VCheckStartupActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
         </activity>
         <activity
-            android:name=".presentation.liveness.LivenessActivity"
+            android:name=".presentation.liveness.VCheckLivenessActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity"
             android:largeHeap="true"/>
         <activity
-            android:name=".presentation.MainActivity"
+            android:name=".presentation.VCheckMainActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity"
             android:largeHeap="true">
@@ -69,15 +68,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-
-<!--        <receiver-->
-<!--            android:name=".util.LangChangeReceiver"-->
-<!--            android:enabled="true"-->
-<!--            android:exported="true">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.LOCALE_CHANGED" />-->
-<!--            </intent-filter>-->
-<!--        </receiver>-->
 
     </application>
 

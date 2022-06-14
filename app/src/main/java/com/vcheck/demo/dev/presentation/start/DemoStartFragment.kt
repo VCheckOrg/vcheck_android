@@ -15,10 +15,10 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.vcheck.demo.dev.R
-import com.vcheck.demo.dev.VcheckDemoApp
+import com.vcheck.demo.dev.VCheckSDKApp
 import com.vcheck.demo.dev.databinding.FragmentDemoStartBinding
 import com.vcheck.demo.dev.domain.CountryTO
-import com.vcheck.demo.dev.presentation.MainActivity
+import com.vcheck.demo.dev.presentation.VCheckMainActivity
 import com.vcheck.demo.dev.presentation.transferrable_objects.CountriesListTO
 import com.vcheck.demo.dev.util.ContextUtils
 import com.vcheck.demo.dev.util.toFlagEmoji
@@ -43,7 +43,7 @@ class DemoStartFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val appContainer = (activity?.application as VcheckDemoApp).appContainer
+        val appContainer = (activity?.application as VCheckSDKApp).appContainer
         _viewModel = DemoStartViewModel(appContainer.mainRepository)
     }
 
@@ -64,14 +64,14 @@ class DemoStartFragment : Fragment() {
             if (it.data?.data != null) {
                 if (it.data.data.redirectUrl != null) {
                     _viewModel.repository.storeVerifToken(
-                        (activity as MainActivity), it.data.data.token)
+                        (activity as VCheckMainActivity), it.data.data.token)
 
-                    _viewModel.setVerifToken(_viewModel.repository.getVerifToken((activity as MainActivity)))
+                    _viewModel.setVerifToken(_viewModel.repository.getVerifToken((activity as VCheckMainActivity)))
 
                     _viewModel.initVerification()
                 } else {
                     Toast.makeText(
-                        (activity as MainActivity),
+                        (activity as VCheckMainActivity),
                         "Error: Cannot retrieve verification token",
                         Toast.LENGTH_LONG
                     ).show()
@@ -117,7 +117,7 @@ class DemoStartFragment : Fragment() {
         _binding!!.btnStartDemoFlow.setOnClickListener {
             _binding!!.startCallChainLoadingIndicator.isVisible = true
             _viewModel.createTestVerificationRequest(
-                ContextUtils.getSavedLanguage(activity as MainActivity))
+                ContextUtils.getSavedLanguage(activity as VCheckMainActivity))
         }
 
         //! FOR TEST
@@ -138,7 +138,7 @@ class DemoStartFragment : Fragment() {
     class PermissionErrDialog : DialogFragment() {
 
         override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-            val activity = activity as MainActivity
+            val activity = activity as VCheckMainActivity
             return AlertDialog.Builder(activity)
                 .setMessage(arguments?.getString(ARG_MESSAGE))
                 .setPositiveButton(

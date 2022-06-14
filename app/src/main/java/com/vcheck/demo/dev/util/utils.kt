@@ -8,17 +8,14 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
-import android.widget.Toast
 import androidx.core.content.ContextCompat.getSystemService
-import com.vcheck.demo.dev.R
-import com.vcheck.demo.dev.presentation.MainActivity
-import com.vcheck.demo.dev.presentation.liveness.LivenessActivity
+import com.vcheck.demo.dev.presentation.VCheckMainActivity
+import com.vcheck.demo.dev.presentation.liveness.VCheckLivenessActivity
 import java.io.File
 import java.security.MessageDigest
 import java.util.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
-import kotlin.math.max
 
 
 fun generateSHA256Hash(strToHash: String): String {
@@ -98,7 +95,7 @@ fun isValidDocRelatedDate(date: String): Boolean {
     }
 }
 
-fun MainActivity.getAvailableDeviceRAM(): Long {
+fun VCheckMainActivity.getAvailableDeviceRAM(): Long {
     val mi = ActivityManager.MemoryInfo()
     val activityManager = getSystemService(ACTIVITY_SERVICE) as ActivityManager?
     activityManager!!.getMemoryInfo(mi)
@@ -107,7 +104,7 @@ fun MainActivity.getAvailableDeviceRAM(): Long {
     return memInMB
 }
 
-fun LivenessActivity.getAvailableDeviceRAM(): Long {
+fun VCheckLivenessActivity.getAvailableDeviceRAM(): Long {
     val mi = ActivityManager.MemoryInfo()
     val activityManager = getSystemService(ACTIVITY_SERVICE) as ActivityManager?
     activityManager!!.getMemoryInfo(mi)
@@ -116,7 +113,7 @@ fun LivenessActivity.getAvailableDeviceRAM(): Long {
     return memInMB
 }
 
-fun LivenessActivity.shouldDecreaseVideoStreamQuality(): Boolean {
+fun VCheckLivenessActivity.shouldDecreaseVideoStreamQuality(): Boolean {
     return (getAvailableDeviceRAM() <= 2000)
 }
 

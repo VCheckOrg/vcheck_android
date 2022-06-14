@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#2A2A2A"
-    tools:context=".presentation.screens.ChooseMethodFragment">
+    tools:context=".presentation.screens.ChooseMethodFragment"
+    android:theme="@style/Theme.VCheckAndroidSDKDemo">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"

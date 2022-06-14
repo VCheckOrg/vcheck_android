@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.databinding.NoTimeFragmentBinding
-import com.vcheck.demo.dev.presentation.liveness.LivenessActivity
+import com.vcheck.demo.dev.presentation.liveness.VCheckLivenessActivity
 
 class NoTimeFragment : Fragment(R.layout.no_time_fragment) {
 
@@ -22,11 +22,11 @@ class NoTimeFragment : Fragment(R.layout.no_time_fragment) {
             //Stub; no back press needed here
         }
 
-        (activity as LivenessActivity).finishLivenessSession()
+        (activity as VCheckLivenessActivity).finishLivenessSession()
 
         _binding!!.tryAgainButton.setOnClickListener {
             findNavController().popBackStack()
-            (activity as LivenessActivity).recreate()
+            (activity as VCheckLivenessActivity).recreate()
         }
     }
 }

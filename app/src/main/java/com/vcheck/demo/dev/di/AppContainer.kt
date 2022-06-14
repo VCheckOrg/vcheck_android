@@ -1,6 +1,6 @@
 package com.vcheck.demo.dev.di
 
-import com.vcheck.demo.dev.VcheckDemoApp
+import com.vcheck.demo.dev.VCheckSDKApp
 import com.vcheck.demo.dev.data.ApiClient
 import com.vcheck.demo.dev.data.LocalDatasource
 import com.vcheck.demo.dev.data.MainRepository
@@ -13,7 +13,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 
-class AppContainer(val app: VcheckDemoApp) {
+class AppContainer(val app: VCheckSDKApp) {
 
     private var retrofit: Retrofit
 

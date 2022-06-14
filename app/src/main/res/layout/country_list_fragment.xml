@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#3C3C3C"
-    tools:context=".presentation.country_stage.CountryListFragment">
+    tools:context=".presentation.country_stage.CountryListFragment"
+    android:theme="@style/Theme.VCheckAndroidSDKDemo">
 
     <ImageView
         android:id="@+id/country_list_back_arrow"

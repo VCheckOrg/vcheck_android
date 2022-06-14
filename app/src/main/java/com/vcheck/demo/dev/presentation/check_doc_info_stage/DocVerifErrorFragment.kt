@@ -6,9 +6,9 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.vcheck.demo.dev.R
-import com.vcheck.demo.dev.VcheckDemoApp
+import com.vcheck.demo.dev.VCheckSDKApp
 import com.vcheck.demo.dev.databinding.FragmentDocVerificationNotSuccessfulBinding
-import com.vcheck.demo.dev.presentation.MainActivity
+import com.vcheck.demo.dev.presentation.VCheckMainActivity
 
 class DocVerifErrorFragment : Fragment(R.layout.fragment_doc_verification_not_successful) {
 
@@ -20,7 +20,7 @@ class DocVerifErrorFragment : Fragment(R.layout.fragment_doc_verification_not_su
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val appContainer = (activity?.application as VcheckDemoApp).appContainer
+        val appContainer = (activity?.application as VCheckSDKApp).appContainer
         viewModel = DocVerifErrorViewModel(appContainer.mainRepository)
     }
 
@@ -37,7 +37,7 @@ class DocVerifErrorFragment : Fragment(R.layout.fragment_doc_verification_not_su
         }
 
         _binding!!.pseudoBtnProceedAnyway.setOnClickListener {
-            viewModel.setDocumentAsPrimary(viewModel.repository.getVerifToken(activity as MainActivity),
+            viewModel.setDocumentAsPrimary(viewModel.repository.getVerifToken(activity as VCheckMainActivity),
                 args.checkDocInfoDataTO.docId)
         }
 

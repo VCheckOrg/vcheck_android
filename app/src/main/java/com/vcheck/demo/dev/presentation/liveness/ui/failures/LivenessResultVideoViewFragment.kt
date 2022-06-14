@@ -1,7 +1,6 @@
 package com.vcheck.demo.dev.presentation.liveness.ui.failures
 
 import android.content.ContentValues
-import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -15,8 +14,7 @@ import androidx.activity.addCallback
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import com.vcheck.demo.dev.R
-import com.vcheck.demo.dev.presentation.StartupActivity
-import com.vcheck.demo.dev.presentation.liveness.LivenessActivity
+import com.vcheck.demo.dev.presentation.liveness.VCheckLivenessActivity
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -38,7 +36,7 @@ class LivenessResultVideoViewFragment : Fragment() {
             //Stub; not going back from here
         }
 
-        val videoPath = (activity as LivenessActivity).videoPath
+        val videoPath = (activity as VCheckLivenessActivity).videoPath
 
         val videoView: VideoView = view.findViewById(R.id.videoView)
 
@@ -55,7 +53,7 @@ class LivenessResultVideoViewFragment : Fragment() {
     }
 
     private fun saveVideoTOGalleryForChecking(filePath: String, fileName: String) {
-        val context = (activity as LivenessActivity)
+        val context = (activity as VCheckLivenessActivity)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             filePath.let {
@@ -67,7 +65,7 @@ class LivenessResultVideoViewFragment : Fragment() {
                     put(MediaStore.Images.Media.MIME_TYPE, "video/mp4")
 
                     put(MediaStore.Images.Media.RELATIVE_PATH,
-                        folderName + "/${context.getString(R.string.app_name)}/")
+                        folderName + "/${context.getString(R.string.sdk_name)}/")
                     put(MediaStore.Images.Media.IS_PENDING, 1)
                 }
 

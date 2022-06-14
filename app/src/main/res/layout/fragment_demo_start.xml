@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".presentation.start.DemoStartFragment">
+    tools:context=".presentation.start.DemoStartFragment"
+    android:theme="@style/Theme.VCheckAndroidSDKDemo">
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnStartDemoFlow"

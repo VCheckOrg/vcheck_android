@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:background="#2A2A2A"
     android:scrollbars="none"
-    tools:context=".presentation.liveness.ui.failures.TooFastMovementsFragment">
+    tools:context=".presentation.liveness.ui.failures.TooFastMovementsFragment"
+    android:theme="@style/Theme.VCheckAndroidSDKDemo">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"

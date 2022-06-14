@@ -26,7 +26,7 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.vcheck.demo.dev.R
-import com.vcheck.demo.dev.presentation.liveness.LivenessActivity
+import com.vcheck.demo.dev.presentation.liveness.VCheckLivenessActivity
 import java.util.*
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
@@ -126,7 +126,7 @@ class CameraConnectionFragment() : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
-        return inflater.inflate(R.layout.camera_fragment, container, false)
+        return inflater.inflate(R.layout.liveness_camera_fragment, container, false)
     }
 
     override fun onViewCreated(
@@ -162,7 +162,7 @@ class CameraConnectionFragment() : Fragment() {
 
     /** Sets up member variables related to camera.  */
     private fun setUpCameraOutputs() {
-        val activity = activity as LivenessActivity
+        val activity = activity as VCheckLivenessActivity
         try {
             sensorOrientation = 270 //CameraCharacteristics.SENSOR_ORIENTATION
 
@@ -188,7 +188,7 @@ class CameraConnectionFragment() : Fragment() {
 
         textureView!!.post {
             backgroundHandler!!.post {
-                val activity = activity as LivenessActivity
+                val activity = activity as VCheckLivenessActivity
                 val manager =
                     activity.getSystemService(Context.CAMERA_SERVICE) as CameraManager
                 try {
@@ -336,7 +336,7 @@ class CameraConnectionFragment() : Fragment() {
     class ErrorDialog : DialogFragment() {
 
         override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-            val activity = activity as LivenessActivity
+            val activity = activity as VCheckLivenessActivity
             return AlertDialog.Builder(activity)
                 .setMessage(arguments?.getString(ARG_MESSAGE))
                 .setPositiveButton(

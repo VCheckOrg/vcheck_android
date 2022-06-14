@@ -10,11 +10,11 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.vcheck.demo.dev.R
-import com.vcheck.demo.dev.VcheckDemoApp
+import com.vcheck.demo.dev.VCheckSDKApp
 import com.vcheck.demo.dev.data.Resource
 import com.vcheck.demo.dev.databinding.InProcessFragmentBinding
 import com.vcheck.demo.dev.domain.*
-import com.vcheck.demo.dev.presentation.liveness.LivenessActivity
+import com.vcheck.demo.dev.presentation.liveness.VCheckLivenessActivity
 import com.vcheck.demo.dev.presentation.liveness.flow_logic.VideoProcessingListener
 import com.vcheck.demo.dev.util.getFolderSizeLabel
 import okhttp3.MediaType.Companion.toMediaType
@@ -38,7 +38,7 @@ class InProcessFragment : Fragment(R.layout.in_process_fragment), VideoProcessin
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val appContainer = (activity?.application as VcheckDemoApp).appContainer
+        val appContainer = (activity?.application as VCheckSDKApp).appContainer
         _viewModel = InProcessViewModel(appContainer.mainRepository)
     }
 
@@ -57,18 +57,18 @@ class InProcessFragment : Fragment(R.layout.in_process_fragment), VideoProcessin
         _binding!!.uploadVideoLoadingIndicator.isVisible = true
 
         if (args.retry) {
-            onVideoProcessed((activity as LivenessActivity).videoPath!!)
+            onVideoProcessed((activity as VCheckLivenessActivity).videoPath!!)
         } else {
-            (activity as LivenessActivity).finishLivenessSession()
-            (activity as LivenessActivity).processVideoOnResult(this@InProcessFragment)
+            (activity as VCheckLivenessActivity).finishLivenessSession()
+            (activity as VCheckLivenessActivity).processVideoOnResult(this@InProcessFragment)
         }
 
-        val token = ((activity as LivenessActivity).application as VcheckDemoApp)
-            .appContainer.mainRepository.getVerifToken(activity as LivenessActivity)
+        val token = ((activity as VCheckLivenessActivity).application as VCheckSDKApp)
+            .appContainer.mainRepository.getVerifToken(activity as VCheckLivenessActivity)
 
         if (token.isNotEmpty()) {
             _viewModel.uploadResponse.observe(viewLifecycleOwner) {
-                Log.d(LivenessActivity.TAG, "UPL COUNTER: $lazyUploadResponseCounter")
+                Log.d(VCheckLivenessActivity.TAG, "UPL COUNTER: $lazyUploadResponseCounter")
                 if (lazyUploadResponseCounter == 1 && it != null && it.data != null) {
                     handleVideoUploadResponse(it)
                 } else {
@@ -83,13 +83,13 @@ class InProcessFragment : Fragment(R.layout.in_process_fragment), VideoProcessin
                 }
             }
         } else {
-            Toast.makeText((activity as LivenessActivity),
+            Toast.makeText((activity as VCheckLivenessActivity),
                 "Local(test) Liveness demo is running; skipping video upload request!", Toast.LENGTH_LONG).show()
         }
     }
 
     private fun handleVideoUploadResponse(uploadResponse: Resource<LivenessUploadResponse>) {
-            Log.d(LivenessActivity.TAG, "UPLOAD RESPONSE DATA: ${uploadResponse.data}")
+            Log.d(VCheckLivenessActivity.TAG, "UPLOAD RESPONSE DATA: ${uploadResponse.data}")
             if (uploadResponse.data!!.data.isFinal) {
                 Toast.makeText(activity, "[TEST] This upload response is final!", Toast.LENGTH_LONG).show()
                 onVideoUploadResponseSuccess()
@@ -141,7 +141,7 @@ class InProcessFragment : Fragment(R.layout.in_process_fragment), VideoProcessin
                 }
             }
         } catch (e: IllegalArgumentException) {
-            Log.d(LivenessActivity.TAG,
+            Log.d(VCheckLivenessActivity.TAG,
                 "Attempt of nav to success was made, but was already on another fragment")
         }
     }
@@ -161,7 +161,7 @@ class InProcessFragment : Fragment(R.layout.in_process_fragment), VideoProcessin
         try {
             findNavController().navigate(id)
         } catch (e: IllegalArgumentException) {
-            Log.d(LivenessActivity.TAG,
+            Log.d(VCheckLivenessActivity.TAG,
                 "Attempt of nav to success was made, but was already on another fragment")
         }
     }
@@ -172,15 +172,15 @@ class InProcessFragment : Fragment(R.layout.in_process_fragment), VideoProcessin
 
         Log.d("mux", getFolderSizeLabel(videoFile))
 
-        val token = ((activity as LivenessActivity).application as VcheckDemoApp)
-            .appContainer.mainRepository.getVerifToken(activity as LivenessActivity)
+        val token = ((activity as VCheckLivenessActivity).application as VCheckSDKApp)
+            .appContainer.mainRepository.getVerifToken(activity as VCheckLivenessActivity)
 
-        (activity as LivenessActivity).runOnUiThread {
+        (activity as VCheckLivenessActivity).runOnUiThread {
             if (token.isNotEmpty()) {
                 val partVideo: MultipartBody.Part = MultipartBody.Part.createFormData(
                     "video.mp4", videoFile.name, videoFile.asRequestBody("video/mp4".toMediaType()))
                 _viewModel.uploadLivenessVideo(_viewModel.repository
-                    .getVerifToken(activity as LivenessActivity), partVideo)
+                    .getVerifToken(activity as VCheckLivenessActivity), partVideo)
             } else {
                 findNavController().navigate(R.id.action_inProcessFragment_to_livenessResultVideoViewFragment)
             }
@@ -188,7 +188,7 @@ class InProcessFragment : Fragment(R.layout.in_process_fragment), VideoProcessin
     }
 
     private fun quitTestApplication() {
-        (activity as LivenessActivity).finishAffinity()
+        (activity as VCheckLivenessActivity).finishAffinity()
         exitProcess(0)
     }
 }

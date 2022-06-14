@@ -7,19 +7,19 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import com.vcheck.demo.dev.R
-import com.vcheck.demo.dev.VcheckDemoApp
+import com.vcheck.demo.dev.VCheckSDKApp
 import com.vcheck.demo.dev.util.ContextUtils
 
-class StartupActivity : AppCompatActivity() {
+class VCheckStartupActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_splash)
+        setContentView(R.layout.activity_vcheck_splash)
 
-        val repository = (application as VcheckDemoApp).appContainer.mainRepository
+        val repository = (application as VCheckSDKApp).appContainer.mainRepository
 
-        repository.resetCacheOnStartup(this@StartupActivity)
+        repository.resetCacheOnStartup(this@VCheckStartupActivity)
 
-        startActivity(Intent(this@StartupActivity, MainActivity::class.java))
+        startActivity(Intent(this@VCheckStartupActivity, VCheckMainActivity::class.java))
     }
 
     override fun attachBaseContext(newBase: Context) {

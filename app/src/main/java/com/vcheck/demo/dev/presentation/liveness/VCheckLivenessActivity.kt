@@ -23,7 +23,7 @@ import com.google.mediapipe.solutions.facemesh.FaceMesh
 import com.google.mediapipe.solutions.facemesh.FaceMeshOptions
 import com.google.mediapipe.solutions.facemesh.FaceMeshResult
 import com.vcheck.demo.dev.R
-import com.vcheck.demo.dev.databinding.ActivityLivenessBinding
+import com.vcheck.demo.dev.databinding.ActivityVcheckLivenessBinding
 import com.vcheck.demo.dev.presentation.liveness.flow_logic.*
 import com.vcheck.demo.dev.presentation.liveness.ui.CameraConnectionFragment
 import com.vcheck.demo.dev.util.ContextUtils
@@ -43,7 +43,7 @@ import java.io.IOException
 import java.util.concurrent.CopyOnWriteArrayList
 
 
-class LivenessActivity : AppCompatActivity(),
+class VCheckLivenessActivity : AppCompatActivity(),
     ImageReader.OnImageAvailableListener,
     MilestoneResultListener {
 
@@ -61,7 +61,7 @@ class LivenessActivity : AppCompatActivity(),
         private const val MIN_FRAMES_FOR_MINOR_OBSTACLES = 4
     }
 
-    private var binding: ActivityLivenessBinding? = null
+    private var binding: ActivityVcheckLivenessBinding? = null
     private var mToast: Toast? = null
 
     var streamSize: Size = Size(320, 240)
@@ -84,12 +84,12 @@ class LivenessActivity : AppCompatActivity(),
     private var minorObstacleFrameCounter: Int = 0
 
     private var milestoneFlow: StandardMilestoneFlow =
-        StandardMilestoneFlow(this@LivenessActivity)
+        StandardMilestoneFlow(this@VCheckLivenessActivity)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityLivenessBinding.inflate(layoutInflater)
+        binding = ActivityVcheckLivenessBinding.inflate(layoutInflater)
         val view = binding!!.root
         setContentView(view)
         onBackPressedDispatcher.addCallback {
@@ -108,7 +108,7 @@ class LivenessActivity : AppCompatActivity(),
     }
 
     private fun resetMilestonesForNewLivenessSession() {
-        milestoneFlow = StandardMilestoneFlow(this@LivenessActivity)
+        milestoneFlow = StandardMilestoneFlow(this@VCheckLivenessActivity)
         livenessSessionLimitCheckTime = SystemClock.elapsedRealtime()
         faceCheckDebounceTime = SystemClock.elapsedRealtime()
         isLivenessSessionFinished = false
@@ -120,7 +120,7 @@ class LivenessActivity : AppCompatActivity(),
 
     private fun setupStreamingModePipeline() {
         facemesh = FaceMesh(
-            this@LivenessActivity,
+            this@VCheckLivenessActivity,
             FaceMeshOptions.builder()
                 .setStaticImageMode(STATIC_PIPELINE_IMAGE_MODE)
                 .setRefineLandmarks(REFINE_PIPELINE_LANDMARKS)
@@ -287,7 +287,7 @@ class LivenessActivity : AppCompatActivity(),
                     openLivenessCameraParams?.sensorOrientation = cameraRotation - getScreenOrientation()
                 }
             },
-            this@LivenessActivity)
+            this@VCheckLivenessActivity)
 
         camera2Fragment!!.setCamera(cameraId)
 
@@ -328,10 +328,10 @@ class LivenessActivity : AppCompatActivity(),
         val bitrate = 2500000
         val muxerConfig = MuxerConfig(createVideoFile() ?: File.createTempFile(
             "faceVideo${System.currentTimeMillis()}", ".mp4",
-                this@LivenessActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES)),
+                this@VCheckLivenessActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES)),
             streamSize.height, streamSize.width, MediaFormat.MIMETYPE_VIDEO_AVC,
             framesPerImage, framesPerSecond, bitrate, iFrameInterval = 1) //3, 32F, 2500000, iFrameInterval = 50 (10))
-        muxer = Muxer(this@LivenessActivity, muxerConfig)
+        muxer = Muxer(this@VCheckLivenessActivity, muxerConfig)
     }
 
     fun processImage() {
@@ -363,7 +363,7 @@ class LivenessActivity : AppCompatActivity(),
     private fun createVideoFile(): File? {
         return try {
             val storageDir: File =
-                this@LivenessActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
+                this@VCheckLivenessActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
             File.createTempFile(
                 "faceVideo${System.currentTimeMillis()}", ".mp4", storageDir
             ).apply {
@@ -400,7 +400,7 @@ class LivenessActivity : AppCompatActivity(),
     }
 
     private fun setUIOnOuterLeftHeadPitchMilestone() {
-        vibrateDevice(this@LivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
+        vibrateDevice(this@VCheckLivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
         binding!!.imgViewStaticStageIndication.isVisible = true
         binding!!.stageSuccessAnimBorder.isVisible = true
         animateStageSuccessFrame()
@@ -420,7 +420,7 @@ class LivenessActivity : AppCompatActivity(),
     }
 
     private fun setUIOnOuterRightHeadPitchMilestone() {
-        vibrateDevice(this@LivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
+        vibrateDevice(this@VCheckLivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
         binding!!.imgViewStaticStageIndication.isVisible = true
         binding!!.stageSuccessAnimBorder.isVisible = true
         animateStageSuccessFrame()
@@ -438,7 +438,7 @@ class LivenessActivity : AppCompatActivity(),
 
     private fun delayedNavigateOnLivenessSessionEnd() {
         binding!!.checkFaceTitle.text = getString(R.string.wait_for_liveness_start)
-        vibrateDevice(this@LivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
+        vibrateDevice(this@VCheckLivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
         binding!!.imgViewStaticStageIndication.isVisible = true
         binding!!.stageSuccessAnimBorder.isVisible = true
         Handler(Looper.getMainLooper()).postDelayed({
@@ -481,7 +481,7 @@ class LivenessActivity : AppCompatActivity(),
     }
 
     private fun onFatalObstacleWorthRetry(actionIdForNav: Int) {
-        vibrateDevice(this@LivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
+        vibrateDevice(this@VCheckLivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
         finishLivenessSession()
         livenessSessionLimitCheckTime = SystemClock.elapsedRealtime()
         binding!!.livenessCosmeticsHolder.isVisible = false

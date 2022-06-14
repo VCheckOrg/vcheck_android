@@ -12,8 +12,8 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.databinding.LivenessInstructionsFragmentBinding
-import com.vcheck.demo.dev.presentation.MainActivity
-import com.vcheck.demo.dev.presentation.liveness.LivenessActivity
+import com.vcheck.demo.dev.presentation.VCheckMainActivity
+import com.vcheck.demo.dev.presentation.liveness.VCheckLivenessActivity
 import com.vcheck.demo.dev.util.setMargins
 
 class LivenessInstructionsFragment : Fragment(R.layout.liveness_instructions_fragment) {
@@ -32,7 +32,7 @@ class LivenessInstructionsFragment : Fragment(R.layout.liveness_instructions_fra
         binding = LivenessInstructionsFragmentBinding.bind(view)
 
         binding!!.livenessStartButton.setOnClickListener {
-            startActivity(Intent(activity as MainActivity, LivenessActivity::class.java))
+            startActivity(Intent(activity as VCheckMainActivity, VCheckLivenessActivity::class.java))
         }
 
         binding!!.staticFaceAnimationView.repeatCount = 0

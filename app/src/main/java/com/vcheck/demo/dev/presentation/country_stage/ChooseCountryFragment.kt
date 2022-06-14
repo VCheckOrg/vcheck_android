@@ -7,11 +7,10 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.vcheck.demo.dev.R
-import com.vcheck.demo.dev.VcheckDemoApp
+import com.vcheck.demo.dev.VCheckSDKApp
 import com.vcheck.demo.dev.databinding.ChooseCountryFragmentBinding
 import com.vcheck.demo.dev.di.AppContainer
-import com.vcheck.demo.dev.domain.CountryTO
-import com.vcheck.demo.dev.presentation.MainActivity
+import com.vcheck.demo.dev.presentation.VCheckMainActivity
 import com.vcheck.demo.dev.presentation.transferrable_objects.CountriesListTO
 import com.vcheck.demo.dev.util.toFlagEmoji
 import java.util.*
@@ -25,7 +24,7 @@ class ChooseCountryFragment : Fragment(R.layout.choose_country_fragment) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        appContainer = (activity?.application as VcheckDemoApp).appContainer
+        appContainer = (activity?.application as VCheckSDKApp).appContainer
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -54,7 +53,7 @@ class ChooseCountryFragment : Fragment(R.layout.choose_country_fragment) {
 
     override fun onResume() {
         super.onResume()
-        country = appContainer.mainRepository.getSelectedCountryCode(activity as MainActivity)
+        country = appContainer.mainRepository.getSelectedCountryCode(activity as VCheckMainActivity)
 
         when (country) {
             "us" -> {

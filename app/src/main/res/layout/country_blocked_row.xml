@@ -4,7 +4,8 @@
     android:id="@+id/countryItem"
     android:layout_width="match_parent"
     android:layout_height="70dp"
-    android:background="?android:attr/selectableItemBackground">
+    android:background="?android:attr/selectableItemBackground"
+    android:theme="@style/Theme.VCheckAndroidSDKDemo">
 
     <TextView
         android:id="@+id/flag_emoji"

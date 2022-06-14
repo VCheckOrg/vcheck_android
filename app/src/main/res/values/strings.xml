@@ -7,7 +7,7 @@
         <item>Русский</item>
     </string-array>
 
-    <string name="app_name">VCheckAndroidSDKDemo</string>
+    <string name="sdk_name">VCheckAndroidSDKDemo</string>
     <string name="wrong_move_title">Wrong movement</string>
     <string name="wrong_move_description">The motion that was requested was not executed correctly. Try to do exactly those movements that are requested. Movements should be fluid and timely.</string>
     <string name="wrong_move_repeat_button">Try again</string>
