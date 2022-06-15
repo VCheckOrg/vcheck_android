@@ -1,5 +1,5 @@
 plugins {
-    id 'com.android.library'
+    id 'com.android.library' //'com.android.application' //!
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'kotlin-parcelize'
@@ -18,7 +18,7 @@ android {
     compileSdk 31
 
     defaultConfig {
-        //applicationId "com.vcheck.demo.dev"
+        //applicationId "com.vcheck.demo.dev" //!
         minSdk 21
         targetSdk 31
         versionCode 17

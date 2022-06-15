@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:scrollbars="none"
-    android:background="#2A2A2A"
+    android:background="@color/vcheck_background"
     tools:context=".presentation.check_doc_info_stage.DocVerifErrorFragment"
     android:theme="@style/Theme.VCheckAndroidSDKDemo">
 

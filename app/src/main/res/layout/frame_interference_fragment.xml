@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:scrollbars="none"
     tools:context=".presentation.liveness.ui.failures.FrameInterferenceFragment"
-    android:background="#2A2A2A"
+    android:background="@color/vcheck_background"
     android:theme="@style/Theme.VCheckAndroidSDKDemo">
 
     <androidx.constraintlayout.widget.ConstraintLayout

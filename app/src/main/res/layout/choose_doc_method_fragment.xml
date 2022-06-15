@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#2A2A2A"
+    android:background="@color/vcheck_background"
     tools:context=".presentation.doc_type_stage.ChooseDocMethodFragment"
     android:theme="@style/Theme.VCheckAndroidSDKDemo">
 

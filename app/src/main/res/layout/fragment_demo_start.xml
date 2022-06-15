@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".presentation.start.DemoStartFragment"
-    android:theme="@style/Theme.VCheckAndroidSDKDemo">
+    android:theme="@style/Theme.VCheckAndroidSDKDemo"
+    android:background="@color/vcheck_background">
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnStartDemoFlow"

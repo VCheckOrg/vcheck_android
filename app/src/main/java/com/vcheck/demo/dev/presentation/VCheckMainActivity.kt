@@ -1,18 +1,20 @@
 package com.vcheck.demo.dev.presentation
 
 import android.content.*
+import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VCheckSDKApp
 import com.vcheck.demo.dev.di.AppContainer
 import com.vcheck.demo.dev.util.ContextUtils
+
 
 class VCheckMainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, View.OnTouchListener {
 
@@ -33,6 +35,14 @@ class VCheckMainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
         setLangSpinner()
 
         setupLangReceiver()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        //Hiding partner app's action bar as it's not used in SDK
+        if (supportActionBar != null && supportActionBar!!.isShowing) {
+            supportActionBar?.hide()
+        }
     }
 
     override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
@@ -64,7 +74,6 @@ class VCheckMainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
 
     override fun attachBaseContext(newBase: Context) {
         val localeToSwitchTo: String = ContextUtils.getSavedLanguage(newBase)
-        Log.d("Ok", "======== attachBaseContext[MainActivity] LOCALE TO SWITCH TO : $localeToSwitchTo")
         val localeUpdatedContext: ContextWrapper =
             ContextUtils.updateLocale(newBase, localeToSwitchTo)
         super.attachBaseContext(localeUpdatedContext)
@@ -74,7 +83,6 @@ class VCheckMainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
         if (mLangReceiver == null) {
             mLangReceiver = object : BroadcastReceiver() {
                 override fun onReceive(context: Context?, intent: Intent?) {
-                    Log.d("OkHttp", "======== LANG CHANGED VIA RECEIVER")
                     recreate()
                 }
             }
@@ -96,6 +104,10 @@ class VCheckMainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListen
         langSpinner.adapter = adapter
         langSpinner.onItemSelectedListener = this@VCheckMainActivity
         langSpinner.setOnTouchListener(this@VCheckMainActivity)
+
+        langSpinner.viewTreeObserver.addOnGlobalLayoutListener {
+            (langSpinner.selectedView as TextView).setTextColor(Color.WHITE)
+        }
 
         langSpinner.post {
             when (languageCode) {

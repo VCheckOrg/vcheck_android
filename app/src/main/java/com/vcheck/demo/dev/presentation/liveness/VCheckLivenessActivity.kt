@@ -42,7 +42,6 @@ import java.io.File
 import java.io.IOException
 import java.util.concurrent.CopyOnWriteArrayList
 
-
 class VCheckLivenessActivity : AppCompatActivity(),
     ImageReader.OnImageAvailableListener,
     MilestoneResultListener {
@@ -159,7 +158,7 @@ class VCheckLivenessActivity : AppCompatActivity(),
                 ObstacleType.YAW_ANGLE -> {
                     minorObstacleFrameCounter += 1
                     if (minorObstacleFrameCounter > MIN_FRAMES_FOR_MINOR_OBSTACLES) {
-                        binding!!.checkFaceTitle.setTextColor(resources.getColor(R.color.errorLight))
+                        binding!!.checkFaceTitle.setTextColor(resources.getColor(R.color.vcheck_error_light))
                         binding!!.checkFaceTitle.text = getString(R.string.line_face_obstacle)
                         delayedResetUIAfterObstacle()
                         minorObstacleFrameCounter = 0
@@ -208,12 +207,12 @@ class VCheckLivenessActivity : AppCompatActivity(),
                     multiFaceFrameCounter = 0
                     onObstacleMet(ObstacleType.MULTIPLE_FACES_DETECTED)
                 }
-//            } else if (faceMeshResult.multiFaceLandmarks().isEmpty()) {
-//                noFaceFrameCounter += 1
-//                if (noFaceFrameCounter >= MAX_FRAMES_W_O_MAJOR_OBSTACLES) {
-//                    noFaceFrameCounter = 0
-//                    onObstacleMet(ObstacleType.NO_OR_PARTIAL_FACE_DETECTED)
-//                }
+            } else if (faceMeshResult.multiFaceLandmarks().isEmpty()) {
+                noFaceFrameCounter += 1
+                if (noFaceFrameCounter >= MAX_FRAMES_W_O_MAJOR_OBSTACLES) {
+                    noFaceFrameCounter = 0
+                    onObstacleMet(ObstacleType.NO_OR_PARTIAL_FACE_DETECTED)
+                }
             } else {
                 noFaceFrameCounter = 0
                 multiFaceFrameCounter = 0
@@ -509,7 +508,6 @@ class VCheckLivenessActivity : AppCompatActivity(),
 
     override fun attachBaseContext(newBase: Context) {
         val localeToSwitchTo: String = ContextUtils.getSavedLanguage(newBase)
-        Log.d("Ok", "======== attachBaseContext[LivenessActivity] LOCALE TO SWITCH TO : $localeToSwitchTo")
         val localeUpdatedContext: ContextWrapper =
             ContextUtils.updateLocale(newBase, localeToSwitchTo)
         super.attachBaseContext(localeUpdatedContext)
@@ -523,6 +521,14 @@ class VCheckLivenessActivity : AppCompatActivity(),
         return memoryInfo
     }
 
+    override fun onResume() {
+        super.onResume()
+        //Hiding partner app's action bar as it's not used in SDK
+        if (supportActionBar != null && supportActionBar!!.isShowing) {
+            supportActionBar?.hide()
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         facemesh?.close()
@@ -532,7 +538,7 @@ class VCheckLivenessActivity : AppCompatActivity(),
     }
 }
 
-// !
+// ?
 //    private fun determineAndSetStreamSize() {
 //        streamSize = if (shouldDecreaseVideoStreamQuality()) {
 //            Size(320, 240)
@@ -541,11 +547,3 @@ class VCheckLivenessActivity : AppCompatActivity(),
 //        }
 //        showSingleToast("[TEST] setting resolution to : ${streamSize.width}x${streamSize.height}")
 //    }
-
-//Deprecated code from delayedNavigateOnLivenessSessionEnd():
-//            binding!!.stageSuccessAnimBorder.isVisible = false
-//            binding!!.imgViewStaticStageIndication.isVisible = false
-//            binding!!.arrowAnimationView.cancelAnimation()
-//            binding!!.faceAnimationView.cancelAnimation()
-//            binding!!.arrowAnimationView.isVisible = false
-//            binding!!.faceAnimationView.isVisible = false

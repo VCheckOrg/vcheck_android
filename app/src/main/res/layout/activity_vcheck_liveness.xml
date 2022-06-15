@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".presentation.liveness.VCheckLivenessActivity"
-    android:theme="@style/Theme.VCheckAndroidSDKDemo">
+    android:theme="@style/Theme.VCheckAndroidSDKDemo"
+    android:background="@color/vcheck_background">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/appBar"

@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#2A2A2A"
+    android:background="@color/vcheck_background"
     android:scrollbars="none"
     tools:context=".presentation.liveness.ui.failures.TooDarkFragment"
     android:theme="@style/Theme.VCheckAndroidSDKDemo">

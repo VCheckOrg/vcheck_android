@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.vcheck.demo.dev.R
+import com.vcheck.demo.dev.VCheckSDK
 import com.vcheck.demo.dev.VCheckSDKApp
 import com.vcheck.demo.dev.data.Resource
 import com.vcheck.demo.dev.databinding.InProcessFragmentBinding
@@ -153,7 +154,7 @@ class InProcessFragment : Fragment(R.layout.in_process_fragment), VideoProcessin
         _binding!!.inProcessSubtitle.isVisible = true
         _binding!!.successButton.isVisible = true
         _binding!!.successButton.setOnClickListener {
-            quitTestApplication()
+            finishSDKFlow()
         }
     }
 
@@ -187,8 +188,10 @@ class InProcessFragment : Fragment(R.layout.in_process_fragment), VideoProcessin
         }
     }
 
-    private fun quitTestApplication() {
-        (activity as VCheckLivenessActivity).finishAffinity()
-        exitProcess(0)
+    private fun finishSDKFlow() {
+//        (activity as VCheckLivenessActivity).finishAffinity()
+//        exitProcess(0)
+        //TODO: test!
+        VCheckSDK.onFinish()
     }
 }

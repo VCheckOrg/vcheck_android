@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".presentation.photo_upload_stage.ZoomedPhotoFragment"
-    android:theme="@style/Theme.VCheckAndroidSDKDemo">
+    android:theme="@style/Theme.VCheckAndroidSDKDemo"
+    android:background="@color/vcheck_background">
 
     <ImageView
         android:id="@+id/crossIcon"
