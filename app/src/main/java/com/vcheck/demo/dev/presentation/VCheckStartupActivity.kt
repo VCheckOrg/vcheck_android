@@ -9,7 +9,7 @@ import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VCheckSDKApp
 import com.vcheck.demo.dev.util.ContextUtils
 
-class VCheckStartupActivity : AppCompatActivity() {
+internal class VCheckStartupActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

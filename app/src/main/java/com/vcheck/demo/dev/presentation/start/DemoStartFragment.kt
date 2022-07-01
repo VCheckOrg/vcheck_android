@@ -4,7 +4,9 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.Dialog
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,13 +20,17 @@ import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VCheckSDKApp
 import com.vcheck.demo.dev.databinding.FragmentDemoStartBinding
 import com.vcheck.demo.dev.domain.CountryTO
+import com.vcheck.demo.dev.domain.StageObstacleErrorType
+import com.vcheck.demo.dev.domain.StageType
+import com.vcheck.demo.dev.domain.toTypeIdx
 import com.vcheck.demo.dev.presentation.VCheckMainActivity
+import com.vcheck.demo.dev.presentation.liveness.VCheckLivenessActivity
 import com.vcheck.demo.dev.presentation.transferrable_objects.CountriesListTO
 import com.vcheck.demo.dev.util.ContextUtils
 import com.vcheck.demo.dev.util.toFlagEmoji
 import java.util.*
 
-class DemoStartFragment : Fragment() {
+internal class DemoStartFragment : Fragment() {
 
     private val requestPermissionsLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
@@ -73,15 +79,32 @@ class DemoStartFragment : Fragment() {
                     Toast.makeText(
                         (activity as VCheckMainActivity),
                         "Error: Cannot retrieve verification token",
-                        Toast.LENGTH_LONG
-                    ).show()
+                        Toast.LENGTH_LONG).show()
                 }
             }
         }
 
         _viewModel.initResponse.observe(viewLifecycleOwner) {
             if (it.data?.data != null) {
-                _viewModel.getCountriesList()
+                _viewModel.getCurrentStage()
+            }
+        }
+
+        _viewModel.stageResponse.observe(viewLifecycleOwner) {
+            if (it.data?.errorCode == StageObstacleErrorType.USER_INTERACTED_COMPLETED.toTypeIdx()) {
+                //!
+                startActivity(Intent(activity as VCheckMainActivity, VCheckLivenessActivity::class.java))
+            } else {
+                if (it.data?.data != null) {
+                    Log.d("STAGING", "----- CURRENT STAGE TYPE: ${it.data.data.type}")
+                    if (it.data.data.type == StageType.DOCUMENT_UPLOAD.toTypeIdx()) {
+                        //TODO make check for optional doc stage fields, like uploaded_doc_id
+                        _viewModel.getCountriesList()
+                    } else {
+                        startActivity(Intent(activity as VCheckMainActivity, VCheckLivenessActivity::class.java))
+                    }
+                    _viewModel.getCountriesList()
+                }
             }
         }
 
@@ -98,11 +121,9 @@ class DemoStartFragment : Fragment() {
                         flag,
                         country.isBlocked)
                 }.toList() as ArrayList<CountryTO>
-
                 val action =
                     DemoStartFragmentDirections.actionDemoStartFragmentToChooseCountryFragment(
-                        CountriesListTO(countryList)
-                    )
+                        CountriesListTO(countryList))
                 findNavController().navigate(action)
             }
         }
@@ -121,11 +142,11 @@ class DemoStartFragment : Fragment() {
         }
 
         //! FOR TEST
-        _binding!!.btnLaunchMediaPipeDemo.setOnClickListener {
-            //TEMP nav action:
-            findNavController().navigate(R.id.action_demoStartFragment_to_livenessInstructionsFragment)
-            //startActivity(Intent(activity as MainActivity, LivenessActivity::class.java))
-        }
+//        _binding!!.btnLaunchMediaPipeDemo.setOnClickListener {
+//            //TEMP nav action:
+//            findNavController().navigate(R.id.action_demoStartFragment_to_livenessInstructionsFragment)
+//            //startActivity(Intent(activity as MainActivity, LivenessActivity::class.java))
+//        }
 
         requestPermissionsLauncher.launch(
             arrayOf(

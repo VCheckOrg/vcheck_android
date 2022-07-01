@@ -5,15 +5,19 @@ import com.vcheck.demo.dev.data.MainRepository
 import com.vcheck.demo.dev.data.Resource
 import com.vcheck.demo.dev.domain.CountriesResponse
 import com.vcheck.demo.dev.domain.CreateVerificationAttemptResponse
+import com.vcheck.demo.dev.domain.StageResponse
 import com.vcheck.demo.dev.domain.VerificationInitResponse
 
-class DemoStartViewModel (val repository: MainRepository) : ViewModel() {
+internal class DemoStartViewModel (val repository: MainRepository) : ViewModel() {
 
     val clientError: MutableLiveData<String?> = MutableLiveData(null)
 
+    //TODO should be removed with new architecture!
     var verifResponse: MutableLiveData<Resource<CreateVerificationAttemptResponse>> = MutableLiveData()
+
     var initResponse: MutableLiveData<Resource<VerificationInitResponse>> = MutableLiveData()
     var countriesResponse: MutableLiveData<Resource<CountriesResponse>> = MutableLiveData()
+    var stageResponse: MutableLiveData<Resource<StageResponse>> = MutableLiveData()
 
     private lateinit var verifToken: String
 
@@ -33,6 +37,12 @@ class DemoStartViewModel (val repository: MainRepository) : ViewModel() {
         }
     }
 
+    fun getCurrentStage() {
+        repository.getCurrentStage().observeForever {
+
+        }
+    }
+
     fun getCountriesList() {
         repository.getCountries(verifToken).observeForever {
             processGetCountriesResponse(it)
@@ -40,7 +50,7 @@ class DemoStartViewModel (val repository: MainRepository) : ViewModel() {
     }
 
     private fun processTimestampResponse(response: Resource<String>, deviceDefaultLocaleCode: String){
-        when(response.status) {
+        when (response.status) {
             Resource.Status.LOADING -> {
             }
             Resource.Status.SUCCESS -> {
@@ -57,8 +67,8 @@ class DemoStartViewModel (val repository: MainRepository) : ViewModel() {
         }
     }
 
-    private fun processCreateVerifResponse(response: Resource<CreateVerificationAttemptResponse>){
-        when(response.status) {
+    private fun processCreateVerifResponse(response: Resource<CreateVerificationAttemptResponse>) {
+        when (response.status) {
             Resource.Status.LOADING -> {
             }
             Resource.Status.SUCCESS -> {
@@ -70,8 +80,8 @@ class DemoStartViewModel (val repository: MainRepository) : ViewModel() {
         }
     }
 
-    private fun processInitVerifResponse(response: Resource<VerificationInitResponse>){
-        when(response.status) {
+    private fun processInitVerifResponse(response: Resource<VerificationInitResponse>) {
+        when (response.status) {
             Resource.Status.LOADING -> {
             }
             Resource.Status.SUCCESS -> {
@@ -83,8 +93,21 @@ class DemoStartViewModel (val repository: MainRepository) : ViewModel() {
         }
     }
 
+    private fun processStageResponse(response: Resource<StageResponse>) {
+        when (response.status) {
+            Resource.Status.LOADING -> {
+            }
+            Resource.Status.SUCCESS -> {
+                stageResponse.value = response
+            }
+            Resource.Status.ERROR -> {
+                clientError.value = response.apiError!!.errorText
+            }
+        }
+    }
+
     private fun processGetCountriesResponse(response: Resource<CountriesResponse>){
-        when(response.status) {
+        when (response.status) {
             Resource.Status.LOADING -> {
             }
             Resource.Status.SUCCESS -> {

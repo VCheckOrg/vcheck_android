@@ -13,7 +13,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 
-class AppContainer(val app: VCheckSDKApp) {
+internal class AppContainer(val app: VCheckSDKApp) {
 
     private var retrofit: Retrofit
 

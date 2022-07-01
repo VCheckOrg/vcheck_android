@@ -16,7 +16,7 @@ import com.vcheck.demo.dev.di.AppContainer
 import com.vcheck.demo.dev.util.ContextUtils
 
 
-class VCheckMainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, View.OnTouchListener {
+internal class VCheckMainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, View.OnTouchListener {
 
     private var wasLocaleSelectedByUser = false
     private lateinit var appContainer: AppContainer

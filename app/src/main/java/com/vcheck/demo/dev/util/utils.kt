@@ -95,15 +95,6 @@ fun isValidDocRelatedDate(date: String): Boolean {
     }
 }
 
-fun VCheckMainActivity.getAvailableDeviceRAM(): Long {
-    val mi = ActivityManager.MemoryInfo()
-    val activityManager = getSystemService(ACTIVITY_SERVICE) as ActivityManager?
-    activityManager!!.getMemoryInfo(mi)
-    val memInMB = mi.totalMem / (1024 * 1024)
-    Log.d("PERFORMANCE", "================ MEM IN MB : ${bytesToHuman(mi.totalMem)}")
-    return memInMB
-}
-
 fun VCheckLivenessActivity.getAvailableDeviceRAM(): Long {
     val mi = ActivityManager.MemoryInfo()
     val activityManager = getSystemService(ACTIVITY_SERVICE) as ActivityManager?
@@ -152,4 +143,13 @@ private fun bytesToHuman(size: Long): String {
 //        Log.d("PERFORMANCE", "================ CAUGHT EXCEPTION WHILE REQUESTING CPU NUM! RETURNING 1")
 //        return 3
 //    }
+//}
+
+//fun VCheckMainActivity.getAvailableDeviceRAM(): Long {
+//    val mi = ActivityManager.MemoryInfo()
+//    val activityManager = getSystemService(ACTIVITY_SERVICE) as ActivityManager?
+//    activityManager!!.getMemoryInfo(mi)
+//    val memInMB = mi.totalMem / (1024 * 1024)
+//    Log.d("PERFORMANCE", "================ MEM IN MB : ${bytesToHuman(mi.totalMem)}")
+//    return memInMB
 //}

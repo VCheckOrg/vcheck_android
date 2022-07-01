@@ -95,6 +95,10 @@ class MainRepository(
         return remoteDatasource.getServiceTimestamp()
     }
 
+    fun getCurrentStage(): MutableLiveData<Resource<StageResponse>> {
+        return remoteDatasource.getСurrentStage()
+    }
+
     //---- LOCAL SOURCE DATA OPS:
 
     fun storeVerifToken(ctx: Context, verifToken: String) {

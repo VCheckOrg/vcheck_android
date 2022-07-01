@@ -8,6 +8,7 @@ import retrofit2.http.*
 
 interface ApiClient {
 
+    //TODO should be removed with new architecture!
     @POST("verifications")
     fun createVerificationRequest(@Body verificationRequestBody: CreateVerificationRequestBody)
             : Call<CreateVerificationAttemptResponse>
@@ -26,28 +27,26 @@ interface ApiClient {
 
     @Headers("multipart: true")
     @Multipart
-    @POST("documents")
+    @POST("documents") //TODO: change to POST /document/upload
     fun uploadVerificationDocumentsForOnePage(
         @Header("Authorization") verifToken: String,
         @Part photo1: MultipartBody.Part,
         @Part country: MultipartBody.Part,
-        @Part document_type: MultipartBody.Part,
-        // @Part is_handwritten: MultipartBody.Part //obsolete
+        @Part document_type: MultipartBody.Part, // TODO rename to category = fields.Integer()
     ): Call<DocumentUploadResponse>
 
     @Headers("multipart: true")
     @Multipart
-    @POST("documents")
+    @POST("documents") //TODO: change to POST /document/upload
     fun uploadVerificationDocumentsForTwoPages(
         @Header("Authorization") verifToken: String,
         @Part photo1: MultipartBody.Part,
         @Part photo2: MultipartBody.Part,
         @Part country: MultipartBody.Part,
-        @Part document_type: MultipartBody.Part,
-        // @Part is_handwritten: MultipartBody.Part //obsolete
+        @Part document_type: MultipartBody.Part, // TODO rename to category = fields.Integer()
     ): Call<DocumentUploadResponse>
 
-    @GET("documents/{document}")
+    @GET("documents/{document}") //TODO: change to GET documents/{document}/info
     fun getDocumentInfo(
         @Header("Authorization") verifToken: String,
         @Path("document") docId: Int
@@ -75,4 +74,7 @@ interface ApiClient {
         @Header("Authorization") verifToken: String,
         @Part video: MultipartBody.Part
     ) : Call<LivenessUploadResponse>
+
+    @GET("stage/current")
+    fun getCurrentStage() : Call<StageResponse>
 }

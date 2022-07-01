@@ -101,4 +101,18 @@ class RemoteDatasource(private val apiClient: ApiClient) {
         return NetworkCall<LivenessUploadResponse>().makeCall(apiClient.uploadLivenessVideo(
             verifToken, video))
     }
+
+    fun getСurrentStage() : MutableLiveData<Resource<StageResponse>> {
+//        return NetworkCall<String>().makeCall(
+//            apiClient.getServiceTimestamp())
+        //Test:
+        val type = (0..1).random()
+        return if ((0..1).random() == 1) {
+            MutableLiveData(Resource.success(StageResponse(data = StageResponseData(
+                id = 0, type = type), errorCode = 1, message = "USER_INTERACTED_COMPLETED")))
+        } else {
+            MutableLiveData(Resource.success(StageResponse(data = StageResponseData(
+                id = 0, type = type), errorCode = 0, message = "VERIFICATION_NOT_INITIALIZED")))
+        }
+    }
 }
