@@ -102,7 +102,7 @@ class RemoteDatasource(private val apiClient: ApiClient) {
             verifToken, video))
     }
 
-    fun getСurrentStage() : MutableLiveData<Resource<StageResponse>> {
+    fun getCurrentStage() : MutableLiveData<Resource<StageResponse>> {
 //        return NetworkCall<String>().makeCall(
 //            apiClient.getServiceTimestamp())
         //Test:

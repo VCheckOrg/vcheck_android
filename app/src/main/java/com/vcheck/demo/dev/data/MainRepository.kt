@@ -96,7 +96,7 @@ class MainRepository(
     }
 
     fun getCurrentStage(): MutableLiveData<Resource<StageResponse>> {
-        return remoteDatasource.getСurrentStage()
+        return remoteDatasource.getCurrentStage()
     }
 
     //---- LOCAL SOURCE DATA OPS:

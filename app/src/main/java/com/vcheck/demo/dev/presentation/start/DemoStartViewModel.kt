@@ -39,7 +39,7 @@ internal class DemoStartViewModel (val repository: MainRepository) : ViewModel()
 
     fun getCurrentStage() {
         repository.getCurrentStage().observeForever {
-
+            processStageResponse(it)
         }
     }
 

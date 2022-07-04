@@ -103,7 +103,6 @@ internal class DemoStartFragment : Fragment() {
                     } else {
                         startActivity(Intent(activity as VCheckMainActivity, VCheckLivenessActivity::class.java))
                     }
-                    _viewModel.getCountriesList()
                 }
             }
         }

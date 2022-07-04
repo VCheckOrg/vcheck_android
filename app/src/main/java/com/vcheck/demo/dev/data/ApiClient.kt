@@ -52,6 +52,7 @@ interface ApiClient {
         @Path("document") docId: Int
     ): Call<PreProcessedDocumentResponse>
 
+    //TODO: change to PUT /document/<int:verification_document_id>/confirm
     @PUT("documents/{document}")
     fun updateAndConfirmDocInfo(
         @Header("Authorization") verifToken: String,
@@ -59,6 +60,7 @@ interface ApiClient {
         @Body parsedDocFieldsData: ParsedDocFieldsData
     ): Call<Response<Void>>
 
+    //TODO: should remove w/new arch?
     @PUT("documents/{document}/primary")
     fun setDocumentAsPrimary(
         @Header("Authorization") verifToken: String,
@@ -76,5 +78,7 @@ interface ApiClient {
     ) : Call<LivenessUploadResponse>
 
     @GET("stage/current")
-    fun getCurrentStage() : Call<StageResponse>
+    fun getCurrentStage(
+        @Header("Authorization") verifToken: String,
+    ) : Call<StageResponse>
 }
