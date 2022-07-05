@@ -1,5 +1,6 @@
 package com.vcheck.demo.dev.presentation.check_doc_info_stage
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -17,6 +18,8 @@ import com.vcheck.demo.dev.domain.*
 import com.vcheck.demo.dev.presentation.VCheckMainActivity
 import com.vcheck.demo.dev.presentation.adapters.CheckDocInfoAdapter
 import com.vcheck.demo.dev.presentation.adapters.DocInfoEditCallback
+import com.vcheck.demo.dev.presentation.liveness.VCheckLivenessActivity
+import com.vcheck.demo.dev.presentation.start.DemoStartFragmentDirections
 import com.vcheck.demo.dev.util.ContextUtils
 import java.io.File
 
@@ -27,6 +30,8 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
     private lateinit var dataList: MutableList<DocFieldWitOptPreFilledData>
 
     private val args: CheckDocInfoFragmentArgs by navArgs()
+
+    private var uploadedDocID: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,15 +54,21 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
         binding.apply {
             photoCard2.isVisible = false
 
-            val docPhoto1File = File(args.checkDocInfoDataTO.photo1Path)
-            Picasso.get().load(docPhoto1File).fit().centerInside().into(passportImage1)
+            if (args.checkDocInfoDataTO != null) {
+                uploadedDocID = args.checkDocInfoDataTO!!.docId
 
-            if (args.checkDocInfoDataTO.photo2Path != null) {
-                photoCard2.isVisible = true
-                val docPhoto2File = File(args.checkDocInfoDataTO.photo2Path!!)
-                Picasso.get().load(docPhoto2File).fit().centerInside().into(passportImage2)
+                val docPhoto1File = File(args.checkDocInfoDataTO!!.photo1Path)
+                Picasso.get().load(docPhoto1File).fit().centerInside().into(passportImage1)
+
+                if (args.checkDocInfoDataTO!!.photo2Path != null) {
+                    photoCard2.isVisible = true
+                    val docPhoto2File = File(args.checkDocInfoDataTO!!.photo2Path!!)
+                    Picasso.get().load(docPhoto2File).fit().centerInside().into(passportImage2)
+                } else {
+                    photoCard2.isVisible = false
+                }
             } else {
-                photoCard2.isVisible = false
+                uploadedDocID = args.uplaodedDocId
             }
         }
 
@@ -69,17 +80,42 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
         viewModel.documentInfoResponse.observe(viewLifecycleOwner) {
             if (it.data?.data != null) {
                 populateDocFields(it.data.data, currentLocaleCode)
+                //TODO!
+                populatePrevUploadedDocPhotos()
             }
         }
 
         viewModel.confirmedDocResponse.observe(viewLifecycleOwner) {
             if (it != null) {
-                findNavController().navigate(R.id.livenessInstructionsFragment)
+                viewModel.getCurrentStage()
             }
         }
 
+        viewModel.stageResponse.observe(viewLifecycleOwner) {
+            //TODO!
+//            if (it.data?.errorCode == StageObstacleErrorType.USER_INTERACTED_COMPLETED.toTypeIdx()) {
+//                //!
+//                startActivity(Intent(activity as VCheckMainActivity, VCheckLivenessActivity::class.java))
+//            } else {
+//                if (it.data?.data != null) {
+//                    Log.d("STAGING", "----- CURRENT STAGE TYPE: ${it.data.data.type}")
+//                    if (it.data.data.uploadedDocId != null) {
+//                        val action =
+//                            DemoStartFragmentDirections.actionDemoStartFragmentToCheckDocInfoFragment(
+//                                null, it.data.data.uploadedDocId)
+//                    } else if (it.data.data.type == StageType.DOCUMENT_UPLOAD.toTypeIdx()) {
+//                        _viewModel.getCountriesList()
+//                    } else {
+//                        startActivity(Intent(activity as VCheckMainActivity, VCheckLivenessActivity::class.java))
+//                    }
+//                }
+//            }
+//            findNavController().navigate(R.id.livenessInstructionsFragment)
+        }
+
         viewModel.getDocumentInfo(viewModel.repository.getVerifToken(activity as VCheckMainActivity),
-            args.checkDocInfoDataTO.docId)
+            uploadedDocID)
+
 
         binding.checkInfoConfirmButton.setOnClickListener {
             if (checkIfAnyFieldEmpty()) {
@@ -87,13 +123,17 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
                     R.string.check_doc_fields_validation_error, Toast.LENGTH_LONG).show()
             } else {
                 viewModel.updateAndConfirmDocument(viewModel.repository.getVerifToken(activity as VCheckMainActivity),
-                    args.checkDocInfoDataTO.docId, composeConfirmedDocFieldsData())
+                    uploadedDocID, composeConfirmedDocFieldsData())
             }
         }
 
         viewModel.clientError.observe(viewLifecycleOwner) {
             if (it != null) Toast.makeText(activity, it, Toast.LENGTH_LONG).show()
         }
+    }
+
+    private fun populatePrevUploadedDocPhotos() {
+        //TODO
     }
 
     private fun populateDocFields(preProcessedDocData: PreProcessedDocData, currentLocaleCode: String) {

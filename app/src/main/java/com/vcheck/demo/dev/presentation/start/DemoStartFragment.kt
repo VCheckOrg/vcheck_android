@@ -97,8 +97,11 @@ internal class DemoStartFragment : Fragment() {
             } else {
                 if (it.data?.data != null) {
                     Log.d("STAGING", "----- CURRENT STAGE TYPE: ${it.data.data.type}")
-                    if (it.data.data.type == StageType.DOCUMENT_UPLOAD.toTypeIdx()) {
-                        //TODO make check for optional doc stage fields, like uploaded_doc_id
+                    if (it.data.data.uploadedDocId != null) {
+                        val action =
+                            DemoStartFragmentDirections.actionDemoStartFragmentToCheckDocInfoFragment(
+                                null, it.data.data.uploadedDocId)
+                    } else if (it.data.data.type == StageType.DOCUMENT_UPLOAD.toTypeIdx()) {
                         _viewModel.getCountriesList()
                     } else {
                         startActivity(Intent(activity as VCheckMainActivity, VCheckLivenessActivity::class.java))

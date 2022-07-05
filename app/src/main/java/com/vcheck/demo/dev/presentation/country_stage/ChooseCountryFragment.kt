@@ -64,7 +64,6 @@ class ChooseCountryFragment : Fragment(R.layout.choose_country_fragment) {
                 binding.countryTitle.text = getString(R.string.united_states_of_america)
                 binding.flagEmoji.text = flag
             }
-
             "bm" -> {
                 val locale = Locale("", country)
 
@@ -73,7 +72,6 @@ class ChooseCountryFragment : Fragment(R.layout.choose_country_fragment) {
                 binding.countryTitle.text = getString(R.string.bermuda)
                 binding.flagEmoji.text = flag
             }
-
             "tl" -> {
                 val locale = Locale("", country)
 
@@ -82,7 +80,6 @@ class ChooseCountryFragment : Fragment(R.layout.choose_country_fragment) {
                 binding.countryTitle.text = getString(R.string.east_timor)
                 binding.flagEmoji.text = flag
             }
-
             else -> {
                 val locale = Locale("", country)
 

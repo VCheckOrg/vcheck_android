@@ -130,10 +130,14 @@
         tools:layout="@layout/check_doc_info_fragment">
         <argument
             android:name="checkDocInfoDataTO"
-            app:argType="com.vcheck.demo.dev.presentation.transferrable_objects.CheckDocInfoDataTO" />
+            app:argType="com.vcheck.demo.dev.presentation.transferrable_objects.CheckDocInfoDataTO"
+            app:nullable="true" />
         <action
             android:id="@+id/action_checkDocInfoFragment_to_livenessInstructionsFragment"
             app:destination="@id/livenessInstructionsFragment" />
+        <argument
+            android:name="uplaodedDocId"
+            app:argType="integer" />
     </fragment>
 
     <fragment
@@ -161,6 +165,9 @@
         <action
             android:id="@+id/action_demoStartFragment_to_livenessInstructionsFragment"
             app:destination="@id/livenessInstructionsFragment" />
+        <action
+            android:id="@+id/action_demoStartFragment_to_checkDocInfoFragment"
+            app:destination="@id/checkDocInfoFragment" />
     </fragment>
 
 

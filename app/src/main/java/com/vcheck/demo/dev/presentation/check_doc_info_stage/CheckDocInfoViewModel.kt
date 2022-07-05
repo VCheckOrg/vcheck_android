@@ -5,9 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.vcheck.demo.dev.data.MainRepository
 import com.vcheck.demo.dev.data.Resource
-import com.vcheck.demo.dev.domain.CreateVerificationAttemptResponse
 import com.vcheck.demo.dev.domain.ParsedDocFieldsData
 import com.vcheck.demo.dev.domain.PreProcessedDocumentResponse
+import com.vcheck.demo.dev.domain.StageResponse
 import retrofit2.Response
 
 class CheckDocInfoViewModel(val repository: MainRepository) : ViewModel() {
@@ -17,6 +17,8 @@ class CheckDocInfoViewModel(val repository: MainRepository) : ViewModel() {
     var confirmedDocResponse: MutableLiveData<Resource<Response<Void>>?> = MutableLiveData(null)
 
     var documentInfoResponse: MutableLiveData<Resource<PreProcessedDocumentResponse>> = MutableLiveData()
+
+    var stageResponse: MutableLiveData<Resource<StageResponse>> = MutableLiveData()
 
     fun getDocumentInfo(token: String, docId: Int) {
         repository.getDocumentInfo(token, docId).observeForever {
@@ -33,12 +35,31 @@ class CheckDocInfoViewModel(val repository: MainRepository) : ViewModel() {
             }
     }
 
+    fun getCurrentStage() {
+        repository.getCurrentStage().observeForever {
+            processStageResponse(it)
+        }
+    }
+
     private fun processConfirmResponse(response: Resource<Response<Void>>) {
         when(response.status) {
             Resource.Status.LOADING -> {
             }
             Resource.Status.SUCCESS -> {
                 confirmedDocResponse.value = response
+            }
+            Resource.Status.ERROR -> {
+                clientError.value = response.apiError!!.errorText
+            }
+        }
+    }
+
+    private fun processStageResponse(response: Resource<StageResponse>) {
+        when (response.status) {
+            Resource.Status.LOADING -> {
+            }
+            Resource.Status.SUCCESS -> {
+                stageResponse.value = response
             }
             Resource.Status.ERROR -> {
                 clientError.value = response.apiError!!.errorText
