@@ -92,15 +92,14 @@ internal class DemoStartFragment : Fragment() {
 
         _viewModel.stageResponse.observe(viewLifecycleOwner) {
             if (it.data?.errorCode == StageObstacleErrorType.USER_INTERACTED_COMPLETED.toTypeIdx()) {
-                //!
                 startActivity(Intent(activity as VCheckMainActivity, VCheckLivenessActivity::class.java))
             } else {
                 if (it.data?.data != null) {
                     Log.d("STAGING", "----- CURRENT STAGE TYPE: ${it.data.data.type}")
                     if (it.data.data.uploadedDocId != null) {
-                        val action =
-                            DemoStartFragmentDirections.actionDemoStartFragmentToCheckDocInfoFragment(
+                        val action = DemoStartFragmentDirections.actionDemoStartFragmentToCheckDocInfoFragment(
                                 null, it.data.data.uploadedDocId)
+                        findNavController().navigate(action)
                     } else if (it.data.data.type == StageType.DOCUMENT_UPLOAD.toTypeIdx()) {
                         _viewModel.getCountriesList()
                     } else {

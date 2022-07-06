@@ -1,5 +1,6 @@
 package com.vcheck.demo.dev.presentation.liveness.ui.in_process
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -15,14 +16,15 @@ import com.vcheck.demo.dev.VCheckSDKApp
 import com.vcheck.demo.dev.data.Resource
 import com.vcheck.demo.dev.databinding.InProcessFragmentBinding
 import com.vcheck.demo.dev.domain.*
+import com.vcheck.demo.dev.presentation.VCheckMainActivity
 import com.vcheck.demo.dev.presentation.liveness.VCheckLivenessActivity
 import com.vcheck.demo.dev.presentation.liveness.flow_logic.VideoProcessingListener
+import com.vcheck.demo.dev.presentation.start.DemoStartFragmentDirections
 import com.vcheck.demo.dev.util.getFolderSizeLabel
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
-import kotlin.system.exitProcess
 
 class InProcessFragment : Fragment(R.layout.in_process_fragment), VideoProcessingListener {
 
@@ -154,7 +156,17 @@ class InProcessFragment : Fragment(R.layout.in_process_fragment), VideoProcessin
         _binding!!.inProcessSubtitle.isVisible = true
         _binding!!.successButton.isVisible = true
         _binding!!.successButton.setOnClickListener {
-            finishSDKFlow()
+            _viewModel.stageResponse.observe(viewLifecycleOwner) {
+                //TODO test!
+                if (it.data?.data?.type == StageType.LIVENESS_CHALLENGE.toTypeIdx() &&
+                    it.data.errorCode == StageObstacleErrorType.USER_INTERACTED_COMPLETED.toTypeIdx()) {
+                    finishSDKFlow()
+                } else {
+                    Toast.makeText(activity, "Stage Error", Toast.LENGTH_LONG).show()
+                    safeNavToFailFragment(R.id.action_inProcessFragment_to_failVideoUploadFragment)
+                }
+            }
+            _viewModel.getCurrentStage()
         }
     }
 
