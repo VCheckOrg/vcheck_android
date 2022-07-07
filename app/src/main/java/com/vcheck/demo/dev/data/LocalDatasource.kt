@@ -3,13 +3,11 @@ package com.vcheck.demo.dev.data
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
-import android.util.Log
 import com.vcheck.demo.dev.domain.DocTypeData
-import java.util.*
 
 class LocalDatasource {
 
-    //TODO think of optimal way of caching single object:
+    //TODO make optimal way of caching single object:
     private var _selectedDocTypeWithData: DocTypeData? = null
 
     private fun getSharedPreferences(ctx: Context): SharedPreferences =
@@ -46,22 +44,3 @@ class LocalDatasource {
         _selectedDocTypeWithData = null
     }
 }
-
-//Obsolete logic:
-
-//    fun storeMaxLivenessLocalAttempts(ctx: Context, attempts: Int) {
-//        getSharedPreferences(ctx).edit().putInt("max_liveness_attempts", attempts).apply()
-//    }
-//
-//    fun getMaxLivenessLocalAttempts(ctx: Context): Int {
-//        return getSharedPreferences(ctx).getInt("max_liveness_attempts", 5)
-//    }
-
-//    fun incrementActualLivenessLocalAttempts(ctx: Context) {
-//        val current = getSharedPreferences(ctx).getInt("curr_liveness_attempts", 1)
-//        getSharedPreferences(ctx).edit().putInt("curr_liveness_attempts", current + 1).apply()
-//    }
-//
-//    fun getActualLivenessLocalAttempts(ctx: Context): Int {
-//        return getSharedPreferences(ctx).getInt("curr_liveness_attempts", 1)
-//    }

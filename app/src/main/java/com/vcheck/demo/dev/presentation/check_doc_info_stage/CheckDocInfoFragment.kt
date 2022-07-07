@@ -92,25 +92,12 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
         }
 
         viewModel.stageResponse.observe(viewLifecycleOwner) {
-            //TODO!
-//            if (it.data?.errorCode == StageObstacleErrorType.USER_INTERACTED_COMPLETED.toTypeIdx()) {
-//                //!
-//                startActivity(Intent(activity as VCheckMainActivity, VCheckLivenessActivity::class.java))
-//            } else {
-//                if (it.data?.data != null) {
-//                    Log.d("STAGING", "----- CURRENT STAGE TYPE: ${it.data.data.type}")
-//                    if (it.data.data.uploadedDocId != null) {
-//                        val action =
-//                            DemoStartFragmentDirections.actionDemoStartFragmentToCheckDocInfoFragment(
-//                                null, it.data.data.uploadedDocId)
-//                    } else if (it.data.data.type == StageType.DOCUMENT_UPLOAD.toTypeIdx()) {
-//                        _viewModel.getCountriesList()
-//                    } else {
-//                        startActivity(Intent(activity as VCheckMainActivity, VCheckLivenessActivity::class.java))
-//                    }
-//                }
-//            }
-//            findNavController().navigate(R.id.livenessInstructionsFragment)
+            //TODO test!
+            if (it.data?.errorCode == StageObstacleErrorType.USER_INTERACTED_COMPLETED.toTypeIdx()) {
+                startActivity(Intent(activity as VCheckMainActivity, VCheckLivenessActivity::class.java))
+            } else {
+                findNavController().navigate(R.id.action_global_demoStartFragment)
+            }
         }
 
         viewModel.getDocumentInfo(viewModel.repository.getVerifToken(activity as VCheckMainActivity),

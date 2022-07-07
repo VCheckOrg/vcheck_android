@@ -5,42 +5,44 @@ import com.vcheck.demo.dev.domain.*
 import okhttp3.MultipartBody
 import retrofit2.Response
 
-class RemoteDatasource(private val apiClient: ApiClient) {
+class RemoteDatasource(private val verificationApiClient: VerificationApiClient,
+                       private val partnerApiClient: PartnerApiClient) {
+
+    /*
+    https://test-verification-new.vycheck.com/api/v1/ - verification_api (TEST)
+    https://test-partner.vycheck.com/api/v1/ - partner_api
+    первая правда может поменятся, планируем убрать new как снесем старый тест
+     */
 
     companion object {
-        const val API_BASE_URL = "https://test-verification.vycheck.com/api/"
+        const val VERIFICATIONS_API_BASE_URL = "https://test-verification.vycheck.com/api/v1/"
+        const val PARTNER_API_BASE_URL = "https://test-partner.vycheck.com/api/v1/"
+        const val DEFAULT_SESSION_LIFETIME = 3600
     }
 
     fun createVerificationRequest(verificationRequestBody: CreateVerificationRequestBody):
             MutableLiveData<Resource<CreateVerificationAttemptResponse>> {
         return NetworkCall<CreateVerificationAttemptResponse>().makeCall(
-            apiClient.createVerificationRequest(
-                verificationRequestBody
-            )
+            partnerApiClient.createVerificationRequest(verificationRequestBody)
         )
     }
 
     fun initVerification(verifToken: String): MutableLiveData<Resource<VerificationInitResponse>> {
         return NetworkCall<VerificationInitResponse>().makeCall(
-            apiClient.initVerification(
-                verifToken
-            )
+            verificationApiClient.initVerification(verifToken)
         )
     }
 
     fun getCountries(verifToken: String): MutableLiveData<Resource<CountriesResponse>> {
         return NetworkCall<CountriesResponse>().makeCall(
-            apiClient.getCountries(
-                verifToken
-            )
+            verificationApiClient.getCountries(verifToken)
         )
     }
 
     fun getCountryAvailableDocTypeInfo(verifToken: String, countryCode: String)
             : MutableLiveData<Resource<DocumentTypesForCountryResponse>> {
         return NetworkCall<DocumentTypesForCountryResponse>().makeCall(
-            apiClient.getCountryAvailableDocTypeInfo(verifToken, countryCode)
-        )
+            verificationApiClient.getCountryAvailableDocTypeInfo(verifToken, countryCode))
     }
 
     fun uploadVerificationDocuments(
@@ -50,7 +52,7 @@ class RemoteDatasource(private val apiClient: ApiClient) {
     ): MutableLiveData<Resource<DocumentUploadResponse>> {
         if (images.size == 1) {
             return NetworkCall<DocumentUploadResponse>().makeCall(
-                apiClient.uploadVerificationDocumentsForOnePage(
+                verificationApiClient.uploadVerificationDocumentsForOnePage(
                     verifToken,
                     images[0],
                     MultipartBody.Part.createFormData("country", documentUploadRequestBody.country),
@@ -59,7 +61,7 @@ class RemoteDatasource(private val apiClient: ApiClient) {
                 ))
         }
         else {
-            return NetworkCall<DocumentUploadResponse>().makeCall(apiClient.uploadVerificationDocumentsForTwoPages(
+            return NetworkCall<DocumentUploadResponse>().makeCall(verificationApiClient.uploadVerificationDocumentsForTwoPages(
                 verifToken,
                 images[0],
                 images[1],
@@ -73,8 +75,7 @@ class RemoteDatasource(private val apiClient: ApiClient) {
     fun getDocumentInfo(verifToken: String, docId: Int)
             : MutableLiveData<Resource<PreProcessedDocumentResponse>> {
         return NetworkCall<PreProcessedDocumentResponse>().makeCall(
-            apiClient.getDocumentInfo(verifToken, docId)
-        )
+            verificationApiClient.getDocumentInfo(verifToken, docId))
     }
 
     fun updateAndConfirmDocInfo(
@@ -83,22 +84,22 @@ class RemoteDatasource(private val apiClient: ApiClient) {
         docData: ParsedDocFieldsData
     ): MutableLiveData<Resource<Response<Void>>> {
         return NetworkCall<Response<Void>>().makeCall(
-            apiClient.updateAndConfirmDocInfo(verifToken, docId, docData))
+            verificationApiClient.updateAndConfirmDocInfo(verifToken, docId, docData))
     }
 
     fun setDocumentAsPrimary(verifToken: String, docId: Int) : MutableLiveData<Resource<Response<Void>>> {
-        return NetworkCall<Response<Void>>().makeCall(apiClient.setDocumentAsPrimary(
+        return NetworkCall<Response<Void>>().makeCall(verificationApiClient.setDocumentAsPrimary(
             verifToken, docId))
     }
 
     fun getServiceTimestamp() : MutableLiveData<Resource<String>> {
         return NetworkCall<String>().makeCall(
-            apiClient.getServiceTimestamp())
+            verificationApiClient.getServiceTimestamp())
     }
 
     fun uploadLivenessVideo(verifToken: String, video: MultipartBody.Part)
         : MutableLiveData<Resource<LivenessUploadResponse>> {
-        return NetworkCall<LivenessUploadResponse>().makeCall(apiClient.uploadLivenessVideo(
+        return NetworkCall<LivenessUploadResponse>().makeCall(verificationApiClient.uploadLivenessVideo(
             verifToken, video))
     }
 

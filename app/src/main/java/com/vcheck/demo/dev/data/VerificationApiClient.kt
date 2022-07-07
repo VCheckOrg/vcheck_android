@@ -6,28 +6,42 @@ import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.*
 
-interface ApiClient {
+interface VerificationApiClient {
 
-    //TODO should be removed with new architecture!
-    @POST("verifications")
-    fun createVerificationRequest(@Body verificationRequestBody: CreateVerificationRequestBody)
-            : Call<CreateVerificationAttemptResponse>
+    /*
+    https://test-verification-new.vycheck.com/api/v1/ - verification_api (TEST)
+    https://test-partner.vycheck.com/api/v1/ - partner_api
+    первая правда может поменятся, планируем убрать new как снесем старый тест
+
+    partner_api
+    /verifications
+
+    verification_api
+    /verifications/init
+    /stages/current
+    /documents/countries
+    /documents/types
+    /documents/upload
+    /documents/<int:verification_document_id>/info
+    /documents/<int:verification_document_id>/confirm
+    /liveness_challenges
+     */
 
     @PUT("verifications/init")
     fun initVerification(@Header("Authorization") verifToken: String): Call<VerificationInitResponse>
 
-    @GET("countries")
+    @GET("documents/countries")
     fun getCountries(@Header("Authorization") verifToken: String): Call<CountriesResponse>
 
-    @GET("countries/{country}/documents")
+    @GET("documents/types")
     fun getCountryAvailableDocTypeInfo(
         @Header("Authorization") verifToken: String,
-        @Path("country") countryCode: String
+        @Query("country") countryCode: String //TODO test!
     ): Call<DocumentTypesForCountryResponse>
 
     @Headers("multipart: true")
     @Multipart
-    @POST("documents") //TODO: change to POST /document/upload
+    @POST("documents/upload")
     fun uploadVerificationDocumentsForOnePage(
         @Header("Authorization") verifToken: String,
         @Part photo1: MultipartBody.Part,
@@ -37,7 +51,7 @@ interface ApiClient {
 
     @Headers("multipart: true")
     @Multipart
-    @POST("documents") //TODO: change to POST /document/upload
+    @POST("documents/upload")
     fun uploadVerificationDocumentsForTwoPages(
         @Header("Authorization") verifToken: String,
         @Part photo1: MultipartBody.Part,
@@ -46,14 +60,14 @@ interface ApiClient {
         @Part document_type: MultipartBody.Part, // TODO rename to category = fields.Integer()
     ): Call<DocumentUploadResponse>
 
-    @GET("documents/{document}") //TODO: change to GET documents/{document}/info
+    @GET("documents/{document}/info") //TODO: change to GET documents/{document}/info
     fun getDocumentInfo(
         @Header("Authorization") verifToken: String,
         @Path("document") docId: Int
     ): Call<PreProcessedDocumentResponse>
 
     //TODO: change to PUT /document/<int:verification_document_id>/confirm
-    @PUT("documents/{document}")
+    @PUT("documents/{document}/confirm")
     fun updateAndConfirmDocInfo(
         @Header("Authorization") verifToken: String,
         @Path("document") docId: Int,
@@ -71,13 +85,13 @@ interface ApiClient {
 
     @Headers("multipart: true")
     @Multipart
-    @POST("liveness")
+    @POST("liveness_challenges")
     fun uploadLivenessVideo(
         @Header("Authorization") verifToken: String,
         @Part video: MultipartBody.Part
     ) : Call<LivenessUploadResponse>
 
-    @GET("stage/current")
+    @GET("stages/current")
     fun getCurrentStage(
         @Header("Authorization") verifToken: String,
     ) : Call<StageResponse>

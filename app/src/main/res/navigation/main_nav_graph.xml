@@ -197,6 +197,6 @@
         <argument
             android:name="checkDocInfoDataTO"
             app:argType="com.vcheck.demo.dev.presentation.transferrable_objects.CheckDocInfoDataTO" />
-    </fragment>
+    </fragment><action android:id="@+id/action_global_demoStartFragment" app:destination="@id/demoStartFragment"/>
 
 </navigation>

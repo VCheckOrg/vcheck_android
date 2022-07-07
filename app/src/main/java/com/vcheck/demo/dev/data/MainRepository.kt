@@ -3,22 +3,42 @@ package com.vcheck.demo.dev.data
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.vcheck.demo.dev.domain.*
+import com.vcheck.demo.dev.util.generateSHA256Hash
 import okhttp3.MultipartBody
 import retrofit2.Response
+import java.util.*
 
 class MainRepository(
     private val remoteDatasource: RemoteDatasource,
     private val localDatasource: LocalDatasource
 ) {
 
-    //---- REMOTE SOURCE DATA OPS:
+    fun createVerificationRequest(serviceTS: Long, deviceDefaultLocaleCode: String,
+            vModel: VerificationClientCreationModel)
+        : MutableLiveData<Resource<CreateVerificationAttemptResponse>> {
 
-//  fun createVerificationRequest(verificationRequestBody: CreateVerificationRequestBody): CreateVerificationAttemptResponse
-//        = remoteData.createVerificationRequest(verificationRequestBody)
+        val partnerId = vModel.partnerId
+        val partnerSecret = vModel.partnerSecret
+        val scheme = vModel.verificationType.toStringRepresentation()
+        val partnerUserId = vModel.partnerUserId ?: Date().time.toString()
+        val partnerVerificationId = vModel.partnerVerificationId ?: Date().time.toString()
+        val callbackUrl = if (vModel.customServiceURL != null)
+            "${vModel.customServiceURL}/ping" else "${RemoteDatasource.VERIFICATIONS_API_BASE_URL}/ping"
+        val sessionLifetime = vModel.sessionLifetime ?: RemoteDatasource.DEFAULT_SESSION_LIFETIME
 
-    fun createTestVerificationRequest(serviceTS: Long, deviceDefaultLocaleCode: String): MutableLiveData<Resource<CreateVerificationAttemptResponse>> =
-        remoteDatasource.createVerificationRequest(
-            CreateVerificationRequestBody(timestamp = serviceTS, locale = deviceDefaultLocaleCode))
+        return remoteDatasource.createVerificationRequest(
+            CreateVerificationRequestBody(
+                partner_id = partnerId,
+                timestamp = serviceTS,
+                scheme = scheme,
+                locale = deviceDefaultLocaleCode,
+                partner_user_id = partnerUserId,
+                partner_verification_id = partnerVerificationId,
+                callback_url = callbackUrl,
+                session_lifetime = sessionLifetime,
+                sign = generateSHA256Hash(
+                    "$partnerId$partnerUserId$partnerVerificationId$scheme$serviceTS$partnerSecret")))
+    }
 
     fun initVerification(verifToken: String): MutableLiveData<Resource<VerificationInitResponse>> {
         return if (verifToken.isNotEmpty()) {

@@ -17,12 +17,10 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.vcheck.demo.dev.R
+import com.vcheck.demo.dev.VCheckSDK
 import com.vcheck.demo.dev.VCheckSDKApp
 import com.vcheck.demo.dev.databinding.FragmentDemoStartBinding
-import com.vcheck.demo.dev.domain.CountryTO
-import com.vcheck.demo.dev.domain.StageObstacleErrorType
-import com.vcheck.demo.dev.domain.StageType
-import com.vcheck.demo.dev.domain.toTypeIdx
+import com.vcheck.demo.dev.domain.*
 import com.vcheck.demo.dev.presentation.VCheckMainActivity
 import com.vcheck.demo.dev.presentation.liveness.VCheckLivenessActivity
 import com.vcheck.demo.dev.presentation.transferrable_objects.CountriesListTO
@@ -35,7 +33,10 @@ internal class DemoStartFragment : Fragment() {
     private val requestPermissionsLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             if (permissions.all { it.value }) {
-                //Stub; all is ok
+                //Launching main flow if all is ok
+                _binding!!.startCallChainLoadingIndicator.isVisible = true
+                _viewModel.createTestVerificationRequest(
+                    ContextUtils.getSavedLanguage(activity as VCheckMainActivity))
             } else {
                 PermissionErrDialog.newInstance(getString(R.string.permissions_denied))
                     .show(childFragmentManager, "permission_err_dialog")
@@ -68,19 +69,12 @@ internal class DemoStartFragment : Fragment() {
 
         _viewModel.verifResponse.observe(viewLifecycleOwner) {
             if (it.data?.data != null) {
-                if (it.data.data.redirectUrl != null) {
-                    _viewModel.repository.storeVerifToken(
-                        (activity as VCheckMainActivity), it.data.data.token)
+                _viewModel.repository.storeVerifToken(
+                    (activity as VCheckMainActivity), it.data.data.token)
 
-                    _viewModel.setVerifToken(_viewModel.repository.getVerifToken((activity as VCheckMainActivity)))
+                _viewModel.setVerifToken(_viewModel.repository.getVerifToken((activity as VCheckMainActivity)))
 
-                    _viewModel.initVerification()
-                } else {
-                    Toast.makeText(
-                        (activity as VCheckMainActivity),
-                        "Error: Cannot retrieve verification token",
-                        Toast.LENGTH_LONG).show()
-                }
+                _viewModel.initVerification()
             }
         }
 
@@ -142,18 +136,10 @@ internal class DemoStartFragment : Fragment() {
                 ContextUtils.getSavedLanguage(activity as VCheckMainActivity))
         }
 
-        //! FOR TEST
-//        _binding!!.btnLaunchMediaPipeDemo.setOnClickListener {
-//            //TEMP nav action:
-//            findNavController().navigate(R.id.action_demoStartFragment_to_livenessInstructionsFragment)
-//            //startActivity(Intent(activity as MainActivity, LivenessActivity::class.java))
-//        }
-
         requestPermissionsLauncher.launch(
             arrayOf(
                 Manifest.permission.CAMERA,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-        )
+                Manifest.permission.WRITE_EXTERNAL_STORAGE))
     }
 
     /** Shows an error message dialog.  */
@@ -184,6 +170,15 @@ internal class DemoStartFragment : Fragment() {
         }
     }
 }
+
+
+
+//! FOR TEST
+//        _binding!!.btnLaunchMediaPipeDemo.setOnClickListener {
+//            //TEMP nav action:
+//            findNavController().navigate(R.id.action_demoStartFragment_to_livenessInstructionsFragment)
+//            //startActivity(Intent(activity as MainActivity, LivenessActivity::class.java))
+//        }
 
 //Obsolete binding text indications:
 

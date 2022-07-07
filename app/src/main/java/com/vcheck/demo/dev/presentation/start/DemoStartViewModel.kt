@@ -1,6 +1,7 @@
 package com.vcheck.demo.dev.presentation.start
 
 import androidx.lifecycle.*
+import com.vcheck.demo.dev.VCheckSDK
 import com.vcheck.demo.dev.data.MainRepository
 import com.vcheck.demo.dev.data.Resource
 import com.vcheck.demo.dev.domain.CountriesResponse
@@ -55,10 +56,14 @@ internal class DemoStartViewModel (val repository: MainRepository) : ViewModel()
             }
             Resource.Status.SUCCESS -> {
                 if (response.data != null) {
-                    repository.createTestVerificationRequest(response.data.toLong(),
-                        deviceDefaultLocaleCode).observeForever {
+                    if (VCheckSDK.verificationClientCreationModel != null) {
+                        repository.createVerificationRequest(response.data.toLong(),
+                            deviceDefaultLocaleCode, VCheckSDK.verificationClientCreationModel!!).observeForever {
                             processCreateVerifResponse(it)
                         }
+                    } else {
+                        clientError.value = "Client error: Verification was not created properly"
+                    }
                 }
             }
             Resource.Status.ERROR -> {

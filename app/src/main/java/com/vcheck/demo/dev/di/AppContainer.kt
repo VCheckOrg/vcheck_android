@@ -1,10 +1,7 @@
 package com.vcheck.demo.dev.di
 
 import com.vcheck.demo.dev.VCheckSDKApp
-import com.vcheck.demo.dev.data.ApiClient
-import com.vcheck.demo.dev.data.LocalDatasource
-import com.vcheck.demo.dev.data.MainRepository
-import com.vcheck.demo.dev.data.RemoteDatasource
+import com.vcheck.demo.dev.data.*
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
@@ -15,7 +12,9 @@ import java.util.concurrent.TimeUnit
 
 internal class AppContainer(val app: VCheckSDKApp) {
 
-    private var retrofit: Retrofit
+    private var verificationRetrofit: Retrofit
+
+    private var partnerRetrofit: Retrofit
 
     init {
         val logging = HttpLoggingInterceptor()
@@ -34,14 +33,22 @@ internal class AppContainer(val app: VCheckSDKApp) {
         httpClient.readTimeout(180, TimeUnit.SECONDS) //3min
         httpClient.connectTimeout(180, TimeUnit.SECONDS) //3min
 
-        retrofit = Retrofit.Builder()
+        verificationRetrofit = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .client(httpClient.build())
-            .baseUrl(RemoteDatasource.API_BASE_URL) //TEST(DEV)
+            .baseUrl(RemoteDatasource.VERIFICATIONS_API_BASE_URL) //TEST(DEV)
+            .build()
+
+        partnerRetrofit = Retrofit.Builder()
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(httpClient.build())
+            .baseUrl(RemoteDatasource.PARTNER_API_BASE_URL) //TEST(DEV)
             .build()
     }
 
-    private val remoteDataSource = RemoteDatasource(retrofit.create(ApiClient::class.java))
+    private val remoteDataSource = RemoteDatasource(
+        verificationRetrofit.create(VerificationApiClient::class.java),
+        partnerRetrofit.create(PartnerApiClient::class.java))
 
     private val localDatasource = LocalDatasource()
 

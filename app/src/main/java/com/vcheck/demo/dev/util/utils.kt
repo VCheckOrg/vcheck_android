@@ -9,7 +9,6 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
 import androidx.core.content.ContextCompat.getSystemService
-import com.vcheck.demo.dev.presentation.VCheckMainActivity
 import com.vcheck.demo.dev.presentation.liveness.VCheckLivenessActivity
 import java.io.File
 import java.security.MessageDigest
@@ -126,6 +125,11 @@ private fun bytesToHuman(size: Long): String {
     if (size in Tb until Pb) return floatForm(size.toDouble() / Tb) + " TB"
     if (size in Pb until Eb) return floatForm(size.toDouble() / Pb) + " Pb"
     return if (size >= Eb) floatForm(size.toDouble() / Eb) + " Eb" else "0"
+}
+
+fun String.matchesURL(): Boolean {
+    val regex = "\\b(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]"
+    return Pattern.matches(regex, this)
 }
 
 //fun getCPUCoreNum(): Int {
