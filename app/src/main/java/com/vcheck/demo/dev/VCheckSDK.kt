@@ -10,29 +10,21 @@ import java.lang.IllegalArgumentException
 
 object VCheckSDK {
 
-    internal var verificationClientCreationModel: VerificationClientCreationModel? = null
-
-    private var finishSDKFlowCallback: (() -> Unit)? = null
+    private var partnerEndCallback: (() -> Unit)? = null
 
     private var partnerId: Int? = null
-
     private var partnerSecret: String? = null
 
     private var verificationType: VerificationSchemeType = VerificationSchemeType.FULL_CHECK
-
     private var partnerUserId: String? = null
-
     private var partnerVerificationId: String? = null
-
     private var customServiceURL: String? = null
-
     private var sessionLifetime: Int? = null
 
-    //TODO add onInitError callback for client (?)
-    fun start(partnerActivity: Activity,
-              partnerCallbackOnVerifSuccess: (() -> Unit)) {
+    internal var verificationClientCreationModel: VerificationClientCreationModel? = null
 
-        this.finishSDKFlowCallback = partnerCallbackOnVerifSuccess
+    //TODO add onInitError callback for client (?)
+    fun start(partnerActivity: Activity) {
 
         performPreStartChecks()
 
@@ -50,6 +42,9 @@ object VCheckSDK {
     }
 
     private fun performPreStartChecks() {
+        if (partnerEndCallback == null) {
+            throw IllegalArgumentException("VCheckSDK - error: partner application's callback function (invoked on SDK flow finish) must be provided")
+        }
         if (partnerId == null) {
             throw IllegalArgumentException("VCheckSDK - error: partner ID must be provided by client app")
         }
@@ -71,7 +66,12 @@ object VCheckSDK {
     }
 
     fun onFinish() {
-        this.finishSDKFlowCallback?.invoke()
+        this.partnerEndCallback?.invoke()
+    }
+
+    fun partnerEndCallback(callback: (() -> Unit)): VCheckSDK {
+        this.partnerEndCallback = callback
+        return this
     }
 
     fun partnerId(id: Int): VCheckSDK {

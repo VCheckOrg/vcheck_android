@@ -23,7 +23,7 @@ class MainRepository(
         val partnerUserId = vModel.partnerUserId ?: Date().time.toString()
         val partnerVerificationId = vModel.partnerVerificationId ?: Date().time.toString()
         val callbackUrl = if (vModel.customServiceURL != null)
-            "${vModel.customServiceURL}/ping" else "${RemoteDatasource.VERIFICATIONS_API_BASE_URL}/ping"
+            "${vModel.customServiceURL}ping" else "${RemoteDatasource.VERIFICATIONS_API_BASE_URL}ping"
         val sessionLifetime = vModel.sessionLifetime ?: RemoteDatasource.DEFAULT_SESSION_LIFETIME
 
         return remoteDatasource.createVerificationRequest(

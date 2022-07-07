@@ -13,10 +13,10 @@ interface VerificationApiClient {
     https://test-partner.vycheck.com/api/v1/ - partner_api
     первая правда может поменятся, планируем убрать new как снесем старый тест
 
-    partner_api
+    partner_api:
     /verifications
 
-    verification_api
+    verification_api:
     /verifications/init
     /stages/current
     /documents/countries
@@ -66,7 +66,6 @@ interface VerificationApiClient {
         @Path("document") docId: Int
     ): Call<PreProcessedDocumentResponse>
 
-    //TODO: change to PUT /document/<int:verification_document_id>/confirm
     @PUT("documents/{document}/confirm")
     fun updateAndConfirmDocInfo(
         @Header("Authorization") verifToken: String,
