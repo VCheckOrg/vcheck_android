@@ -1,6 +1,5 @@
 package com.vcheck.demo.dev.presentation.liveness.ui.in_process
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -16,10 +15,8 @@ import com.vcheck.demo.dev.VCheckSDKApp
 import com.vcheck.demo.dev.data.Resource
 import com.vcheck.demo.dev.databinding.InProcessFragmentBinding
 import com.vcheck.demo.dev.domain.*
-import com.vcheck.demo.dev.presentation.VCheckMainActivity
 import com.vcheck.demo.dev.presentation.liveness.VCheckLivenessActivity
 import com.vcheck.demo.dev.presentation.liveness.flow_logic.VideoProcessingListener
-import com.vcheck.demo.dev.presentation.start.DemoStartFragmentDirections
 import com.vcheck.demo.dev.util.getFolderSizeLabel
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -73,7 +70,7 @@ class InProcessFragment : Fragment(R.layout.in_process_fragment), VideoProcessin
             _viewModel.uploadResponse.observe(viewLifecycleOwner) {
                 Log.d(VCheckLivenessActivity.TAG, "UPL COUNTER: $lazyUploadResponseCounter")
                 if (lazyUploadResponseCounter == 1 && it != null && it.data != null) {
-                    handleVideoUploadResponse(it)
+                    handleVideoUploadResponse(it, token)
                 } else {
                     lazyUploadResponseCounter =+ 1
                 }
@@ -91,20 +88,20 @@ class InProcessFragment : Fragment(R.layout.in_process_fragment), VideoProcessin
         }
     }
 
-    private fun handleVideoUploadResponse(uploadResponse: Resource<LivenessUploadResponse>) {
+    private fun handleVideoUploadResponse(uploadResponse: Resource<LivenessUploadResponse>, token: String) {
             Log.d(VCheckLivenessActivity.TAG, "UPLOAD RESPONSE DATA: ${uploadResponse.data}")
             if (uploadResponse.data!!.data.isFinal) {
-                Toast.makeText(activity, "[TEST] This upload response is final!", Toast.LENGTH_LONG).show()
-                onVideoUploadResponseSuccess()
+                //Toast.makeText(activity, "[TEST] This upload response is final!", Toast.LENGTH_LONG).show()
+                onVideoUploadResponseSuccess(token)
             } else {
                 if (statusCodeToLivenessChallengeStatus(uploadResponse.data.data.status) == LivenessChallengeStatus.FAIL) {
                     if (uploadResponse.data.data.reason != null && uploadResponse.data.data.reason.isNotEmpty()) {
                         onBackendObstacleMet(strCodeToLivenessFailureReason(uploadResponse.data.data.reason))
                     } else {
-                        onVideoUploadResponseSuccess()
+                        onVideoUploadResponseSuccess(token)
                     }
                 } else {
-                    onVideoUploadResponseSuccess()
+                    onVideoUploadResponseSuccess(token)
                 }
             }
     }
@@ -149,7 +146,7 @@ class InProcessFragment : Fragment(R.layout.in_process_fragment), VideoProcessin
         }
     }
 
-    private fun onVideoUploadResponseSuccess() {
+    private fun onVideoUploadResponseSuccess(token: String) {
         _binding!!.uploadVideoLoadingIndicator.isVisible = false
         _binding!!.successButton.isVisible = true
         _binding!!.inProcessTitle.isVisible = true
@@ -166,7 +163,7 @@ class InProcessFragment : Fragment(R.layout.in_process_fragment), VideoProcessin
                     safeNavToFailFragment(R.id.action_inProcessFragment_to_failVideoUploadFragment)
                 }
             }
-            _viewModel.getCurrentStage()
+            _viewModel.getCurrentStage(token)
         }
     }
 

@@ -74,10 +74,10 @@ interface VerificationApiClient {
     ): Call<Response<Void>>
 
     //TODO: should remove w/new arch?
-    @PUT("documents/{document}/primary")
-    fun setDocumentAsPrimary(
-        @Header("Authorization") verifToken: String,
-        @Path("document") docId: Int) : Call<Response<Void>>
+//    @PUT("documents/{document}/primary")
+//    fun setDocumentAsPrimary(
+//        @Header("Authorization") verifToken: String,
+//        @Path("document") docId: Int) : Call<Response<Void>>
 
     @GET("timestamp")
     fun getServiceTimestamp() : Call<String>

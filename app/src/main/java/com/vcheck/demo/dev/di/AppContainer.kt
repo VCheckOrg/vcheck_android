@@ -16,7 +16,14 @@ internal class AppContainer(val app: VCheckSDKApp) {
 
     private var partnerRetrofit: Retrofit
 
+    private var remoteApiConfigProvider: RemoteApiConfigProvider = RemoteApiConfigProvider()
+
     init {
+        verificationRetrofit = getVerifApiRetrofit()
+        partnerRetrofit = getPartnerApiRetrofit()
+    }
+
+    private fun getHttpClient(): OkHttpClient.Builder {
         val logging = HttpLoggingInterceptor()
 
         val httpClient = OkHttpClient.Builder()
@@ -33,24 +40,46 @@ internal class AppContainer(val app: VCheckSDKApp) {
         httpClient.readTimeout(180, TimeUnit.SECONDS) //3min
         httpClient.connectTimeout(180, TimeUnit.SECONDS) //3min
 
-        verificationRetrofit = Retrofit.Builder()
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(httpClient.build())
-            .baseUrl(RemoteDatasource.VERIFICATIONS_API_BASE_URL) //TEST(DEV)
-            .build()
+        return httpClient
+    }
 
-        partnerRetrofit = Retrofit.Builder()
+    private fun getVerifApiRetrofit(): Retrofit {
+        return Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
-            .client(httpClient.build())
-            .baseUrl(RemoteDatasource.PARTNER_API_BASE_URL) //TEST(DEV)
+            .client(getHttpClient().build())
+            .baseUrl(remoteApiConfigProvider.getVerificationsApiBaseUrl()) //TEST(DEV)
             .build()
     }
 
-    private val remoteDataSource = RemoteDatasource(
+    private fun getPartnerApiRetrofit(): Retrofit {
+        return Retrofit.Builder()
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(getHttpClient().build())
+            .baseUrl(remoteApiConfigProvider.getPartnerApiBaseUrl()) //TEST(DEV)
+            .build()
+    }
+
+    private var remoteDataSource = RemoteDatasource(
         verificationRetrofit.create(VerificationApiClient::class.java),
         partnerRetrofit.create(PartnerApiClient::class.java))
 
     private val localDatasource = LocalDatasource()
 
-    val mainRepository = MainRepository(remoteDataSource, localDatasource)
+    var mainRepository = MainRepository(remoteDataSource, localDatasource, remoteApiConfigProvider)
+
+
+    fun updateVerificationApiConfigs(updatedVerifBaseUrl: String, updatedPartnerBaseUrl: String) {
+
+        remoteApiConfigProvider.setVerificationsApiBaseUrl(updatedVerifBaseUrl)
+        remoteApiConfigProvider.setPartnerApiBaseUrl(updatedPartnerBaseUrl)
+
+        verificationRetrofit = getVerifApiRetrofit()
+        partnerRetrofit = getPartnerApiRetrofit()
+
+        remoteDataSource = RemoteDatasource(
+            verificationRetrofit.create(VerificationApiClient::class.java),
+            partnerRetrofit.create(PartnerApiClient::class.java))
+
+        mainRepository = MainRepository(remoteDataSource, localDatasource, remoteApiConfigProvider)
+    }
 }

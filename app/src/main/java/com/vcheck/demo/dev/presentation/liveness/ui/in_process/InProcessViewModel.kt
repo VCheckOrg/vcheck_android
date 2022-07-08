@@ -27,8 +27,8 @@ class InProcessViewModel(val repository: MainRepository) : ViewModel() {
             }
     }
 
-    fun getCurrentStage() {
-        repository.getCurrentStage().observeForever {
+    fun getCurrentStage(token: String) {
+        repository.getCurrentStage(token).observeForever {
             processStageResponse(it)
         }
     }

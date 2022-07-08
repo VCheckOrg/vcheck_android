@@ -4,18 +4,16 @@ import androidx.lifecycle.*
 import com.vcheck.demo.dev.VCheckSDK
 import com.vcheck.demo.dev.data.MainRepository
 import com.vcheck.demo.dev.data.Resource
-import com.vcheck.demo.dev.domain.CountriesResponse
-import com.vcheck.demo.dev.domain.CreateVerificationAttemptResponse
-import com.vcheck.demo.dev.domain.StageResponse
-import com.vcheck.demo.dev.domain.VerificationInitResponse
+import com.vcheck.demo.dev.domain.*
 
 internal class DemoStartViewModel (val repository: MainRepository) : ViewModel() {
 
     val clientError: MutableLiveData<String?> = MutableLiveData(null)
 
-    //TODO should be removed with new architecture!
-    var verifResponse: MutableLiveData<Resource<CreateVerificationAttemptResponse>> = MutableLiveData()
+    //var configModel:
 
+    var timestampResponse: MutableLiveData<String> = MutableLiveData()
+    var createResponse: MutableLiveData<Resource<CreateVerificationAttemptResponse>> = MutableLiveData()
     var initResponse: MutableLiveData<Resource<VerificationInitResponse>> = MutableLiveData()
     var countriesResponse: MutableLiveData<Resource<CountriesResponse>> = MutableLiveData()
     var stageResponse: MutableLiveData<Resource<StageResponse>> = MutableLiveData()
@@ -26,9 +24,15 @@ internal class DemoStartViewModel (val repository: MainRepository) : ViewModel()
         verifToken = token
     }
 
-    fun createTestVerificationRequest(deviceDefaultLocaleCode: String) {
+    fun serviceTimestampRequest() {
         repository.getActualServiceTimestamp().observeForever { ts ->
-            processTimestampResponse(ts, deviceDefaultLocaleCode)
+            processTimestampResponse(ts)
+        }
+    }
+
+    fun createVerificationRequest(createVerificationRequestBody: CreateVerificationRequestBody) {
+        repository.createVerification(createVerificationRequestBody).observeForever {
+            processCreateVerifResponse(it)
         }
     }
 
@@ -39,7 +43,7 @@ internal class DemoStartViewModel (val repository: MainRepository) : ViewModel()
     }
 
     fun getCurrentStage() {
-        repository.getCurrentStage().observeForever {
+        repository.getCurrentStage(verifToken).observeForever {
             processStageResponse(it)
         }
     }
@@ -50,20 +54,13 @@ internal class DemoStartViewModel (val repository: MainRepository) : ViewModel()
         }
     }
 
-    private fun processTimestampResponse(response: Resource<String>, deviceDefaultLocaleCode: String){
+    private fun processTimestampResponse(response: Resource<String>){
         when (response.status) {
             Resource.Status.LOADING -> {
             }
             Resource.Status.SUCCESS -> {
                 if (response.data != null) {
-                    if (VCheckSDK.verificationClientCreationModel != null) {
-                        repository.createVerificationRequest(response.data.toLong(),
-                            deviceDefaultLocaleCode, VCheckSDK.verificationClientCreationModel!!).observeForever {
-                            processCreateVerifResponse(it)
-                        }
-                    } else {
-                        clientError.value = "Client error: Verification was not created properly"
-                    }
+                    timestampResponse = MutableLiveData(response.data)
                 }
             }
             Resource.Status.ERROR -> {
@@ -77,7 +74,7 @@ internal class DemoStartViewModel (val repository: MainRepository) : ViewModel()
             Resource.Status.LOADING -> {
             }
             Resource.Status.SUCCESS -> {
-                verifResponse.value = response
+                createResponse.value = response
             }
             Resource.Status.ERROR -> {
                 clientError.value = response.apiError!!.errorText

@@ -149,7 +149,7 @@ class CheckPhotoFragment : Fragment() {
                             CheckDocInfoDataTO(args.checkPhotoDataTO.selectedDocType,
                                 resource.data.data.document,
                                 args.checkPhotoDataTO.photo1Path,
-                                args.checkPhotoDataTO.photo2Path))
+                                args.checkPhotoDataTO.photo2Path), resource.data.data.document)
                     findNavController().navigate(action)
                 } else {
                     val errorInfo = "Service: [${resource.data.errorCode}] - " +
@@ -173,7 +173,7 @@ class CheckPhotoFragment : Fragment() {
                         CheckDocInfoDataTO(args.checkPhotoDataTO.selectedDocType,
                             resource.data.data.document,
                             args.checkPhotoDataTO.photo1Path,
-                            args.checkPhotoDataTO.photo2Path))
+                            args.checkPhotoDataTO.photo2Path), resource.data.data.document)
                 findNavController().navigate(action)
             }
         }

@@ -14,12 +14,6 @@ class RemoteDatasource(private val verificationApiClient: VerificationApiClient,
     первая правда может поменятся, планируем убрать new как снесем старый тест
      */
 
-    companion object {
-        const val VERIFICATIONS_API_BASE_URL = "https://test-verification.vycheck.com/api/v1/"
-        const val PARTNER_API_BASE_URL = "https://test-partner.vycheck.com/api/v1/"
-        const val DEFAULT_SESSION_LIFETIME = 3600
-    }
-
     fun createVerificationRequest(verificationRequestBody: CreateVerificationRequestBody):
             MutableLiveData<Resource<CreateVerificationAttemptResponse>> {
         return NetworkCall<CreateVerificationAttemptResponse>().makeCall(
@@ -87,11 +81,6 @@ class RemoteDatasource(private val verificationApiClient: VerificationApiClient,
             verificationApiClient.updateAndConfirmDocInfo(verifToken, docId, docData))
     }
 
-    fun setDocumentAsPrimary(verifToken: String, docId: Int) : MutableLiveData<Resource<Response<Void>>> {
-        return NetworkCall<Response<Void>>().makeCall(verificationApiClient.setDocumentAsPrimary(
-            verifToken, docId))
-    }
-
     fun getServiceTimestamp() : MutableLiveData<Resource<String>> {
         return NetworkCall<String>().makeCall(
             verificationApiClient.getServiceTimestamp())
@@ -103,17 +92,26 @@ class RemoteDatasource(private val verificationApiClient: VerificationApiClient,
             verifToken, video))
     }
 
-    fun getCurrentStage() : MutableLiveData<Resource<StageResponse>> {
-//        return NetworkCall<String>().makeCall(
-//            apiClient.getServiceTimestamp())
-        //Test:
-        val type = (0..1).random()
-        return if ((0..1).random() == 1) {
-            MutableLiveData(Resource.success(StageResponse(data = StageResponseData(
-                id = 0, type = type), errorCode = 1, message = "USER_INTERACTED_COMPLETED")))
-        } else {
-            MutableLiveData(Resource.success(StageResponse(data = StageResponseData(
-                id = 0, type = type), errorCode = 0, message = "VERIFICATION_NOT_INITIALIZED")))
-        }
+    fun getCurrentStage(
+        verifToken: String
+    ) : MutableLiveData<Resource<StageResponse>> {
+        return NetworkCall<StageResponse>().makeCall(verificationApiClient.getCurrentStage(verifToken))
     }
 }
+
+
+//Test:
+//        val type = (0..1).random()
+//        return if ((0..1).random() == 1) {
+//            MutableLiveData(Resource.success(StageResponse(data = StageResponseData(
+//                id = 0, type = type), errorCode = 1, message = "USER_INTERACTED_COMPLETED")))
+//        } else {
+//            MutableLiveData(Resource.success(StageResponse(data = StageResponseData(
+//                id = 0, type = type), errorCode = 0, message = "VERIFICATION_NOT_INITIALIZED")))
+//        }
+
+//Deprecated:
+//    fun setDocumentAsPrimary(verifToken: String, docId: Int) : MutableLiveData<Resource<Response<Void>>> {
+//        return NetworkCall<Response<Void>>().makeCall(verificationApiClient.setDocumentAsPrimary(
+//            verifToken, docId))
+//    }

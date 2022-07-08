@@ -10,34 +10,61 @@ import java.util.*
 
 class MainRepository(
     private val remoteDatasource: RemoteDatasource,
-    private val localDatasource: LocalDatasource
+    private val localDatasource: LocalDatasource,
+    private val remoteApiConfigProvider: RemoteApiConfigProvider
 ) {
 
-    fun createVerificationRequest(serviceTS: Long, deviceDefaultLocaleCode: String,
-            vModel: VerificationClientCreationModel)
-        : MutableLiveData<Resource<CreateVerificationAttemptResponse>> {
+    fun checkIfApiConfigShouldBeChanged(vModel: VerificationClientCreationModel): Boolean {
+        var shouldUpdateApi = false
+
+        if (vModel.customVerificationServiceURL != null) {
+            remoteApiConfigProvider.setVerificationsApiBaseUrl(vModel.customVerificationServiceURL!!)
+            shouldUpdateApi = true
+        }
+        if (vModel.customPartnerServiceURL != null) {
+            remoteApiConfigProvider.setPartnerApiBaseUrl(vModel.customPartnerServiceURL!!)
+            shouldUpdateApi = true
+        }
+        return shouldUpdateApi
+    }
+
+    fun prepareVerificationRequest(serviceTS: Long, deviceDefaultLocaleCode: String,
+            vModel: VerificationClientCreationModel): CreateVerificationRequestBody {
 
         val partnerId = vModel.partnerId
         val partnerSecret = vModel.partnerSecret
         val scheme = vModel.verificationType.toStringRepresentation()
         val partnerUserId = vModel.partnerUserId ?: Date().time.toString()
         val partnerVerificationId = vModel.partnerVerificationId ?: Date().time.toString()
-        val callbackUrl = if (vModel.customServiceURL != null)
-            "${vModel.customServiceURL}ping" else "${RemoteDatasource.VERIFICATIONS_API_BASE_URL}ping"
-        val sessionLifetime = vModel.sessionLifetime ?: RemoteDatasource.DEFAULT_SESSION_LIFETIME
+        val sessionLifetime = vModel.sessionLifetime ?: RemoteApiConfigProvider.DEFAULT_SESSION_LIFETIME
 
-        return remoteDatasource.createVerificationRequest(
-            CreateVerificationRequestBody(
+        val verifCallbackURL: String = if (vModel.customVerificationServiceURL != null) {
+            "${vModel.customVerificationServiceURL}ping"
+        } else {
+            "${remoteApiConfigProvider.getVerificationsApiBaseUrl()}ping"
+        }
+        val partnerCallbackURL = if (vModel.customPartnerServiceURL != null) {
+            "${vModel.customPartnerServiceURL}ping"
+        } else {
+            "${remoteApiConfigProvider.getVerificationsApiBaseUrl()}ping"
+        }
+
+        return CreateVerificationRequestBody(
                 partner_id = partnerId,
                 timestamp = serviceTS,
                 scheme = scheme,
                 locale = deviceDefaultLocaleCode,
                 partner_user_id = partnerUserId,
                 partner_verification_id = partnerVerificationId,
-                callback_url = callbackUrl,
+                callback_url = verifCallbackURL,
                 session_lifetime = sessionLifetime,
                 sign = generateSHA256Hash(
-                    "$partnerId$partnerUserId$partnerVerificationId$scheme$serviceTS$partnerSecret")))
+                    "$partnerId$partnerUserId$partnerVerificationId$scheme$serviceTS$partnerSecret"))
+    }
+
+    fun createVerification(createVerificationRequestBody: CreateVerificationRequestBody)
+        : MutableLiveData<Resource<CreateVerificationAttemptResponse>> {
+        return remoteDatasource.createVerificationRequest(createVerificationRequestBody)
     }
 
     fun initVerification(verifToken: String): MutableLiveData<Resource<VerificationInitResponse>> {
@@ -96,14 +123,6 @@ class MainRepository(
         }
     }
 
-    fun setDocumentAsPrimary(token: String, docId: Int) : MutableLiveData<Resource<Response<Void>>> {
-        return if (token.isNotEmpty()) {
-            remoteDatasource.setDocumentAsPrimary(token, docId)
-        } else {
-            MutableLiveData(Resource.error(ApiError(BaseClientErrors.NO_TOKEN_AVAILABLE)))
-        }
-    }
-
     fun uploadLivenessVideo(verifToken: String, video: MultipartBody.Part)
         : MutableLiveData<Resource<LivenessUploadResponse>> {
         return if (verifToken.isNotEmpty()) {
@@ -115,8 +134,10 @@ class MainRepository(
         return remoteDatasource.getServiceTimestamp()
     }
 
-    fun getCurrentStage(): MutableLiveData<Resource<StageResponse>> {
-        return remoteDatasource.getCurrentStage()
+    fun getCurrentStage(
+        verifToken: String
+    ): MutableLiveData<Resource<StageResponse>> {
+        return remoteDatasource.getCurrentStage(verifToken)
     }
 
     //---- LOCAL SOURCE DATA OPS:
@@ -149,3 +170,11 @@ class MainRepository(
         localDatasource.resetCacheOnStartup(ctx)
     }
 }
+
+//    fun setDocumentAsPrimary(token: String, docId: Int) : MutableLiveData<Resource<Response<Void>>> {
+//        return if (token.isNotEmpty()) {
+//            remoteDatasource.setDocumentAsPrimary(token, docId)
+//        } else {
+//            MutableLiveData(Resource.error(ApiError(BaseClientErrors.NO_TOKEN_AVAILABLE)))
+//        }
+//    }

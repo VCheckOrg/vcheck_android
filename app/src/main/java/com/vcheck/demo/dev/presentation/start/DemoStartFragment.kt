@@ -20,6 +20,7 @@ import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VCheckSDK
 import com.vcheck.demo.dev.VCheckSDKApp
 import com.vcheck.demo.dev.databinding.FragmentDemoStartBinding
+import com.vcheck.demo.dev.di.AppContainer
 import com.vcheck.demo.dev.domain.*
 import com.vcheck.demo.dev.presentation.VCheckMainActivity
 import com.vcheck.demo.dev.presentation.liveness.VCheckLivenessActivity
@@ -30,27 +31,39 @@ import java.util.*
 
 internal class DemoStartFragment : Fragment() {
 
+    private lateinit var appContainer: AppContainer
+
+    private var _binding: FragmentDemoStartBinding? = null
+
+    private lateinit var _viewModel: DemoStartViewModel
+
     private val requestPermissionsLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             if (permissions.all { it.value }) {
-                //Launching main flow if all is ok
+                //Launching main flow if all permissions are set
                 _binding!!.startCallChainLoadingIndicator.isVisible = true
-                _viewModel.createTestVerificationRequest(
-                    ContextUtils.getSavedLanguage(activity as VCheckMainActivity))
+                if (VCheckSDK.verificationClientCreationModel == null) {
+                    Toast.makeText(activity, "Client error: Verification was not created properly", Toast.LENGTH_LONG).show()
+                } else {
+                    if (_viewModel.repository.checkIfApiConfigShouldBeChanged(VCheckSDK.verificationClientCreationModel!!)) {
+                        appContainer.updateVerificationApiConfigs(
+                            VCheckSDK.verificationClientCreationModel!!.customVerificationServiceURL!!,
+                            VCheckSDK.verificationClientCreationModel!!.customPartnerServiceURL!!)
+                        _viewModel = DemoStartViewModel(appContainer.mainRepository)
+                    }
+                    setResponseListeners()
+                    _viewModel.serviceTimestampRequest()
+                }
             } else {
                 PermissionErrDialog.newInstance(getString(R.string.permissions_denied))
                     .show(childFragmentManager, "permission_err_dialog")
             }
         }
 
-    private var _binding: FragmentDemoStartBinding? = null
-
-    private lateinit var _viewModel: DemoStartViewModel
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val appContainer = (activity?.application as VCheckSDKApp).appContainer
+        appContainer = (activity?.application as VCheckSDKApp).appContainer
         _viewModel = DemoStartViewModel(appContainer.mainRepository)
     }
 
@@ -67,7 +80,20 @@ internal class DemoStartFragment : Fragment() {
 
         _binding!!.startCallChainLoadingIndicator.isVisible = false
 
-        _viewModel.verifResponse.observe(viewLifecycleOwner) {
+        requestPermissionsLauncher.launch(
+            arrayOf(
+                Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE))
+    }
+
+    private fun setResponseListeners() {
+        _viewModel.timestampResponse.observe(viewLifecycleOwner) {
+            _viewModel.createVerificationRequest(_viewModel.repository.prepareVerificationRequest(
+                it.toLong(), ContextUtils.getSavedLanguage(activity as VCheckMainActivity),
+                VCheckSDK.verificationClientCreationModel!!))
+        }
+
+        _viewModel.createResponse.observe(viewLifecycleOwner) {
             if (it.data?.data != null) {
                 _viewModel.repository.storeVerifToken(
                     (activity as VCheckMainActivity), it.data.data.token)
@@ -92,7 +118,7 @@ internal class DemoStartFragment : Fragment() {
                     Log.d("STAGING", "----- CURRENT STAGE TYPE: ${it.data.data.type}")
                     if (it.data.data.uploadedDocId != null) {
                         val action = DemoStartFragmentDirections.actionDemoStartFragmentToCheckDocInfoFragment(
-                                null, it.data.data.uploadedDocId)
+                            null, it.data.data.uploadedDocId)
                         findNavController().navigate(action)
                     } else if (it.data.data.type == StageType.DOCUMENT_UPLOAD.toTypeIdx()) {
                         _viewModel.getCountriesList()
@@ -129,17 +155,6 @@ internal class DemoStartFragment : Fragment() {
                 Toast.makeText(activity, it, Toast.LENGTH_LONG).show()
             }
         }
-
-        _binding!!.btnStartDemoFlow.setOnClickListener {
-            _binding!!.startCallChainLoadingIndicator.isVisible = true
-            _viewModel.createTestVerificationRequest(
-                ContextUtils.getSavedLanguage(activity as VCheckMainActivity))
-        }
-
-        requestPermissionsLauncher.launch(
-            arrayOf(
-                Manifest.permission.CAMERA,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE))
     }
 
     /** Shows an error message dialog.  */
@@ -172,6 +187,11 @@ internal class DemoStartFragment : Fragment() {
 }
 
 
+//        _binding!!.btnStartDemoFlow.setOnClickListener {
+//            _binding!!.startCallChainLoadingIndicator.isVisible = true
+//            _viewModel.createTestVerificationRequest(
+//                ContextUtils.getSavedLanguage(activity as VCheckMainActivity))
+//        }
 
 //! FOR TEST
 //        _binding!!.btnLaunchMediaPipeDemo.setOnClickListener {

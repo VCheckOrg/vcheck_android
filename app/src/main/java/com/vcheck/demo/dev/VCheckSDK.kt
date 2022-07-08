@@ -18,19 +18,23 @@ object VCheckSDK {
     private var verificationType: VerificationSchemeType = VerificationSchemeType.FULL_CHECK
     private var partnerUserId: String? = null
     private var partnerVerificationId: String? = null
-    private var customServiceURL: String? = null
+    private var customVerificationServiceURL: String? = null
+    private var customPartnerServiceURL: String? = null
+
     private var sessionLifetime: Int? = null
 
     internal var verificationClientCreationModel: VerificationClientCreationModel? = null
 
     //TODO add onInitError callback for client (?)
+    //TODO add UI properties (colors) adjustments to upper SDK config level
     fun start(partnerActivity: Activity) {
 
         performPreStartChecks()
 
         this.verificationClientCreationModel = VerificationClientCreationModel(
             partnerId!!, partnerSecret!!, verificationType, partnerUserId,
-            partnerVerificationId, customServiceURL, sessionLifetime)
+            partnerVerificationId, customVerificationServiceURL,
+            customPartnerServiceURL, sessionLifetime)
 
         val intent: Intent?
         try {
@@ -57,8 +61,11 @@ object VCheckSDK {
         if (partnerVerificationId != null && partnerVerificationId!!.isEmpty()) {
             throw IllegalArgumentException("VCheckSDK - error: if provided, partner verification ID must be unique to your service and not empty")
         }
-        if (customServiceURL != null && !customServiceURL!!.matchesURL()) {
-            throw IllegalArgumentException("VCheckSDK - error: if provided, custom service URL must be valid public URL")
+        if (customVerificationServiceURL != null && !customVerificationServiceURL!!.matchesURL()) {
+            throw IllegalArgumentException("VCheckSDK - error: if provided, custom verification service URL must be valid public URL")
+        }
+        if (customPartnerServiceURL != null && !customPartnerServiceURL!!.matchesURL()) {
+            throw IllegalArgumentException("VCheckSDK - error: if provided, custom partner service URL must be valid public URL")
         }
         if (sessionLifetime != null && sessionLifetime!! < 300) {
             throw IllegalArgumentException("VCheckSDK - error: if provided, custom session lifetime should not be less than 300 seconds")
@@ -99,8 +106,13 @@ object VCheckSDK {
         return this
     }
 
-    fun customServiceURL(url: String): VCheckSDK {
-        this.customServiceURL = url
+    fun customVerificationServiceURL(url: String): VCheckSDK {
+        this.customVerificationServiceURL = url
+        return this
+    }
+
+    fun customPartnerServiceURL(url: String): VCheckSDK {
+        this.customPartnerServiceURL = url
         return this
     }
 

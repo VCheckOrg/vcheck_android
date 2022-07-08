@@ -44,7 +44,8 @@ class DocVerifErrorFragment : Fragment(R.layout.fragment_doc_verification_not_su
         viewModel.primaryDocStatusResponse.observe(viewLifecycleOwner) {
             if (it) {
                 val action = DocVerifErrorFragmentDirections
-                    .actionDocVerificationNotSuccessfulFragmentToCheckDocInfoFragment(args.checkDocInfoDataTO)
+                    .actionDocVerificationNotSuccessfulFragmentToCheckDocInfoFragment(args.checkDocInfoDataTO,
+                    args.checkDocInfoDataTO.docId)
                 findNavController().navigate(action)
             }
         }

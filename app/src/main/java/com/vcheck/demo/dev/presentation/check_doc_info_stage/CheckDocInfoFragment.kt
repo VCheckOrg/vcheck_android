@@ -19,7 +19,6 @@ import com.vcheck.demo.dev.presentation.VCheckMainActivity
 import com.vcheck.demo.dev.presentation.adapters.CheckDocInfoAdapter
 import com.vcheck.demo.dev.presentation.adapters.DocInfoEditCallback
 import com.vcheck.demo.dev.presentation.liveness.VCheckLivenessActivity
-import com.vcheck.demo.dev.presentation.start.DemoStartFragmentDirections
 import com.vcheck.demo.dev.util.ContextUtils
 import java.io.File
 
@@ -31,7 +30,7 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
 
     private val args: CheckDocInfoFragmentArgs by navArgs()
 
-    private var uploadedDocID: Int = 0
+    private var uploadedDocID: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,7 +86,7 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
 
         viewModel.confirmedDocResponse.observe(viewLifecycleOwner) {
             if (it != null) {
-                viewModel.getCurrentStage()
+                viewModel.getCurrentStage(viewModel.repository.getVerifToken(activity as VCheckMainActivity))
             }
         }
 
@@ -101,7 +100,7 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
         }
 
         viewModel.getDocumentInfo(viewModel.repository.getVerifToken(activity as VCheckMainActivity),
-            uploadedDocID)
+            uploadedDocID!!)
 
 
         binding.checkInfoConfirmButton.setOnClickListener {
@@ -110,7 +109,7 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
                     R.string.check_doc_fields_validation_error, Toast.LENGTH_LONG).show()
             } else {
                 viewModel.updateAndConfirmDocument(viewModel.repository.getVerifToken(activity as VCheckMainActivity),
-                    uploadedDocID, composeConfirmedDocFieldsData())
+                    uploadedDocID!!, composeConfirmedDocFieldsData())
             }
         }
 
