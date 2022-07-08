@@ -47,7 +47,7 @@ internal class AppContainer(val app: VCheckSDKApp) {
         return Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .client(getHttpClient().build())
-            .baseUrl(remoteApiConfigProvider.getVerificationsApiBaseUrl()) //TEST(DEV)
+            .baseUrl(RemoteApiConfigProvider.VERIFICATIONS_API_BASE_URL) //TEST(DEV)
             .build()
     }
 
@@ -55,7 +55,7 @@ internal class AppContainer(val app: VCheckSDKApp) {
         return Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .client(getHttpClient().build())
-            .baseUrl(remoteApiConfigProvider.getPartnerApiBaseUrl()) //TEST(DEV)
+            .baseUrl(RemoteApiConfigProvider.PARTNER_API_BASE_URL) //TEST(DEV)
             .build()
     }
 
@@ -68,18 +68,18 @@ internal class AppContainer(val app: VCheckSDKApp) {
     var mainRepository = MainRepository(remoteDataSource, localDatasource, remoteApiConfigProvider)
 
 
-    fun updateVerificationApiConfigs(updatedVerifBaseUrl: String, updatedPartnerBaseUrl: String) {
-
-        remoteApiConfigProvider.setVerificationsApiBaseUrl(updatedVerifBaseUrl)
-        remoteApiConfigProvider.setPartnerApiBaseUrl(updatedPartnerBaseUrl)
-
-        verificationRetrofit = getVerifApiRetrofit()
-        partnerRetrofit = getPartnerApiRetrofit()
-
-        remoteDataSource = RemoteDatasource(
-            verificationRetrofit.create(VerificationApiClient::class.java),
-            partnerRetrofit.create(PartnerApiClient::class.java))
-
-        mainRepository = MainRepository(remoteDataSource, localDatasource, remoteApiConfigProvider)
-    }
+//    fun updateVerificationApiConfigs(updatedVerifBaseUrl: String, updatedPartnerBaseUrl: String) {
+//
+//        remoteApiConfigProvider.setVerificationsApiBaseUrl(updatedVerifBaseUrl)
+//        remoteApiConfigProvider.setPartnerApiBaseUrl(updatedPartnerBaseUrl)
+//
+//        verificationRetrofit = getVerifApiRetrofit()
+//        partnerRetrofit = getPartnerApiRetrofit()
+//
+//        remoteDataSource = RemoteDatasource(
+//            verificationRetrofit.create(VerificationApiClient::class.java),
+//            partnerRetrofit.create(PartnerApiClient::class.java))
+//
+//        mainRepository = MainRepository(remoteDataSource, localDatasource, remoteApiConfigProvider)
+//    }
 }

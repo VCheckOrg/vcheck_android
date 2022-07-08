@@ -33,8 +33,7 @@ object VCheckSDK {
 
         this.verificationClientCreationModel = VerificationClientCreationModel(
             partnerId!!, partnerSecret!!, verificationType, partnerUserId,
-            partnerVerificationId, customVerificationServiceURL,
-            customPartnerServiceURL, sessionLifetime)
+            partnerVerificationId, sessionLifetime)
 
         val intent: Intent?
         try {
@@ -106,18 +105,18 @@ object VCheckSDK {
         return this
     }
 
-    fun customVerificationServiceURL(url: String): VCheckSDK {
-        this.customVerificationServiceURL = url
-        return this
-    }
-
-    fun customPartnerServiceURL(url: String): VCheckSDK {
-        this.customPartnerServiceURL = url
-        return this
-    }
-
     fun sessionLifetime(lifetime: Int): VCheckSDK {
         this.sessionLifetime = lifetime
         return this
     }
+
+//    fun customVerificationServiceURL(url: String): VCheckSDK {
+//        this.customVerificationServiceURL = url
+//        return this
+//    }
+//
+//    fun customPartnerServiceURL(url: String): VCheckSDK {
+//        this.customPartnerServiceURL = url
+//        return this
+//    }
 }

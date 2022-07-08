@@ -14,20 +14,6 @@ class MainRepository(
     private val remoteApiConfigProvider: RemoteApiConfigProvider
 ) {
 
-    fun checkIfApiConfigShouldBeChanged(vModel: VerificationClientCreationModel): Boolean {
-        var shouldUpdateApi = false
-
-        if (vModel.customVerificationServiceURL != null) {
-            remoteApiConfigProvider.setVerificationsApiBaseUrl(vModel.customVerificationServiceURL!!)
-            shouldUpdateApi = true
-        }
-        if (vModel.customPartnerServiceURL != null) {
-            remoteApiConfigProvider.setPartnerApiBaseUrl(vModel.customPartnerServiceURL!!)
-            shouldUpdateApi = true
-        }
-        return shouldUpdateApi
-    }
-
     fun prepareVerificationRequest(serviceTS: Long, deviceDefaultLocaleCode: String,
             vModel: VerificationClientCreationModel): CreateVerificationRequestBody {
 
@@ -38,16 +24,7 @@ class MainRepository(
         val partnerVerificationId = vModel.partnerVerificationId ?: Date().time.toString()
         val sessionLifetime = vModel.sessionLifetime ?: RemoteApiConfigProvider.DEFAULT_SESSION_LIFETIME
 
-        val verifCallbackURL: String = if (vModel.customVerificationServiceURL != null) {
-            "${vModel.customVerificationServiceURL}ping"
-        } else {
-            "${remoteApiConfigProvider.getVerificationsApiBaseUrl()}ping"
-        }
-        val partnerCallbackURL = if (vModel.customPartnerServiceURL != null) {
-            "${vModel.customPartnerServiceURL}ping"
-        } else {
-            "${remoteApiConfigProvider.getVerificationsApiBaseUrl()}ping"
-        }
+        val verifCallbackURL = "${RemoteApiConfigProvider.VERIFICATIONS_API_BASE_URL}ping"
 
         return CreateVerificationRequestBody(
                 partner_id = partnerId,
@@ -177,4 +154,17 @@ class MainRepository(
 //        } else {
 //            MutableLiveData(Resource.error(ApiError(BaseClientErrors.NO_TOKEN_AVAILABLE)))
 //        }
+//    }
+//    fun checkIfApiConfigShouldBeChanged(vModel: VerificationClientCreationModel): Boolean {
+//        var shouldUpdateApi = false
+//
+//        if (vModel.customVerificationServiceURL != null) {
+//            remoteApiConfigProvider.setVerificationsApiBaseUrl(vModel.customVerificationServiceURL!!)
+//            shouldUpdateApi = true
+//        }
+//        if (vModel.customPartnerServiceURL != null) {
+//            remoteApiConfigProvider.setPartnerApiBaseUrl(vModel.customPartnerServiceURL!!)
+//            shouldUpdateApi = true
+//        }
+//        return shouldUpdateApi
 //    }

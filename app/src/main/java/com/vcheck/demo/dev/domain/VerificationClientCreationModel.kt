@@ -6,6 +6,7 @@ data class VerificationClientCreationModel(
     var verificationType: VerificationSchemeType = VerificationSchemeType.FULL_CHECK,
     var partnerUserId: String? = null,
     var partnerVerificationId: String? = null,
-    var customVerificationServiceURL: String? = null,
-    var customPartnerServiceURL: String? = null,
     var sessionLifetime: Int? = null)
+
+//    var customVerificationServiceURL: String? = null,
+//    var customPartnerServiceURL: String? = null,

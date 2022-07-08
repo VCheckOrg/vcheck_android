@@ -45,12 +45,6 @@ internal class DemoStartFragment : Fragment() {
                 if (VCheckSDK.verificationClientCreationModel == null) {
                     Toast.makeText(activity, "Client error: Verification was not created properly", Toast.LENGTH_LONG).show()
                 } else {
-                    if (_viewModel.repository.checkIfApiConfigShouldBeChanged(VCheckSDK.verificationClientCreationModel!!)) {
-                        appContainer.updateVerificationApiConfigs(
-                            VCheckSDK.verificationClientCreationModel!!.customVerificationServiceURL!!,
-                            VCheckSDK.verificationClientCreationModel!!.customPartnerServiceURL!!)
-                        _viewModel = DemoStartViewModel(appContainer.mainRepository)
-                    }
                     setResponseListeners()
                     _viewModel.serviceTimestampRequest()
                 }
@@ -186,6 +180,13 @@ internal class DemoStartFragment : Fragment() {
     }
 }
 
+
+//if (_viewModel.repository.checkIfApiConfigShouldBeChanged(VCheckSDK.verificationClientCreationModel!!)) {
+//    appContainer.updateVerificationApiConfigs(
+//        VCheckSDK.verificationClientCreationModel!!.customVerificationServiceURL!!,
+//        VCheckSDK.verificationClientCreationModel!!.customPartnerServiceURL!!)
+//    _viewModel = DemoStartViewModel(appContainer.mainRepository)
+//}
 
 //        _binding!!.btnStartDemoFlow.setOnClickListener {
 //            _binding!!.startCallChainLoadingIndicator.isVisible = true
