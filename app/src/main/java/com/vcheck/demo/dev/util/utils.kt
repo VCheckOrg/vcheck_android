@@ -132,6 +132,12 @@ fun String.matchesURL(): Boolean {
     return Pattern.matches(regex, this)
 }
 
+fun String.isValidHexColor(): Boolean {
+    val colorPattern = Pattern.compile("#([0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})")
+    val m = colorPattern.matcher(this)
+    return m.matches()
+}
+
 //fun getCPUCoreNum(): Int {
 //    try {
 //        val pattern = Pattern.compile("cpu[0-9]+")

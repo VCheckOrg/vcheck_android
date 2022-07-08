@@ -1,6 +1,10 @@
 package com.vcheck.demo.dev.util
 
-class ThemeWrapper {
+import androidx.fragment.app.Fragment
+
+abstract class ThemeWrapperFragment: Fragment() {
+
+    abstract fun changeColorsToCustomIfPresent()
 
 //    <color name="vcheck_black">#222222</color>
 //    <color name="white">#FFFFFFFF</color>
