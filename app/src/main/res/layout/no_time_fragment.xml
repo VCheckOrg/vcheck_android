@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:scrollbars="none"
     tools:context=".presentation.liveness.ui.failures.NoTimeFragment"
-    android:background="@color/vcheck_background"
+    android:background="@color/vcheck_background_primary"
     android:theme="@style/Theme.VCheckAndroidSDKDemo">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -21,7 +21,7 @@
             android:layout_marginTop="34dp"
             android:layout_marginEnd="12dp"
             android:layout_marginBottom="34dp"
-            app:cardBackgroundColor="#3C3C3C"
+            app:cardBackgroundColor="@color/vcheck_background_secondary"
             app:cardCornerRadius="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -53,7 +53,7 @@
                     android:layout_marginEnd="16dp"
                     android:gravity="center"
                     android:text="@string/no_time_title"
-                    android:textColor="@color/white"
+                    android:textColor="@color/vcheck_text"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"

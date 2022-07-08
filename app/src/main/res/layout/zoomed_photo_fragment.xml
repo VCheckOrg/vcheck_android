@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".presentation.photo_upload_stage.ZoomedPhotoFragment"
     android:theme="@style/Theme.VCheckAndroidSDKDemo"
-    android:background="@color/vcheck_background">
+    android:background="@color/vcheck_background_primary">
 
     <ImageView
         android:id="@+id/crossIcon"

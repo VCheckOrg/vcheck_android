@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".presentation.liveness.VCheckLivenessActivity"
     android:theme="@style/Theme.VCheckAndroidSDKDemo"
-    android:background="@color/vcheck_background">
+    android:background="@color/vcheck_background_primary">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/appBar"
@@ -87,7 +87,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="40dp"
-                android:textColor="@color/white"
+                android:textColor="@color/vcheck_text"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:padding="10dp"

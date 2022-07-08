@@ -461,7 +461,7 @@ class VCheckLivenessActivity : AppCompatActivity(),
 
     private fun delayedResetUIAfterObstacle() {
         Handler(Looper.getMainLooper()).postDelayed ({
-            binding!!.checkFaceTitle.setTextColor(resources.getColor(R.color.white))
+            binding!!.checkFaceTitle.setTextColor(resources.getColor(R.color.vcheck_text))
             when(milestoneFlow.getUndoneStage().milestoneType) {
                 GestureMilestoneType.CheckHeadPositionMilestone -> {
                     binding!!.checkFaceTitle.text = getString(R.string.liveness_stage_face_left)

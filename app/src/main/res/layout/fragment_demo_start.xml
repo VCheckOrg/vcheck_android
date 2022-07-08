@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".presentation.start.DemoStartFragment"
     android:theme="@style/Theme.VCheckAndroidSDKDemo"
-    android:background="@color/vcheck_background">
+    android:background="@color/vcheck_background_primary">
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnStartDemoFlow"
@@ -26,7 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:textColor="@color/white"
+        android:textColor="@color/vcheck_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -40,7 +40,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:textColor="@color/white"
+        android:textColor="@color/vcheck_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvCreateVerificationResultInfo"
@@ -57,7 +57,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="280dp"
-        app:indicatorColor="@color/white"
+        app:indicatorColor="@color/vcheck_text"
         android:indeterminate="true" />
 
 <!--    <androidx.appcompat.widget.AppCompatButton-->

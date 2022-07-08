@@ -23,7 +23,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:background="@color/vcheck_secondary">
+        android:background="@color/vcheck_util">
 
         <TextView
             android:id="@+id/txt"

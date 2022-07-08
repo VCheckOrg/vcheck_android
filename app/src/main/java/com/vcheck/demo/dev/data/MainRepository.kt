@@ -23,7 +23,6 @@ class MainRepository(
         val partnerUserId = vModel.partnerUserId ?: Date().time.toString()
         val partnerVerificationId = vModel.partnerVerificationId ?: Date().time.toString()
         val sessionLifetime = vModel.sessionLifetime ?: RemoteApiConfigProvider.DEFAULT_SESSION_LIFETIME
-
         val verifCallbackURL = "${RemoteApiConfigProvider.VERIFICATIONS_API_BASE_URL}ping"
 
         return CreateVerificationRequestBody(

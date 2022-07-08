@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/vcheck_background"
+    android:background="@color/vcheck_background_primary"
     android:theme="@style/Theme.VCheckAndroidSDKDemo">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -18,7 +18,7 @@
             android:layout_marginEnd="12dp"
             android:layout_marginTop="34dp"
             android:layout_marginBottom="34dp"
-            app:cardBackgroundColor="#3C3C3C"
+            app:cardBackgroundColor="@color/vcheck_background_secondary"
             app:cardCornerRadius="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -48,7 +48,7 @@
                     android:layout_marginTop="12dp"
                     android:gravity="center"
                     android:text="@string/application_success"
-                    android:textColor="@color/white"
+                    android:textColor="@color/vcheck_text"
                     android:textSize="24sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
