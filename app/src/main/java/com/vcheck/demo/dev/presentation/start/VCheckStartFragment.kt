@@ -129,12 +129,11 @@ internal class VCheckStartFragment : ThemeWrapperFragment() {
         }
 
         _viewModel.stageResponse.observe(viewLifecycleOwner) {
-            if ((it.data?.errorCode == null) ||
-                (it.data.errorCode != null
-                        && it.data.errorCode == StageObstacleErrorType.USER_INTERACTED_COMPLETED.toTypeIdx())) {
-                startActivity(Intent(activity as VCheckMainActivity, VCheckLivenessActivity::class.java))
+            if (it.data?.errorCode != null
+                        && it.data.errorCode == StageObstacleErrorType.USER_INTERACTED_COMPLETED.toTypeIdx()) {
+                findNavController().navigate(R.id.action_demoStartFragment_to_livenessInstructionsFragment)
             } else {
-                if (it.data.data != null) {
+                if (it.data?.data != null) {
                     Log.d("STAGING", "----- CURRENT STAGE TYPE: ${it.data.data.type}")
                     if (it.data.data.uploadedDocId != null) {
                         val action = VCheckStartFragmentDirections.actionDemoStartFragmentToCheckDocInfoFragment(

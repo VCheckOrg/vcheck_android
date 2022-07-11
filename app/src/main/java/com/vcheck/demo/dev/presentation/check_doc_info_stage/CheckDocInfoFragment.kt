@@ -94,10 +94,10 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
 
         viewModel.stageResponse.observe(viewLifecycleOwner) {
             //TODO test!
-            if ((it.data?.errorCode != null) ||
-                (it.data?.errorCode != null
+            if ((it.data?.errorCode == null) ||
+                (it.data.errorCode != null
                         && it.data.errorCode == StageObstacleErrorType.USER_INTERACTED_COMPLETED.toTypeIdx())) {
-                startActivity(Intent(activity as VCheckMainActivity, VCheckLivenessActivity::class.java))
+                findNavController().navigate(R.id.action_checkDocInfoFragment_to_livenessInstructionsFragment)
             } else {
                 findNavController().navigate(R.id.action_global_demoStartFragment)
             }
