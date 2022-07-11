@@ -1,6 +1,7 @@
 package com.vcheck.demo.dev.presentation.photo_upload_stage
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -141,40 +142,19 @@ class CheckPhotoFragment : Fragment() {
     }
 
     private fun handleDocUploadResponse(resource: Resource<DocumentUploadResponse>) {
-        if (resource.data?.data != null) {
-            if (resource.data.errorCode != 0 || resource.data.data.status != 0) {
-                if (codeIdxToVerificationCode(resource.data.data.status) == DocumentVerificationCode.UploadAttemptsExceeded) {
-                    val action = CheckPhotoFragmentDirections
-                        .actionCheckPhotoFragmentToCheckInfoFragment(
-                            CheckDocInfoDataTO(args.checkPhotoDataTO.selectedDocType,
-                                resource.data.data.document,
-                                args.checkPhotoDataTO.photo1Path,
-                                args.checkPhotoDataTO.photo2Path), resource.data.data.document)
-                    findNavController().navigate(action)
-                } else {
-                    val errorInfo = "Service: [${resource.data.errorCode}] - " +
-                            "${codeIdxToVerificationCode(resource.data.errorCode)}"
-                    val statusInfo: String = "Parser: [${resource.data.data.status}] - " +
-                            "${statusCodeToParsingStatus(resource.data.data.status)}"
-
-                    val action = CheckPhotoFragmentDirections
-                        .actionCheckPhotoFragmentToDocVerificationNotSuccessfulFragment(
-                            CheckDocInfoDataTO(args.checkPhotoDataTO.selectedDocType,
-                                resource.data.data.document,
-                                args.checkPhotoDataTO.photo1Path,
-                                args.checkPhotoDataTO.photo2Path,
-                                errorInfo + "\n" + statusInfo
-                            ))
-                    findNavController().navigate(action)
-                }
-            } else {
+        if (resource.data?.errorCode != null && resource.data.errorCode != 0) {
+            Toast.makeText(activity, "Error: [${resource.data.errorCode}]", Toast.LENGTH_LONG).show()
+        } else {
+            if (resource.data?.data != null) {
                 val action = CheckPhotoFragmentDirections
                     .actionCheckPhotoFragmentToCheckInfoFragment(
                         CheckDocInfoDataTO(args.checkPhotoDataTO.selectedDocType,
-                            resource.data.data.document,
+                            resource.data.data.id,
                             args.checkPhotoDataTO.photo1Path,
-                            args.checkPhotoDataTO.photo2Path), resource.data.data.document)
+                            args.checkPhotoDataTO.photo2Path), resource.data.data.id)
                 findNavController().navigate(action)
+            } else {
+                Toast.makeText(activity, "Error: no document data in response", Toast.LENGTH_LONG).show()
             }
         }
     }

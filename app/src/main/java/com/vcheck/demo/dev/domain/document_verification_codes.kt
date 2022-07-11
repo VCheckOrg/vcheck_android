@@ -1,39 +1,64 @@
 package com.vcheck.demo.dev.domain
 
+
+/*
+VERIFICATION_NOT_INITIALIZED = 0
+USER_INTERACTED_COMPLETED = 1
+STAGE_NOT_FOUND = 2
+INVALID_STAGE_TYPE = 3
+PRIMARY_DOCUMENT_EXISTS = 4
+UPLOAD_ATTEMPTS_EXCEEDED = 5
+INVALID_DOCUMENT_TYPE = 6
+INVALID_PAGES_COUNT = 7
+INVALID_FILES = 8
+PHOTO_TOO_LARGE = 9
+PARSING_ERROR = 10
+ */
+
+//TODO duplicate for iOS!
 enum class DocumentVerificationCode {
-    OK, //0
-    InvalidPagesCount,  //1 - Неверное кол-во загруженных файлов
-    InvalidVerificationStage,  //2 - Этап заявки не соответствует разрешенному для данного запроса
-    UploadAttemptsExceeded,  //3 - Кол-во попыток на загрузку истекло
-    InvalidFiles, //4 - Неверное расширение документа
-    InvalidDocumentType, //5 - Неверный тип документа
-    PrimaryAlreadyExists,  //6 - Основой документ уже существует
-    PhotoTooLarge, //7 - Вес файлов превышает допустимый
+    VERIFICATION_NOT_INITIALIZED,// = 0
+    USER_INTERACTED_COMPLETED,// = 1
+    STAGE_NOT_FOUND,// = 2
+    INVALID_STAGE_TYPE,// = 3
+    PRIMARY_DOCUMENT_EXISTS,// = 4
+    UPLOAD_ATTEMPTS_EXCEEDED,// = 5
+    INVALID_DOCUMENT_TYPE,// = 6
+    INVALID_PAGES_COUNT,// = 7
+    INVALID_FILES,// = 8
+    PHOTO_TOO_LARGE,// = 9
+    PARSING_ERROR,// = 10
 }
 
 fun DocumentVerificationCode.toCodeIdx(): Int {
     return when(this) {
-        DocumentVerificationCode.OK -> 0
-        DocumentVerificationCode.InvalidPagesCount -> 1
-        DocumentVerificationCode.InvalidVerificationStage -> 2
-        DocumentVerificationCode.UploadAttemptsExceeded -> 3
-        DocumentVerificationCode.InvalidFiles -> 4
-        DocumentVerificationCode.InvalidDocumentType -> 5
-        DocumentVerificationCode.PrimaryAlreadyExists -> 6
-        DocumentVerificationCode.PhotoTooLarge -> 7
+        DocumentVerificationCode.VERIFICATION_NOT_INITIALIZED -> 0
+        DocumentVerificationCode.USER_INTERACTED_COMPLETED -> 1
+        DocumentVerificationCode.STAGE_NOT_FOUND -> 2
+        DocumentVerificationCode.INVALID_STAGE_TYPE -> 3
+        DocumentVerificationCode.PRIMARY_DOCUMENT_EXISTS -> 4
+        DocumentVerificationCode.UPLOAD_ATTEMPTS_EXCEEDED -> 5
+        DocumentVerificationCode.INVALID_DOCUMENT_TYPE -> 6
+        DocumentVerificationCode.INVALID_PAGES_COUNT -> 7
+        DocumentVerificationCode.INVALID_FILES -> 8
+        DocumentVerificationCode.PHOTO_TOO_LARGE -> 9
+        DocumentVerificationCode.PARSING_ERROR -> 10
     }
 }
 
 fun codeIdxToVerificationCode(codeIdx: Int)
     : DocumentVerificationCode {
     return when(codeIdx) {
-        0 -> DocumentVerificationCode.OK
-        1 -> DocumentVerificationCode.InvalidPagesCount
-        2 -> DocumentVerificationCode.InvalidVerificationStage
-        3 -> DocumentVerificationCode.UploadAttemptsExceeded
-        4 -> DocumentVerificationCode.InvalidFiles
-        5 -> DocumentVerificationCode.InvalidDocumentType
-        6 -> DocumentVerificationCode.PrimaryAlreadyExists
-        else -> DocumentVerificationCode.PhotoTooLarge
+        0 -> DocumentVerificationCode.VERIFICATION_NOT_INITIALIZED
+        1 -> DocumentVerificationCode.USER_INTERACTED_COMPLETED
+        2 -> DocumentVerificationCode.STAGE_NOT_FOUND
+        3 -> DocumentVerificationCode.INVALID_STAGE_TYPE
+        4 -> DocumentVerificationCode.PRIMARY_DOCUMENT_EXISTS
+        5 -> DocumentVerificationCode.UPLOAD_ATTEMPTS_EXCEEDED
+        6 -> DocumentVerificationCode.INVALID_DOCUMENT_TYPE
+        7 -> DocumentVerificationCode.INVALID_PAGES_COUNT
+        8 -> DocumentVerificationCode.INVALID_FILES
+        9 -> DocumentVerificationCode.PHOTO_TOO_LARGE
+        else -> DocumentVerificationCode.PARSING_ERROR
     }
 }

@@ -4,9 +4,9 @@ import com.google.gson.annotations.SerializedName
 
 data class StageResponse(
     @SerializedName("data")
-    val data: StageResponseData,
+    val data: StageResponseData?,
     @SerializedName("error_code")
-    var errorCode: Int = 0,
+    var errorCode: Int?,
     @SerializedName("message")
     var message: String = ""
 )

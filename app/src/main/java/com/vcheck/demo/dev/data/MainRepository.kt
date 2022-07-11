@@ -87,7 +87,7 @@ class MainRepository(
     fun updateAndConfirmDocInfo(
         token: String,
         docId: Int,
-        docData: ParsedDocFieldsData
+        docData: DocUserDataRequestBody
     ): MutableLiveData<Resource<Response<Void>>> {
         return if (token.isNotEmpty()) {
             remoteDatasource.updateAndConfirmDocInfo(token, docId, docData)

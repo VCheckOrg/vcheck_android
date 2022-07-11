@@ -75,7 +75,7 @@ class RemoteDatasource(private val verificationApiClient: VerificationApiClient,
     fun updateAndConfirmDocInfo(
         verifToken: String,
         docId: Int,
-        docData: ParsedDocFieldsData
+        docData: DocUserDataRequestBody
     ): MutableLiveData<Resource<Response<Void>>> {
         return NetworkCall<Response<Void>>().makeCall(
             verificationApiClient.updateAndConfirmDocInfo(verifToken, docId, docData))

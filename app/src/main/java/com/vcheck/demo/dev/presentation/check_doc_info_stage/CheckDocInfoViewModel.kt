@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.vcheck.demo.dev.data.MainRepository
 import com.vcheck.demo.dev.data.Resource
-import com.vcheck.demo.dev.domain.ParsedDocFieldsData
+import com.vcheck.demo.dev.domain.DocUserDataRequestBody
 import com.vcheck.demo.dev.domain.PreProcessedDocumentResponse
 import com.vcheck.demo.dev.domain.StageResponse
 import retrofit2.Response
@@ -27,9 +27,9 @@ class CheckDocInfoViewModel(val repository: MainRepository) : ViewModel() {
     }
 
     fun updateAndConfirmDocument(token: String, docId: Int,
-                                 parsedDocFieldsData: ParsedDocFieldsData) {
-        Log.i("DOCUMENT", "UPDATING/CONFIRMING DOC: $parsedDocFieldsData")
-        repository.updateAndConfirmDocInfo(token, docId, parsedDocFieldsData)
+                                 userData: DocUserDataRequestBody) {
+        Log.i("DOCUMENT", "UPDATING/CONFIRMING DOC: $userData")
+        repository.updateAndConfirmDocInfo(token, docId, userData)
             .observeForever {
                 processConfirmResponse(it)
             }

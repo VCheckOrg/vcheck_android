@@ -155,8 +155,8 @@ class InProcessFragment : Fragment(R.layout.in_process_fragment), VideoProcessin
         _binding!!.successButton.setOnClickListener {
             _viewModel.stageResponse.observe(viewLifecycleOwner) {
                 //TODO test!
-                if (it.data?.data?.type == StageType.LIVENESS_CHALLENGE.toTypeIdx() &&
-                    it.data.errorCode == StageObstacleErrorType.USER_INTERACTED_COMPLETED.toTypeIdx()) {
+                if ((it.data?.errorCode == null) || (it.data.data?.type == StageType.LIVENESS_CHALLENGE.toTypeIdx()
+                    && it.data.errorCode == StageObstacleErrorType.USER_INTERACTED_COMPLETED.toTypeIdx())) {
                     finishSDKFlow()
                 } else {
                     Toast.makeText(activity, "Stage Error", Toast.LENGTH_LONG).show()

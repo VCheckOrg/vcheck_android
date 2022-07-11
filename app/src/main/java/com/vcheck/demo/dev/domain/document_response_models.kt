@@ -12,10 +12,8 @@ data class DocumentUploadResponse(
 )
 
 data class DocumentUploadResponseData(
-    @SerializedName("status")
-    val status: Int,
-    @SerializedName("document")
-    val document: Int
+    @SerializedName("id")
+    val id: Int
 )
 
 data class DocumentTypesForCountryResponse(
@@ -41,7 +39,7 @@ data class DocTypeData(
     @SerializedName("auto")
     val auto: Boolean,
     @SerializedName("fields")
-    val fields: List<DocField>
+    val docFields: List<DocField>
 )
 
 data class DocField(
@@ -98,19 +96,19 @@ data class PreProcessedDocData(
     val type: DocTypeData
 )
 
+//TODO duplicate for iOS!
+data class DocUserDataRequestBody(
+    @SerializedName("user_data")
+    val user_data: ParsedDocFieldsData
+)
+
 data class ParsedDocFieldsData(
     @SerializedName("date_of_birth")
     var dateOfBirth: String? = null,
-    @SerializedName("date_of_expiry")
-    var dateOfExpiry: String? = null,
     @SerializedName("name")
     var name: String? = null,
     @SerializedName("number")
     var number: String? = null,
-    @SerializedName("og_name")
-    var ogName: String? = null,
-    @SerializedName("og_surname")
-    var ogSurname: String? = null,
     @SerializedName("surname")
     var surname: String? = null
 )

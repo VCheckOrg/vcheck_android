@@ -54,6 +54,7 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
             photoCard2.isVisible = false
 
             if (args.checkDocInfoDataTO != null) {
+                Log.d("DOCUMENT", "===== ARGS TO : ${args.checkDocInfoDataTO}")
                 uploadedDocID = args.checkDocInfoDataTO!!.docId
 
                 val docPhoto1File = File(args.checkDocInfoDataTO!!.photo1Path)
@@ -67,6 +68,7 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
                     photoCard2.isVisible = false
                 }
             } else {
+                Log.d("DOCUMENT", "===== ARGS TO IS MISSING! USING args.uplaodedDocId")
                 uploadedDocID = args.uplaodedDocId
             }
         }
@@ -92,7 +94,9 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
 
         viewModel.stageResponse.observe(viewLifecycleOwner) {
             //TODO test!
-            if (it.data?.errorCode == StageObstacleErrorType.USER_INTERACTED_COMPLETED.toTypeIdx()) {
+            if ((it.data?.errorCode != null) ||
+                (it.data?.errorCode != null
+                        && it.data.errorCode == StageObstacleErrorType.USER_INTERACTED_COMPLETED.toTypeIdx())) {
                 startActivity(Intent(activity as VCheckMainActivity, VCheckLivenessActivity::class.java))
             } else {
                 findNavController().navigate(R.id.action_global_demoStartFragment)
@@ -123,9 +127,9 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
     }
 
     private fun populateDocFields(preProcessedDocData: PreProcessedDocData, currentLocaleCode: String) {
-        if (preProcessedDocData.type.fields.isNotEmpty()) {
-            Log.d("DOC", "GOT AUTO-PARSED FIELDS: ${preProcessedDocData.type.fields}")
-            dataList = preProcessedDocData.type.fields.map { docField ->
+        if (preProcessedDocData.type.docFields.isNotEmpty()) {
+            Log.d("DOC", "GOT AUTO-PARSED FIELDS: ${preProcessedDocData.type.docFields}")
+            dataList = preProcessedDocData.type.docFields.map { docField ->
                 convertDocFieldToOptParsedData(docField, preProcessedDocData.parsedData)
             } as ArrayList<DocFieldWitOptPreFilledData>
             val updatedAdapter = CheckDocInfoAdapter(ArrayList(dataList),
@@ -143,9 +147,6 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
             if (it.autoParsedValue.length < 2) {
                 hasValidationErrors = true
             }
-//            if (it.regex != null && it.autoParsedValue.matches(Regex(it.regex))) {
-//                hasValidationErrors = true
-//            }
         }
         return hasValidationErrors
     }
@@ -154,7 +155,7 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
          dataList.find { it.name == fieldName }?.autoParsedValue = value
     }
 
-    private fun composeConfirmedDocFieldsData() : ParsedDocFieldsData {
+    private fun composeConfirmedDocFieldsData() : DocUserDataRequestBody {
         val data = ParsedDocFieldsData()
         dataList.forEach { docField ->
             if (docField.name == "date_of_birth") {
@@ -170,7 +171,7 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
                 data.number = docField.autoParsedValue
             }
         }
-        return data
+        return DocUserDataRequestBody(data)
     }
 
     private fun convertDocFieldToOptParsedData(docField: DocField, parsedDocFieldsData: ParsedDocFieldsData?) : DocFieldWitOptPreFilledData {
