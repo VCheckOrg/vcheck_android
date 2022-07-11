@@ -65,7 +65,7 @@ internal class AppContainer(val app: VCheckSDKApp) {
 
     private val localDatasource = LocalDatasource()
 
-    var mainRepository = MainRepository(remoteDataSource, localDatasource, remoteApiConfigProvider)
+    var mainRepository = MainRepository(remoteDataSource, localDatasource)
 
 
 //    fun updateVerificationApiConfigs(updatedVerifBaseUrl: String, updatedPartnerBaseUrl: String) {

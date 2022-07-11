@@ -10,9 +10,7 @@ import java.util.*
 
 class MainRepository(
     private val remoteDatasource: RemoteDatasource,
-    private val localDatasource: LocalDatasource,
-    private val remoteApiConfigProvider: RemoteApiConfigProvider
-) {
+    private val localDatasource: LocalDatasource) {
 
     fun prepareVerificationRequest(serviceTS: Long, deviceDefaultLocaleCode: String,
             vModel: VerificationClientCreationModel): CreateVerificationRequestBody {
@@ -71,8 +69,7 @@ class MainRepository(
             remoteDatasource.uploadVerificationDocuments(
                 verifToken,
                 documentUploadRequestBody,
-                images
-            )
+                images)
         } else MutableLiveData(Resource.error(ApiError(BaseClientErrors.NO_TOKEN_AVAILABLE)))
     }
 

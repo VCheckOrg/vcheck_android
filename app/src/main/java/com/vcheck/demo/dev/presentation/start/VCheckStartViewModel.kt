@@ -6,13 +6,11 @@ import com.vcheck.demo.dev.data.MainRepository
 import com.vcheck.demo.dev.data.Resource
 import com.vcheck.demo.dev.domain.*
 
-internal class DemoStartViewModel (val repository: MainRepository) : ViewModel() {
+internal class VCheckStartViewModel (val repository: MainRepository) : ViewModel() {
 
     val clientError: MutableLiveData<String?> = MutableLiveData(null)
 
-    //var configModel:
-
-    var timestampResponse: MutableLiveData<String> = MutableLiveData()
+    var timestampResponse: MutableLiveData<Resource<String>> = MutableLiveData()
     var createResponse: MutableLiveData<Resource<CreateVerificationAttemptResponse>> = MutableLiveData()
     var initResponse: MutableLiveData<Resource<VerificationInitResponse>> = MutableLiveData()
     var countriesResponse: MutableLiveData<Resource<CountriesResponse>> = MutableLiveData()
@@ -60,7 +58,7 @@ internal class DemoStartViewModel (val repository: MainRepository) : ViewModel()
             }
             Resource.Status.SUCCESS -> {
                 if (response.data != null) {
-                    timestampResponse = MutableLiveData(response.data)
+                    timestampResponse.value = response
                 }
             }
             Resource.Status.ERROR -> {

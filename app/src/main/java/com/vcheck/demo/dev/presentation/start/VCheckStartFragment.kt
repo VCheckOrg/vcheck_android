@@ -31,25 +31,18 @@ import com.vcheck.demo.dev.util.ThemeWrapperFragment
 import com.vcheck.demo.dev.util.toFlagEmoji
 import java.util.*
 
-internal class DemoStartFragment : ThemeWrapperFragment() {
+internal class VCheckStartFragment : ThemeWrapperFragment() {
 
     private lateinit var appContainer: AppContainer
 
     private var _binding: FragmentDemoStartBinding? = null
 
-    private lateinit var _viewModel: DemoStartViewModel
+    private lateinit var _viewModel: VCheckStartViewModel
 
     private val requestPermissionsLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             if (permissions.all { it.value }) {
-                //Launching main flow if all permissions are set
-                _binding!!.startCallChainLoadingIndicator.isVisible = true
-                if (VCheckSDK.verificationClientCreationModel == null) {
-                    Toast.makeText(activity, "Client error: Verification was not created properly", Toast.LENGTH_LONG).show()
-                } else {
-                    setResponseListeners()
-                    _viewModel.serviceTimestampRequest()
-                }
+                performStartupLogic()
             } else {
                 PermissionErrDialog.newInstance(getString(R.string.permissions_denied))
                     .show(childFragmentManager, "permission_err_dialog")
@@ -70,7 +63,7 @@ internal class DemoStartFragment : ThemeWrapperFragment() {
         super.onCreate(savedInstanceState)
 
         appContainer = (activity?.application as VCheckSDKApp).appContainer
-        _viewModel = DemoStartViewModel(appContainer.mainRepository)
+        _viewModel = VCheckStartViewModel(appContainer.mainRepository)
     }
 
     override fun onCreateView(inflater: LayoutInflater,
@@ -87,6 +80,7 @@ internal class DemoStartFragment : ThemeWrapperFragment() {
         changeColorsToCustomIfPresent()
 
         _binding!!.startCallChainLoadingIndicator.isVisible = false
+        _binding!!.btnStartDemoFlow.isVisible = false
 
         requestPermissionsLauncher.launch(
             arrayOf(
@@ -94,11 +88,27 @@ internal class DemoStartFragment : ThemeWrapperFragment() {
                 Manifest.permission.WRITE_EXTERNAL_STORAGE))
     }
 
+    private fun performStartupLogic() {
+        //Launching main flow if all permissions are set
+        _binding!!.startCallChainLoadingIndicator.isVisible = true
+        if (VCheckSDK.verificationClientCreationModel == null) {
+            Toast.makeText(activity, "Client error: Verification was not created properly", Toast.LENGTH_LONG).show()
+        } else {
+            setResponseListeners()
+            _viewModel.serviceTimestampRequest()
+        }
+    }
+
     private fun setResponseListeners() {
+
         _viewModel.timestampResponse.observe(viewLifecycleOwner) {
-            _viewModel.createVerificationRequest(_viewModel.repository.prepareVerificationRequest(
-                it.toLong(), ContextUtils.getSavedLanguage(activity as VCheckMainActivity),
-                VCheckSDK.verificationClientCreationModel!!))
+            if (it.data != null) {
+                val requestModel = _viewModel.repository.prepareVerificationRequest(
+                    it.data.toLong(), ContextUtils.getSavedLanguage(activity as VCheckMainActivity),
+                    VCheckSDK.verificationClientCreationModel!!)
+                Log.d("REQUEST MODEL"," : $requestModel")
+                _viewModel.createVerificationRequest(requestModel)
+            }
         }
 
         _viewModel.createResponse.observe(viewLifecycleOwner) {
@@ -125,7 +135,7 @@ internal class DemoStartFragment : ThemeWrapperFragment() {
                 if (it.data?.data != null) {
                     Log.d("STAGING", "----- CURRENT STAGE TYPE: ${it.data.data.type}")
                     if (it.data.data.uploadedDocId != null) {
-                        val action = DemoStartFragmentDirections.actionDemoStartFragmentToCheckDocInfoFragment(
+                        val action = VCheckStartFragmentDirections.actionDemoStartFragmentToCheckDocInfoFragment(
                             null, it.data.data.uploadedDocId)
                         findNavController().navigate(action)
                     } else if (it.data.data.type == StageType.DOCUMENT_UPLOAD.toTypeIdx()) {
@@ -151,7 +161,7 @@ internal class DemoStartFragment : ThemeWrapperFragment() {
                         country.isBlocked)
                 }.toList() as ArrayList<CountryTO>
                 val action =
-                    DemoStartFragmentDirections.actionDemoStartFragmentToChooseCountryFragment(
+                    VCheckStartFragmentDirections.actionDemoStartFragmentToChooseCountryFragment(
                         CountriesListTO(countryList))
                 findNavController().navigate(action)
             }
@@ -160,6 +170,10 @@ internal class DemoStartFragment : ThemeWrapperFragment() {
         _viewModel.clientError.observe(viewLifecycleOwner) {
             if (it != null) {
                 _binding!!.startCallChainLoadingIndicator.isVisible = false
+                _binding!!.btnStartDemoFlow.isVisible = true
+                _binding!!.btnStartDemoFlow.setOnClickListener {
+                    performStartupLogic()
+                }
                 Toast.makeText(activity, it, Toast.LENGTH_LONG).show()
             }
         }

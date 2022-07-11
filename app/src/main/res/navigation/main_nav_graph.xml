@@ -152,7 +152,7 @@
 
     <fragment
         android:id="@+id/demoStartFragment"
-        android:name="com.vcheck.demo.dev.presentation.start.DemoStartFragment"
+        android:name="com.vcheck.demo.dev.presentation.start.VCheckStartFragment"
         android:label="fragment_demo_start"
         tools:layout="@layout/fragment_demo_start">
         <action
