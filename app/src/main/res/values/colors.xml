@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="vcheck_black">#222222</color>
+
     <color name="vcheck_text">#FFFFFFFF</color>
     <color name="vcheck_background_primary">#2A2A2A</color>
     <color name="vcheck_background_secondary">#3C3C3C</color>
-    <color name="transparent">#00FFFFFF</color>
     <color name="vcheck_primary">#2E75FF</color>
+    <color name="vcheck_secondary_more_light">#D89F9F9F</color>
+
+    <color name="transparent">#00FFFFFF</color>
     <color name="vcheck_success">#00DF53</color>
     <color name="vcheck_success_half_filled">#5B00DF53</color>
     <color name="vcheck_unavailable_mask">#7C3B3B3B</color>
-    <color name="vcheck_secondary_more_light">#D89F9F9F</color>
     <color name="vcheck_error_light">#FF877C</color>
     <color name="vcheck_util">#3B3B3B</color>
     <color name="rounded_shape">#515151</color>
