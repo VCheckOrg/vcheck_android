@@ -7,6 +7,7 @@
     <color name="vcheck_background_secondary">#3C3C3C</color>
     <color name="vcheck_primary">#2E75FF</color>
     <color name="vcheck_secondary_more_light">#D89F9F9F</color>
+<!--    TODO: bring missing (undefined here) colors to common structure-->
 
     <color name="transparent">#00FFFFFF</color>
     <color name="vcheck_success">#00DF53</color>
