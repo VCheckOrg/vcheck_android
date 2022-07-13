@@ -5,8 +5,6 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,6 +14,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VCheckSDK
@@ -27,11 +26,10 @@ import com.vcheck.demo.dev.presentation.VCheckMainActivity
 import com.vcheck.demo.dev.presentation.liveness.VCheckLivenessActivity
 import com.vcheck.demo.dev.presentation.transferrable_objects.CountriesListTO
 import com.vcheck.demo.dev.util.ContextUtils
-import com.vcheck.demo.dev.util.ThemeWrapperFragment
 import com.vcheck.demo.dev.util.toFlagEmoji
 import java.util.*
 
-internal class VCheckStartFragment : ThemeWrapperFragment() {
+internal class VCheckStartFragment : Fragment() {
 
     private lateinit var appContainer: AppContainer
 
@@ -48,17 +46,6 @@ internal class VCheckStartFragment : ThemeWrapperFragment() {
                     .show(childFragmentManager, "permission_err_dialog")
             }
         }
-
-    //TODO test!
-    override fun changeColorsToCustomIfPresent() {
-        VCheckSDK.buttonsColorHex.let {
-            _binding!!.btnStartDemoFlow.background = ColorDrawable(Color.parseColor(VCheckSDK.buttonsColorHex))
-        }
-        if (VCheckSDK.backgroundColorHex != null) {
-            _binding!!.background.background = ColorDrawable(Color.parseColor(VCheckSDK.backgroundColorHex))
-        }
-
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,8 +64,6 @@ internal class VCheckStartFragment : ThemeWrapperFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         _binding = FragmentDemoStartBinding.bind(view)
-
-        changeColorsToCustomIfPresent()
 
         _binding!!.startCallChainLoadingIndicator.isVisible = false
         _binding!!.btnStartDemoFlow.isVisible = false
@@ -209,38 +194,3 @@ internal class VCheckStartFragment : ThemeWrapperFragment() {
         }
     }
 }
-
-
-//if (_viewModel.repository.checkIfApiConfigShouldBeChanged(VCheckSDK.verificationClientCreationModel!!)) {
-//    appContainer.updateVerificationApiConfigs(
-//        VCheckSDK.verificationClientCreationModel!!.customVerificationServiceURL!!,
-//        VCheckSDK.verificationClientCreationModel!!.customPartnerServiceURL!!)
-//    _viewModel = DemoStartViewModel(appContainer.mainRepository)
-//}
-
-//        _binding!!.btnStartDemoFlow.setOnClickListener {
-//            _binding!!.startCallChainLoadingIndicator.isVisible = true
-//            _viewModel.createTestVerificationRequest(
-//                ContextUtils.getSavedLanguage(activity as VCheckMainActivity))
-//        }
-
-//! FOR TEST
-//        _binding!!.btnLaunchMediaPipeDemo.setOnClickListener {
-//            //TEMP nav action:
-//            findNavController().navigate(R.id.action_demoStartFragment_to_livenessInstructionsFragment)
-//            //startActivity(Intent(activity as MainActivity, LivenessActivity::class.java))
-//        }
-
-//Obsolete binding text indications:
-
-//                _binding!!.tvCreateVerificationResultInfo.text =
-//                    "CREATED VERIFICATION REQUEST: application_id : ${it.data.data.applicationId} |" +
-//                            "redirect_url : ${it.data.data.redirectUrl}" //+create_time
-
-//                _binding!!.tvInitVerificationResultInfo.text =
-//                    "INITIALIZED VERIFICATION: document : ${it.data.data.document} |" +
-//                            "return_url : ${it.data.data.returnUrl} | stage: ${it.data.data.stage}" +
-//                            "| locale: ${it.data.data.locale}"
-
-//                Log.d("COUNTRIES",
-//                    "GOT COUNTRIES: ${it.data.data.map { country -> country.code }.toList()}")

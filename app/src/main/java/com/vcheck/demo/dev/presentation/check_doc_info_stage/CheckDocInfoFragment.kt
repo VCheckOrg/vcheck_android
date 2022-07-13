@@ -93,7 +93,6 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
         }
 
         viewModel.stageResponse.observe(viewLifecycleOwner) {
-            //TODO test!
             if ((it.data?.errorCode == null) ||
                 (it.data.errorCode != null
                         && it.data.errorCode == StageObstacleErrorType.USER_INTERACTED_COMPLETED.toTypeIdx())) {

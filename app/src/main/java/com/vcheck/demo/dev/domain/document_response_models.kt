@@ -96,12 +96,6 @@ data class PreProcessedDocData(
     val type: DocTypeData
 )
 
-//TODO duplicate for iOS!
-data class DocUserDataRequestBody(
-    @SerializedName("user_data")
-    val user_data: ParsedDocFieldsData
-)
-
 data class ParsedDocFieldsData(
     @SerializedName("date_of_birth")
     var dateOfBirth: String? = null,
