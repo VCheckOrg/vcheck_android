@@ -96,6 +96,9 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
             if ((it.data?.errorCode == null) ||
                 (it.data.errorCode != null
                         && it.data.errorCode == StageObstacleErrorType.USER_INTERACTED_COMPLETED.toTypeIdx())) {
+                if (it.data?.data?.config != null) {
+                    viewModel.repository.setLivenessMilestonesList((it.data.data.config.gestures))
+                }
                 findNavController().navigate(R.id.action_checkDocInfoFragment_to_livenessInstructionsFragment)
             } else {
                 findNavController().navigate(R.id.action_global_demoStartFragment)

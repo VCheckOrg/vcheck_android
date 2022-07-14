@@ -78,6 +78,7 @@ internal class VCheckStartFragment : Fragment() {
         //Launching main flow if all permissions are set
         _binding!!.startCallChainLoadingIndicator.isVisible = true
         if (VCheckSDK.verificationClientCreationModel == null) {
+            //TODO: fix cases when verificationClientCreationModel == null !
             Toast.makeText(activity, "Client error: Verification was not created properly", Toast.LENGTH_LONG).show()
         } else {
             setResponseListeners()
@@ -128,7 +129,10 @@ internal class VCheckStartFragment : Fragment() {
                     } else if (it.data.data.type == StageType.DOCUMENT_UPLOAD.toTypeIdx()) {
                         _viewModel.getCountriesList()
                     } else {
-                        startActivity(Intent(activity as VCheckMainActivity, VCheckLivenessActivity::class.java))
+                        if (it.data.data.config != null) {
+                            _viewModel.repository.setLivenessMilestonesList((it.data.data.config.gestures))
+                        }
+                        findNavController().navigate(R.id.action_demoStartFragment_to_livenessInstructionsFragment)
                     }
                 }
             }

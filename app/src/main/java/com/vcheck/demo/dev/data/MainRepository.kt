@@ -142,6 +142,14 @@ class MainRepository(
     fun resetCacheOnStartup(ctx: Context) {
         localDatasource.resetCacheOnStartup(ctx)
     }
+
+    fun setLivenessMilestonesList(list: List<String>) {
+        localDatasource.setLivenessMilestonesList(list)
+    }
+
+    fun getLivenessMilestonesList(): List<String>? {
+        return localDatasource.getLivenessMilestonesList()
+    }
 }
 
 //    fun setDocumentAsPrimary(token: String, docId: Int) : MutableLiveData<Resource<Response<Void>>> {
