@@ -158,10 +158,14 @@ class VCheckLivenessActivity : AppCompatActivity(),
                         }
                     }
                 } catch (e: Exception) {
-                    showSingleToast("Error in top-level MP setResultListener: ${e.message} | ${e.cause}")
+                    runOnUiThread {
+                        showSingleToast("Error in top-level MP ResultListener: ${e.message} | ${e.cause}")
+                    }
                 }
             } else {
-                showSingleToast("Low memory caught!")
+                runOnUiThread {
+                    showSingleToast("Low memory caught!")
+                }
             }
         }
     }
@@ -197,6 +201,8 @@ class VCheckLivenessActivity : AppCompatActivity(),
     }
 
     override fun onAllStagesPassed() {
+        Log.d(TAG, "============================ ALL STAGES PASSED! ========================")
+        finishLivenessSession()
         delayedNavigateOnLivenessSessionEnd()
     }
 
@@ -379,6 +385,8 @@ class VCheckLivenessActivity : AppCompatActivity(),
     /// -------------------------------------------- UI functions
 
     private fun initSetupUI() {
+        binding!!.arrowAnimationView.isVisible = false
+        binding!!.faceAnimationView.isVisible = false
         binding!!.stageSuccessAnimBorder.isVisible = false
         binding!!.checkFaceTitle.text = getString(R.string.wait_for_liveness_start)
         binding!!.imgViewStaticStageIndication.isVisible = false
@@ -389,12 +397,14 @@ class VCheckLivenessActivity : AppCompatActivity(),
         binding!!.faceAnimationView.isVisible = false
         binding!!.arrowAnimationView.isVisible = false
 
-        vibrateDevice(this@VCheckLivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
-        binding!!.imgViewStaticStageIndication.isVisible = true
-        binding!!.stageSuccessAnimBorder.isVisible = true
+        if (milestoneType != GestureMilestoneType.CheckHeadPositionMilestone) {
+            vibrateDevice(this@VCheckLivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
+            binding!!.imgViewStaticStageIndication.isVisible = true
+            binding!!.stageSuccessAnimBorder.isVisible = true
+            animateStageSuccessFrame()
+        }
 
         Handler(Looper.getMainLooper()).postDelayed ({
-            animateStageSuccessFrame()
             binding!!.imgViewStaticStageIndication.isVisible = false
             binding!!.faceAnimationView.cancelAnimation()
             val faceAnimeRes = when(milestoneType) {
@@ -442,15 +452,19 @@ class VCheckLivenessActivity : AppCompatActivity(),
     }
 
     private fun delayedNavigateOnLivenessSessionEnd() {
-        binding!!.checkFaceTitle.text = getString(R.string.wait_for_liveness_start)
-        vibrateDevice(this@VCheckLivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
-        binding!!.imgViewStaticStageIndication.isVisible = true
-        binding!!.stageSuccessAnimBorder.isVisible = true
-        Handler(Looper.getMainLooper()).postDelayed({
-            binding!!.livenessCosmeticsHolder.isVisible = false
-            camera2Fragment?.onPause() //!
-            safeNavigateToResultDestination(R.id.action_dummyLivenessStartDestFragment_to_inProcessFragment)
-        }, 1000)
+        runOnUiThread {
+            binding!!.arrowAnimationView.isVisible = false
+            binding!!.faceAnimationView.isVisible = false
+            binding!!.checkFaceTitle.text = getString(R.string.wait_for_liveness_start)
+            vibrateDevice(this@VCheckLivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
+            binding!!.imgViewStaticStageIndication.isVisible = true
+            binding!!.stageSuccessAnimBorder.isVisible = true
+            Handler(Looper.getMainLooper()).postDelayed({
+                binding!!.livenessCosmeticsHolder.isVisible = false
+                camera2Fragment?.onPause() //!
+                safeNavigateToResultDestination(R.id.action_dummyLivenessStartDestFragment_to_inProcessFragment)
+            }, 1000)
+        }
     }
 
     private fun safeNavigateToResultDestination(actionIdForNav: Int) {

@@ -44,20 +44,20 @@ class MainRepository(
     fun initVerification(verifToken: String): MutableLiveData<Resource<VerificationInitResponse>> {
         return if (verifToken.isNotEmpty()) {
             remoteDatasource.initVerification(verifToken)
-        } else MutableLiveData(Resource.error(ApiError(BaseClientErrors.NO_TOKEN_AVAILABLE)))
+        } else MutableLiveData(Resource.error(ApiError(null, BaseClientErrors.NO_TOKEN_AVAILABLE)))
     }
 
     fun getCountries(verifToken: String): MutableLiveData<Resource<CountriesResponse>> {
         return if (verifToken.isNotEmpty()) {
             remoteDatasource.getCountries(verifToken)
-        } else MutableLiveData(Resource.error(ApiError(BaseClientErrors.NO_TOKEN_AVAILABLE)))
+        } else MutableLiveData(Resource.error(ApiError(null, BaseClientErrors.NO_TOKEN_AVAILABLE)))
     }
 
     fun getCountryAvailableDocTypeInfo(verifToken: String, countryCode: String)
             : MutableLiveData<Resource<DocumentTypesForCountryResponse>> {
         return if (verifToken.isNotEmpty()) {
             return remoteDatasource.getCountryAvailableDocTypeInfo(verifToken, countryCode)
-        } else MutableLiveData(Resource.error(ApiError(BaseClientErrors.NO_TOKEN_AVAILABLE)))
+        } else MutableLiveData(Resource.error(ApiError(null, BaseClientErrors.NO_TOKEN_AVAILABLE)))
     }
 
     fun uploadVerificationDocuments(
@@ -70,7 +70,7 @@ class MainRepository(
                 verifToken,
                 documentUploadRequestBody,
                 images)
-        } else MutableLiveData(Resource.error(ApiError(BaseClientErrors.NO_TOKEN_AVAILABLE)))
+        } else MutableLiveData(Resource.error(ApiError(null, BaseClientErrors.NO_TOKEN_AVAILABLE)))
     }
 
     fun getDocumentInfo(
@@ -80,7 +80,7 @@ class MainRepository(
         return if (token.isNotEmpty()) {
             remoteDatasource.getDocumentInfo(token, docId)
         } else {
-            MutableLiveData(Resource.error(ApiError(BaseClientErrors.NO_TOKEN_AVAILABLE)))
+            MutableLiveData(Resource.error(ApiError(null, BaseClientErrors.NO_TOKEN_AVAILABLE)))
         }
     }
 
@@ -92,7 +92,7 @@ class MainRepository(
         return if (token.isNotEmpty()) {
             remoteDatasource.updateAndConfirmDocInfo(token, docId, docData)
         } else {
-            MutableLiveData(Resource.error(ApiError(BaseClientErrors.NO_TOKEN_AVAILABLE)))
+            MutableLiveData(Resource.error(ApiError(null, BaseClientErrors.NO_TOKEN_AVAILABLE)))
         }
     }
 
@@ -100,7 +100,7 @@ class MainRepository(
         : MutableLiveData<Resource<LivenessUploadResponse>> {
         return if (verifToken.isNotEmpty()) {
             remoteDatasource.uploadLivenessVideo(verifToken, video)
-        } else MutableLiveData(Resource.error(ApiError(BaseClientErrors.NO_TOKEN_AVAILABLE)))
+        } else MutableLiveData(Resource.error(ApiError(null,BaseClientErrors.NO_TOKEN_AVAILABLE)))
     }
 
     fun getActualServiceTimestamp() : MutableLiveData<Resource<String>> {
@@ -139,16 +139,16 @@ class MainRepository(
         return localDatasource.getSelectedDocTypeWithData()
     }
 
-    fun resetCacheOnStartup(ctx: Context) {
-        localDatasource.resetCacheOnStartup(ctx)
-    }
-
     fun setLivenessMilestonesList(list: List<String>) {
         localDatasource.setLivenessMilestonesList(list)
     }
 
     fun getLivenessMilestonesList(): List<String>? {
         return localDatasource.getLivenessMilestonesList()
+    }
+
+    fun resetCacheOnStartup(ctx: Context) {
+        localDatasource.resetCacheOnStartup(ctx)
     }
 }
 

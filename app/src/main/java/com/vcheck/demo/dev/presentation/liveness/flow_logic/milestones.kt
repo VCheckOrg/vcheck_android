@@ -157,30 +157,24 @@ class StandardMilestoneFlow(private val milestoneResultListener: MilestoneResult
         stagesList = stagesList + gestures
     }
 
-    fun getCurrentStage(): GestureMilestone {
-        return if (currentStageIdx > (stagesList.size - 1)) {
-            stagesList[0]
-        } else {
-            stagesList[currentStageIdx]
-        }
-    }
-
     fun checkCurrentStage(pitchAngle: Double, mouthFactor: Double, yawAbsAngle: Double) {
-        try {
+
             Log.d("Liveness", "STAGES LIST: $stagesList")
             Log.d("Liveness", "CURRENT STAGE TYPE: ${stagesList[currentStageIdx].milestoneType}")
             Log.d("Liveness", "CURRENT STAGE IDX: $currentStageIdx")
-            if (currentStageIdx > (stagesList.size - 1)) {
-                milestoneResultListener.onAllStagesPassed()
-                return
-            } else if (stagesList[currentStageIdx].isMet(pitchAngle, mouthFactor, yawAbsAngle)) {
-                currentStageIdx += 1 //!
-                milestoneResultListener.onMilestoneResult(stagesList[currentStageIdx].milestoneType)
-                return
+            if (stagesList[currentStageIdx].isMet(pitchAngle, mouthFactor, yawAbsAngle)) {
+                try {
+                    currentStageIdx += 1
+                    if (currentStageIdx > (stagesList.size - 1)) {
+                        milestoneResultListener.onAllStagesPassed()
+                    } else {
+                        milestoneResultListener.onMilestoneResult(stagesList[currentStageIdx].milestoneType)
+                    }
+                    return
+                } catch (e: IndexOutOfBoundsException) {
+                    Log.d("Liveness", "MILESTONES ERROR: IndexOutOfBoundsException for stages list!")
+                }
             }
-        } catch (e: IndexOutOfBoundsException) {
-            Log.d("Liveness", "MILESTONES ERROR: IndexOutOfBoundsException for stages list!")
-        }
     }
 
     private fun gmFromServiceValue(strValue: String): GestureMilestone {
@@ -207,6 +201,14 @@ interface MilestoneResultListener {
 }
 
 
+
+//    fun getCurrentStage(): GestureMilestone {
+//        return if (currentStageIdx > (stagesList.size - 1)) {
+//            stagesList[0]
+//        } else {
+//            stagesList[currentStageIdx]
+//        }
+//    }
 
 //    fun getUndoneStage(): GestureMilestone {
 //        return if (currentStageIdx == 0) stagesList[0] else stagesList[currentStageIdx - 1]

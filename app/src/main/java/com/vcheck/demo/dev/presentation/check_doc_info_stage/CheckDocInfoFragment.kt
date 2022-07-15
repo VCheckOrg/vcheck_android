@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.squareup.picasso.Picasso
 import com.vcheck.demo.dev.R
+import com.vcheck.demo.dev.VCheckSDK
 import com.vcheck.demo.dev.VCheckSDKApp
 import com.vcheck.demo.dev.databinding.CheckDocInfoFragmentBinding
 import com.vcheck.demo.dev.domain.*
@@ -93,13 +94,14 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
         }
 
         viewModel.stageResponse.observe(viewLifecycleOwner) {
-            if ((it.data?.errorCode == null) ||
-                (it.data.errorCode != null
-                        && it.data.errorCode == StageObstacleErrorType.USER_INTERACTED_COMPLETED.toTypeIdx())) {
+            if (it.data?.errorCode == null || it.data.errorCode == StageObstacleErrorType.USER_INTERACTED_COMPLETED.toTypeIdx()) {
                 if (it.data?.data?.config != null) {
                     viewModel.repository.setLivenessMilestonesList((it.data.data.config.gestures))
+                    findNavController().navigate(R.id.action_checkDocInfoFragment_to_livenessInstructionsFragment)
+                } else if (VCheckSDK.verificationClientCreationModel?.verificationType == VerificationSchemeType.DOCUMENT_UPLOAD_ONLY) {
+                    //TODO test!
+                   finishSDKFlow()
                 }
-                findNavController().navigate(R.id.action_checkDocInfoFragment_to_livenessInstructionsFragment)
             } else {
                 findNavController().navigate(R.id.action_global_demoStartFragment)
             }
@@ -198,6 +200,10 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
                 docField.name, docField.title, docField.type, docField.regex, optParsedData
             )
         }
+    }
+
+    private fun finishSDKFlow() {
+        VCheckSDK.onFinish()
     }
 }
 
