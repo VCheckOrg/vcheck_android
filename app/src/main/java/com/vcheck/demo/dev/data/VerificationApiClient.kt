@@ -69,4 +69,13 @@ interface VerificationApiClient {
         @Header("Authorization") verifToken: String,
         @Part video: MultipartBody.Part
     ) : Call<LivenessUploadResponse>
+
+    @Headers("multipart: true")
+    @Multipart
+    @POST("liveness_challenges/gesture")
+    fun sendLivenessGestureAttempt(
+        @Header("Authorization") verifToken: String,
+        @Part image: MultipartBody.Part,
+        @Part gesture: MultipartBody.Part
+    ) : Call<LivenessGestureResponse>
 }

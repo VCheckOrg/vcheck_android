@@ -95,6 +95,14 @@ class RemoteDatasource(private val verificationApiClient: VerificationApiClient,
     ) : MutableLiveData<Resource<StageResponse>> {
         return NetworkCall<StageResponse>().makeCall(verificationApiClient.getCurrentStage(verifToken))
     }
+
+    fun sendLivenessGestureAttempt(
+        verifToken: String,
+        image: MultipartBody.Part,
+        gesture: MultipartBody.Part): MutableLiveData<Resource<LivenessGestureResponse>> {
+        return NetworkCall<LivenessGestureResponse>().makeCall(
+            verificationApiClient.sendLivenessGestureAttempt(verifToken, image, gesture))
+    }
 }
 
 

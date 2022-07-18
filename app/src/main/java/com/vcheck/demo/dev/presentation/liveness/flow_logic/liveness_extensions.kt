@@ -4,9 +4,16 @@ import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.media.Image
 import android.media.ImageReader
+import android.os.Environment
+import android.util.Log
 import android.view.Surface
+import android.widget.Toast
+import androidx.camera.core.impl.utils.ContextUtil.getApplicationContext
 import com.vcheck.demo.dev.presentation.liveness.VCheckLivenessActivity
 import com.vcheck.demo.dev.util.ImageUtils
+import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStream
 
 
 fun VCheckLivenessActivity.onImageAvailableImpl(reader: ImageReader?) {
@@ -74,6 +81,26 @@ fun VCheckLivenessActivity.getScreenOrientation(): Int {
         Surface.ROTATION_180 -> 180
         Surface.ROTATION_90 -> 90
         else -> 0
+    }
+}
+
+
+fun VCheckLivenessActivity.createTempFileForBitmapFrame(mBitmap: Bitmap): String {
+    val f3 = File(Environment.getExternalStorageDirectory().toString() + "/frames/")
+    if (!f3.exists()) f3.mkdirs()
+    var outStream: OutputStream? = null
+    val path = Environment.getExternalStorageDirectory().toString() + "/frames/" + "${System.currentTimeMillis()}" + ".jpg" //!
+    val file = File(path)
+    return try {
+        outStream = FileOutputStream(file)
+        mBitmap.compress(Bitmap.CompressFormat.JPEG, 90, outStream)
+        outStream.close()
+        Log.d("Liveness","----------- SAVED IMAGE: PATH: $path")
+        //Toast.makeText(applicationContext, "Saved", Toast.LENGTH_LONG).show()
+        path
+    } catch (e: java.lang.Exception) {
+        e.printStackTrace()
+        path
     }
 }
 

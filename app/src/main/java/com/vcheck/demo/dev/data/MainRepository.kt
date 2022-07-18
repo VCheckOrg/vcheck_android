@@ -6,6 +6,8 @@ import com.vcheck.demo.dev.domain.*
 import com.vcheck.demo.dev.util.generateSHA256Hash
 import okhttp3.MultipartBody
 import retrofit2.Response
+import retrofit2.http.Header
+import retrofit2.http.Part
 import java.util.*
 
 class MainRepository(
@@ -110,7 +112,18 @@ class MainRepository(
     fun getCurrentStage(
         verifToken: String
     ): MutableLiveData<Resource<StageResponse>> {
-        return remoteDatasource.getCurrentStage(verifToken)
+        return if (verifToken.isNotEmpty()) {
+            remoteDatasource.getCurrentStage(verifToken)
+        } else MutableLiveData(Resource.error(ApiError(null,BaseClientErrors.NO_TOKEN_AVAILABLE)))
+    }
+
+    fun sendLivenessGestureAttempt(
+        verifToken: String,
+        image: MultipartBody.Part,
+        gesture: MultipartBody.Part): MutableLiveData<Resource<LivenessGestureResponse>> {
+        return if (verifToken.isNotEmpty()) {
+            remoteDatasource.sendLivenessGestureAttempt(verifToken, image, gesture)
+        } else MutableLiveData(Resource.error(ApiError(null,BaseClientErrors.NO_TOKEN_AVAILABLE)))
     }
 
     //---- LOCAL SOURCE DATA OPS:
