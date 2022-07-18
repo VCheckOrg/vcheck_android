@@ -100,7 +100,7 @@ class VCheckLivenessActivity : AppCompatActivity(),
 
         initSetupUI()
 
-        onMilestoneSuccess(milestoneFlow.getCurrentStage())
+        indicateNextMilestone(milestoneFlow.getCurrentStage(), true)
     }
 
     private fun setMilestones() {
@@ -125,28 +125,30 @@ class VCheckLivenessActivity : AppCompatActivity(),
     private fun setGestureResponsesObserver() {
         gestureResponseResponse.observe(this@VCheckLivenessActivity) {
             Log.d(TAG, "============== GOT RESPONSE: ${it.data}")
-            if (it.data != null && it.data.success) {
-                Log.d(TAG, "============== PASSED MILESTONE: ${milestoneFlow.getCurrentStage()}")
-                if (milestoneFlow.areAllStagesPassed()) {
-                    finishLivenessSession()
-                    delayedNavigateOnLivenessSessionEnd()
-                } else {
+            if (milestoneFlow.areAllStagesPassed()) {
+                Log.d(TAG, "==============++++++++++++++++  PASSED ALL STAGES!")
+                finishLivenessSession()
+                delayedNavigateOnLivenessSessionEnd()
+            } else {
+                if (it.data != null && it.data.success) {
+                    Log.d(TAG, "============== PASSED MILESTONE: ${milestoneFlow.getCurrentStage()}")
                     blockProcessingByUI = true
                     milestoneFlow.incrementCurrentStage()
                     runOnUiThread {
-                        onMilestoneSuccess(milestoneFlow.getCurrentStage())
+                        indicateNextMilestone(milestoneFlow.getCurrentStage(), false)
                     }
                 }
-            }
-            if (it.data != null && it.data.errorCode != 0) {
-                //TODO: add error handling
-                showSingleToast("GESTURE ERROR RESPONSE: ${it.data.errorCode}")
+                if (it.data != null && it.data.errorCode != 0) {
+                    //TODO: add error handling
+                    showSingleToast("GESTURE ERROR RESPONSE: ${it.data.errorCode}")
+                }
             }
         }
     }
 
     fun finishLivenessSession() {
         isLivenessSessionFinished = true
+        gestureCheckBitmap = null
     }
 
     private fun enoughTimeForNextGesture(): Boolean {
@@ -307,61 +309,70 @@ class VCheckLivenessActivity : AppCompatActivity(),
         binding!!.imgViewStaticStageIndication.isVisible = false
     }
 
-    private fun onMilestoneSuccess(nextMilestoneType: GestureMilestoneType) {
+    private fun indicateNextMilestone(nextMilestoneType: GestureMilestoneType,
+                                      indicateStageAsInitial: Boolean) {
 
         binding!!.faceAnimationView.isVisible = false
         binding!!.arrowAnimationView.isVisible = false
 
-        vibrateDevice(this@VCheckLivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
-        binding!!.imgViewStaticStageIndication.isVisible = true
-        binding!!.stageSuccessAnimBorder.isVisible = true
-        animateStageSuccessFrame()
+        if (!indicateStageAsInitial) {
+            vibrateDevice(this@VCheckLivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
+            binding!!.imgViewStaticStageIndication.isVisible = true
+            binding!!.stageSuccessAnimBorder.isVisible = true
+            animateStageSuccessFrame()
 
-        Handler(Looper.getMainLooper()).postDelayed ({
-            binding!!.imgViewStaticStageIndication.isVisible = false
-            binding!!.faceAnimationView.cancelAnimation()
-            val faceAnimeRes = when(nextMilestoneType) {
-                GestureMilestoneType.UpHeadPitchMilestone -> R.raw.up
-                GestureMilestoneType.DownHeadPitchMilestone -> R.raw.down
-                GestureMilestoneType.OuterRightHeadYawMilestone -> R.raw.right
-                GestureMilestoneType.OuterLeftHeadYawMilestone -> R.raw.left
-                GestureMilestoneType.MouthOpenMilestone -> R.raw.mouth
+            Handler(Looper.getMainLooper()).postDelayed ({
+                updateUIOnMilestoneSuccess(nextMilestoneType)
+            }, BLOCK_PIPELINE_TIME_MILLIS)
+
+        } else {
+            updateUIOnMilestoneSuccess(nextMilestoneType)
+        }
+    }
+
+    private fun updateUIOnMilestoneSuccess(nextMilestoneType: GestureMilestoneType) {
+        binding!!.imgViewStaticStageIndication.isVisible = false
+        binding!!.faceAnimationView.cancelAnimation()
+        val faceAnimeRes = when(nextMilestoneType) {
+            GestureMilestoneType.UpHeadPitchMilestone -> R.raw.up
+            GestureMilestoneType.DownHeadPitchMilestone -> R.raw.down
+            GestureMilestoneType.OuterRightHeadYawMilestone -> R.raw.right
+            GestureMilestoneType.OuterLeftHeadYawMilestone -> R.raw.left
+            GestureMilestoneType.MouthOpenMilestone -> R.raw.mouth
+        }
+
+        binding!!.faceAnimationView.isVisible = true
+        binding!!.faceAnimationView.setAnimation(faceAnimeRes)
+        binding!!.faceAnimationView.playAnimation()
+
+        when (nextMilestoneType) {
+            GestureMilestoneType.OuterLeftHeadYawMilestone -> {
+                binding!!.arrowAnimationView.isVisible = true
+                binding!!.arrowAnimationView.setMargins(null, null,
+                    300, null)
+                binding!!.arrowAnimationView.rotation = 0F
+                binding!!.arrowAnimationView.playAnimation()
             }
-
-            binding!!.faceAnimationView.isVisible = true
-            binding!!.faceAnimationView.setAnimation(faceAnimeRes)
-            binding!!.faceAnimationView.playAnimation()
-
-            when (nextMilestoneType) {
-                GestureMilestoneType.OuterLeftHeadYawMilestone -> {
-                    binding!!.arrowAnimationView.isVisible = true
-                    binding!!.arrowAnimationView.setMargins(null, null,
-                        300, null)
-                    binding!!.arrowAnimationView.rotation = 0F
-                    binding!!.arrowAnimationView.playAnimation()
-                }
-                GestureMilestoneType.OuterRightHeadYawMilestone -> {
-                    binding!!.arrowAnimationView.isVisible = true
-                    binding!!.arrowAnimationView.setMargins(null, null,
-                        -300, null)
-                    binding!!.arrowAnimationView.rotation = 180F
-                    binding!!.arrowAnimationView.playAnimation()
-                }
-                else -> {
-                    binding!!.arrowAnimationView.isVisible = false
-                }
+            GestureMilestoneType.OuterRightHeadYawMilestone -> {
+                binding!!.arrowAnimationView.isVisible = true
+                binding!!.arrowAnimationView.setMargins(null, null,
+                    -300, null)
+                binding!!.arrowAnimationView.rotation = 180F
+                binding!!.arrowAnimationView.playAnimation()
             }
-            binding!!.checkFaceTitle.text = when(nextMilestoneType) {
-                GestureMilestoneType.UpHeadPitchMilestone -> getString(R.string.liveness_stage_face_up)
-                GestureMilestoneType.DownHeadPitchMilestone -> getString(R.string.liveness_stage_face_down)
-                GestureMilestoneType.OuterRightHeadYawMilestone -> getString(R.string.liveness_stage_face_right)
-                GestureMilestoneType.OuterLeftHeadYawMilestone -> getString(R.string.liveness_stage_face_left)
-                GestureMilestoneType.MouthOpenMilestone -> getString(R.string.liveness_stage_open_mouth)
-                else -> getString(R.string.line_face_obstacle)
+            else -> {
+                binding!!.arrowAnimationView.isVisible = false
             }
-            blockProcessingByUI = false
-
-        }, BLOCK_PIPELINE_TIME_MILLIS)
+        }
+        binding!!.checkFaceTitle.text = when(nextMilestoneType) {
+            GestureMilestoneType.UpHeadPitchMilestone -> getString(R.string.liveness_stage_face_up)
+            GestureMilestoneType.DownHeadPitchMilestone -> getString(R.string.liveness_stage_face_down)
+            GestureMilestoneType.OuterRightHeadYawMilestone -> getString(R.string.liveness_stage_face_right)
+            GestureMilestoneType.OuterLeftHeadYawMilestone -> getString(R.string.liveness_stage_face_left)
+            GestureMilestoneType.MouthOpenMilestone -> getString(R.string.liveness_stage_open_mouth)
+            else -> getString(R.string.line_face_obstacle)
+        }
+        blockProcessingByUI = false
     }
 
     private fun delayedNavigateOnLivenessSessionEnd() {
