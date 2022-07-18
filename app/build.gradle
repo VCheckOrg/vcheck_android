@@ -7,14 +7,7 @@ plugins {
 }
 
 android {
-//    signingConfigs {
-//        release {
-//            storeFile file('/Users/kirillkaun/Documents/check_resources/release.keystore')
-//            storePassword '000111'
-//            keyAlias 'check-release'
-//            keyPassword '000111'
-//        }
-//    }
+
     compileSdk 31
 
     defaultConfig {
