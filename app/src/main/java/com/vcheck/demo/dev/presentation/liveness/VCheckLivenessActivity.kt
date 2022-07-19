@@ -47,20 +47,21 @@ class VCheckLivenessActivity : AppCompatActivity(),
 
     companion object {
         const val TAG = "LivenessActivity"
-        private const val GESTURE_REQUEST_DEBOUNCE_MILLIS = 500 //may reduce a bit
-        private const val LIVENESS_TIME_LIMIT_MILLIS = 14000 //max is 15000
-        private const val BLOCK_PIPELINE_TIME_MILLIS: Long = 1200 //may reduce a bit
+        private const val LIVENESS_TIME_LIMIT_MILLIS: Long = 15000 //max is 15000
+        private const val BLOCK_PIPELINE_TIME_MILLIS: Long = 800 //may reduce a bit
+        private const val GESTURE_REQUEST_DEBOUNCE_MILLIS: Long = 600
         private const val STAGE_VIBRATION_DURATION_MILLIS: Long = 100
     }
 
     private lateinit var appContainer: AppContainer
 
-    private var gestureResponseResponse: MutableLiveData<Resource<LivenessGestureResponse>> = MutableLiveData()
+    private var gestureResponse: MutableLiveData<Resource<LivenessGestureResponse>> = MutableLiveData()
 
     private var binding: ActivityVcheckLivenessBinding? = null
     private var mToast: Toast? = null
 
-    var streamSize: Size = Size(320, 240)
+    var streamSize: Size = Size(640, 480)
+
     private var bitmapArray: ArrayList<Bitmap>? = ArrayList()
     private var muxer: Muxer? = null
     var videoPath: String? = null //make private!
@@ -100,7 +101,7 @@ class VCheckLivenessActivity : AppCompatActivity(),
 
         initSetupUI()
 
-        indicateNextMilestone(milestoneFlow.getCurrentStage(), true)
+        indicateNextMilestone(milestoneFlow.getFirstStage(), true)
     }
 
     private fun setMilestones() {
@@ -114,33 +115,45 @@ class VCheckLivenessActivity : AppCompatActivity(),
     }
 
     private fun resetFlowForNewLivenessSession() {
-        fixedRateTimer("timer", false, 0L, 500) {
-            determineImageResult()
-        }
         milestoneFlow.resetStages()
         livenessSessionLimitCheckTime = SystemClock.elapsedRealtime()
         isLivenessSessionFinished = false
+        setGestureRequestDebounceTimer()
+    }
+
+    private fun setGestureRequestDebounceTimer() {
+        fixedRateTimer("timer", false, 0L, GESTURE_REQUEST_DEBOUNCE_MILLIS) {
+            determineImageResult()
+        }
     }
 
     private fun setGestureResponsesObserver() {
-        gestureResponseResponse.observe(this@VCheckLivenessActivity) {
-            Log.d(TAG, "============== GOT RESPONSE: ${it.data}")
-            if (milestoneFlow.areAllStagesPassed()) {
-                Log.d(TAG, "==============++++++++++++++++  PASSED ALL STAGES!")
-                finishLivenessSession()
-                delayedNavigateOnLivenessSessionEnd()
-            } else {
-                if (it.data != null && it.data.success) {
-                    Log.d(TAG, "============== PASSED MILESTONE: ${milestoneFlow.getCurrentStage()}")
-                    blockProcessingByUI = true
-                    milestoneFlow.incrementCurrentStage()
-                    runOnUiThread {
-                        indicateNextMilestone(milestoneFlow.getCurrentStage(), false)
+        Handler(Looper.getMainLooper()).post {
+            gestureResponse.observe(this@VCheckLivenessActivity) {
+                runOnUiThread {
+                    Log.d(TAG, "============== GOT RESPONSE: ${it.data}")
+                    if (!isLivenessSessionFinished) {
+                        if (milestoneFlow.areAllStagesPassed()) {
+                            Log.d(TAG, "==============++++++++++++++++  PASSED ALL STAGES!")
+                            finishLivenessSession()
+                            delayedNavigateOnLivenessSessionEnd()
+                        } else {
+                            val currentStage = milestoneFlow.getCurrentStage()
+                            if (it.data != null && it.data.success && currentStage != null) {
+                                Log.d(TAG, "============== PASSED MILESTONE: ${milestoneFlow.getCurrentStage()}")
+                                milestoneFlow.incrementCurrentStage()
+                                val nextStage = milestoneFlow.getCurrentStage()
+                                if (nextStage != null) {
+                                    blockProcessingByUI = true
+                                    indicateNextMilestone(nextStage, false)
+                                }
+                            }
+                            if (it.data != null && it.data.errorCode != 0) {
+                                //TODO: add error handling
+                                showSingleToast("GESTURE CHECK ERROR: [${it.data.errorCode}]")
+                            }
+                        }
                     }
-                }
-                if (it.data != null && it.data.errorCode != 0) {
-                    //TODO: add error handling
-                    showSingleToast("GESTURE ERROR RESPONSE: ${it.data.errorCode}")
                 }
             }
         }
@@ -228,21 +241,23 @@ class VCheckLivenessActivity : AppCompatActivity(),
 
     fun processImage() {
         try {
-            openLivenessCameraParams?.apply {
+            Handler(Looper.getMainLooper()).post {
+                openLivenessCameraParams?.apply {
 
-                imageConverter!!.run()
-                rgbFrameBitmap = Bitmap.createBitmap(previewWidth, previewHeight, Bitmap.Config.ARGB_8888)
-                rgbFrameBitmap?.setPixels(rgbBytes, 0, previewWidth, 0, 0, previewWidth, previewHeight)
+                    imageConverter!!.run()
+                    rgbFrameBitmap = Bitmap.createBitmap(previewWidth, previewHeight, Bitmap.Config.ARGB_8888)
+                    rgbFrameBitmap?.setPixels(rgbBytes, 0, previewWidth, 0, 0, previewWidth, previewHeight)
 
-                val finalBitmap = rotateBitmap(rgbFrameBitmap!!)!!
-                //caching bitmap to array/list:
-                bitmapArray?.add(finalBitmap)
-                //recycling bitmap:
-                rgbFrameBitmap!!.recycle()
+                    val finalBitmap = rotateBitmap(rgbFrameBitmap!!)!!
+                    //caching bitmap to array/list:
+                    bitmapArray?.add(finalBitmap)
+                    //recycling bitmap:
+                    rgbFrameBitmap!!.recycle()
 
-                postInferenceCallback!!.run()
+                    postInferenceCallback!!.run()
 
-                gestureCheckBitmap = finalBitmap
+                    gestureCheckBitmap = finalBitmap
+                }
             }
         } catch (e: Exception) {
             showSingleToast(e.message)
@@ -255,23 +270,19 @@ class VCheckLivenessActivity : AppCompatActivity(),
 
     private fun determineImageResult() {
         if (!isLivenessSessionFinished && !blockProcessingByUI && enoughTimeForNextGesture()) {
-
             if (gestureCheckBitmap != null) {
                 val file = File(createTempFileForBitmapFrame(gestureCheckBitmap!!))
                 val image: MultipartBody.Part = MultipartBody.Part.createFormData(
                     "image.jpg", file.name, file.asRequestBody("image/jpeg".toMediaType()))
-
-                Log.d(TAG, "============ SENDING FRAME TO BACK...")
-
                 runOnUiThread {
+                    val currentGesture = milestoneFlow.getGestureRequestFromCurrentStage()
                     appContainer.mainRepository.sendLivenessGestureAttempt(
                         appContainer.mainRepository.getVerifToken(this@VCheckLivenessActivity),
-                        image, MultipartBody.Part.createFormData("gesture",
-                            milestoneFlow.getGestureRequestFromCurrentStage()))
+                        image, MultipartBody.Part.createFormData("gesture", currentGesture))
                         .observeForever {
-                            Log.d(TAG, "============ GET ANY RESPONSE...")
-                            gestureResponseResponse.value = it
-                        }
+                            Log.d(TAG, "========= WAITING FOR ANY RESPONSE FOR GESTURE: ${currentGesture}...")
+                            gestureResponse.value = it
+                    }
                 }
             }
         } else {
@@ -288,8 +299,7 @@ class VCheckLivenessActivity : AppCompatActivity(),
             val storageDir: File =
                 this@VCheckLivenessActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
             File.createTempFile(
-                "faceVideo${System.currentTimeMillis()}", ".mp4", storageDir
-            ).apply {
+                "faceVideo${System.currentTimeMillis()}", ".mp4", storageDir).apply {
                 videoPath = this.path
                 Log.d("VIDEO", "SAVING A FILE: ${this.path}")
             }
@@ -331,6 +341,7 @@ class VCheckLivenessActivity : AppCompatActivity(),
     }
 
     private fun updateUIOnMilestoneSuccess(nextMilestoneType: GestureMilestoneType) {
+
         binding!!.imgViewStaticStageIndication.isVisible = false
         binding!!.faceAnimationView.cancelAnimation()
         val faceAnimeRes = when(nextMilestoneType) {
@@ -339,11 +350,13 @@ class VCheckLivenessActivity : AppCompatActivity(),
             GestureMilestoneType.OuterRightHeadYawMilestone -> R.raw.right
             GestureMilestoneType.OuterLeftHeadYawMilestone -> R.raw.left
             GestureMilestoneType.MouthOpenMilestone -> R.raw.mouth
+            else -> null
         }
-
-        binding!!.faceAnimationView.isVisible = true
-        binding!!.faceAnimationView.setAnimation(faceAnimeRes)
-        binding!!.faceAnimationView.playAnimation()
+        if (faceAnimeRes != null) {
+            binding!!.faceAnimationView.isVisible = true
+            binding!!.faceAnimationView.setAnimation(faceAnimeRes)
+            binding!!.faceAnimationView.playAnimation()
+        }
 
         when (nextMilestoneType) {
             GestureMilestoneType.OuterLeftHeadYawMilestone -> {
@@ -370,7 +383,7 @@ class VCheckLivenessActivity : AppCompatActivity(),
             GestureMilestoneType.OuterRightHeadYawMilestone -> getString(R.string.liveness_stage_face_right)
             GestureMilestoneType.OuterLeftHeadYawMilestone -> getString(R.string.liveness_stage_face_left)
             GestureMilestoneType.MouthOpenMilestone -> getString(R.string.liveness_stage_open_mouth)
-            else -> getString(R.string.line_face_obstacle)
+            GestureMilestoneType.StraightHeadCheckMilestone -> getString(R.string.liveness_stage_check_face_pos)
         }
         blockProcessingByUI = false
     }
@@ -383,11 +396,9 @@ class VCheckLivenessActivity : AppCompatActivity(),
             vibrateDevice(this@VCheckLivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
             binding!!.imgViewStaticStageIndication.isVisible = true
             binding!!.stageSuccessAnimBorder.isVisible = true
-            Handler(Looper.getMainLooper()).postDelayed({
-                binding!!.livenessCosmeticsHolder.isVisible = false
-                camera2Fragment?.onPause() //!
-                safeNavigateToResultDestination(R.id.action_dummyLivenessStartDestFragment_to_inProcessFragment)
-            }, 1000)
+            binding!!.livenessCosmeticsHolder.isVisible = false
+            camera2Fragment?.onPause() //!
+            safeNavigateToResultDestination(R.id.action_dummyLivenessStartDestFragment_to_inProcessFragment)
         }
     }
 

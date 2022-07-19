@@ -7,8 +7,6 @@ import android.media.ImageReader
 import android.os.Environment
 import android.util.Log
 import android.view.Surface
-import android.widget.Toast
-import androidx.camera.core.impl.utils.ContextUtil.getApplicationContext
 import com.vcheck.demo.dev.presentation.liveness.VCheckLivenessActivity
 import com.vcheck.demo.dev.util.ImageUtils
 import java.io.File
@@ -89,18 +87,19 @@ fun VCheckLivenessActivity.createTempFileForBitmapFrame(mBitmap: Bitmap): String
     val f3 = File(Environment.getExternalStorageDirectory().toString() + "/frames/")
     if (!f3.exists()) f3.mkdirs()
     var outStream: OutputStream? = null
-    val path = Environment.getExternalStorageDirectory().toString() + "/frames/" + "${System.currentTimeMillis()}" + ".jpg" //!
-    val file = File(path)
+    //val path = Environment.getExternalStorageDirectory().toString() + "/frames/" + "${System.currentTimeMillis()}" + ".jpg" //!
+    val file = File.createTempFile("${System.currentTimeMillis()}", ".jpg", this.cacheDir)
+        //File(path)
     return try {
         outStream = FileOutputStream(file)
         mBitmap.compress(Bitmap.CompressFormat.JPEG, 90, outStream)
         outStream.close()
-        Log.d("Liveness","----------- SAVED IMAGE: PATH: $path")
+        Log.d("Liveness","----------- SAVED IMAGE: PATH: ${file.path}")
         //Toast.makeText(applicationContext, "Saved", Toast.LENGTH_LONG).show()
-        path
-    } catch (e: java.lang.Exception) {
+        file.path
+    } catch (e: Exception) {
         e.printStackTrace()
-        path
+        ""
     }
 }
 
