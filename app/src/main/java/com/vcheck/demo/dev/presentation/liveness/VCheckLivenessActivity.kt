@@ -1,6 +1,5 @@
 package com.vcheck.demo.dev.presentation.liveness
 
-import android.app.ActivityManager
 import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.Bitmap
@@ -61,11 +60,9 @@ class VCheckLivenessActivity : AppCompatActivity(),
     private var mToast: Toast? = null
 
     var streamSize: Size = Size(640, 480)
-
     private var bitmapArray: ArrayList<Bitmap>? = ArrayList()
     private var muxer: Muxer? = null
     var videoPath: String? = null //make private!
-
     var openLivenessCameraParams: LivenessCameraParams? = LivenessCameraParams()
 
     private var camera2Fragment: CameraConnectionFragment? = null
@@ -448,14 +445,6 @@ class VCheckLivenessActivity : AppCompatActivity(),
         super.attachBaseContext(localeUpdatedContext)
     }
 
-    // Get a MemoryInfo object for the device's current memory status.
-    private fun getAvailableMemory(): ActivityManager.MemoryInfo {
-        val activityManager = this.getSystemService(ACTIVITY_SERVICE) as ActivityManager
-        val memoryInfo = ActivityManager.MemoryInfo()
-        activityManager.getMemoryInfo(memoryInfo)
-        return memoryInfo
-    }
-
     override fun onResume() {
         super.onResume()
         //Hiding partner app's action bar as it's not used in SDK
@@ -474,51 +463,10 @@ class VCheckLivenessActivity : AppCompatActivity(),
 }
 
 
-//    private var multiFaceFrameCounter: Int = 0
-//    private var noFaceFrameCounter: Int = 0
-//        private const val RUN_PIPELINE_ON_GPU = false
-//        private const val STATIC_PIPELINE_IMAGE_MODE = true
-//        private const val REFINE_PIPELINE_LANDMARKS = false
-//        private const val MAX_MILESTONES_NUM = 468
-//        private const val MIN_FRAMES_FOR_MINOR_OBSTACLES = 4
-
-//            when (obstacleType) {
-//                ObstacleType.PITCH_ANGLE -> {
-//                    minorObstacleFrameCounter += 1
-//                    if (minorObstacleFrameCounter > MIN_FRAMES_FOR_MINOR_OBSTACLES) {
-//                        binding!!.checkFaceTitle.setTextColor(resources.getColor(R.color.vcheck_error_light))
-//                        binding!!.checkFaceTitle.text = getString(R.string.line_face_obstacle)
-//                        //delayedResetUIAfterObstacle()
-//                        minorObstacleFrameCounter = 0
-//                    }
-//                }
-//                ObstacleType.MULTIPLE_FACES_DETECTED -> {
-//                    onFatalObstacleWorthRetry(R.id.action_dummyLivenessStartDestFragment_to_frameInterferenceFragment)
-//                }
-//                ObstacleType.NO_OR_PARTIAL_FACE_DETECTED -> {
-//                    onFatalObstacleWorthRetry(R.id.action_dummyLivenessStartDestFragment_to_lookStraightErrorFragment)
-//                }
-//
-//            }
-
-
-//    override fun onMilestoneResult(gestureMilestoneType: GestureMilestoneType) {
-//        Log.d(TAG, "============================ PASSED MILESTONE: $gestureMilestoneType")
-//        blockProcessingByUI = true
-//        runOnUiThread {
-//            setUIOnMilestoneSuccess(gestureMilestoneType)
-//        }
+// Get a MemoryInfo object for the device's current memory status.
+//    private fun getAvailableMemory(): ActivityManager.MemoryInfo {
+//        val activityManager = this.getSystemService(ACTIVITY_SERVICE) as ActivityManager
+//        val memoryInfo = ActivityManager.MemoryInfo()
+//        activityManager.getMemoryInfo(memoryInfo)
+//        return memoryInfo
 //    }
-
-//    override fun onAllStagesPassed() {
-//        Log.d(TAG, "============================ ALL STAGES PASSED! ========================")
-//        finishLivenessSession()
-//        delayedNavigateOnLivenessSessionEnd()
-//    }
-
-//        if (milestoneType != GestureMilestoneType.CheckHeadPositionMilestone) {
-//            vibrateDevice(this@VCheckLivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
-//            binding!!.imgViewStaticStageIndication.isVisible = true
-//            binding!!.stageSuccessAnimBorder.isVisible = true
-//            animateStageSuccessFrame()
-//        }

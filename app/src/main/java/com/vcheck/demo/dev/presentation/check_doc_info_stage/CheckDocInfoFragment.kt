@@ -99,7 +99,6 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
                     viewModel.repository.setLivenessMilestonesList((it.data.data.config.gestures))
                     findNavController().navigate(R.id.action_checkDocInfoFragment_to_livenessInstructionsFragment)
                 } else if (VCheckSDK.verificationClientCreationModel?.verificationType == VerificationSchemeType.DOCUMENT_UPLOAD_ONLY) {
-                    //TODO test!
                    finishSDKFlow()
                 }
             } else {

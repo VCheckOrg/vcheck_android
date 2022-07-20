@@ -1,5 +1,7 @@
 package com.vcheck.demo.dev.presentation.liveness.flow_logic
 
+import java.lang.IndexOutOfBoundsException
+
 
 enum class GestureMilestoneType {
 
@@ -40,7 +42,7 @@ class StandardMilestoneFlow() {
     }
 
     fun getFirstStage(): GestureMilestoneType {
-        return stagesList[0]
+        return stagesList.getOrElse(0) { GestureMilestoneType.StraightHeadCheckMilestone }
     }
 
     fun areAllStagesPassed(): Boolean {
@@ -64,7 +66,7 @@ class StandardMilestoneFlow() {
 
     fun getGestureRequestFromCurrentStage(): String {
         return if (currentStageIdx > (stagesList.size - 1)) {
-            return "straight"
+            "straight"
         } else when(stagesList[currentStageIdx]) {
                 GestureMilestoneType.OuterLeftHeadYawMilestone -> "left"
                 GestureMilestoneType.OuterRightHeadYawMilestone -> "right"
