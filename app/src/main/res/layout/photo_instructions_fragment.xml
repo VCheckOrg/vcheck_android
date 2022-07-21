@@ -2,6 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/photo_instructions_scroll_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:scrollbars="none"
@@ -9,11 +10,13 @@
     android:theme="@style/Theme.VCheckAndroidSDKDemo">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/photo_instructions_background"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/vcheck_background_primary">
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/card"
             android:layout_width="match_parent"
             android:layout_height="570dp"
             android:layout_marginStart="12dp"
@@ -229,18 +232,18 @@
                     app:layout_constraintStart_toEndOf="@+id/original_doc_icon"
                     app:layout_constraintTop_toTopOf="@+id/original_doc_icon" />
 
-                <androidx.appcompat.widget.AppCompatButton
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/photo_instructions_button"
                     android:layout_width="match_parent"
-                    android:layout_height="56dp"
+                    android:layout_height="70dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="44dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="24dp"
-                    android:background="@drawable/shape_for_blue_button"
                     android:text="@string/photo_instructions_button"
                     android:textAllCaps="false"
                     android:textSize="16sp"
+                    app:cornerRadius="4dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

@@ -2,55 +2,68 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/background_country_list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/vcheck_background_secondary"
-    tools:context=".presentation.country_stage.CountryListFragment"
-    android:theme="@style/Theme.VCheckAndroidSDKDemo">
+    android:theme="@style/Theme.VCheckAndroidSDKDemo"
+    tools:context=".presentation.country_stage.CountryListFragment">
 
     <ImageView
         android:id="@+id/country_list_back_arrow"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        android:padding="10dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="18dp"
         android:clickable="true"
         android:focusable="true"
+        android:padding="10dp"
         android:src="@drawable/back_arrow"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.SearchView
-        android:id="@+id/search_country"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/search_country_border"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_marginStart="12dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="12dp"
-        android:background="@drawable/shape_search_field"
-        android:paddingStart="16dp"
-        android:paddingTop="12dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="12dp"
-        app:iconifiedByDefault="false"
+        app:cardBackgroundColor="#7F7F7F"
+        app:cardCornerRadius="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/country_list_back_arrow"
-        app:queryHint="@string/search" />
+        app:layout_constraintTop_toBottomOf="@+id/country_list_back_arrow">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="1dp"
+            app:cardCornerRadius="8dp">
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/search_country"
+                android:background="@color/vcheck_background_secondary"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                app:iconifiedByDefault="false"
+                app:queryHint="@string/search" />
+
+        </androidx.cardview.widget.CardView>
+
+    </androidx.cardview.widget.CardView>
 
     <TextView
         android:id="@+id/tvNoCountriesFoundPlaceholder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         android:gravity="center"
-        android:textSize="24sp"
         android:text="@string/no_data_placeholder"
-        />
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/countries_list"
@@ -63,7 +76,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/search_country"
+        app:layout_constraintTop_toBottomOf="@id/search_country_border"
         tools:listitem="@layout/country_row" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,5 +1,8 @@
 package com.vcheck.demo.dev.presentation.photo_upload_stage
 
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -7,12 +10,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.squareup.picasso.Picasso
 import com.vcheck.demo.dev.R
+import com.vcheck.demo.dev.VCheckSDK
 import com.vcheck.demo.dev.VCheckSDKApp
 import com.vcheck.demo.dev.data.Resource
 import com.vcheck.demo.dev.databinding.CheckPhotoFragmentBinding
@@ -20,6 +25,7 @@ import com.vcheck.demo.dev.domain.*
 import com.vcheck.demo.dev.presentation.VCheckMainActivity
 import com.vcheck.demo.dev.presentation.transferrable_objects.CheckDocInfoDataTO
 import com.vcheck.demo.dev.presentation.transferrable_objects.ZoomPhotoTO
+import com.vcheck.demo.dev.util.ThemeWrapperFragment
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.MultipartBody.Part.Companion.createFormData
@@ -28,13 +34,42 @@ import java.io.File
 import java.lang.Exception
 
 
-class CheckPhotoFragment : Fragment() {
+class CheckPhotoFragment : ThemeWrapperFragment() {
 
     private lateinit var _viewModel: CheckPhotoViewModel
-
     private var _binding: CheckPhotoFragmentBinding? = null
-
     private val args: CheckPhotoFragmentArgs by navArgs()
+
+    override fun changeColorsToCustomIfPresent() {
+        VCheckSDK.buttonsColorHex?.let {
+            _binding!!.confirmPhotoButton.setBackgroundColor(Color.parseColor(it))
+        }
+        VCheckSDK.vcheckBackgroundPrimaryColorHex?.let {
+            _binding!!.checkPhotoBackground.background = ColorDrawable(Color.parseColor(it))
+        }
+        VCheckSDK.vcheckBackgroundSecondaryColorHex?.let {
+            _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
+        }
+        VCheckSDK.vcheckBackgroundTertiaryColorHex?.let {
+            _binding!!.photoCard1Background.setCardBackgroundColor(Color.parseColor(it))
+            _binding!!.photoCard2Background.setCardBackgroundColor(Color.parseColor(it))
+        }
+        VCheckSDK.textColorHex?.let {
+            _binding!!.checkPhotoTitle.setTextColor(Color.parseColor(it))
+            _binding!!.tvProcessingDisclaimer.setTextColor(Color.parseColor(it))
+            _binding!!.uploadDocPhotosLoadingIndicator.setIndicatorColor(Color.parseColor(it))
+            _binding!!.confirmPhotoButton.setTextColor(Color.parseColor(it))
+            _binding!!.replacePhotoButton.setTextColor(Color.parseColor(it))
+            _binding!!.replacePhotoButton.strokeColor = ColorStateList.valueOf(Color.parseColor(it))
+        }
+        VCheckSDK.descriptionTextColorHex?.let {
+            _binding!!.checkPhotoDescription.setTextColor(Color.parseColor(it))
+        }
+        VCheckSDK.borderColorHex?.let {
+            _binding!!.photoCard1.setCardBackgroundColor(Color.parseColor(it))
+            _binding!!.photoCard2.setCardBackgroundColor(Color.parseColor(it))
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,6 +89,8 @@ class CheckPhotoFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         _binding = CheckPhotoFragmentBinding.bind(view)
+
+        changeColorsToCustomIfPresent()
 
         requireActivity().onBackPressedDispatcher.addCallback {
             //Stub; no back press needed here

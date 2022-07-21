@@ -1,11 +1,13 @@
 package com.vcheck.demo.dev.presentation.adapters
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
+import com.vcheck.demo.dev.VCheckSDK
 import com.vcheck.demo.dev.databinding.CountryBlockedRowBinding
 import com.vcheck.demo.dev.databinding.CountryRowBinding
 import com.vcheck.demo.dev.domain.CountryTO
@@ -62,6 +64,9 @@ class CountryListAdapter(
             fun bind(country: CountryTO) {
                 binding.countryName.text = country.name
                 binding.flagEmoji.text = country.flag
+                VCheckSDK.textColorHex?.let {
+                    binding.countryName.setTextColor(Color.parseColor(it))
+                }
             }
     }
 
@@ -76,6 +81,9 @@ class CountryListAdapter(
             binding.flagEmoji.text = country.flag
             binding.countryItem.setOnClickListener {
                 onCountryItemClick.onClick(country.code)
+            }
+            VCheckSDK.textColorHex?.let {
+                binding.countryName.setTextColor(Color.parseColor(it))
             }
         }
     }

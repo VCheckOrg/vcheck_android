@@ -51,13 +51,16 @@ internal class VCheckStartFragment : ThemeWrapperFragment() {
 
     //TODO test!
     override fun changeColorsToCustomIfPresent() {
-        VCheckSDK.buttonsColorHex.let {
-            _binding!!.btnStartDemoFlow.background = ColorDrawable(Color.parseColor(VCheckSDK.buttonsColorHex))
+        VCheckSDK.buttonsColorHex?.let {
+            _binding!!.btnStartDemoFlow.setBackgroundColor(Color.parseColor(it))
         }
-        if (VCheckSDK.backgroundColorHex != null) {
-            _binding!!.background.background = ColorDrawable(Color.parseColor(VCheckSDK.backgroundColorHex))
+        VCheckSDK.vcheckBackgroundPrimaryColorHex?.let {
+            _binding!!.fragmentDemoBackground.background = ColorDrawable(Color.parseColor(it))
         }
-
+        VCheckSDK.textColorHex?.let {
+            _binding!!.startCallChainLoadingIndicator.setIndicatorColor(Color.parseColor(it))
+            _binding!!.btnStartDemoFlow.setTextColor(Color.parseColor(it))
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/doc_verification_not_successful_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:scrollbars="none"
@@ -15,6 +16,7 @@
         android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/card"
         android:layout_width="match_parent"
         android:layout_height="580dp"
         android:layout_marginStart="12dp"
@@ -92,14 +94,13 @@
 <!--                app:layout_constraintStart_toStartOf="parent"-->
 <!--                app:layout_constraintTop_toBottomOf="@+id/error_description" />-->
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/error_button"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/error_try_again_button"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
+                android:layout_height="70dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="38dp"
-                android:background="@drawable/shape_for_blue_button"
                 android:text="@string/reload_photo"
                 android:textAllCaps="false"
                 android:textSize="16sp"
@@ -115,7 +116,7 @@
                 android:text="@string/doc_verif_continue_anyway"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/error_button"
+                app:layout_constraintTop_toBottomOf="@id/error_try_again_button"
                 android:layout_margin="20dp"
                 android:clickable="true"
                 android:focusable="true"

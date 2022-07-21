@@ -2,18 +2,20 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/take_photo_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/vcheck_background_primary"
     android:scrollbars="none"
     tools:context=".presentation.photo_upload_stage.PhotoUploadFragment"
     android:theme="@style/Theme.VCheckAndroidSDKDemo">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/vcheck_background_primary">
+        android:layout_height="wrap_content">
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/card"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="12dp"
@@ -81,13 +83,14 @@
                     android:layout_marginTop="28dp"
                     android:layout_marginEnd="16dp"
                     app:cardBackgroundColor="#7F7F7F"
-                    app:cardCornerRadius="12dp"
+                    app:cardCornerRadius="13dp"
                     app:contentPadding="1dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/make_document_photo_title">
 
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/method_card_1_background"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         app:cardBackgroundColor="#555555"
@@ -154,7 +157,7 @@
                                 android:layout_marginEnd="16dp"
                                 android:layout_marginBottom="24dp"
                                 app:cardBackgroundColor="#FFFFFF"
-                                app:cardCornerRadius="4dp"
+                                app:cardCornerRadius="5dp"
                                 app:contentPadding="1dp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
@@ -162,6 +165,7 @@
                                 app:layout_constraintTop_toTopOf="parent">
 
                                 <androidx.cardview.widget.CardView
+                                    android:id="@+id/make_photo_button_1_background"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     app:cardBackgroundColor="#555555"
@@ -221,13 +225,14 @@
                     android:layout_marginTop="28dp"
                     android:layout_marginEnd="16dp"
                     app:cardBackgroundColor="#7F7F7F"
-                    app:cardCornerRadius="12dp"
+                    app:cardCornerRadius="13dp"
                     app:contentPadding="1dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/method_card_1">
 
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/method_card_2_background"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         app:cardBackgroundColor="#555555"
@@ -294,7 +299,7 @@
                                 android:layout_marginEnd="16dp"
                                 android:layout_marginBottom="24dp"
                                 app:cardBackgroundColor="#FFFFFF"
-                                app:cardCornerRadius="4dp"
+                                app:cardCornerRadius="5dp"
                                 app:contentPadding="1dp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
@@ -302,6 +307,7 @@
                                 app:layout_constraintTop_toTopOf="parent">
 
                                 <androidx.cardview.widget.CardView
+                                    android:id="@+id/make_photo_button_2_background"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     app:cardBackgroundColor="#555555"
@@ -353,17 +359,17 @@
 
                 </androidx.cardview.widget.CardView>
 
-                <androidx.appcompat.widget.AppCompatButton
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/photo_upload_continue_button"
                     android:layout_width="match_parent"
-                    android:layout_height="56dp"
+                    android:layout_height="70dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="40dp"
                     android:layout_marginEnd="16dp"
-                    android:background="@drawable/shape_for_blue_button"
                     android:text="@string/proceed"
                     android:textAllCaps="false"
                     android:textSize="16sp"
+                    app:cornerRadius="4dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/method_card_2" />

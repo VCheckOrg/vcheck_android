@@ -22,8 +22,13 @@ object VCheckSDK {
 
     internal var verificationClientCreationModel: VerificationClientCreationModel? = null
 
-    internal var backgroundColorHex: String? = null
     internal var buttonsColorHex: String? = null
+    internal var vcheckBackgroundPrimaryColorHex: String? = null
+    internal var vcheckBackgroundSecondaryColorHex: String? = null
+    internal var vcheckBackgroundTertiaryColorHex: String? = null
+    internal var textColorHex: String? = null
+    internal var descriptionTextColorHex: String? = null
+    internal var borderColorHex: String? = null
 
     //TODO add onInitError callback for client (?)
     //TODO add UI properties (colors) adjustments to upper SDK config level
@@ -63,11 +68,26 @@ object VCheckSDK {
         if (sessionLifetime != null && sessionLifetime!! < 300) {
             throw IllegalArgumentException("VCheckSDK - error: if provided, custom session lifetime should not be less than 300 seconds")
         }
-        if (backgroundColorHex != null && !backgroundColorHex!!.isValidHexColor()) {
-            throw IllegalArgumentException("VCheckSDK - error: if provided, custom background color should be a valid HEX string")
-        }
         if (buttonsColorHex != null && !buttonsColorHex!!.isValidHexColor()) {
             throw IllegalArgumentException("VCheckSDK - error: if provided, custom buttons color should be a valid HEX string")
+        }
+        if (vcheckBackgroundPrimaryColorHex != null && !vcheckBackgroundPrimaryColorHex!!.isValidHexColor()) {
+            throw IllegalArgumentException("VCheckSDK - error: if provided, custom primary background color should be a valid HEX string")
+        }
+        if (vcheckBackgroundSecondaryColorHex != null && !vcheckBackgroundSecondaryColorHex!!.isValidHexColor()) {
+            throw IllegalArgumentException("VCheckSDK - error: if provided, custom secondary background color should be a valid HEX string")
+        }
+        if (vcheckBackgroundTertiaryColorHex != null && !vcheckBackgroundTertiaryColorHex!!.isValidHexColor()) {
+            throw IllegalArgumentException("VCheckSDK - error: if provided, custom tertiary background color should be a valid HEX string")
+        }
+        if (textColorHex != null && !textColorHex!!.isValidHexColor()) {
+            throw IllegalArgumentException("VCheckSDK - error: if provided, custom text color should be a valid HEX string")
+        }
+        if (descriptionTextColorHex != null && !descriptionTextColorHex!!.isValidHexColor()) {
+            throw IllegalArgumentException("VCheckSDK - error: if provided, custom description text color should be a valid HEX string")
+        }
+        if (borderColorHex != null && !borderColorHex!!.isValidHexColor()) {
+            throw IllegalArgumentException("VCheckSDK - error: if provided, custom description border color should be a valid HEX string")
         }
     }
 
@@ -110,16 +130,40 @@ object VCheckSDK {
         return this
     }
 
-    fun backgroundColor(colorHex: String): VCheckSDK {
-        backgroundColorHex = colorHex
-        return this
-    }
-
     fun buttonsColor(colorHex: String): VCheckSDK {
         buttonsColorHex = colorHex
         return this
     }
 
+    fun vcheckBackgroundPrimary(colorHex: String): VCheckSDK {
+        vcheckBackgroundPrimaryColorHex = colorHex
+        return this
+    }
+
+    fun vcheckBackgroundSecondary(colorHex: String): VCheckSDK {
+        vcheckBackgroundSecondaryColorHex = colorHex
+        return this
+    }
+
+    fun vcheckBackgroundTertiary(colorHex: String): VCheckSDK {
+        vcheckBackgroundTertiaryColorHex = colorHex
+        return this
+    }
+
+    fun textColor(colorHex: String): VCheckSDK {
+        textColorHex = colorHex
+        return this
+    }
+
+    fun descriptionTextColor(colorHex: String): VCheckSDK {
+        descriptionTextColorHex = colorHex
+        return this
+    }
+
+    fun borderColor(colorHex: String): VCheckSDK {
+        borderColorHex = colorHex
+        return this
+    }
 
 //    private var customVerificationServiceURL: String? = null
 //    private var customPartnerServiceURL: String? = null

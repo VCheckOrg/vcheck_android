@@ -2,6 +2,8 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/check_photo_background"
+    android:background="@color/vcheck_background_primary"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:scrollbars="none"
@@ -10,10 +12,10 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/vcheck_background_primary">
+        android:layout_height="wrap_content">
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
@@ -67,13 +69,14 @@
                     android:layout_marginTop="28dp"
                     android:layout_marginEnd="16dp"
                     app:cardBackgroundColor="#7F7F7F"
-                    app:cardCornerRadius="12dp"
+                    app:cardCornerRadius="13dp"
                     app:contentPadding="1dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/check_photo_description">
 
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/photo_card_1_background"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         app:cardBackgroundColor="#3F3F3F"
@@ -113,13 +116,14 @@
                     android:layout_marginTop="15dp"
                     android:layout_marginEnd="16dp"
                     app:cardBackgroundColor="#7F7F7F"
-                    app:cardCornerRadius="12dp"
+                    app:cardCornerRadius="13dp"
                     app:contentPadding="1dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/photo_card_1">
 
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/photo_card_2_background"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         app:cardBackgroundColor="#3F3F3F"
@@ -180,34 +184,38 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/photo_card_2" />
 
-                <androidx.appcompat.widget.AppCompatButton
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/replace_photo_button"
                     android:layout_width="match_parent"
-                    android:layout_height="56dp"
+                    android:layout_height="70dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="44dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="20dp"
-                    android:background="@drawable/shape_for_border"
                     android:text="@string/replace_photo_button"
                     android:textAllCaps="false"
                     android:textSize="16sp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/vcheck_text"
+                    android:textColor="@color/vcheck_text"
+                    style="?attr/materialButtonOutlinedStyle"
                     app:layout_constraintBottom_toTopOf="@+id/confirm_photo_button"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/photo_card_2"/>
 
-                <androidx.appcompat.widget.AppCompatButton
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/confirm_photo_button"
                     android:layout_width="match_parent"
-                    android:layout_height="56dp"
+                    android:layout_height="70dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="24dp"
-                    android:background="@drawable/shape_for_blue_button"
                     android:text="@string/confirm_photo_button"
+
                     android:textAllCaps="false"
                     android:textSize="16sp"
+                    app:cornerRadius="4dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"/>

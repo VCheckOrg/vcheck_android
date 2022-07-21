@@ -2,6 +2,7 @@ package com.vcheck.demo.dev.presentation
 
 import android.content.*
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
@@ -11,16 +12,28 @@ import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.vcheck.demo.dev.R
+import com.vcheck.demo.dev.VCheckSDK
 import com.vcheck.demo.dev.VCheckSDKApp
+import com.vcheck.demo.dev.databinding.ActivityVcheckMainBinding
+import com.vcheck.demo.dev.databinding.ChooseCountryFragmentBinding
 import com.vcheck.demo.dev.di.AppContainer
 import com.vcheck.demo.dev.util.ContextUtils
 
 
-internal class VCheckMainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, View.OnTouchListener {
+internal class VCheckMainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener,
+    View.OnTouchListener {
 
     private var wasLocaleSelectedByUser = false
     private lateinit var appContainer: AppContainer
     private var mLangReceiver: BroadcastReceiver? = null
+
+    private lateinit var binding: ActivityVcheckMainBinding
+
+    private fun changeColorsToCustomIfPresent() {
+        VCheckSDK.vcheckBackgroundPrimaryColorHex?.let {
+            binding.activityMainBackground.setBackgroundColor(Color.parseColor(it))
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +43,10 @@ internal class VCheckMainActivity : AppCompatActivity(), AdapterView.OnItemSelec
         val languageCode = ContextUtils.getSavedLanguage(this@VCheckMainActivity)
         ContextUtils.updateLocale(this@VCheckMainActivity, languageCode)
 
-        setContentView(R.layout.activity_vcheck_main)
+        binding = ActivityVcheckMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        changeColorsToCustomIfPresent()
 
         setLangSpinner()
 
@@ -97,8 +113,10 @@ internal class VCheckMainActivity : AppCompatActivity(), AdapterView.OnItemSelec
 
         val langSpinner = findViewById<Spinner>(R.id.lang_spinner)
 
-        val adapter = ArrayAdapter.createFromResource(this@VCheckMainActivity,
-            R.array.languages, android.R.layout.simple_spinner_item)
+        val adapter = ArrayAdapter.createFromResource(
+            this@VCheckMainActivity,
+            R.array.languages, android.R.layout.simple_spinner_item
+        )
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
         langSpinner.adapter = adapter

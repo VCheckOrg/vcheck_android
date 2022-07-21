@@ -1,5 +1,7 @@
 package com.vcheck.demo.dev.presentation.adapters
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
@@ -8,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.vcheck.demo.dev.R
+import com.vcheck.demo.dev.VCheckSDK
 import com.vcheck.demo.dev.databinding.DocInfoRowBinding
 import com.vcheck.demo.dev.domain.DocFieldWitOptPreFilledData
 import com.vcheck.demo.dev.presentation.check_doc_info_stage.CheckDocInfoFragment
@@ -54,6 +57,21 @@ class CheckDocInfoAdapter(
             binding.docFieldTitle.text = title
             binding.infoField.setText(documentInfo.autoParsedValue)
 
+            VCheckSDK.vcheckBackgroundSecondaryColorHex?.let {
+                binding.docInfoRowBackground.background = ColorDrawable(Color.parseColor(it))
+            }
+            VCheckSDK.vcheckBackgroundTertiaryColorHex?.let {
+                binding.infoField.background = ColorDrawable(Color.parseColor(it))
+            }
+            VCheckSDK.textColorHex?.let {
+                binding.docFieldTitle.setTextColor(Color.parseColor(it))
+                binding.infoField.setTextColor(Color.parseColor(it))
+                binding.infoField.setHintTextColor(Color.parseColor(it))
+            }
+            VCheckSDK.borderColorHex?.let {
+                binding.infoFieldBorder.setCardBackgroundColor(Color.parseColor(it))
+            }
+
             if ((documentInfo.name == "date_of_birth" || documentInfo.name == "date_of_expiry")) {
 
                 val hint = when (localeCode) {
@@ -68,7 +86,6 @@ class CheckDocInfoAdapter(
             } else {
                 binding.infoField.hint = ""
             }
-
 
             binding.infoField.addTextChangedListener(object : TextWatcher {
 

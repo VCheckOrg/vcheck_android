@@ -1,8 +1,12 @@
 package com.vcheck.demo.dev.presentation.liveness.ui.in_process
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.core.view.isVisible
@@ -17,23 +21,38 @@ import com.vcheck.demo.dev.databinding.InProcessFragmentBinding
 import com.vcheck.demo.dev.domain.*
 import com.vcheck.demo.dev.presentation.liveness.VCheckLivenessActivity
 import com.vcheck.demo.dev.presentation.liveness.flow_logic.VideoProcessingListener
+import com.vcheck.demo.dev.util.ThemeWrapperFragment
 import com.vcheck.demo.dev.util.getFolderSizeLabel
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 
-class InProcessFragment : Fragment(R.layout.in_process_fragment), VideoProcessingListener {
+class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
 
     private val args: InProcessFragmentArgs by navArgs()
-
     private var _binding: InProcessFragmentBinding? = null
-
     private lateinit var _viewModel: InProcessViewModel
 
     //counting video upload chained api responses; 1st one is ping; we need 2nd to claim result
     private var lazyUploadResponseCounter = 0
 
+    override fun changeColorsToCustomIfPresent() {
+        VCheckSDK.buttonsColorHex?.let {
+            _binding!!.successButton.setBackgroundColor(Color.parseColor(it))
+        }
+        VCheckSDK.vcheckBackgroundPrimaryColorHex?.let {
+            _binding!!.inProcessBackground.background = ColorDrawable(Color.parseColor(it))
+        }
+        VCheckSDK.vcheckBackgroundSecondaryColorHex?.let {
+            _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
+        }
+        VCheckSDK.textColorHex?.let {
+            _binding!!.inProcessTitle.setTextColor(Color.parseColor(it))
+            _binding!!.inProcessSubtitle.setTextColor(Color.parseColor(it))
+            _binding!!.successButton.setTextColor(Color.parseColor(it))
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,10 +61,19 @@ class InProcessFragment : Fragment(R.layout.in_process_fragment), VideoProcessin
         _viewModel = InProcessViewModel(appContainer.mainRepository)
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.in_process_fragment, container, false)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         _binding = InProcessFragmentBinding.bind(view)
+
+        changeColorsToCustomIfPresent()
 
         requireActivity().onBackPressedDispatcher.addCallback {
             //Stub; no back press needed here

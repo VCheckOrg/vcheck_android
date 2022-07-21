@@ -3,6 +3,7 @@ package com.vcheck.demo.dev.presentation.photo_upload_stage
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -19,26 +20,59 @@ import androidx.navigation.fragment.findNavController
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.Picasso
 import com.vcheck.demo.dev.R
+import com.vcheck.demo.dev.VCheckSDK
 import com.vcheck.demo.dev.VCheckSDKApp
 import com.vcheck.demo.dev.databinding.PhotoUploadFragmentBinding
 import com.vcheck.demo.dev.domain.DocType
 import com.vcheck.demo.dev.domain.docCategoryIdxToType
 import com.vcheck.demo.dev.presentation.VCheckMainActivity
 import com.vcheck.demo.dev.presentation.transferrable_objects.CheckPhotoDataTO
+import com.vcheck.demo.dev.util.ThemeWrapperFragment
 import java.io.File
 import java.io.IOException
 
 //TODO rename to "TakePhotoFragment"
-class PhotoUploadFragment : Fragment() {
+class PhotoUploadFragment : ThemeWrapperFragment() {
 
     private var _binding: PhotoUploadFragmentBinding? = null
 
     private lateinit var _viewModel: PhotoUploadViewModel
-
     private lateinit var _docType: DocType
 
     private var _photo1Path: String? = null
     private var _photo2Path: String? = null
+
+    override fun changeColorsToCustomIfPresent() {
+        VCheckSDK.vcheckBackgroundPrimaryColorHex?.let {
+            _binding!!.takePhotoBackground.background = ColorDrawable(Color.parseColor(it))
+        }
+        VCheckSDK.vcheckBackgroundSecondaryColorHex?.let {
+            _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
+        }
+        VCheckSDK.textColorHex?.let {
+            _binding!!.makeDocumentPhotoTitle.setTextColor(Color.parseColor(it))
+            _binding!!.verifMethodTitle1.setTextColor(Color.parseColor(it))
+            _binding!!.verifMethodTitle2.setTextColor(Color.parseColor(it))
+            _binding!!.takePhotoTitle.setTextColor(Color.parseColor(it))
+            _binding!!.takePhotoTitle2.setTextColor(Color.parseColor(it))
+            _binding!!.backArrow.setColorFilter(Color.parseColor(it))
+            _binding!!.takePhotoIcon.setColorFilter(Color.parseColor(it))
+            _binding!!.takePhotoIcon2.setColorFilter(Color.parseColor(it))
+            _binding!!.makePhotoButton1.setCardBackgroundColor(Color.parseColor(it))
+            _binding!!.makePhotoButton2.setCardBackgroundColor(Color.parseColor(it))
+            _binding!!.photoUploadContinueButton.setTextColor(Color.parseColor(it))
+        }
+        VCheckSDK.vcheckBackgroundTertiaryColorHex?.let {
+            _binding!!.methodCard1Background.setCardBackgroundColor(Color.parseColor(it))
+            _binding!!.makePhotoButton1Background.setCardBackgroundColor(Color.parseColor(it))
+            _binding!!.methodCard2Background.setCardBackgroundColor(Color.parseColor(it))
+            _binding!!.makePhotoButton2Background.setCardBackgroundColor(Color.parseColor(it))
+        }
+        VCheckSDK.borderColorHex?.let {
+            _binding!!.methodCard1.setCardBackgroundColor(Color.parseColor(it))
+            _binding!!.methodCard2.setCardBackgroundColor(Color.parseColor(it))
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +94,8 @@ class PhotoUploadFragment : Fragment() {
 
         _binding = PhotoUploadFragmentBinding.bind(view)
 
+        changeColorsToCustomIfPresent()
+
         val docTypeWithData = _viewModel.repository.getSelectedDocTypeWithData()
 
         if (docTypeWithData == null) {
@@ -71,7 +107,7 @@ class PhotoUploadFragment : Fragment() {
 
             _binding!!.apply {
 
-                photoUploadContinueButton.setBackgroundResource(R.drawable.shape_for_inactive_button)
+                photoUploadContinueButton.setBackgroundColor(Color.parseColor("#BFBFBF"))
                 methodCard1.isVisible = false
                 methodCard2.isVisible = false
                 imgPhoto1.isVisible = false
@@ -174,7 +210,7 @@ class PhotoUploadFragment : Fragment() {
                             verifMethodTitle1.isVisible = true
                             verifMethodIcon1.isVisible = true
                             makePhotoButton1.isVisible = true
-                            photoUploadContinueButton.setBackgroundResource(R.drawable.shape_for_inactive_button)
+                            photoUploadContinueButton.setBackgroundColor(Color.parseColor("#BFBFBF"))
                             photoUploadContinueButton.setOnClickListener {}
                         }
                     }
@@ -196,7 +232,7 @@ class PhotoUploadFragment : Fragment() {
                             verifMethodTitle2.isVisible = true
                             verifMethodIcon2.isVisible = true
                             makePhotoButton2.isVisible = true
-                            photoUploadContinueButton.setBackgroundResource(R.drawable.shape_for_inactive_button)
+                            photoUploadContinueButton.setBackgroundColor(Color.parseColor("#BFBFBF"))
                             photoUploadContinueButton.setOnClickListener {}
                         }
                     } else {
@@ -242,8 +278,14 @@ class PhotoUploadFragment : Fragment() {
     }
 
     private fun prepareForNavigation(resetSecondPhoto: Boolean) {
-        _binding!!.photoUploadContinueButton.setBackgroundResource(R.drawable.shape_for_blue_button)
-        _binding!!.photoUploadContinueButton.setTextColor(Color.WHITE)
+
+        if (VCheckSDK.buttonsColorHex != null) {
+            _binding!!.photoUploadContinueButton.setBackgroundColor(Color.parseColor(VCheckSDK.buttonsColorHex))
+            _binding!!.photoUploadContinueButton.setTextColor(Color.parseColor(VCheckSDK.textColorHex))
+        } else {
+            _binding!!.photoUploadContinueButton.setBackgroundColor(Color.parseColor("#2E75FF"))
+            _binding!!.photoUploadContinueButton.setTextColor(Color.WHITE)
+        }
         _binding!!.photoUploadContinueButton.setOnClickListener {
             val action = PhotoUploadFragmentDirections
                 .actionPhotoUploadScreenToCheckPhotoFragment(

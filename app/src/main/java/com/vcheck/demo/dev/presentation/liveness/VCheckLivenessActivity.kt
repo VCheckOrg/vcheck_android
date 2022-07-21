@@ -4,6 +4,7 @@ import android.app.ActivityManager
 import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
 import android.media.ImageReader
@@ -23,6 +24,7 @@ import com.google.mediapipe.solutions.facemesh.FaceMesh
 import com.google.mediapipe.solutions.facemesh.FaceMeshOptions
 import com.google.mediapipe.solutions.facemesh.FaceMeshResult
 import com.vcheck.demo.dev.R
+import com.vcheck.demo.dev.VCheckSDK
 import com.vcheck.demo.dev.databinding.ActivityVcheckLivenessBinding
 import com.vcheck.demo.dev.presentation.liveness.flow_logic.*
 import com.vcheck.demo.dev.presentation.liveness.ui.CameraConnectionFragment
@@ -91,6 +93,11 @@ class VCheckLivenessActivity : AppCompatActivity(),
         binding = ActivityVcheckLivenessBinding.inflate(layoutInflater)
         val view = binding!!.root
         setContentView(view)
+
+        VCheckSDK.vcheckBackgroundPrimaryColorHex?.let {
+            binding!!.livenessActivityBackground.setBackgroundColor(Color.parseColor(it))
+        }
+
         onBackPressedDispatcher.addCallback {
             //Stub; no back press needed throughout liveness flow
         }

@@ -1,9 +1,13 @@
 package com.vcheck.demo.dev.presentation.check_doc_info_stage
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.core.view.isVisible
@@ -12,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.squareup.picasso.Picasso
 import com.vcheck.demo.dev.R
+import com.vcheck.demo.dev.VCheckSDK
 import com.vcheck.demo.dev.VCheckSDKApp
 import com.vcheck.demo.dev.databinding.CheckDocInfoFragmentBinding
 import com.vcheck.demo.dev.domain.*
@@ -20,9 +25,10 @@ import com.vcheck.demo.dev.presentation.adapters.CheckDocInfoAdapter
 import com.vcheck.demo.dev.presentation.adapters.DocInfoEditCallback
 import com.vcheck.demo.dev.presentation.liveness.VCheckLivenessActivity
 import com.vcheck.demo.dev.util.ContextUtils
+import com.vcheck.demo.dev.util.ThemeWrapperFragment
 import java.io.File
 
-class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfoEditCallback {
+class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
 
     private lateinit var binding: CheckDocInfoFragmentBinding
     private lateinit var viewModel: CheckDocInfoViewModel
@@ -32,6 +38,33 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
 
     private var uploadedDocID: Int? = null
 
+    override fun changeColorsToCustomIfPresent() {
+        VCheckSDK.buttonsColorHex?.let {
+            binding.checkInfoConfirmButton.setBackgroundColor(Color.parseColor(it))
+        }
+        VCheckSDK.vcheckBackgroundPrimaryColorHex?.let {
+            binding.checkDocInfoBackground.setBackgroundColor(Color.parseColor(it))
+        }
+        VCheckSDK.vcheckBackgroundSecondaryColorHex?.let {
+            binding.card.setCardBackgroundColor(Color.parseColor(it))
+        }
+        VCheckSDK.vcheckBackgroundTertiaryColorHex?.let {
+            binding.photoCard1Background.setCardBackgroundColor(Color.parseColor(it))
+            binding.photoCard2Background.setCardBackgroundColor(Color.parseColor(it))
+        }
+        VCheckSDK.textColorHex?.let {
+            binding.checkFilledDataTitle.setTextColor(Color.parseColor(it))
+            binding.checkInfoConfirmButton.setTextColor(Color.parseColor(it))
+        }
+        VCheckSDK.descriptionTextColorHex?.let {
+            binding.checkFilledDataDescription.setTextColor(Color.parseColor(it))
+        }
+        VCheckSDK.borderColorHex?.let {
+            binding.photoCard1.setCardBackgroundColor(Color.parseColor(it))
+            binding.photoCard2.setCardBackgroundColor(Color.parseColor(it))
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val appContainer = (activity?.application as VCheckSDKApp).appContainer
@@ -39,10 +72,19 @@ class CheckDocInfoFragment : Fragment(R.layout.check_doc_info_fragment), DocInfo
             CheckDocInfoViewModel(appContainer.mainRepository)
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?, savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.check_doc_info_fragment, container, false)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         binding = CheckDocInfoFragmentBinding.bind(view)
+
+        changeColorsToCustomIfPresent()
 
         requireActivity().onBackPressedDispatcher.addCallback {
             //Stub; no back press needed here

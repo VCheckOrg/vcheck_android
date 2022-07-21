@@ -1,30 +1,68 @@
 package com.vcheck.demo.dev.presentation.country_stage
 
+import android.graphics.Color
+import android.graphics.Color.CYAN
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.vcheck.demo.dev.R
+import com.vcheck.demo.dev.VCheckSDK
 import com.vcheck.demo.dev.VCheckSDKApp
 import com.vcheck.demo.dev.databinding.ChooseCountryFragmentBinding
 import com.vcheck.demo.dev.di.AppContainer
 import com.vcheck.demo.dev.presentation.VCheckMainActivity
 import com.vcheck.demo.dev.presentation.transferrable_objects.CountriesListTO
+import com.vcheck.demo.dev.util.ThemeWrapperFragment
 import com.vcheck.demo.dev.util.toFlagEmoji
 import java.util.*
 
-class ChooseCountryFragment : Fragment(R.layout.choose_country_fragment) {
+class ChooseCountryFragment : ThemeWrapperFragment() {
 
-    private lateinit var binding: ChooseCountryFragmentBinding
     lateinit var country: String
     private lateinit var appContainer: AppContainer
+    private lateinit var binding: ChooseCountryFragmentBinding
     private val args: ChooseCountryFragmentArgs by navArgs()
+
+    override fun changeColorsToCustomIfPresent() {
+        VCheckSDK.buttonsColorHex?.let {
+            binding.chooseCountryContinueButton.setBackgroundColor(Color.parseColor(it))
+        }
+        VCheckSDK.vcheckBackgroundPrimaryColorHex?.let {
+            binding.chooseCountryBackground.background = ColorDrawable(Color.parseColor(it))
+        }
+        VCheckSDK.vcheckBackgroundSecondaryColorHex?.let {
+            binding.card.setCardBackgroundColor(Color.parseColor(it))
+        }
+        VCheckSDK.vcheckBackgroundTertiaryColorHex?.let {
+            binding.chooseCountryCard.setCardBackgroundColor(Color.parseColor(it))
+        }
+        VCheckSDK.textColorHex?.let {
+            binding.chooseCountryTitle.setTextColor(Color.parseColor(it))
+            binding.chooseCountryCardTitle.setTextColor(Color.parseColor(it))
+            binding.countryTitle.setTextColor(Color.parseColor(it))
+            binding.chooseCountryContinueButton.setTextColor(Color.parseColor(it))
+        }
+        VCheckSDK.descriptionTextColorHex?.let {
+            binding.chooseCountryDescription.setTextColor(Color.parseColor(it))
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         appContainer = (activity?.application as VCheckSDKApp).appContainer
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?, savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.choose_country_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -33,6 +71,8 @@ class ChooseCountryFragment : Fragment(R.layout.choose_country_fragment) {
         val countryList = args.countriesListTO.countriesList
 
         binding = ChooseCountryFragmentBinding.bind(view)
+
+        changeColorsToCustomIfPresent()
 
         requireActivity().onBackPressedDispatcher.addCallback {
             //Stub; no back press needed here

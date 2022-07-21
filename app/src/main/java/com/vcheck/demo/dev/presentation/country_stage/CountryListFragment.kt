@@ -1,12 +1,22 @@
 package com.vcheck.demo.dev.presentation.country_stage
 
+import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.SearchView
+import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.vcheck.demo.dev.R
+import com.vcheck.demo.dev.VCheckSDK
 import com.vcheck.demo.dev.VCheckSDKApp
 import com.vcheck.demo.dev.presentation.adapters.CountryListAdapter
 import com.vcheck.demo.dev.databinding.CountryListFragmentBinding
@@ -14,10 +24,11 @@ import com.vcheck.demo.dev.di.AppContainer
 import com.vcheck.demo.dev.domain.CountryTO
 import com.vcheck.demo.dev.presentation.VCheckMainActivity
 import com.vcheck.demo.dev.presentation.adapters.SearchCountryCallback
+import com.vcheck.demo.dev.util.ThemeWrapperFragment
 import java.text.Collator
 import java.util.*
 
-class CountryListFragment : Fragment(R.layout.country_list_fragment),
+class CountryListFragment : ThemeWrapperFragment(),
     CountryListAdapter.OnCountryItemClick, SearchCountryCallback {
 
     private lateinit var countriesList: List<CountryTO>
@@ -25,9 +36,34 @@ class CountryListFragment : Fragment(R.layout.country_list_fragment),
     private lateinit var binding: CountryListFragmentBinding
     private val args: CountryListFragmentArgs by navArgs()
 
+    override fun changeColorsToCustomIfPresent() {
+        VCheckSDK.vcheckBackgroundPrimaryColorHex?.let {
+            binding.backgroundCountryList.background = ColorDrawable(Color.parseColor(it))
+            binding.searchCountry.background = ColorDrawable(Color.parseColor(it))
+        }
+        VCheckSDK.textColorHex?.let {
+            binding.countryListBackArrow.setColorFilter(Color.parseColor(it))
+            binding.tvNoCountriesFoundPlaceholder.setTextColor(Color.parseColor(it))
+
+            val searchText =
+                binding.searchCountry.findViewById<TextView>(androidx.appcompat.R.id.search_src_text)
+            searchText.setTextColor(Color.parseColor(it))
+        }
+        VCheckSDK.borderColorHex?.let {
+            binding.searchCountryBorder.setCardBackgroundColor(Color.parseColor(it))
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         appContainer = (activity?.application as VCheckSDKApp).appContainer
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?, savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.country_list_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -68,6 +104,8 @@ class CountryListFragment : Fragment(R.layout.country_list_fragment),
 
         binding = CountryListFragmentBinding.bind(view)
 
+        changeColorsToCustomIfPresent()
+
         binding.tvNoCountriesFoundPlaceholder.isVisible = false
 
         val countryListAdapter = CountryListAdapter(
@@ -100,7 +138,10 @@ class CountryListFragment : Fragment(R.layout.country_list_fragment),
     }
 
     override fun onClick(country: String) {
-        appContainer.mainRepository.storeSelectedCountryCode(activity as VCheckMainActivity, country)
+        appContainer.mainRepository.storeSelectedCountryCode(
+            activity as VCheckMainActivity,
+            country
+        )
         findNavController().popBackStack()
     }
 

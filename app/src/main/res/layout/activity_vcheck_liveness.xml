@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/liveness_activity_background"
     tools:context=".presentation.liveness.VCheckLivenessActivity"
     android:theme="@style/Theme.VCheckAndroidSDKDemo"
     android:background="@color/vcheck_background_primary">

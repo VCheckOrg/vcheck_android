@@ -2,6 +2,8 @@ package com.vcheck.demo.dev.presentation.liveness.ui.failures
 
 import android.content.ClipDescription
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,11 +12,30 @@ import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.navigation.fragment.findNavController
 import com.vcheck.demo.dev.R
+import com.vcheck.demo.dev.VCheckSDK
 import com.vcheck.demo.dev.databinding.FragmentFailVideoUploadBinding
+import com.vcheck.demo.dev.util.ThemeWrapperFragment
 
-class FailVideoUploadFragment : Fragment() {
+class FailVideoUploadFragment : ThemeWrapperFragment() {
 
     private var _binding: FragmentFailVideoUploadBinding? = null
+
+    override fun changeColorsToCustomIfPresent() {
+        VCheckSDK.buttonsColorHex?.let {
+            _binding!!.retryButton.setBackgroundColor(Color.parseColor(it))
+        }
+        VCheckSDK.vcheckBackgroundPrimaryColorHex?.let {
+            _binding!!.failVideoUploadBackground.background = ColorDrawable(Color.parseColor(it))
+        }
+        VCheckSDK.vcheckBackgroundSecondaryColorHex?.let {
+            _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
+        }
+        VCheckSDK.textColorHex?.let {
+            _binding!!.failVerificationTitle.setTextColor(Color.parseColor(it))
+            _binding!!.failVerificationDescription.setTextColor(Color.parseColor(it))
+            _binding!!.retryButton.setTextColor(Color.parseColor(it))
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,6 +49,8 @@ class FailVideoUploadFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         _binding = FragmentFailVideoUploadBinding.bind(view)
+
+        changeColorsToCustomIfPresent()
 
         requireActivity().onBackPressedDispatcher.addCallback {
             //Stub; no back press needed here
