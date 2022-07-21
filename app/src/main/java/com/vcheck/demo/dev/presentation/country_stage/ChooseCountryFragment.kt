@@ -1,14 +1,12 @@
 package com.vcheck.demo.dev.presentation.country_stage
 
 import android.graphics.Color
-import android.graphics.Color.CYAN
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.vcheck.demo.dev.R
@@ -33,22 +31,22 @@ class ChooseCountryFragment : ThemeWrapperFragment() {
         VCheckSDK.buttonsColorHex?.let {
             binding.chooseCountryContinueButton.setBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.vcheckBackgroundPrimaryColorHex?.let {
+        VCheckSDK.backgroundPrimaryColorHex?.let {
             binding.chooseCountryBackground.background = ColorDrawable(Color.parseColor(it))
         }
-        VCheckSDK.vcheckBackgroundSecondaryColorHex?.let {
+        VCheckSDK.backgroundSecondaryColorHex?.let {
             binding.card.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.vcheckBackgroundTertiaryColorHex?.let {
+        VCheckSDK.backgroundTertiaryColorHex?.let {
             binding.chooseCountryCard.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.textColorHex?.let {
+        VCheckSDK.primaryTextColorHex?.let {
             binding.chooseCountryTitle.setTextColor(Color.parseColor(it))
             binding.chooseCountryCardTitle.setTextColor(Color.parseColor(it))
             binding.countryTitle.setTextColor(Color.parseColor(it))
             binding.chooseCountryContinueButton.setTextColor(Color.parseColor(it))
         }
-        VCheckSDK.descriptionTextColorHex?.let {
+        VCheckSDK.secondaryTextColorHex?.let {
             binding.chooseCountryDescription.setTextColor(Color.parseColor(it))
         }
     }

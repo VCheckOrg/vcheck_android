@@ -15,7 +15,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.Picasso
@@ -43,13 +42,13 @@ class PhotoUploadFragment : ThemeWrapperFragment() {
     private var _photo2Path: String? = null
 
     override fun changeColorsToCustomIfPresent() {
-        VCheckSDK.vcheckBackgroundPrimaryColorHex?.let {
+        VCheckSDK.backgroundPrimaryColorHex?.let {
             _binding!!.takePhotoBackground.background = ColorDrawable(Color.parseColor(it))
         }
-        VCheckSDK.vcheckBackgroundSecondaryColorHex?.let {
+        VCheckSDK.backgroundSecondaryColorHex?.let {
             _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.textColorHex?.let {
+        VCheckSDK.primaryTextColorHex?.let {
             _binding!!.makeDocumentPhotoTitle.setTextColor(Color.parseColor(it))
             _binding!!.verifMethodTitle1.setTextColor(Color.parseColor(it))
             _binding!!.verifMethodTitle2.setTextColor(Color.parseColor(it))
@@ -62,7 +61,7 @@ class PhotoUploadFragment : ThemeWrapperFragment() {
             _binding!!.makePhotoButton2.setCardBackgroundColor(Color.parseColor(it))
             _binding!!.photoUploadContinueButton.setTextColor(Color.parseColor(it))
         }
-        VCheckSDK.vcheckBackgroundTertiaryColorHex?.let {
+        VCheckSDK.backgroundTertiaryColorHex?.let {
             _binding!!.methodCard1Background.setCardBackgroundColor(Color.parseColor(it))
             _binding!!.makePhotoButton1Background.setCardBackgroundColor(Color.parseColor(it))
             _binding!!.methodCard2Background.setCardBackgroundColor(Color.parseColor(it))
@@ -281,7 +280,7 @@ class PhotoUploadFragment : ThemeWrapperFragment() {
 
         if (VCheckSDK.buttonsColorHex != null) {
             _binding!!.photoUploadContinueButton.setBackgroundColor(Color.parseColor(VCheckSDK.buttonsColorHex))
-            _binding!!.photoUploadContinueButton.setTextColor(Color.parseColor(VCheckSDK.textColorHex))
+            _binding!!.photoUploadContinueButton.setTextColor(Color.parseColor(VCheckSDK.primaryTextColorHex))
         } else {
             _binding!!.photoUploadContinueButton.setBackgroundColor(Color.parseColor("#2E75FF"))
             _binding!!.photoUploadContinueButton.setTextColor(Color.WHITE)

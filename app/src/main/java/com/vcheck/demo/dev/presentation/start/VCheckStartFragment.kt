@@ -4,7 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.Dialog
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -25,7 +24,6 @@ import com.vcheck.demo.dev.databinding.FragmentDemoStartBinding
 import com.vcheck.demo.dev.di.AppContainer
 import com.vcheck.demo.dev.domain.*
 import com.vcheck.demo.dev.presentation.VCheckMainActivity
-import com.vcheck.demo.dev.presentation.liveness.VCheckLivenessActivity
 import com.vcheck.demo.dev.presentation.transferrable_objects.CountriesListTO
 import com.vcheck.demo.dev.util.ContextUtils
 import com.vcheck.demo.dev.util.toFlagEmoji
@@ -54,10 +52,10 @@ internal class VCheckStartFragment : Fragment() {
         VCheckSDK.buttonsColorHex?.let {
             _binding!!.btnStartDemoFlow.setBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.vcheckBackgroundPrimaryColorHex?.let {
+        VCheckSDK.backgroundPrimaryColorHex?.let {
             _binding!!.fragmentDemoBackground.background = ColorDrawable(Color.parseColor(it))
         }
-        VCheckSDK.textColorHex?.let {
+        VCheckSDK.primaryTextColorHex?.let {
             _binding!!.startCallChainLoadingIndicator.setIndicatorColor(Color.parseColor(it))
             _binding!!.btnStartDemoFlow.setTextColor(Color.parseColor(it))
         }

@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VCheckSDK
@@ -23,13 +22,13 @@ class NoTimeFragment : ThemeWrapperFragment() {
         VCheckSDK.buttonsColorHex?.let {
             _binding!!.tryAgainButton.setBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.vcheckBackgroundPrimaryColorHex?.let {
+        VCheckSDK.backgroundPrimaryColorHex?.let {
             _binding!!.noTimeBackground.background = ColorDrawable(Color.parseColor(it))
         }
-        VCheckSDK.vcheckBackgroundSecondaryColorHex?.let {
+        VCheckSDK.backgroundSecondaryColorHex?.let {
             _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.textColorHex?.let {
+        VCheckSDK.primaryTextColorHex?.let {
             _binding!!.noTimeTitle.setTextColor(Color.parseColor(it))
             _binding!!.noTimeSubtitle.setTextColor(Color.parseColor(it))
             _binding!!.tryAgainButton.setTextColor(Color.parseColor(it))

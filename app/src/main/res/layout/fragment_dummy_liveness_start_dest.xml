@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/transparent"
+    android:background="@color/vcheck_transparent"
     tools:context=".presentation.liveness.ui.DummyLivenessStartDestFragment"
     android:theme="@style/Theme.VCheckAndroidSDKDemo">
 

@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.vcheck.demo.dev.R
@@ -26,13 +25,13 @@ class WrongMoveFragment : ThemeWrapperFragment()  {
         VCheckSDK.buttonsColorHex?.let {
             _binding!!.wrongMoveRepeatButton.setBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.vcheckBackgroundPrimaryColorHex?.let {
+        VCheckSDK.backgroundPrimaryColorHex?.let {
             _binding!!.wrongMoveBackground.background = ColorDrawable(Color.parseColor(it))
         }
-        VCheckSDK.vcheckBackgroundSecondaryColorHex?.let {
+        VCheckSDK.backgroundSecondaryColorHex?.let {
             _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.textColorHex?.let {
+        VCheckSDK.primaryTextColorHex?.let {
             _binding!!.wrongMoveTitle.setTextColor(Color.parseColor(it))
             _binding!!.wrongMoveDescription.setTextColor(Color.parseColor(it))
             _binding!!.wrongMoveRepeatButton.setTextColor(Color.parseColor(it))

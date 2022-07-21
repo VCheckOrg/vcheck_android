@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.squareup.picasso.MemoryPolicy
@@ -23,10 +22,10 @@ class ZoomedPhotoFragment : ThemeWrapperFragment() {
     private lateinit var _binding: ZoomedPhotoFragmentBinding
 
     override fun changeColorsToCustomIfPresent() {
-        VCheckSDK.vcheckBackgroundPrimaryColorHex?.let {
+        VCheckSDK.backgroundPrimaryColorHex?.let {
             _binding.zoomedPhotoBackground.background = ColorDrawable(Color.parseColor(it))
         }
-        VCheckSDK.textColorHex?.let {
+        VCheckSDK.primaryTextColorHex?.let {
             _binding.crossIcon.setColorFilter(Color.parseColor(it))
         }
     }

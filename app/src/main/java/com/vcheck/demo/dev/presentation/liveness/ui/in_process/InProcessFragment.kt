@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.vcheck.demo.dev.R
@@ -41,13 +40,13 @@ class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
         VCheckSDK.buttonsColorHex?.let {
             _binding!!.successButton.setBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.vcheckBackgroundPrimaryColorHex?.let {
+        VCheckSDK.backgroundPrimaryColorHex?.let {
             _binding!!.inProcessBackground.background = ColorDrawable(Color.parseColor(it))
         }
-        VCheckSDK.vcheckBackgroundSecondaryColorHex?.let {
+        VCheckSDK.backgroundSecondaryColorHex?.let {
             _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.textColorHex?.let {
+        VCheckSDK.primaryTextColorHex?.let {
             _binding!!.inProcessTitle.setTextColor(Color.parseColor(it))
             _binding!!.inProcessSubtitle.setTextColor(Color.parseColor(it))
             _binding!!.successButton.setTextColor(Color.parseColor(it))

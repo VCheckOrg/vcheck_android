@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VCheckSDK
@@ -27,18 +26,18 @@ class ChooseDocMethodFragment : ThemeWrapperFragment() {
     private lateinit var _viewModel: ChooseDocMethodViewModel
 
     override fun changeColorsToCustomIfPresent() {
-        VCheckSDK.vcheckBackgroundPrimaryColorHex?.let {
+        VCheckSDK.backgroundPrimaryColorHex?.let {
             _binding!!.chooseDocMethodBackground.background = ColorDrawable(Color.parseColor(it))
         }
-        VCheckSDK.vcheckBackgroundSecondaryColorHex?.let {
+        VCheckSDK.backgroundSecondaryColorHex?.let {
             _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.vcheckBackgroundTertiaryColorHex?.let {
+        VCheckSDK.backgroundTertiaryColorHex?.let {
             _binding!!.docMethodInnerPassportBackground.setCardBackgroundColor(Color.parseColor(it))
             _binding!!.docMethodForeignPassportBackground.setCardBackgroundColor(Color.parseColor(it))
             _binding!!.docMethodIdCardBackGround.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.textColorHex?.let {
+        VCheckSDK.primaryTextColorHex?.let {
             _binding!!.chooseDocMethodTitle.setTextColor(Color.parseColor(it))
             _binding!!.docMethodTitle1.setTextColor(Color.parseColor(it))
             _binding!!.docMethodTitle2.setTextColor(Color.parseColor(it))
@@ -48,7 +47,7 @@ class ChooseDocMethodFragment : ThemeWrapperFragment() {
             _binding!!.docMethodIcon2.setColorFilter(Color.parseColor(it))
             _binding!!.docMethodIcon3.setColorFilter(Color.parseColor(it))
         }
-        VCheckSDK.descriptionTextColorHex?.let {
+        VCheckSDK.secondaryTextColorHex?.let {
             _binding!!.chooseDocMethodDescription.setTextColor(Color.parseColor(it))
         }
         VCheckSDK.borderColorHex?.let {

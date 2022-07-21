@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VCheckSDK
@@ -21,17 +20,17 @@ class ErrorFragment : ThemeWrapperFragment() {
         VCheckSDK.buttonsColorHex?.let {
             _binding!!.errorButton.setBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.vcheckBackgroundPrimaryColorHex?.let {
+        VCheckSDK.backgroundPrimaryColorHex?.let {
             _binding!!.errorBackground.background = ColorDrawable(Color.parseColor(it))
         }
-        VCheckSDK.vcheckBackgroundSecondaryColorHex?.let {
+        VCheckSDK.backgroundSecondaryColorHex?.let {
             _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.textColorHex?.let {
+        VCheckSDK.primaryTextColorHex?.let {
             _binding!!.errorTitle.setTextColor(Color.parseColor(it))
             _binding!!.errorButton.setTextColor(Color.parseColor(it))
         }
-        VCheckSDK.descriptionTextColorHex?.let {
+        VCheckSDK.secondaryTextColorHex?.let {
             _binding!!.errorDescription.setTextColor(Color.parseColor(it))
         }
     }

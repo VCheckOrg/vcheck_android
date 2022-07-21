@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.vcheck.demo.dev.R
@@ -26,13 +25,13 @@ class TooFastMovementsFragment : ThemeWrapperFragment() {
         VCheckSDK.buttonsColorHex?.let {
             _binding!!.tooFastMovementsRepeatButton.setBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.vcheckBackgroundPrimaryColorHex?.let {
+        VCheckSDK.backgroundPrimaryColorHex?.let {
             _binding!!.tooFastMovementsBackground.background = ColorDrawable(Color.parseColor(it))
         }
-        VCheckSDK.vcheckBackgroundSecondaryColorHex?.let {
+        VCheckSDK.backgroundSecondaryColorHex?.let {
             _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.textColorHex?.let {
+        VCheckSDK.primaryTextColorHex?.let {
             _binding!!.tooFastMovementsTitle.setTextColor(Color.parseColor(it))
             _binding!!.tooFastMovementsDescription.setTextColor(Color.parseColor(it))
             _binding!!.tooFastMovementsRepeatButton.setTextColor(Color.parseColor(it))

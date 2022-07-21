@@ -6,16 +6,12 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Spinner
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VCheckSDK
 import com.vcheck.demo.dev.VCheckSDKApp
 import com.vcheck.demo.dev.databinding.ActivityVcheckMainBinding
-import com.vcheck.demo.dev.databinding.ChooseCountryFragmentBinding
 import com.vcheck.demo.dev.di.AppContainer
 import com.vcheck.demo.dev.util.ContextUtils
 
@@ -30,7 +26,7 @@ internal class VCheckMainActivity : AppCompatActivity(), AdapterView.OnItemSelec
     private lateinit var binding: ActivityVcheckMainBinding
 
     private fun changeColorsToCustomIfPresent() {
-        VCheckSDK.vcheckBackgroundPrimaryColorHex?.let {
+        VCheckSDK.backgroundPrimaryColorHex?.let {
             binding.activityMainBackground.setBackgroundColor(Color.parseColor(it))
         }
     }
@@ -113,10 +109,16 @@ internal class VCheckMainActivity : AppCompatActivity(), AdapterView.OnItemSelec
 
         val langSpinner = findViewById<Spinner>(R.id.lang_spinner)
 
+        VCheckSDK.secondaryTextColorHex?.let {
+            val globeIcon = findViewById<ImageView>(R.id.lang_icon)
+            globeIcon.setColorFilter(Color.parseColor(VCheckSDK.secondaryTextColorHex))
+        }
+
+        //TODO: finish lang spinner color customization!
+
         val adapter = ArrayAdapter.createFromResource(
             this@VCheckMainActivity,
-            R.array.languages, android.R.layout.simple_spinner_item
-        )
+            R.array.languages, android.R.layout.simple_spinner_item)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
         langSpinner.adapter = adapter
@@ -124,7 +126,11 @@ internal class VCheckMainActivity : AppCompatActivity(), AdapterView.OnItemSelec
         langSpinner.setOnTouchListener(this@VCheckMainActivity)
 
         langSpinner.viewTreeObserver.addOnGlobalLayoutListener {
-            (langSpinner.selectedView as TextView).setTextColor(Color.WHITE)
+            if (VCheckSDK.secondaryTextColorHex != null) {
+                (langSpinner.selectedView as TextView).setTextColor(Color.parseColor(VCheckSDK.secondaryTextColorHex))
+            } else {
+                (langSpinner.selectedView as TextView).setTextColor(Color.WHITE)
+            }
         }
 
         langSpinner.post {

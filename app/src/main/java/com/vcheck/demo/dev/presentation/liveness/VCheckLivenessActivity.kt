@@ -87,7 +87,7 @@ class VCheckLivenessActivity : AppCompatActivity(),
         val view = binding!!.root
         setContentView(view)
 
-        VCheckSDK.vcheckBackgroundPrimaryColorHex?.let {
+        VCheckSDK.backgroundPrimaryColorHex?.let {
             binding!!.livenessActivityBackground.setBackgroundColor(Color.parseColor(it))
         }
 
@@ -462,18 +462,8 @@ class VCheckLivenessActivity : AppCompatActivity(),
 
     override fun onDestroy() {
         super.onDestroy()
-        //facemesh?.close()
         bitmapArray = null
         muxer = null
         openLivenessCameraParams = null
     }
 }
-
-
-// Get a MemoryInfo object for the device's current memory status.
-//    private fun getAvailableMemory(): ActivityManager.MemoryInfo {
-//        val activityManager = this.getSystemService(ACTIVITY_SERVICE) as ActivityManager
-//        val memoryInfo = ActivityManager.MemoryInfo()
-//        activityManager.getMemoryInfo(memoryInfo)
-//        return memoryInfo
-//    }

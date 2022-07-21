@@ -1,16 +1,11 @@
 package com.vcheck.demo.dev.presentation.country_stage
 
 import android.graphics.Color
-import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
-import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.SearchView
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
@@ -37,11 +32,11 @@ class CountryListFragment : ThemeWrapperFragment(),
     private val args: CountryListFragmentArgs by navArgs()
 
     override fun changeColorsToCustomIfPresent() {
-        VCheckSDK.vcheckBackgroundPrimaryColorHex?.let {
+        VCheckSDK.backgroundPrimaryColorHex?.let {
             binding.backgroundCountryList.background = ColorDrawable(Color.parseColor(it))
             binding.searchCountry.background = ColorDrawable(Color.parseColor(it))
         }
-        VCheckSDK.textColorHex?.let {
+        VCheckSDK.primaryTextColorHex?.let {
             binding.countryListBackArrow.setColorFilter(Color.parseColor(it))
             binding.tvNoCountriesFoundPlaceholder.setTextColor(Color.parseColor(it))
 

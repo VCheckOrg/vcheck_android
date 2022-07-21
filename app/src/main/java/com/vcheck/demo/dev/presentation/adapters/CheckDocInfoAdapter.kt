@@ -7,7 +7,6 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VCheckSDK
@@ -57,13 +56,13 @@ class CheckDocInfoAdapter(
             binding.docFieldTitle.text = title
             binding.infoField.setText(documentInfo.autoParsedValue)
 
-            VCheckSDK.vcheckBackgroundSecondaryColorHex?.let {
+            VCheckSDK.backgroundSecondaryColorHex?.let {
                 binding.docInfoRowBackground.background = ColorDrawable(Color.parseColor(it))
             }
-            VCheckSDK.vcheckBackgroundTertiaryColorHex?.let {
+            VCheckSDK.backgroundTertiaryColorHex?.let {
                 binding.infoField.background = ColorDrawable(Color.parseColor(it))
             }
-            VCheckSDK.textColorHex?.let {
+            VCheckSDK.primaryTextColorHex?.let {
                 binding.docFieldTitle.setTextColor(Color.parseColor(it))
                 binding.infoField.setTextColor(Color.parseColor(it))
                 binding.infoField.setHintTextColor(Color.parseColor(it))

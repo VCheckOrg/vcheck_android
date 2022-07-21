@@ -4,15 +4,12 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.addCallback
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.squareup.picasso.Picasso
@@ -44,17 +41,17 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
         VCheckSDK.buttonsColorHex?.let {
             _binding!!.confirmPhotoButton.setBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.vcheckBackgroundPrimaryColorHex?.let {
+        VCheckSDK.backgroundPrimaryColorHex?.let {
             _binding!!.checkPhotoBackground.background = ColorDrawable(Color.parseColor(it))
         }
-        VCheckSDK.vcheckBackgroundSecondaryColorHex?.let {
+        VCheckSDK.backgroundSecondaryColorHex?.let {
             _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.vcheckBackgroundTertiaryColorHex?.let {
+        VCheckSDK.backgroundTertiaryColorHex?.let {
             _binding!!.photoCard1Background.setCardBackgroundColor(Color.parseColor(it))
             _binding!!.photoCard2Background.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.textColorHex?.let {
+        VCheckSDK.primaryTextColorHex?.let {
             _binding!!.checkPhotoTitle.setTextColor(Color.parseColor(it))
             _binding!!.tvProcessingDisclaimer.setTextColor(Color.parseColor(it))
             _binding!!.uploadDocPhotosLoadingIndicator.setIndicatorColor(Color.parseColor(it))
@@ -62,7 +59,7 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
             _binding!!.replacePhotoButton.setTextColor(Color.parseColor(it))
             _binding!!.replacePhotoButton.strokeColor = ColorStateList.valueOf(Color.parseColor(it))
         }
-        VCheckSDK.descriptionTextColorHex?.let {
+        VCheckSDK.secondaryTextColorHex?.let {
             _binding!!.checkPhotoDescription.setTextColor(Color.parseColor(it))
         }
         VCheckSDK.borderColorHex?.let {

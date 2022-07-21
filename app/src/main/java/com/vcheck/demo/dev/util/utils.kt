@@ -133,33 +133,8 @@ fun String.matchesURL(): Boolean {
 }
 
 fun String.isValidHexColor(): Boolean {
-    val colorPattern = Pattern.compile("#([0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})")
-    val m = colorPattern.matcher(this)
-    return m.matches()
+    val rgbColorPattern = Pattern.compile("^#(?:[0-9a-fA-F]{3}){1,2}\$")
+    val argbColorPattern = Pattern.compile("^#(?:[0-9a-fA-F]{3,4}){1,2}\$")
+        //"#([0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})")
+    return (rgbColorPattern.matcher(this).matches() || argbColorPattern.matcher(this).matches())
 }
-
-//fun getCPUCoreNum(): Int {
-//    try {
-//        val pattern = Pattern.compile("cpu[0-9]+")
-//        val cpuNum = max(
-//            File("/sys/devices/system/cpu/")
-//                .walk()
-//                .maxDepth(1)
-//                .count { pattern.matcher(it.name).matches() },
-//            Runtime.getRuntime().availableProcessors())
-//        Log.d("PERFORMANCE", "================ CPU NUM: $cpuNum")
-//        return cpuNum
-//    } catch (e: Exception) {
-//        Log.d("PERFORMANCE", "================ CAUGHT EXCEPTION WHILE REQUESTING CPU NUM! RETURNING 1")
-//        return 3
-//    }
-//}
-
-//fun VCheckMainActivity.getAvailableDeviceRAM(): Long {
-//    val mi = ActivityManager.MemoryInfo()
-//    val activityManager = getSystemService(ACTIVITY_SERVICE) as ActivityManager?
-//    activityManager!!.getMemoryInfo(mi)
-//    val memInMB = mi.totalMem / (1024 * 1024)
-//    Log.d("PERFORMANCE", "================ MEM IN MB : ${bytesToHuman(mi.totalMem)}")
-//    return memInMB
-//}

@@ -13,7 +13,6 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VCheckSDK
 import com.vcheck.demo.dev.databinding.LivenessInstructionsFragmentBinding
@@ -36,13 +35,13 @@ class LivenessInstructionsFragment : ThemeWrapperFragment() {
         VCheckSDK.buttonsColorHex?.let {
             binding!!.livenessStartButton.setBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.vcheckBackgroundPrimaryColorHex?.let {
+        VCheckSDK.backgroundPrimaryColorHex?.let {
             binding!!.livenessIstructionsBackground.background = ColorDrawable(Color.parseColor(it))
         }
-        VCheckSDK.vcheckBackgroundSecondaryColorHex?.let {
+        VCheckSDK.backgroundSecondaryColorHex?.let {
             binding!!.card.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.textColorHex?.let {
+        VCheckSDK.primaryTextColorHex?.let {
             binding!!.faceCheckTitle.setTextColor(Color.parseColor(it))
             binding!!.requestedMovementsText.setTextColor(Color.parseColor(it))
             binding!!.smoothMovementsText.setTextColor(Color.parseColor(it))
@@ -56,7 +55,7 @@ class LivenessInstructionsFragment : ThemeWrapperFragment() {
             binding!!.fixedCameraIcon.setColorFilter(Color.parseColor(it))
             binding!!.livenessStartButton.setTextColor(Color.parseColor(it))
         }
-        VCheckSDK.descriptionTextColorHex?.let {
+        VCheckSDK.secondaryTextColorHex?.let {
             binding!!.faceCheckDescription.setTextColor(Color.parseColor(it))
         }
     }

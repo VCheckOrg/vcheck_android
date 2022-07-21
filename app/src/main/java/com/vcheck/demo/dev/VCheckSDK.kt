@@ -23,15 +23,16 @@ object VCheckSDK {
     internal var verificationClientCreationModel: VerificationClientCreationModel? = null
 
     internal var buttonsColorHex: String? = null
-    internal var vcheckBackgroundPrimaryColorHex: String? = null
-    internal var vcheckBackgroundSecondaryColorHex: String? = null
-    internal var vcheckBackgroundTertiaryColorHex: String? = null
-    internal var textColorHex: String? = null
-    internal var descriptionTextColorHex: String? = null
+    internal var backgroundPrimaryColorHex: String? = null
+    internal var backgroundSecondaryColorHex: String? = null
+    internal var backgroundTertiaryColorHex: String? = null
+    internal var primaryTextColorHex: String? = null
+    internal var secondaryTextColorHex: String? = null
     internal var borderColorHex: String? = null
+    private const val wrongColorFormatPickDescr: String = "VCheckSDK - error: if provided, " +
+            "custom buttons color should be a valid HEX string (RGB or ARGB). Ex.: '#2A2A2A' or '#abdbe3'"
 
     //TODO add onInitError callback for client (?)
-    //TODO add UI properties (colors) adjustments to upper SDK config level
     fun start(partnerActivity: Activity) {
 
         performPreStartChecks()
@@ -51,16 +52,18 @@ object VCheckSDK {
 
     private fun performPreStartChecks() {
         if (verificationType == null) {
-            throw IllegalArgumentException("VCheckSDK - error: partner application's callback function (invoked on SDK flow finish) must be provided")
+            throw IllegalArgumentException("VCheckSDK - error: verification type must be provided |" +
+                    " see VCheckSDK.verificationType(type: VerificationSchemeType)")
         }
         if (partnerEndCallback == null) {
-            throw IllegalArgumentException("VCheckSDK - error: partner application's callback function (invoked on SDK flow finish) must be provided")
+            throw IllegalArgumentException("VCheckSDK - error: partner application's callback function " +
+                    "(invoked on SDK flow finish) must be provided by partner app | see VCheckSDK.partnerEndCallback(callback: (() -> Unit))")
         }
         if (partnerId == null) {
-            throw IllegalArgumentException("VCheckSDK - error: partner ID must be provided by client app")
+            throw IllegalArgumentException("VCheckSDK - error: partner ID must be provided | see VCheckSDK.partnerId(id: Int)")
         }
         if (partnerSecret == null) {
-            throw IllegalArgumentException("VCheckSDK - error: partner secret must be provided by client app")
+            throw IllegalArgumentException("VCheckSDK - error: partner secret must be provided | see VCheckSDK.partnerSecret(secret: String)")
         }
         if (partnerUserId != null && partnerUserId!!.isEmpty()) {
             throw IllegalArgumentException("VCheckSDK - error: if provided, partner user ID must be unique to your service and not empty")
@@ -72,25 +75,25 @@ object VCheckSDK {
             throw IllegalArgumentException("VCheckSDK - error: if provided, custom session lifetime should not be less than 300 seconds")
         }
         if (buttonsColorHex != null && !buttonsColorHex!!.isValidHexColor()) {
-            throw IllegalArgumentException("VCheckSDK - error: if provided, custom buttons color should be a valid HEX string")
+            throw IllegalArgumentException(wrongColorFormatPickDescr)
         }
-        if (vcheckBackgroundPrimaryColorHex != null && !vcheckBackgroundPrimaryColorHex!!.isValidHexColor()) {
-            throw IllegalArgumentException("VCheckSDK - error: if provided, custom primary background color should be a valid HEX string")
+        if (backgroundPrimaryColorHex != null && !backgroundPrimaryColorHex!!.isValidHexColor()) {
+            throw IllegalArgumentException(wrongColorFormatPickDescr)
         }
-        if (vcheckBackgroundSecondaryColorHex != null && !vcheckBackgroundSecondaryColorHex!!.isValidHexColor()) {
-            throw IllegalArgumentException("VCheckSDK - error: if provided, custom secondary background color should be a valid HEX string")
+        if (backgroundSecondaryColorHex != null && !backgroundSecondaryColorHex!!.isValidHexColor()) {
+            throw IllegalArgumentException(wrongColorFormatPickDescr)
         }
-        if (vcheckBackgroundTertiaryColorHex != null && !vcheckBackgroundTertiaryColorHex!!.isValidHexColor()) {
-            throw IllegalArgumentException("VCheckSDK - error: if provided, custom tertiary background color should be a valid HEX string")
+        if (backgroundTertiaryColorHex != null && !backgroundTertiaryColorHex!!.isValidHexColor()) {
+            throw IllegalArgumentException(wrongColorFormatPickDescr)
         }
-        if (textColorHex != null && !textColorHex!!.isValidHexColor()) {
-            throw IllegalArgumentException("VCheckSDK - error: if provided, custom text color should be a valid HEX string")
+        if (primaryTextColorHex != null && !primaryTextColorHex!!.isValidHexColor()) {
+            throw IllegalArgumentException(wrongColorFormatPickDescr)
         }
-        if (descriptionTextColorHex != null && !descriptionTextColorHex!!.isValidHexColor()) {
-            throw IllegalArgumentException("VCheckSDK - error: if provided, custom description text color should be a valid HEX string")
+        if (secondaryTextColorHex != null && !secondaryTextColorHex!!.isValidHexColor()) {
+            throw IllegalArgumentException(wrongColorFormatPickDescr)
         }
         if (borderColorHex != null && !borderColorHex!!.isValidHexColor()) {
-            throw IllegalArgumentException("VCheckSDK - error: if provided, custom description border color should be a valid HEX string")
+            throw IllegalArgumentException(wrongColorFormatPickDescr)
         }
     }
 
@@ -133,40 +136,51 @@ object VCheckSDK {
         return this
     }
 
-    fun buttonsColor(colorHex: String): VCheckSDK {
+    fun colorActionButtons(colorHex: String): VCheckSDK {
         buttonsColorHex = colorHex
         return this
     }
 
-    fun vcheckBackgroundPrimary(colorHex: String): VCheckSDK {
-        vcheckBackgroundPrimaryColorHex = colorHex
+    fun colorBackgroundPrimary(colorHex: String): VCheckSDK {
+        backgroundPrimaryColorHex = colorHex
         return this
     }
 
-    fun vcheckBackgroundSecondary(colorHex: String): VCheckSDK {
-        vcheckBackgroundSecondaryColorHex = colorHex
+    fun colorBackgroundSecondary(colorHex: String): VCheckSDK {
+        backgroundSecondaryColorHex = colorHex
         return this
     }
 
-    fun vcheckBackgroundTertiary(colorHex: String): VCheckSDK {
-        vcheckBackgroundTertiaryColorHex = colorHex
+    fun colorBackgroundTertiary(colorHex: String): VCheckSDK {
+        backgroundTertiaryColorHex = colorHex
         return this
     }
 
-    fun textColor(colorHex: String): VCheckSDK {
-        textColorHex = colorHex
+    fun colorTextPrimary(colorHex: String): VCheckSDK {
+        primaryTextColorHex = colorHex
         return this
     }
 
-    fun descriptionTextColor(colorHex: String): VCheckSDK {
-        descriptionTextColorHex = colorHex
+    fun colorTextSecondary(colorHex: String): VCheckSDK {
+        secondaryTextColorHex = colorHex
         return this
     }
 
-    fun borderColor(colorHex: String): VCheckSDK {
+    fun colorBorders(colorHex: String): VCheckSDK {
         borderColorHex = colorHex
         return this
     }
+
+    fun resetCustomColors() {
+        buttonsColorHex = null
+        backgroundPrimaryColorHex = null
+        backgroundSecondaryColorHex = null
+        backgroundTertiaryColorHex = null
+        primaryTextColorHex = null
+        secondaryTextColorHex = null
+        borderColorHex = null
+    }
+
 
 //    private var customVerificationServiceURL: String? = null
 //    private var customPartnerServiceURL: String? = null

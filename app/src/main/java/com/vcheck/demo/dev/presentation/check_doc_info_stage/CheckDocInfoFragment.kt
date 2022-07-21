@@ -1,8 +1,6 @@
 package com.vcheck.demo.dev.presentation.check_doc_info_stage
 
-import android.content.Intent
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.squareup.picasso.Picasso
@@ -23,7 +20,6 @@ import com.vcheck.demo.dev.domain.*
 import com.vcheck.demo.dev.presentation.VCheckMainActivity
 import com.vcheck.demo.dev.presentation.adapters.CheckDocInfoAdapter
 import com.vcheck.demo.dev.presentation.adapters.DocInfoEditCallback
-import com.vcheck.demo.dev.presentation.liveness.VCheckLivenessActivity
 import com.vcheck.demo.dev.util.ContextUtils
 import com.vcheck.demo.dev.util.ThemeWrapperFragment
 import java.io.File
@@ -42,21 +38,21 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
         VCheckSDK.buttonsColorHex?.let {
             binding.checkInfoConfirmButton.setBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.vcheckBackgroundPrimaryColorHex?.let {
+        VCheckSDK.backgroundPrimaryColorHex?.let {
             binding.checkDocInfoBackground.setBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.vcheckBackgroundSecondaryColorHex?.let {
+        VCheckSDK.backgroundSecondaryColorHex?.let {
             binding.card.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.vcheckBackgroundTertiaryColorHex?.let {
+        VCheckSDK.backgroundTertiaryColorHex?.let {
             binding.photoCard1Background.setCardBackgroundColor(Color.parseColor(it))
             binding.photoCard2Background.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.textColorHex?.let {
+        VCheckSDK.primaryTextColorHex?.let {
             binding.checkFilledDataTitle.setTextColor(Color.parseColor(it))
             binding.checkInfoConfirmButton.setTextColor(Color.parseColor(it))
         }
-        VCheckSDK.descriptionTextColorHex?.let {
+        VCheckSDK.secondaryTextColorHex?.let {
             binding.checkFilledDataDescription.setTextColor(Color.parseColor(it))
         }
         VCheckSDK.borderColorHex?.let {

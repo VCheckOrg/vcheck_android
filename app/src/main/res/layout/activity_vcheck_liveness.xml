@@ -162,27 +162,3 @@
         app:navGraph="@navigation/liveness_nav_graph" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    <!--            android:layout_marginStart="-90dp"-->
-    <!--            app:lottie_rawRes="@raw/left"-->
-    <!--            app:lottie_fileName="hello_world.json"-->
-    <!--            // Loop indefinitely-->
-    <!--            app:lottie_loop="true"-->
-    <!--            // Start playing as soon as the animation is loaded-->
-    <!--            app:lottie_autoPlay="true" />-->
-
-
-
-    <!--        <com.google.android.material.progressindicator.CircularProgressIndicator-->
-    <!--            android:id="@+id/loadingIndicator"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_marginTop="116dp"-->
-    <!--            android:layout_marginBottom="40dp"-->
-    <!--            android:indeterminate="true"-->
-    <!--            app:indicatorColor="@color/white"-->
-    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--            app:layout_constraintEnd_toEndOf="parent"-->
-    <!--            app:layout_constraintStart_toStartOf="parent"-->
-    <!--            app:layout_constraintTop_toTopOf="parent" />-->
