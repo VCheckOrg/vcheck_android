@@ -5,6 +5,8 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -48,7 +50,7 @@ internal class VCheckStartFragment : Fragment() {
         }
 
     //TODO test!
-    override fun changeColorsToCustomIfPresent() {
+    fun changeColorsToCustomIfPresent() {
         VCheckSDK.buttonsColorHex?.let {
             _binding!!.btnStartDemoFlow.setBackgroundColor(Color.parseColor(it))
         }
