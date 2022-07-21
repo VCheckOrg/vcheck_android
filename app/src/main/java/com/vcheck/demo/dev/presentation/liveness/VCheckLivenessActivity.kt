@@ -50,7 +50,7 @@ class VCheckLivenessActivity : AppCompatActivity(),
         const val TAG = "LivenessActivity"
         private const val LIVENESS_TIME_LIMIT_MILLIS: Long = 15000 //max is 15000
         private const val BLOCK_PIPELINE_TIME_MILLIS: Long = 800 //may reduce a bit
-        private const val GESTURE_REQUEST_DEBOUNCE_MILLIS: Long = 600
+        private const val GESTURE_REQUEST_DEBOUNCE_MILLIS: Long = 400
         private const val STAGE_VIBRATION_DURATION_MILLIS: Long = 100
     }
 
@@ -72,6 +72,7 @@ class VCheckLivenessActivity : AppCompatActivity(),
     private var livenessSessionLimitCheckTime: Long = 0
     private var isLivenessSessionFinished: Boolean = false
     private var blockProcessingByUI: Boolean = false
+    private var blockRequestByProcessing: Boolean = false
 
     private var gestureCheckBitmap: Bitmap? = null
 
@@ -134,6 +135,7 @@ class VCheckLivenessActivity : AppCompatActivity(),
     private fun setGestureResponsesObserver() {
         Handler(Looper.getMainLooper()).post {
             gestureResponse.observe(this@VCheckLivenessActivity) {
+                blockRequestByProcessing = false
                 runOnUiThread {
                     Log.d(TAG, "============== GOT RESPONSE: ${it.data}")
                     if (!isLivenessSessionFinished) {
@@ -273,8 +275,12 @@ class VCheckLivenessActivity : AppCompatActivity(),
     }
 
     private fun determineImageResult() {
-        if (!isLivenessSessionFinished && !blockProcessingByUI && enoughTimeForNextGesture()) {
+        if (!isLivenessSessionFinished
+            && !blockProcessingByUI
+            && !blockRequestByProcessing
+            && enoughTimeForNextGesture()) {
             if (gestureCheckBitmap != null) {
+                blockRequestByProcessing = true
                 val file = File(createTempFileForBitmapFrame(gestureCheckBitmap!!))
                 val image: MultipartBody.Part = MultipartBody.Part.createFormData(
                     "image.jpg", file.name, file.asRequestBody("image/jpeg".toMediaType()))
@@ -391,7 +397,7 @@ class VCheckLivenessActivity : AppCompatActivity(),
             GestureMilestoneType.DownHeadPitchMilestone -> {
                 binding!!.arrowAnimationView.isVisible = true
                 binding!!.arrowAnimationView.setMargins(null, 0,
-                    -300, 0)
+                    300, 0) //TEST!
                 binding!!.arrowAnimationView.rotation = 270F
                 binding!!.arrowAnimationView.playAnimation()
             }
