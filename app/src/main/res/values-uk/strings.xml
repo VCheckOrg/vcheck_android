@@ -136,4 +136,6 @@
     <string name="date_of_birth_validation_error">Введіть валідну дату народження</string>
     <string name="date_of_expiry_validation_error">Введіть валідний термін дії документа</string>
     <string name="retry">Спробувати знову</string>
+    <string name="liveness_stage_face_up">Підніміть обличчя вгору</string>
+    <string name="liveness_stage_face_down">Наклоніть обличчя вниз</string>
 </resources>

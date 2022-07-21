@@ -7,6 +7,7 @@ import java.io.File
 import java.io.FileOutputStream
 
 
+
 /** Utility class for manipulating images.  */
 object ImageUtils {
     // This value is 2 ^ 18 - 1, and is used to clamp the RGB values before their ranges

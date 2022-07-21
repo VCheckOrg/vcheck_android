@@ -10,6 +10,8 @@ class LocalDatasource {
     //TODO make optimal way of caching single object:
     private var _selectedDocTypeWithData: DocTypeData? = null
 
+    private var _livenessMilestonesList: List<String>? = null
+
     private fun getSharedPreferences(ctx: Context): SharedPreferences =
         ctx.getSharedPreferences("vcheck_private_prefs", MODE_PRIVATE)
 
@@ -37,10 +39,19 @@ class LocalDatasource {
         return _selectedDocTypeWithData
     }
 
+    fun setLivenessMilestonesList(list: List<String>) {
+        _livenessMilestonesList = list
+    }
+
+    fun getLivenessMilestonesList(): List<String>? {
+        return _livenessMilestonesList
+    }
+
     fun resetCacheOnStartup(ctx: Context) {
         getSharedPreferences(ctx).edit().remove("verif_token").apply()
         getSharedPreferences(ctx).edit().remove("locale").apply()
         getSharedPreferences(ctx).edit().remove("selected_country_code").apply()
         _selectedDocTypeWithData = null
+        _livenessMilestonesList = null
     }
 }

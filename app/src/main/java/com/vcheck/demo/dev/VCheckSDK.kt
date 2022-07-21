@@ -15,7 +15,7 @@ object VCheckSDK {
     private var partnerId: Int? = null
     private var partnerSecret: String? = null
 
-    private var verificationType: VerificationSchemeType = VerificationSchemeType.FULL_CHECK
+    private var verificationType: VerificationSchemeType? = null
     private var partnerUserId: String? = null
     private var partnerVerificationId: String? = null
     private var sessionLifetime: Int? = null
@@ -37,7 +37,7 @@ object VCheckSDK {
         performPreStartChecks()
 
         this.verificationClientCreationModel = VerificationClientCreationModel(
-            partnerId!!, partnerSecret!!, verificationType, partnerUserId,
+            partnerId!!, partnerSecret!!, verificationType!!, partnerUserId,
             partnerVerificationId, sessionLifetime)
 
         val intent: Intent?
@@ -50,6 +50,9 @@ object VCheckSDK {
     }
 
     private fun performPreStartChecks() {
+        if (verificationType == null) {
+            throw IllegalArgumentException("VCheckSDK - error: partner application's callback function (invoked on SDK flow finish) must be provided")
+        }
         if (partnerEndCallback == null) {
             throw IllegalArgumentException("VCheckSDK - error: partner application's callback function (invoked on SDK flow finish) must be provided")
         }

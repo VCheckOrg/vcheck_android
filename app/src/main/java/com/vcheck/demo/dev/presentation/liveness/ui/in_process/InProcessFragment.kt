@@ -106,7 +106,6 @@ class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
 
             _viewModel.clientError.observe(viewLifecycleOwner) {
                 if (it != null) {
-                    Toast.makeText(activity, it, Toast.LENGTH_LONG).show()
                     safeNavToFailFragment(R.id.action_inProcessFragment_to_failVideoUploadFragment)
                 }
             }
@@ -119,7 +118,6 @@ class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
     private fun handleVideoUploadResponse(uploadResponse: Resource<LivenessUploadResponse>, token: String) {
             Log.d(VCheckLivenessActivity.TAG, "UPLOAD RESPONSE DATA: ${uploadResponse.data}")
             if (uploadResponse.data!!.data.isFinal) {
-                //Toast.makeText(activity, "[TEST] This upload response is final!", Toast.LENGTH_LONG).show()
                 onVideoUploadResponseSuccess(token)
             } else {
                 if (statusCodeToLivenessChallengeStatus(uploadResponse.data.data.status) == LivenessChallengeStatus.FAIL) {
@@ -182,13 +180,11 @@ class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
         _binding!!.successButton.isVisible = true
         _binding!!.successButton.setOnClickListener {
             _viewModel.stageResponse.observe(viewLifecycleOwner) {
-                //TODO test!
-                if ((it.data?.errorCode == null) || (it.data.data?.type == StageType.LIVENESS_CHALLENGE.toTypeIdx()
-                    && it.data.errorCode == StageObstacleErrorType.USER_INTERACTED_COMPLETED.toTypeIdx())) {
+                Log.d("OkHttp", "STAGE DATA ERROR: ${it.apiError}")
+                if (it.data?.errorCode == null || it.data.errorCode == StageObstacleErrorType.USER_INTERACTED_COMPLETED.toTypeIdx()) {
                     finishSDKFlow()
                 } else {
                     Toast.makeText(activity, "Stage Error", Toast.LENGTH_LONG).show()
-                    safeNavToFailFragment(R.id.action_inProcessFragment_to_failVideoUploadFragment)
                 }
             }
             _viewModel.getCurrentStage(token)
@@ -226,9 +222,6 @@ class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
     }
 
     private fun finishSDKFlow() {
-//        (activity as VCheckLivenessActivity).finishAffinity()
-//        exitProcess(0)
-        //TODO: test!
         VCheckSDK.onFinish()
     }
 }

@@ -90,7 +90,6 @@ class CameraConnectionFragment() : Fragment() {
         }
         override fun onSurfaceTextureSizeChanged(
             texture: SurfaceTexture, width: Int, height: Int) {
-            //configureTransform(width, height)
         }
         override fun onSurfaceTextureDestroyed(texture: SurfaceTexture): Boolean {
             return true
@@ -264,7 +263,7 @@ class CameraConnectionFragment() : Fragment() {
             val texture = textureView!!.surfaceTexture!!
 
             // We configure the size of default buffer to be the size of camera preview we want.
-            texture.setDefaultBufferSize(previewSize!!.width, previewSize!!.height)
+            texture.setDefaultBufferSize(previewSize!!.width / 2, previewSize!!.height / 2)
 
             // This is the output Surface we need to start preview.
             val surface = Surface(texture)
@@ -276,7 +275,7 @@ class CameraConnectionFragment() : Fragment() {
 
             // Create the reader for the preview frames.
             previewReader = ImageReader.newInstance(
-                previewSize!!.width, previewSize!!.height, ImageFormat.YUV_420_888, 1)
+                previewSize!!.width, previewSize!!.height, ImageFormat.YUV_420_888, 3) //!
             previewReader!!.setOnImageAvailableListener(imageListener, backgroundHandler)
 
             previewRequestBuilder!!.addTarget(previewReader!!.surface)
@@ -297,10 +296,10 @@ class CameraConnectionFragment() : Fragment() {
                             previewRequestBuilder!!.set(
                                 CaptureRequest.CONTROL_AF_MODE,
                                 CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE)
-                            // Flash is automatically enabled when necessary.
-                            previewRequestBuilder!!.set(
-                                CaptureRequest.CONTROL_AE_MODE,
-                                CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH)
+                            // Flash is automatically enabled when necessary - disabled!
+//                            previewRequestBuilder!!.set(
+//                                CaptureRequest.CONTROL_AE_MODE,
+//                                CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH)
                             // Finally, we start displaying the camera preview.
                             previewRequest = previewRequestBuilder!!.build()
                             captureSession!!.setRepeatingRequest(

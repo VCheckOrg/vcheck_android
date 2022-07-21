@@ -8,27 +8,13 @@ import retrofit2.http.*
 
 interface VerificationApiClient {
 
-    /*
-    https://test-verification-new.vycheck.com/api/v1/ - verification_api (TEST)
-    https://test-partner.vycheck.com/api/v1/ - partner_api
-    первая правда может поменятся, планируем убрать new как снесем старый тест
-
-    partner_api:
-    /verifications
-
-    verification_api:
-    /verifications/init
-    /stages/current
-    /documents/countries
-    /documents/types
-    /documents/upload
-    /documents/<int:verification_document_id>/info
-    /documents/<int:verification_document_id>/confirm
-    /liveness_challenges
-     */
-
     @PUT("verifications/init")
     fun initVerification(@Header("Authorization") verifToken: String): Call<VerificationInitResponse>
+
+    @GET("stages/current")
+    fun getCurrentStage(
+        @Header("Authorization") verifToken: String,
+    ) : Call<StageResponse>
 
     @GET("documents/countries")
     fun getCountries(@Header("Authorization") verifToken: String): Call<CountriesResponse>
@@ -46,7 +32,7 @@ interface VerificationApiClient {
         @Header("Authorization") verifToken: String,
         @Part photo1: MultipartBody.Part,
         @Part country: MultipartBody.Part,
-        @Part document_type: MultipartBody.Part, // TODO rename to category = fields.Integer()
+        @Part category: MultipartBody.Part,
     ): Call<DocumentUploadResponse>
 
     @Headers("multipart: true")
@@ -57,10 +43,10 @@ interface VerificationApiClient {
         @Part photo1: MultipartBody.Part,
         @Part photo2: MultipartBody.Part,
         @Part country: MultipartBody.Part,
-        @Part document_type: MultipartBody.Part, // TODO rename to category = fields.Integer()
+        @Part category: MultipartBody.Part,
     ): Call<DocumentUploadResponse>
 
-    @GET("documents/{document}/info") //TODO: change to GET documents/{document}/info
+    @GET("documents/{document}/info")
     fun getDocumentInfo(
         @Header("Authorization") verifToken: String,
         @Path("document") docId: Int
@@ -84,8 +70,12 @@ interface VerificationApiClient {
         @Part video: MultipartBody.Part
     ) : Call<LivenessUploadResponse>
 
-    @GET("stages/current")
-    fun getCurrentStage(
+    @Headers("multipart: true")
+    @Multipart
+    @POST("liveness_challenges/gesture")
+    fun sendLivenessGestureAttempt(
         @Header("Authorization") verifToken: String,
-    ) : Call<StageResponse>
+        @Part image: MultipartBody.Part,
+        @Part gesture: MultipartBody.Part
+    ) : Call<LivenessGestureResponse>
 }

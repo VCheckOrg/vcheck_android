@@ -135,11 +135,13 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
         }
 
         viewModel.stageResponse.observe(viewLifecycleOwner) {
-            //TODO test!
-            if ((it.data?.errorCode == null) ||
-                (it.data.errorCode != null
-                        && it.data.errorCode == StageObstacleErrorType.USER_INTERACTED_COMPLETED.toTypeIdx())) {
-                findNavController().navigate(R.id.action_checkDocInfoFragment_to_livenessInstructionsFragment)
+            if (it.data?.errorCode == null || it.data.errorCode == StageObstacleErrorType.USER_INTERACTED_COMPLETED.toTypeIdx()) {
+                if (it.data?.data?.config != null) {
+                    viewModel.repository.setLivenessMilestonesList((it.data.data.config.gestures))
+                    findNavController().navigate(R.id.action_checkDocInfoFragment_to_livenessInstructionsFragment)
+                } else if (VCheckSDK.verificationClientCreationModel?.verificationType == VerificationSchemeType.DOCUMENT_UPLOAD_ONLY) {
+                   finishSDKFlow()
+                }
             } else {
                 findNavController().navigate(R.id.action_global_demoStartFragment)
             }
@@ -238,6 +240,10 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
                 docField.name, docField.title, docField.type, docField.regex, optParsedData
             )
         }
+    }
+
+    private fun finishSDKFlow() {
+        VCheckSDK.onFinish()
     }
 }
 

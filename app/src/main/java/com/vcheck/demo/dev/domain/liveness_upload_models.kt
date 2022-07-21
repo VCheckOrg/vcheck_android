@@ -2,6 +2,17 @@ package com.vcheck.demo.dev.domain
 
 import com.google.gson.annotations.SerializedName
 
+
+data class LivenessGestureResponse(
+    @SerializedName("data")
+    val success: Boolean = false,
+    @SerializedName("error_code")
+    var errorCode: Int = 0,
+    @SerializedName("message")
+    var message: String = ""
+)
+
+
 data class LivenessUploadResponse(
     @SerializedName("data")
     val data: LivenessUploadResponseData,
@@ -68,18 +79,3 @@ fun strCodeToLivenessFailureReason(strCode: String): LivenessFailureReason {
 fun livenessFailureReasonToStrCode(r: LivenessFailureReason): String {
     return r.name.lowercase()
 }
-
-//Reasons:
-//FACE_NOT_FOUND = "face_not_found"
-//MULTIPLE_FACES = "multiple_faces"
-//TIMEOUT = "timeout"
-//FAST_MOVEMENT = "fast_movement"
-//TOO_DARK = "too_dark"
-//DISCONNECTED = "disconnected"
-//NOT_SAME_PERSON = "not_same_person"
-//INVALID_MOVEMENTS = "invalid_movements"
-
-// Not used in mobile:
-//TIMEOUT,
-//DISCONNECTED,
-//NOT_SAME_PERSON,

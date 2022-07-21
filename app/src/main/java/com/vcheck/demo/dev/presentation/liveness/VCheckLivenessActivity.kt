@@ -1,6 +1,5 @@
 package com.vcheck.demo.dev.presentation.liveness
 
-import android.app.ActivityManager
 import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.Bitmap
@@ -19,13 +18,14 @@ import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
 import androidx.navigation.findNavController
-import com.google.mediapipe.solutions.facemesh.FaceMesh
-import com.google.mediapipe.solutions.facemesh.FaceMeshOptions
-import com.google.mediapipe.solutions.facemesh.FaceMeshResult
 import com.vcheck.demo.dev.R
-import com.vcheck.demo.dev.VCheckSDK
+import com.vcheck.demo.dev.VCheckSDKApp
+import com.vcheck.demo.dev.data.Resource
 import com.vcheck.demo.dev.databinding.ActivityVcheckLivenessBinding
+import com.vcheck.demo.dev.di.AppContainer
+import com.vcheck.demo.dev.domain.LivenessGestureResponse
 import com.vcheck.demo.dev.presentation.liveness.flow_logic.*
 import com.vcheck.demo.dev.presentation.liveness.ui.CameraConnectionFragment
 import com.vcheck.demo.dev.util.ContextUtils
@@ -34,61 +34,53 @@ import com.vcheck.demo.dev.util.vibrateDevice
 import com.vcheck.demo.dev.util.video.Muxer
 import com.vcheck.demo.dev.util.video.MuxerConfig
 import com.vcheck.demo.dev.util.video.MuxingCompletionListener
-import org.jetbrains.kotlinx.multik.api.d2array
-import org.jetbrains.kotlinx.multik.api.mk
-import org.jetbrains.kotlinx.multik.api.ndarray
-import org.jetbrains.kotlinx.multik.ndarray.data.D2Array
-import org.jetbrains.kotlinx.multik.ndarray.data.get
-import org.jetbrains.kotlinx.multik.ndarray.data.set
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import java.io.IOException
 import java.util.concurrent.CopyOnWriteArrayList
+import kotlin.concurrent.fixedRateTimer
 
 class VCheckLivenessActivity : AppCompatActivity(),
-    ImageReader.OnImageAvailableListener,
-    MilestoneResultListener {
+    ImageReader.OnImageAvailableListener {
 
     companion object {
         const val TAG = "LivenessActivity"
-        private const val RUN_PIPELINE_ON_GPU = false
-        private const val STATIC_PIPELINE_IMAGE_MODE = true
-        private const val REFINE_PIPELINE_LANDMARKS = false
-        private const val MAX_MILESTONES_NUM = 468
-        private const val DEBOUNCE_PROCESS_MILLIS = 70 //may reduce a bit
-        private const val LIVENESS_TIME_LIMIT_MILLIS = 14000 //max is 15000
-        private const val BLOCK_PIPELINE_TIME_MILLIS: Long = 1200 //may reduce a bit
+        private const val LIVENESS_TIME_LIMIT_MILLIS: Long = 15000 //max is 15000
+        private const val BLOCK_PIPELINE_TIME_MILLIS: Long = 800 //may reduce a bit
+        private const val GESTURE_REQUEST_DEBOUNCE_MILLIS: Long = 600
         private const val STAGE_VIBRATION_DURATION_MILLIS: Long = 100
-        private const val MAX_FRAMES_W_O_MAJOR_OBSTACLES = 12
-        private const val MIN_FRAMES_FOR_MINOR_OBSTACLES = 4
     }
+
+    private lateinit var appContainer: AppContainer
+
+    private var gestureResponse: MutableLiveData<Resource<LivenessGestureResponse>> = MutableLiveData()
 
     private var binding: ActivityVcheckLivenessBinding? = null
     private var mToast: Toast? = null
 
-    var streamSize: Size = Size(320, 240)
+    var streamSize: Size = Size(640, 480)
     private var bitmapArray: ArrayList<Bitmap>? = ArrayList()
     private var muxer: Muxer? = null
     var videoPath: String? = null //make private!
-
     var openLivenessCameraParams: LivenessCameraParams? = LivenessCameraParams()
 
     private var camera2Fragment: CameraConnectionFragment? = null
 
-    private var facemesh: FaceMesh? = null
-    private var faceCheckDebounceTime: Long = 0
     private var livenessSessionLimitCheckTime: Long = 0
     private var isLivenessSessionFinished: Boolean = false
     private var blockProcessingByUI: Boolean = false
 
-    private var multiFaceFrameCounter: Int = 0
-    private var noFaceFrameCounter: Int = 0
-    private var minorObstacleFrameCounter: Int = 0
+    private var gestureCheckBitmap: Bitmap? = null
 
     private var milestoneFlow: StandardMilestoneFlow =
-        StandardMilestoneFlow(this@VCheckLivenessActivity)
+        StandardMilestoneFlow()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        appContainer = (application as VCheckSDKApp).appContainer
 
         binding = ActivityVcheckLivenessBinding.inflate(layoutInflater)
         val view = binding!!.root
@@ -102,171 +94,81 @@ class VCheckLivenessActivity : AppCompatActivity(),
             //Stub; no back press needed throughout liveness flow
         }
 
-        //determineAndSetStreamSize() //!
+        resetFlowForNewLivenessSession()
 
-        resetMilestonesForNewLivenessSession()
+        setMilestones()
 
-        setupStreamingModePipeline()
+        setGestureResponsesObserver()
 
         setCameraFragment()
 
         initSetupUI()
+
+        indicateNextMilestone(milestoneFlow.getFirstStage(), true)
     }
 
-    private fun resetMilestonesForNewLivenessSession() {
-        milestoneFlow = StandardMilestoneFlow(this@VCheckLivenessActivity)
+    private fun setMilestones() {
+        val milestonesList = appContainer.mainRepository.getLivenessMilestonesList()
+        if (milestonesList != null) {
+            milestoneFlow.setStagesList(milestonesList)
+        } else {
+            showSingleToast("Dynamic milestone list not found: probably, milestone list was not " +
+                    "retrieved form verification service or not cached properly.")
+        }
+    }
+
+    private fun resetFlowForNewLivenessSession() {
+        milestoneFlow.resetStages()
         livenessSessionLimitCheckTime = SystemClock.elapsedRealtime()
-        faceCheckDebounceTime = SystemClock.elapsedRealtime()
         isLivenessSessionFinished = false
+        setGestureRequestDebounceTimer()
+    }
+
+    private fun setGestureRequestDebounceTimer() {
+        fixedRateTimer("timer", false, 0L, GESTURE_REQUEST_DEBOUNCE_MILLIS) {
+            determineImageResult()
+        }
+    }
+
+    private fun setGestureResponsesObserver() {
+        Handler(Looper.getMainLooper()).post {
+            gestureResponse.observe(this@VCheckLivenessActivity) {
+                runOnUiThread {
+                    Log.d(TAG, "============== GOT RESPONSE: ${it.data}")
+                    if (!isLivenessSessionFinished) {
+                        if (milestoneFlow.areAllStagesPassed()) {
+                            Log.d(TAG, "==============++++++++++++++++  PASSED ALL STAGES!")
+                            finishLivenessSession()
+                            delayedNavigateOnLivenessSessionEnd()
+                        } else {
+                            val currentStage = milestoneFlow.getCurrentStage()
+                            if (it.data != null && it.data.success && currentStage != null) {
+                                Log.d(TAG, "============== PASSED MILESTONE: ${milestoneFlow.getCurrentStage()}")
+                                milestoneFlow.incrementCurrentStage()
+                                val nextStage = milestoneFlow.getCurrentStage()
+                                if (nextStage != null) {
+                                    blockProcessingByUI = true
+                                    indicateNextMilestone(nextStage, false)
+                                }
+                            }
+                            if (it.data != null && it.data.errorCode != 0) {
+                                //TODO: add error handling
+                                showSingleToast("GESTURE CHECK ERROR: [${it.data.errorCode}]")
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     fun finishLivenessSession() {
         isLivenessSessionFinished = true
-    }
-
-    private fun setupStreamingModePipeline() {
-        facemesh = FaceMesh(
-            this@VCheckLivenessActivity,
-            FaceMeshOptions.builder()
-                .setStaticImageMode(STATIC_PIPELINE_IMAGE_MODE)
-                .setRefineLandmarks(REFINE_PIPELINE_LANDMARKS)
-                .setRunOnGpu(RUN_PIPELINE_ON_GPU)
-                .setMaxNumFaces(2)
-                .build())
-        facemesh!!.setErrorListener { message: String, e: RuntimeException? ->
-            Log.e(TAG, "======= MediaPipe Face Mesh error : $message")
-            showSingleToast("MediaPipe Face Mesh error : $message")
-        }
-        facemesh!!.setResultListener { faceMeshResult: FaceMeshResult ->
-            // Check to see whether the device is in a low memory state:
-            if (!getAvailableMemory().lowMemory) {
-                try {
-                    if (!isLivenessSessionFinished && !blockProcessingByUI && enoughTimeForNextGesture()) {
-                        processLandmarks(faceMeshResult)
-                    } else {
-                        if (!isLivenessSessionFinished && !blockProcessingByUI) {
-                            runOnUiThread {
-                                onFatalObstacleWorthRetry(R.id.action_dummyLivenessStartDestFragment_to_noTimeFragment)
-                            }
-                        }
-                    }
-                } catch (e: Exception) {
-                    showSingleToast("Error in top-level MP setResultListener: ${e.message} | ${e.cause}")
-                }
-            } else {
-                showSingleToast("Low memory caught!")
-            }
-        }
-    }
-
-    override fun onObstacleMet(obstacleType: ObstacleType) {
-        runOnUiThread {
-            when (obstacleType) {
-                ObstacleType.YAW_ANGLE -> {
-                    minorObstacleFrameCounter += 1
-                    if (minorObstacleFrameCounter > MIN_FRAMES_FOR_MINOR_OBSTACLES) {
-                        binding!!.checkFaceTitle.setTextColor(resources.getColor(R.color.vcheck_error_light))
-                        binding!!.checkFaceTitle.text = getString(R.string.line_face_obstacle)
-                        delayedResetUIAfterObstacle()
-                        minorObstacleFrameCounter = 0
-                    }
-                }
-                ObstacleType.MULTIPLE_FACES_DETECTED -> {
-                    onFatalObstacleWorthRetry(R.id.action_dummyLivenessStartDestFragment_to_frameInterferenceFragment)
-                }
-                ObstacleType.NO_OR_PARTIAL_FACE_DETECTED -> {
-                    onFatalObstacleWorthRetry(R.id.action_dummyLivenessStartDestFragment_to_lookStraightErrorFragment)
-                }
-            }
-        }
-    }
-
-    override fun onMilestoneResult(gestureMilestoneType: GestureMilestoneType) {
-        blockProcessingByUI = true
-        runOnUiThread {
-            binding!!.faceAnimationView.isVisible = false
-            binding!!.arrowAnimationView.isVisible = false
-            when (gestureMilestoneType) {
-                GestureMilestoneType.CheckHeadPositionMilestone -> {
-                    setUIOnCheckHeadPositionMilestone()
-                }
-                GestureMilestoneType.OuterLeftHeadPitchMilestone -> {
-                    setUIOnOuterLeftHeadPitchMilestone()
-                }
-                GestureMilestoneType.OuterRightHeadPitchMilestone -> {
-                    setUIOnOuterRightHeadPitchMilestone()
-                }
-                GestureMilestoneType.MouthOpenMilestone -> {
-                    delayedNavigateOnLivenessSessionEnd()
-                }
-                else -> {
-                    //Stub. Cases in which results we are not straightly concerned
-                }
-            }
-        }
-    }
-
-    private fun processLandmarks(faceMeshResult: FaceMeshResult) {
-        if (mayProcessNextLandmarkArray()) {
-            if (faceMeshResult.multiFaceLandmarks().size >= 2) {
-                multiFaceFrameCounter += 1
-                if (multiFaceFrameCounter >= MAX_FRAMES_W_O_MAJOR_OBSTACLES) {
-                    multiFaceFrameCounter = 0
-                    onObstacleMet(ObstacleType.MULTIPLE_FACES_DETECTED)
-                }
-            } else if (faceMeshResult.multiFaceLandmarks().isEmpty()) {
-                noFaceFrameCounter += 1
-                if (noFaceFrameCounter >= MAX_FRAMES_W_O_MAJOR_OBSTACLES) {
-                    noFaceFrameCounter = 0
-                    onObstacleMet(ObstacleType.NO_OR_PARTIAL_FACE_DETECTED)
-                }
-            } else {
-                noFaceFrameCounter = 0
-                multiFaceFrameCounter = 0
-                val convertResult = get2DArrayFromMotionUpdate(faceMeshResult)
-                if (convertResult != null) {
-                    val faceAnglesCalcResultArr = LandmarksProcessingUtil.landmarksToEulerAngles(convertResult)
-                    val pitchAngle = faceAnglesCalcResultArr[0]
-                    val yawAngleAbs = kotlin.math.abs(faceAnglesCalcResultArr[1])
-                    val mouthAspectRatio = LandmarksProcessingUtil.landmarksToMouthAspectRatio(convertResult)
-                    //Log.d(TAG, "========= MOUTH ASPECT RATIO: $mouthAspectRatio | PITCH: $pitchAngle | YAW(abs) : $yawAngleAbs")
-                    milestoneFlow.checkCurrentStage(pitchAngle, mouthAspectRatio, yawAngleAbs)
-                }
-                faceCheckDebounceTime = SystemClock.elapsedRealtime()
-            }
-        }
-    }
-
-    private fun mayProcessNextLandmarkArray(): Boolean {
-        return (SystemClock.elapsedRealtime() - faceCheckDebounceTime >= DEBOUNCE_PROCESS_MILLIS)
-                && !isLivenessSessionFinished
+        gestureCheckBitmap = null
     }
 
     private fun enoughTimeForNextGesture(): Boolean {
         return SystemClock.elapsedRealtime() - livenessSessionLimitCheckTime <= LIVENESS_TIME_LIMIT_MILLIS
-    }
-
-    private fun get2DArrayFromMotionUpdate(result: FaceMeshResult?) : D2Array<Double>? {
-        if (result == null || result.multiFaceLandmarks().isEmpty()) {
-            return null
-        }
-        val twoDimArray = mk.d2array(MAX_MILESTONES_NUM, 3) { it.toDouble() }
-
-        result.multiFaceLandmarks()[0].landmarkList.forEachIndexed { idx, landmark ->
-            val arr = mk.ndarray(doubleArrayOf(
-                landmark.x.toDouble(),
-                landmark.y.toDouble(),
-                (1 - landmark.z).toDouble()))
-            try {
-                if (!arr.isEmpty()) {
-                    twoDimArray[idx] = arr
-                }
-            } catch (e: IndexOutOfBoundsException) {
-                //Stub; ignoring exception as matrix
-                //may not contain all of MAX_MILESTONES_NUM in real-time
-            }
-        }
-        return twoDimArray
     }
 
     private fun setCameraFragment() {
@@ -342,20 +244,23 @@ class VCheckLivenessActivity : AppCompatActivity(),
 
     fun processImage() {
         try {
-            openLivenessCameraParams?.apply {
+            Handler(Looper.getMainLooper()).post {
+                openLivenessCameraParams?.apply {
 
-                imageConverter!!.run()
-                rgbFrameBitmap = Bitmap.createBitmap(previewWidth, previewHeight, Bitmap.Config.ARGB_8888)
-                rgbFrameBitmap?.setPixels(rgbBytes, 0, previewWidth, 0, 0, previewWidth, previewHeight)
+                    imageConverter!!.run()
+                    rgbFrameBitmap = Bitmap.createBitmap(previewWidth, previewHeight, Bitmap.Config.ARGB_8888)
+                    rgbFrameBitmap?.setPixels(rgbBytes, 0, previewWidth, 0, 0, previewWidth, previewHeight)
 
-                //sending bitmap to FaceMesh to process:
-                facemesh!!.send(rgbFrameBitmap!!)
-                //caching bitmap to array/list:
-                bitmapArray?.add(rotateBitmap(rgbFrameBitmap!!)!!)
-                //recycling bitmap:
-                rgbFrameBitmap!!.recycle()
+                    val finalBitmap = rotateBitmap(rgbFrameBitmap!!)!!
+                    //caching bitmap to array/list:
+                    bitmapArray?.add(finalBitmap)
+                    //recycling bitmap:
+                    rgbFrameBitmap!!.recycle()
 
-                postInferenceCallback!!.run()
+                    postInferenceCallback!!.run()
+
+                    gestureCheckBitmap = finalBitmap
+                }
             }
         } catch (e: Exception) {
             showSingleToast(e.message)
@@ -366,13 +271,38 @@ class VCheckLivenessActivity : AppCompatActivity(),
         }
     }
 
+    private fun determineImageResult() {
+        if (!isLivenessSessionFinished && !blockProcessingByUI && enoughTimeForNextGesture()) {
+            if (gestureCheckBitmap != null) {
+                val file = File(createTempFileForBitmapFrame(gestureCheckBitmap!!))
+                val image: MultipartBody.Part = MultipartBody.Part.createFormData(
+                    "image.jpg", file.name, file.asRequestBody("image/jpeg".toMediaType()))
+                runOnUiThread {
+                    val currentGesture = milestoneFlow.getGestureRequestFromCurrentStage()
+                    appContainer.mainRepository.sendLivenessGestureAttempt(
+                        appContainer.mainRepository.getVerifToken(this@VCheckLivenessActivity),
+                        image, MultipartBody.Part.createFormData("gesture", currentGesture))
+                        .observeForever {
+                            Log.d(TAG, "========= WAITING FOR ANY RESPONSE FOR GESTURE: ${currentGesture}...")
+                            gestureResponse.value = it
+                    }
+                }
+            }
+        } else {
+            if (!isLivenessSessionFinished && !blockProcessingByUI) {
+                runOnUiThread {
+                    onFatalObstacleWorthRetry(R.id.action_dummyLivenessStartDestFragment_to_noTimeFragment)
+                }
+            }
+        }
+    }
+
     private fun createVideoFile(): File? {
         return try {
             val storageDir: File =
                 this@VCheckLivenessActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
             File.createTempFile(
-                "faceVideo${System.currentTimeMillis()}", ".mp4", storageDir
-            ).apply {
+                "faceVideo${System.currentTimeMillis()}", ".mp4", storageDir).apply {
                 videoPath = this.path
                 Log.d("VIDEO", "SAVING A FILE: ${this.path}")
             }
@@ -385,73 +315,94 @@ class VCheckLivenessActivity : AppCompatActivity(),
     /// -------------------------------------------- UI functions
 
     private fun initSetupUI() {
+        binding!!.arrowAnimationView.isVisible = false
+        binding!!.faceAnimationView.isVisible = false
         binding!!.stageSuccessAnimBorder.isVisible = false
         binding!!.checkFaceTitle.text = getString(R.string.wait_for_liveness_start)
         binding!!.imgViewStaticStageIndication.isVisible = false
-        binding!!.arrowAnimationView.setMargins(null, null,
-            300, null)
-        binding!!.arrowAnimationView.rotation = 0F
-        binding!!.arrowAnimationView.isVisible = false
     }
 
-    private fun setUIOnCheckHeadPositionMilestone() {
+    private fun indicateNextMilestone(nextMilestoneType: GestureMilestoneType,
+                                      indicateStageAsInitial: Boolean) {
+
+        binding!!.faceAnimationView.isVisible = false
+        binding!!.arrowAnimationView.isVisible = false
+
+        if (!indicateStageAsInitial) {
+            vibrateDevice(this@VCheckLivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
+            binding!!.imgViewStaticStageIndication.isVisible = true
+            binding!!.stageSuccessAnimBorder.isVisible = true
+            animateStageSuccessFrame()
+
+            Handler(Looper.getMainLooper()).postDelayed ({
+                updateUIOnMilestoneSuccess(nextMilestoneType)
+            }, BLOCK_PIPELINE_TIME_MILLIS)
+
+        } else {
+            updateUIOnMilestoneSuccess(nextMilestoneType)
+        }
+    }
+
+    private fun updateUIOnMilestoneSuccess(nextMilestoneType: GestureMilestoneType) {
+
         binding!!.imgViewStaticStageIndication.isVisible = false
-        binding!!.arrowAnimationView.isVisible = true
-        binding!!.faceAnimationView.isVisible = true
-        binding!!.faceAnimationView.setAnimation(R.raw.left)
-        binding!!.faceAnimationView.playAnimation()
-        binding!!.arrowAnimationView.playAnimation()
-        binding!!.checkFaceTitle.text = getString(R.string.liveness_stage_face_left)
+        binding!!.faceAnimationView.cancelAnimation()
+        val faceAnimeRes = when(nextMilestoneType) {
+            GestureMilestoneType.UpHeadPitchMilestone -> R.raw.up
+            GestureMilestoneType.DownHeadPitchMilestone -> R.raw.down
+            GestureMilestoneType.OuterRightHeadYawMilestone -> R.raw.right
+            GestureMilestoneType.OuterLeftHeadYawMilestone -> R.raw.left
+            GestureMilestoneType.MouthOpenMilestone -> R.raw.mouth
+            else -> null
+        }
+        if (faceAnimeRes != null) {
+            binding!!.faceAnimationView.isVisible = true
+            binding!!.faceAnimationView.setAnimation(faceAnimeRes)
+            binding!!.faceAnimationView.playAnimation()
+        }
+
+        when (nextMilestoneType) {
+            GestureMilestoneType.OuterLeftHeadYawMilestone -> {
+                binding!!.arrowAnimationView.isVisible = true
+                binding!!.arrowAnimationView.setMargins(null, null,
+                    300, null)
+                binding!!.arrowAnimationView.rotation = 0F
+                binding!!.arrowAnimationView.playAnimation()
+            }
+            GestureMilestoneType.OuterRightHeadYawMilestone -> {
+                binding!!.arrowAnimationView.isVisible = true
+                binding!!.arrowAnimationView.setMargins(null, null,
+                    -300, null)
+                binding!!.arrowAnimationView.rotation = 180F
+                binding!!.arrowAnimationView.playAnimation()
+            }
+            else -> {
+                binding!!.arrowAnimationView.isVisible = false
+            }
+        }
+        binding!!.checkFaceTitle.text = when(nextMilestoneType) {
+            GestureMilestoneType.UpHeadPitchMilestone -> getString(R.string.liveness_stage_face_up)
+            GestureMilestoneType.DownHeadPitchMilestone -> getString(R.string.liveness_stage_face_down)
+            GestureMilestoneType.OuterRightHeadYawMilestone -> getString(R.string.liveness_stage_face_right)
+            GestureMilestoneType.OuterLeftHeadYawMilestone -> getString(R.string.liveness_stage_face_left)
+            GestureMilestoneType.MouthOpenMilestone -> getString(R.string.liveness_stage_open_mouth)
+            GestureMilestoneType.StraightHeadCheckMilestone -> getString(R.string.liveness_stage_check_face_pos)
+        }
         blockProcessingByUI = false
     }
 
-    private fun setUIOnOuterLeftHeadPitchMilestone() {
-        vibrateDevice(this@VCheckLivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
-        binding!!.imgViewStaticStageIndication.isVisible = true
-        binding!!.stageSuccessAnimBorder.isVisible = true
-        animateStageSuccessFrame()
-        Handler(Looper.getMainLooper()).postDelayed ({
-            binding!!.imgViewStaticStageIndication.isVisible = false
-            binding!!.arrowAnimationView.isVisible = true
-            binding!!.faceAnimationView.isVisible = true
-            binding!!.faceAnimationView.cancelAnimation()
-            binding!!.faceAnimationView.setAnimation(R.raw.right)
-            binding!!.faceAnimationView.playAnimation()
-            binding!!.checkFaceTitle.text = getString(R.string.liveness_stage_face_right)
-            binding!!.arrowAnimationView.rotation = 180F
-            binding!!.arrowAnimationView.setMargins(null, null,
-                -300, null)
-            blockProcessingByUI = false
-        }, BLOCK_PIPELINE_TIME_MILLIS)
-    }
-
-    private fun setUIOnOuterRightHeadPitchMilestone() {
-        vibrateDevice(this@VCheckLivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
-        binding!!.imgViewStaticStageIndication.isVisible = true
-        binding!!.stageSuccessAnimBorder.isVisible = true
-        animateStageSuccessFrame()
-        Handler(Looper.getMainLooper()).postDelayed ({
-            binding!!.imgViewStaticStageIndication.isVisible = false
-            binding!!.arrowAnimationView.isVisible = false
-            binding!!.faceAnimationView.isVisible = true
-            binding!!.faceAnimationView.cancelAnimation()
-            binding!!.faceAnimationView.setAnimation(R.raw.mouth)
-            binding!!.faceAnimationView.playAnimation()
-            binding!!.checkFaceTitle.text = getString(R.string.liveness_stage_open_mouth)
-            blockProcessingByUI = false
-        }, BLOCK_PIPELINE_TIME_MILLIS)
-    }
-
     private fun delayedNavigateOnLivenessSessionEnd() {
-        binding!!.checkFaceTitle.text = getString(R.string.wait_for_liveness_start)
-        vibrateDevice(this@VCheckLivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
-        binding!!.imgViewStaticStageIndication.isVisible = true
-        binding!!.stageSuccessAnimBorder.isVisible = true
-        Handler(Looper.getMainLooper()).postDelayed({
+        runOnUiThread {
+            binding!!.arrowAnimationView.isVisible = false
+            binding!!.faceAnimationView.isVisible = false
+            binding!!.checkFaceTitle.text = getString(R.string.wait_for_liveness_start)
+            vibrateDevice(this@VCheckLivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
+            binding!!.imgViewStaticStageIndication.isVisible = true
+            binding!!.stageSuccessAnimBorder.isVisible = true
             binding!!.livenessCosmeticsHolder.isVisible = false
             camera2Fragment?.onPause() //!
             safeNavigateToResultDestination(R.id.action_dummyLivenessStartDestFragment_to_inProcessFragment)
-        }, 1000)
+        }
     }
 
     private fun safeNavigateToResultDestination(actionIdForNav: Int) {
@@ -464,26 +415,6 @@ class VCheckLivenessActivity : AppCompatActivity(),
         } catch (e: Exception) {
             showSingleToast(e.message)
         }
-    }
-
-    private fun delayedResetUIAfterObstacle() {
-        Handler(Looper.getMainLooper()).postDelayed ({
-            binding!!.checkFaceTitle.setTextColor(resources.getColor(R.color.vcheck_text))
-            when(milestoneFlow.getUndoneStage().milestoneType) {
-                GestureMilestoneType.CheckHeadPositionMilestone -> {
-                    binding!!.checkFaceTitle.text = getString(R.string.liveness_stage_face_left)
-                }
-                GestureMilestoneType.OuterLeftHeadPitchMilestone -> {
-                    binding!!.checkFaceTitle.text = getString(R.string.liveness_stage_face_right)
-                }
-                GestureMilestoneType.OuterRightHeadPitchMilestone -> {
-                    binding!!.checkFaceTitle.text = getString(R.string.liveness_stage_open_mouth)
-                }
-                else -> {
-                    // Stub
-                }
-            }
-        }, 1200)
     }
 
     private fun onFatalObstacleWorthRetry(actionIdForNav: Int) {
@@ -520,14 +451,6 @@ class VCheckLivenessActivity : AppCompatActivity(),
         super.attachBaseContext(localeUpdatedContext)
     }
 
-    // Get a MemoryInfo object for the device's current memory status.
-    private fun getAvailableMemory(): ActivityManager.MemoryInfo {
-        val activityManager = this.getSystemService(ACTIVITY_SERVICE) as ActivityManager
-        val memoryInfo = ActivityManager.MemoryInfo()
-        activityManager.getMemoryInfo(memoryInfo)
-        return memoryInfo
-    }
-
     override fun onResume() {
         super.onResume()
         //Hiding partner app's action bar as it's not used in SDK
@@ -538,19 +461,18 @@ class VCheckLivenessActivity : AppCompatActivity(),
 
     override fun onDestroy() {
         super.onDestroy()
-        facemesh?.close()
+        //facemesh?.close()
         bitmapArray = null
         muxer = null
         openLivenessCameraParams = null
     }
 }
 
-// ?
-//    private fun determineAndSetStreamSize() {
-//        streamSize = if (shouldDecreaseVideoStreamQuality()) {
-//            Size(320, 240)
-//        } else {
-//            Size(960, 720)
-//        }
-//        showSingleToast("[TEST] setting resolution to : ${streamSize.width}x${streamSize.height}")
+
+// Get a MemoryInfo object for the device's current memory status.
+//    private fun getAvailableMemory(): ActivityManager.MemoryInfo {
+//        val activityManager = this.getSystemService(ACTIVITY_SERVICE) as ActivityManager
+//        val memoryInfo = ActivityManager.MemoryInfo()
+//        activityManager.getMemoryInfo(memoryInfo)
+//        return memoryInfo
 //    }

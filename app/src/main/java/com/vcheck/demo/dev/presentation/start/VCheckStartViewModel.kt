@@ -1,7 +1,6 @@
 package com.vcheck.demo.dev.presentation.start
 
 import androidx.lifecycle.*
-import com.vcheck.demo.dev.VCheckSDK
 import com.vcheck.demo.dev.data.MainRepository
 import com.vcheck.demo.dev.data.Resource
 import com.vcheck.demo.dev.domain.*

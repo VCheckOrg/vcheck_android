@@ -24,7 +24,7 @@ open class NetworkCall<T> {
         var result: MutableLiveData<Resource<T>> = MutableLiveData()
 
         override fun onFailure(call: Call<T>, t: Throwable) {
-            result.value = Resource.error(ApiError("Client failure: ${t.localizedMessage}"))
+            result.value = Resource.error(ApiError(null,"Client failure: ${t.localizedMessage}"))
             t.printStackTrace()
         }
 
@@ -42,7 +42,7 @@ open class NetworkCall<T> {
                             BaseClientResponseModel(null, response.code(), "${response.code()}")
                         }
                     result.value = Resource.error(
-                        ApiError("Error: [${response.code()}] | ${errorResponse.message}"))
+                        ApiError(errorResponse, "Error: [${response.code()}] | ${errorResponse.message}"))
                 }
             }
         }

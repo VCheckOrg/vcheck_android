@@ -33,14 +33,14 @@ data class VerificationInitResponse(
 )
 
 data class VerificationInitResponseData(
-    @SerializedName("stage")
-    val stage: Int,
-    @SerializedName("document")
-    val document: Int,
+    @SerializedName("id")
+    val id: Int,
+    @SerializedName("status")
+    val status: Int,
     @SerializedName("locale")
     val locale: String?,
     @SerializedName("return_url")
-    val returnUrl: String,
-    @SerializedName("liveness_attempts")
-    val livenessAttempts: Int = 5
+    val returnUrl: String?,
+    @SerializedName("theme")
+    val theme: String?
 )

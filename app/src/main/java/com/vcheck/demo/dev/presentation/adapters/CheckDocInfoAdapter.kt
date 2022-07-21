@@ -168,7 +168,7 @@ class CheckDocInfoAdapter(
                         }
                     }
 
-                    if (text != null && text.isNotEmpty()) {
+                    if (text.isNotEmpty()) {
                         if (documentInfo.regex != null
                             && !text.matches(Regex(documentInfo.regex))
                         ) {

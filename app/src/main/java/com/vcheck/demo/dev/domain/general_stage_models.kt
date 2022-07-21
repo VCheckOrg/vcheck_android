@@ -17,11 +17,16 @@ data class StageResponseData(
     @SerializedName("type")
     val type: Int,
     @SerializedName("config")
-    val config: Any? = null,
+    val config: LivenessStageConfig? = null,
     @SerializedName("primary_document_id") // for DOCUMENT UPLOAD stage only
     val primaryDocId: Int? = null,
     @SerializedName("uploaded_document_id") // for DOCUMENT UPLOAD stage only
     val uploadedDocId: Int? = null
+)
+
+data class LivenessStageConfig(
+    @SerializedName("gestures")
+    val gestures: List<String>
 )
 
 enum class StageObstacleErrorType {
