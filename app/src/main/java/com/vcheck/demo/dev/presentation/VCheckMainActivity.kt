@@ -111,7 +111,7 @@ internal class VCheckMainActivity : AppCompatActivity(), AdapterView.OnItemSelec
 
         VCheckSDK.secondaryTextColorHex?.let {
             val globeIcon = findViewById<ImageView>(R.id.lang_icon)
-            globeIcon.setColorFilter(Color.parseColor(VCheckSDK.secondaryTextColorHex))
+            globeIcon.setColorFilter(Color.parseColor(it))
         }
 
         //TODO: finish lang spinner color customization!
@@ -127,7 +127,8 @@ internal class VCheckMainActivity : AppCompatActivity(), AdapterView.OnItemSelec
 
         langSpinner.viewTreeObserver.addOnGlobalLayoutListener {
             if (VCheckSDK.secondaryTextColorHex != null) {
-                (langSpinner.selectedView as TextView).setTextColor(Color.parseColor(VCheckSDK.secondaryTextColorHex))
+                (langSpinner.selectedView as TextView)
+                    .setTextColor(Color.parseColor(VCheckSDK.secondaryTextColorHex))
             } else {
                 (langSpinner.selectedView as TextView).setTextColor(Color.WHITE)
             }

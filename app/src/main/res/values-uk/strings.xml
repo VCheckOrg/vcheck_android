@@ -109,10 +109,6 @@
     <string name="reload_photo">Спробувати ще раз</string>
     <string name="check_doc_fields_validation_error">Перевірте правильність заповнення усіх полей документа</string>
     <string name="field_validation_error">Невірний формат заповнення поля</string>
-    <string name="liveness_stage_check_face_pos">Вировняйте обличчя і закрийте рота</string>
-    <string name="liveness_stage_face_left">Поверніть обличчя ліворуч</string>
-    <string name="liveness_stage_face_right">Поверніть обличчя праворуч</string>
-    <string name="liveness_stage_open_mouth">Відкрийте рота</string>
     <string name="wait_for_liveness_start">Будь ласка, зачекайте</string>
     <string name="unavailable_country">На даний момент недоступно</string>
     <string name="launch_liveness_demo">Liveness(Локально!)</string>
@@ -136,6 +132,10 @@
     <string name="date_of_birth_validation_error">Введіть валідну дату народження</string>
     <string name="date_of_expiry_validation_error">Введіть валідний термін дії документа</string>
     <string name="retry">Спробувати знову</string>
-    <string name="liveness_stage_face_up">Підніміть обличчя вгору</string>
-    <string name="liveness_stage_face_down">Наклоніть обличчя вниз</string>
+    <string name="liveness_stage_face_up">Підніміть голову вгору</string>
+    <string name="liveness_stage_face_down">Наклоніть голову вниз</string>
+    <string name="liveness_stage_check_face_pos">Тримайте голову прямо</string>
+    <string name="liveness_stage_face_left">Поверніть голову ліворуч</string>
+    <string name="liveness_stage_face_right">Поверніть голову праворуч</string>
+    <string name="liveness_stage_open_mouth">Відкрийте рота</string>
 </resources>

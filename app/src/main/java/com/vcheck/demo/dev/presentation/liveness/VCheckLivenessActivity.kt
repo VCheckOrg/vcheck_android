@@ -257,9 +257,9 @@ class VCheckLivenessActivity : AppCompatActivity(),
                     bitmapArray?.add(finalBitmap)
                     //recycling bitmap:
                     rgbFrameBitmap!!.recycle()
-
+                    //running post-inference callback
                     postInferenceCallback!!.run()
-
+                    //updating cached bitmap for gesture request
                     gestureCheckBitmap = finalBitmap
                 }
             }
@@ -360,6 +360,10 @@ class VCheckLivenessActivity : AppCompatActivity(),
             binding!!.faceAnimationView.isVisible = true
             binding!!.faceAnimationView.setAnimation(faceAnimeRes)
             binding!!.faceAnimationView.playAnimation()
+        } else {
+            binding!!.faceAnimationView.isVisible = true
+            binding!!.faceAnimationView.setAnimation(R.raw.mouth)
+            binding!!.faceAnimationView.pauseAnimation()
         }
 
         when (nextMilestoneType) {
@@ -375,6 +379,20 @@ class VCheckLivenessActivity : AppCompatActivity(),
                 binding!!.arrowAnimationView.setMargins(null, null,
                     -300, null)
                 binding!!.arrowAnimationView.rotation = 180F
+                binding!!.arrowAnimationView.playAnimation()
+            }
+            GestureMilestoneType.UpHeadPitchMilestone -> {
+                binding!!.arrowAnimationView.isVisible = true
+                binding!!.arrowAnimationView.setMargins(null, 0,
+                    null, 0)
+                binding!!.arrowAnimationView.rotation = 90F
+                binding!!.arrowAnimationView.playAnimation()
+            }
+            GestureMilestoneType.DownHeadPitchMilestone -> {
+                binding!!.arrowAnimationView.isVisible = true
+                binding!!.arrowAnimationView.setMargins(null, 0,
+                    -300, 0)
+                binding!!.arrowAnimationView.rotation = 270F
                 binding!!.arrowAnimationView.playAnimation()
             }
             else -> {

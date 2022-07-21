@@ -119,10 +119,6 @@
     <string name="reload_photo">Try again</string>
     <string name="check_doc_fields_validation_error">Some document fields are not properly filled or empty</string>
     <string name="field_validation_error">Validation error: wrong format</string>
-    <string name="liveness_stage_check_face_pos">Align face and close mouth</string>
-    <string name="liveness_stage_face_left">Turn face to the left</string>
-    <string name="liveness_stage_face_right">Turn face to the right</string>
-    <string name="liveness_stage_open_mouth">Open mouth</string>
     <string name="wait_for_liveness_start">Please, wait…</string>
     <string name="unavailable_country">Currently unavailable</string>
     <string name="launch_liveness_demo">Local Liveness Demo</string>
@@ -146,6 +142,10 @@
     <string name="date_of_birth_validation_error">Please enter a valid date of birth</string>
     <string name="date_of_expiry_validation_error">Please enter a valid document expiration date</string>
     <string name="retry">Retry</string>
-    <string name="liveness_stage_face_up">Lift face up</string>
-    <string name="liveness_stage_face_down">Tilt face down</string>
+    <string name="liveness_stage_face_up">Lift your head up</string>
+    <string name="liveness_stage_face_down">Put your head down</string>
+    <string name="liveness_stage_check_face_pos">Keep your head straight</string>
+    <string name="liveness_stage_face_left">Turn your head to the left</string>
+    <string name="liveness_stage_face_right">Turn your head to the right</string>
+    <string name="liveness_stage_open_mouth">Open your mouth</string>
 </resources>
