@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.vcheck.demo.dev.domain.ApiError
+import com.vcheck.demo.dev.domain.BaseClientResponseData
 import com.vcheck.demo.dev.domain.BaseClientResponseModel
 import retrofit2.Call
 import retrofit2.Callback
@@ -28,22 +29,20 @@ open class NetworkCall<T> {
             t.printStackTrace()
         }
 
-        override fun onResponse(call: Call<T>, response: Response<T>?) {
-            if (response != null && response.isSuccessful)
+        override fun onResponse(call: Call<T>, response: Response<T>) {
+            if (response.isSuccessful)
                 result.value = Resource.success(response.body())
             else {
-                if (response != null) {
-                    val errorResponse: BaseClientResponseModel =
-                        try {
-                            Gson().fromJson(response.errorBody()!!.charStream(),
-                                BaseClientResponseModel::class.java)
-                        } catch (e: Exception) {
-                            Log.w("OkHttpClient", "Error parsing JSON on non-0 code")
-                            BaseClientResponseModel(null, response.code(), "${response.code()}")
-                        }
-                    result.value = Resource.error(
-                        ApiError(errorResponse, "Error: [${response.code()}] | ${errorResponse.message}"))
-                }
+                val errorResponse: BaseClientResponseModel =
+                    try {
+                        Gson().fromJson(response.errorBody()!!.charStream(),
+                            BaseClientResponseModel::class.java)
+                    } catch (e: Exception) {
+                        Log.w("OkHttpClient", "Error parsing JSON on non-0 code")
+                        BaseClientResponseModel(null, response.code(), "${response.code()}")
+                    }
+                result.value = Resource.error(
+                    ApiError(errorResponse, "Error: [${response.code()}] | ${errorResponse.message}"))
             }
         }
     }

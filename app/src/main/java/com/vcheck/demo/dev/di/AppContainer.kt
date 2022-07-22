@@ -3,7 +3,6 @@ package com.vcheck.demo.dev.di
 import com.vcheck.demo.dev.VCheckSDKApp
 import com.vcheck.demo.dev.data.*
 import okhttp3.OkHttpClient
-import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -16,8 +15,6 @@ internal class AppContainer(val app: VCheckSDKApp) {
 
     private var partnerRetrofit: Retrofit
 
-    private var remoteApiConfigProvider: RemoteApiConfigProvider = RemoteApiConfigProvider()
-
     init {
         verificationRetrofit = getVerifApiRetrofit()
         partnerRetrofit = getPartnerApiRetrofit()
@@ -28,13 +25,15 @@ internal class AppContainer(val app: VCheckSDKApp) {
 
         val httpClient = OkHttpClient.Builder()
 
-        httpClient.addInterceptor { chain ->
-            val original: Request = chain.request()
-            val request: Request = original.newBuilder().build()
-            val hasMultipart: Boolean = request.headers.names().contains("multipart")
-            logging.setLevel(if (hasMultipart) HttpLoggingInterceptor.Level.HEADERS else HttpLoggingInterceptor.Level.BODY)
-            chain.proceed(request)
-        }.build()
+//        httpClient.addInterceptor { chain ->
+//            val original: Request = chain.request()
+//            val request: Request = original.newBuilder().build()
+//            val hasMultipart: Boolean = request.headers.names().contains("multipart")
+//            logging.setLevel(if (hasMultipart) HttpLoggingInterceptor.Level.HEADERS else HttpLoggingInterceptor.Level.BODY)
+//            chain.proceed(request)
+//        }.build()
+
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY)
 
         httpClient.addInterceptor(logging)
         httpClient.readTimeout(180, TimeUnit.SECONDS) //3min
@@ -67,6 +66,8 @@ internal class AppContainer(val app: VCheckSDKApp) {
 
     var mainRepository = MainRepository(remoteDataSource, localDatasource)
 
+
+//   private var remoteApiConfigProvider: RemoteApiConfigProvider = RemoteApiConfigProvider()
 
 //    fun updateVerificationApiConfigs(updatedVerifBaseUrl: String, updatedPartnerBaseUrl: String) {
 //

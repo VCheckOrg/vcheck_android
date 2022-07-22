@@ -64,8 +64,6 @@ class CheckDocInfoViewModel(val repository: MainRepository) : ViewModel() {
             Resource.Status.ERROR -> {
                 if (response.apiError != null) {
                     stageResponse.value = response
-                } else {
-                    clientError.value = response.apiError!!
                 }
             }
         }

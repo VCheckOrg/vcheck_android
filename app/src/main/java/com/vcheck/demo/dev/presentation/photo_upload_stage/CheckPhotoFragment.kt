@@ -4,6 +4,7 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -95,6 +96,8 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
 
         _binding!!.apply {
 
+            tvProcessingDisclaimer.isVisible = false
+
             uploadDocPhotosLoadingIndicator.isVisible = false
 
             photoCard2.isVisible = false
@@ -161,35 +164,63 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
                     _viewModel.repository.getVerifToken(activity as VCheckMainActivity), body, multipartList)
             }
 
+            _viewModel.uploadErrorResponse.observe(viewLifecycleOwner) {
+                handleDocErrorResponse(it)
+            }
+
             _viewModel.uploadResponse.observe(viewLifecycleOwner) {
                 handleDocUploadResponse(it)
             }
+        }
+    }
 
-            _viewModel.clientError.observe(viewLifecycleOwner) {
-                replacePhotoButton.isVisible = true
-                confirmPhotoButton.isVisible = true
-                uploadDocPhotosLoadingIndicator.isVisible = false
-                tvProcessingDisclaimer.isVisible = false
-                if (it != null) Toast.makeText(activity, it, Toast.LENGTH_LONG).show()
+    private fun handleDocErrorResponse(response: BaseClientResponseModel?) {
+        if (response != null) {
+            if (response.errorCode == DocumentVerificationCode.PARSING_ERROR.toCodeIdx() ||
+                response.errorCode == DocumentVerificationCode.INVALID_PAGE.toCodeIdx()) {
+                if (response.data?.id != null) {
+                    val action = CheckPhotoFragmentDirections
+                        .actionCheckPhotoFragmentToCheckInfoFragment(
+                            CheckDocInfoDataTO(args.checkPhotoDataTO.selectedDocType,
+                                response.data.id,
+                                args.checkPhotoDataTO.photo1Path,
+                                args.checkPhotoDataTO.photo2Path), response.data.id)
+                    findNavController().navigate(action)
+                } else {
+                    Toast.makeText(activity, "Error: no document data in response", Toast.LENGTH_LONG).show()
+                }
+            } else {
+                _binding!!.replacePhotoButton.isVisible = true
+                _binding!!.confirmPhotoButton.isVisible = true
+                _binding!!.uploadDocPhotosLoadingIndicator.isVisible = false
+                _binding!!.tvProcessingDisclaimer.isVisible = false
+                Toast.makeText(activity, "Error: [${codeIdxToVerificationCode(response.errorCode)}]", Toast.LENGTH_LONG).show()
             }
+        } else {
+            Toast.makeText(activity, "Error: no document data in response", Toast.LENGTH_LONG).show()
         }
     }
 
     private fun handleDocUploadResponse(resource: Resource<DocumentUploadResponse>) {
-        if (resource.data?.errorCode != null && resource.data.errorCode != 0) {
-            Toast.makeText(activity, "Error: [${resource.data.errorCode}]", Toast.LENGTH_LONG).show()
-        } else {
-            if (resource.data?.data != null) {
+        Log.d("OkHTTP", "------ DATA: ${resource.data}")
+        Log.d("OkHTTP", "------ DATA-DATA: ${resource.data?.data}")
+        if (resource.data?.data != null) {
+            if (resource.data.data.id != null) {
                 val action = CheckPhotoFragmentDirections
                     .actionCheckPhotoFragmentToCheckInfoFragment(
-                        CheckDocInfoDataTO(args.checkPhotoDataTO.selectedDocType,
+                        CheckDocInfoDataTO(
+                            args.checkPhotoDataTO.selectedDocType,
                             resource.data.data.id,
                             args.checkPhotoDataTO.photo1Path,
-                            args.checkPhotoDataTO.photo2Path), resource.data.data.id)
+                            args.checkPhotoDataTO.photo2Path
+                        ), resource.data.data.id
+                    )
                 findNavController().navigate(action)
             } else {
-                Toast.makeText(activity, "Error: no document data in response", Toast.LENGTH_LONG).show()
+                Toast.makeText(activity, "Error: no document data in response", Toast.LENGTH_LONG)
+                    .show()
             }
         }
     }
+
 }

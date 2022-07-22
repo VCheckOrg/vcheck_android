@@ -259,11 +259,7 @@ class PhotoUploadFragment : ThemeWrapperFragment() {
             }
         } else if (_docType == DocType.INNER_PASSPORT_OR_COMMON) {
             if (_photo1Path != null) {
-                prepareForNavigation(true)
-            } else if (_photo2Path != null && _photo1Path == null) {
-                _photo1Path = _photo2Path
-                _photo2Path = null
-                prepareForNavigation(true)
+                prepareForNavigation(false)
             } else if (_photo2Path != null && _photo1Path != null) {
                 prepareForNavigation(false)
             } else {

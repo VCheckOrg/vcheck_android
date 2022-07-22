@@ -78,4 +78,7 @@ interface VerificationApiClient {
         @Part image: MultipartBody.Part,
         @Part gesture: MultipartBody.Part
     ) : Call<LivenessGestureResponse>
+
+    //@GET("/verifications/{verification_id}")
+    //fun
 }

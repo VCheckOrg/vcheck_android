@@ -106,7 +106,7 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
                     photoCard2.isVisible = false
                 }
             } else {
-                Log.d("DOCUMENT", "===== ARGS TO IS MISSING! USING args.uplaodedDocId")
+                Log.d("DOCUMENT", "===== ARGS TO IS MISSING! USING args.uploadedDocId")
                 uploadedDocID = args.uplaodedDocId
             }
         }
@@ -136,7 +136,7 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
                     viewModel.repository.setLivenessMilestonesList((it.data.data.config.gestures))
                     findNavController().navigate(R.id.action_checkDocInfoFragment_to_livenessInstructionsFragment)
                 } else if (VCheckSDK.verificationClientCreationModel?.verificationType == VerificationSchemeType.DOCUMENT_UPLOAD_ONLY) {
-                   finishSDKFlow()
+                   findNavController().navigate(R.id.action_checkDocInfoFragment_to_separatedSuccessFragment)
                 }
             } else {
                 findNavController().navigate(R.id.action_global_demoStartFragment)
@@ -237,20 +237,10 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
             )
         }
     }
-
-    private fun finishSDKFlow() {
-        VCheckSDK.onFinish()
-    }
 }
 
-// Deprecated fields / checks:
 
-//            if (docField.name == "date_of_expiry" && parsedDocFieldsData.dateOfExpiry != null) {
-//                optParsedData = parsedDocFieldsData.dateOfExpiry!!
-//            }
-//            if (docField.name == "og_name" && parsedDocFieldsData.ogName != null) {
-//                optParsedData = parsedDocFieldsData.ogName!!
-//            }
-//            if (docField.name == "og_surname" && parsedDocFieldsData.ogSurname != null) {
-//                optParsedData = parsedDocFieldsData.ogSurname!!
-//            }
+//            } else if (_photo2Path != null && _photo1Path == null) {
+////                _photo1Path = _photo2Path
+////                _photo2Path = null
+////                prepareForNavigation(true)

@@ -1,20 +1,6 @@
 package com.vcheck.demo.dev.domain
 
 
-/*
-VERIFICATION_NOT_INITIALIZED = 0
-USER_INTERACTED_COMPLETED = 1
-STAGE_NOT_FOUND = 2
-INVALID_STAGE_TYPE = 3
-PRIMARY_DOCUMENT_EXISTS = 4
-UPLOAD_ATTEMPTS_EXCEEDED = 5
-INVALID_DOCUMENT_TYPE = 6
-INVALID_PAGES_COUNT = 7
-INVALID_FILES = 8
-PHOTO_TOO_LARGE = 9
-PARSING_ERROR = 10
- */
-
 //TODO duplicate for iOS!
 enum class DocumentVerificationCode {
     VERIFICATION_NOT_INITIALIZED,// = 0
@@ -28,6 +14,7 @@ enum class DocumentVerificationCode {
     INVALID_FILES,// = 8
     PHOTO_TOO_LARGE,// = 9
     PARSING_ERROR,// = 10
+    INVALID_PAGE
 }
 
 fun DocumentVerificationCode.toCodeIdx(): Int {
@@ -43,6 +30,7 @@ fun DocumentVerificationCode.toCodeIdx(): Int {
         DocumentVerificationCode.INVALID_FILES -> 8
         DocumentVerificationCode.PHOTO_TOO_LARGE -> 9
         DocumentVerificationCode.PARSING_ERROR -> 10
+        DocumentVerificationCode.INVALID_PAGE -> 11
     }
 }
 
@@ -59,6 +47,7 @@ fun codeIdxToVerificationCode(codeIdx: Int)
         7 -> DocumentVerificationCode.INVALID_PAGES_COUNT
         8 -> DocumentVerificationCode.INVALID_FILES
         9 -> DocumentVerificationCode.PHOTO_TOO_LARGE
-        else -> DocumentVerificationCode.PARSING_ERROR
+        10 -> DocumentVerificationCode.PARSING_ERROR
+        else -> DocumentVerificationCode.INVALID_PAGE
     }
 }

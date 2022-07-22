@@ -138,6 +138,9 @@
         <argument
             android:name="uplaodedDocId"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_checkDocInfoFragment_to_separatedSuccessFragment"
+            app:destination="@id/separatedSuccessFragment" />
     </fragment>
 
     <fragment
@@ -198,5 +201,10 @@
             android:name="checkDocInfoDataTO"
             app:argType="com.vcheck.demo.dev.presentation.transferrable_objects.CheckDocInfoDataTO" />
     </fragment><action android:id="@+id/action_global_demoStartFragment" app:destination="@id/demoStartFragment"/>
+    <fragment
+        android:id="@+id/separatedSuccessFragment"
+        android:name="com.vcheck.demo.dev.presentation.screens.SeparatedSuccessFragment"
+        android:label="SeparatedSuccessFragment"
+        tools:layout="@layout/fragment_separated_success"/>
 
 </navigation>

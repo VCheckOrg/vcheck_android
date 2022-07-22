@@ -13,7 +13,7 @@ data class DocumentUploadResponse(
 
 data class DocumentUploadResponseData(
     @SerializedName("id")
-    val id: Int
+    val id: Int?
 )
 
 data class DocumentTypesForCountryResponse(
