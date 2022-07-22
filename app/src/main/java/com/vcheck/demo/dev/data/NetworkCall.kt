@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.vcheck.demo.dev.domain.ApiError
-import com.vcheck.demo.dev.domain.BaseClientResponseData
 import com.vcheck.demo.dev.domain.BaseClientResponseModel
 import retrofit2.Call
 import retrofit2.Callback

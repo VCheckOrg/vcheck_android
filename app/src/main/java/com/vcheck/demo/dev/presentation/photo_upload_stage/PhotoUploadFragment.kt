@@ -76,7 +76,7 @@ class PhotoUploadFragment : ThemeWrapperFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val appContainer = (activity?.application as VCheckSDKApp).appContainer
+        val appContainer = VCheckSDKApp.instance.appContainer
         _viewModel =
             PhotoUploadViewModel(appContainer.mainRepository)
     }

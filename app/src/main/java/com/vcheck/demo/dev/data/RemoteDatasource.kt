@@ -1,18 +1,14 @@
 package com.vcheck.demo.dev.data
 
 import androidx.lifecycle.MutableLiveData
+import com.vcheck.demo.dev.VCheckSDK
 import com.vcheck.demo.dev.domain.*
 import okhttp3.MultipartBody
+import retrofit2.Call
 import retrofit2.Response
 
 class RemoteDatasource(private val verificationApiClient: VerificationApiClient,
                        private val partnerApiClient: PartnerApiClient) {
-
-    /*
-    https://test-verification-new.vycheck.com/api/v1/ - verification_api (TEST)
-    https://test-partner.vycheck.com/api/v1/ - partner_api
-    первая правда может поменятся, планируем убрать new как снесем старый тест
-     */
 
     fun createVerificationRequest(verificationRequestBody: CreateVerificationRequestBody):
             MutableLiveData<Resource<CreateVerificationAttemptResponse>> {
@@ -21,33 +17,32 @@ class RemoteDatasource(private val verificationApiClient: VerificationApiClient,
         )
     }
 
-    fun initVerification(verifToken: String): MutableLiveData<Resource<VerificationInitResponse>> {
+    fun initVerification(): MutableLiveData<Resource<VerificationInitResponse>> {
         return NetworkCall<VerificationInitResponse>().makeCall(
-            verificationApiClient.initVerification(verifToken)
+            verificationApiClient.initVerification(VCheckSDK.getVerificationToken())
         )
     }
 
-    fun getCountries(verifToken: String): MutableLiveData<Resource<CountriesResponse>> {
+    fun getCountries(): MutableLiveData<Resource<CountriesResponse>> {
         return NetworkCall<CountriesResponse>().makeCall(
-            verificationApiClient.getCountries(verifToken)
+            verificationApiClient.getCountries(VCheckSDK.getVerificationToken())
         )
     }
 
-    fun getCountryAvailableDocTypeInfo(verifToken: String, countryCode: String)
+    fun getCountryAvailableDocTypeInfo(countryCode: String)
             : MutableLiveData<Resource<DocumentTypesForCountryResponse>> {
         return NetworkCall<DocumentTypesForCountryResponse>().makeCall(
-            verificationApiClient.getCountryAvailableDocTypeInfo(verifToken, countryCode))
+            verificationApiClient.getCountryAvailableDocTypeInfo(VCheckSDK.getVerificationToken(), countryCode))
     }
 
     fun uploadVerificationDocuments(
-        verifToken: String,
         documentUploadRequestBody: DocumentUploadRequestBody,
         images: List<MultipartBody.Part>
     ): MutableLiveData<Resource<DocumentUploadResponse>> {
         if (images.size == 1) {
             return NetworkCall<DocumentUploadResponse>().makeCall(
                 verificationApiClient.uploadVerificationDocumentsForOnePage(
-                    verifToken,
+                    VCheckSDK.getVerificationToken(),
                     images[0],
                     MultipartBody.Part.createFormData("country", documentUploadRequestBody.country),
                     MultipartBody.Part.createFormData("category", documentUploadRequestBody.document_type.toString()),
@@ -55,7 +50,7 @@ class RemoteDatasource(private val verificationApiClient: VerificationApiClient,
         }
         else {
             return NetworkCall<DocumentUploadResponse>().makeCall(verificationApiClient.uploadVerificationDocumentsForTwoPages(
-                verifToken,
+                VCheckSDK.getVerificationToken(),
                 images[0],
                 images[1],
                 MultipartBody.Part.createFormData("country", documentUploadRequestBody.country),
@@ -64,19 +59,18 @@ class RemoteDatasource(private val verificationApiClient: VerificationApiClient,
         }
     }
 
-    fun getDocumentInfo(verifToken: String, docId: Int)
+    fun getDocumentInfo(docId: Int)
             : MutableLiveData<Resource<PreProcessedDocumentResponse>> {
         return NetworkCall<PreProcessedDocumentResponse>().makeCall(
-            verificationApiClient.getDocumentInfo(verifToken, docId))
+            verificationApiClient.getDocumentInfo(VCheckSDK.getVerificationToken(), docId))
     }
 
     fun updateAndConfirmDocInfo(
-        verifToken: String,
         docId: Int,
         docData: DocUserDataRequestBody
     ): MutableLiveData<Resource<Response<Void>>> {
         return NetworkCall<Response<Void>>().makeCall(
-            verificationApiClient.updateAndConfirmDocInfo(verifToken, docId, docData))
+            verificationApiClient.updateAndConfirmDocInfo(VCheckSDK.getVerificationToken(), docId, docData))
     }
 
     fun getServiceTimestamp() : MutableLiveData<Resource<String>> {
@@ -84,24 +78,27 @@ class RemoteDatasource(private val verificationApiClient: VerificationApiClient,
             verificationApiClient.getServiceTimestamp())
     }
 
-    fun uploadLivenessVideo(verifToken: String, video: MultipartBody.Part)
+    fun uploadLivenessVideo(video: MultipartBody.Part)
         : MutableLiveData<Resource<LivenessUploadResponse>> {
         return NetworkCall<LivenessUploadResponse>().makeCall(verificationApiClient.uploadLivenessVideo(
-            verifToken, video))
+            VCheckSDK.getVerificationToken(), video))
     }
 
     fun getCurrentStage(
-        verifToken: String
     ) : MutableLiveData<Resource<StageResponse>> {
-        return NetworkCall<StageResponse>().makeCall(verificationApiClient.getCurrentStage(verifToken))
+        return NetworkCall<StageResponse>().makeCall(verificationApiClient.getCurrentStage(VCheckSDK.getVerificationToken()))
     }
 
     fun sendLivenessGestureAttempt(
-        verifToken: String,
         image: MultipartBody.Part,
         gesture: MultipartBody.Part): MutableLiveData<Resource<LivenessGestureResponse>> {
         return NetworkCall<LivenessGestureResponse>().makeCall(
-            verificationApiClient.sendLivenessGestureAttempt(verifToken, image, gesture))
+            verificationApiClient.sendLivenessGestureAttempt(VCheckSDK.getVerificationToken(), image, gesture))
+    }
+
+    fun checkFinalVerificationStatus(verifId: Int): Call<FinalVerifCheckResponseModel> {
+        return partnerApiClient.checkFinalVerificationStatus(
+                VCheckSDK.getVerificationToken(), verifId)
     }
 }
 

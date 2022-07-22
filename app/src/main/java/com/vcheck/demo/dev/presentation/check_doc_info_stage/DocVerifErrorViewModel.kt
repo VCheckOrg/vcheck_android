@@ -10,9 +10,10 @@ class DocVerifErrorViewModel(val repository: MainRepository) : ViewModel() {
 
     var primaryDocStatusResponse: MutableLiveData<Boolean> = MutableLiveData(false)
 
-    fun setDocumentAsPrimary(token: String, docId: Int) {
-        repository.updateAndConfirmDocInfo(token, docId, DocUserDataRequestBody(ParsedDocFieldsData())).observeForever {
-            primaryDocStatusResponse.value = true //TODO TEST WITH NEW ARCH! + refactor for handling errors
+    fun setDocumentAsPrimary(docId: Int,  isForced: Boolean) {
+        repository.updateAndConfirmDocInfo(docId, DocUserDataRequestBody(ParsedDocFieldsData(), isForced))
+            .observeForever {
+                primaryDocStatusResponse.value = true //TODO TEST WITH NEW ARCH! + refactor for handling errors
         }
     }
 }

@@ -148,4 +148,13 @@
     <string name="liveness_stage_face_left">Turn your head to the left</string>
     <string name="liveness_stage_face_right">Turn your head to the right</string>
     <string name="liveness_stage_open_mouth">Open your mouth</string>
+    <string name="invalid_document">Invalid Document</string>
+    <string name="liveness_not_passed">Liveness test failed</string>
+    <string name="identity_verification_failed">Identity not verified</string>
+    <string name="document_number_match">Verification failed. Contact support for details.</string>
+    <string name="document_name_surname_dob_match">Verification failed. Contact support for details.</string>
+    <string name="document_photo_match">Verification failed. Contact support for details.</string>
+    <string name="user_ip_match">Verification failed. Contact support for details.</string>
+    <string name="age_restrictions">Verification failed. Contact support for details.</string>
+    <string name="expired">Verification expired</string>
 </resources>

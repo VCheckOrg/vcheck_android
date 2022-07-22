@@ -63,9 +63,8 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val appContainer = (activity?.application as VCheckSDKApp).appContainer
-        viewModel =
-            CheckDocInfoViewModel(appContainer.mainRepository)
+        val appContainer = VCheckSDKApp.instance.appContainer
+        viewModel = CheckDocInfoViewModel(appContainer.mainRepository)
     }
 
     override fun onCreateView(
@@ -126,7 +125,7 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
 
         viewModel.confirmedDocResponse.observe(viewLifecycleOwner) {
             if (it != null) {
-                viewModel.getCurrentStage(viewModel.repository.getVerifToken(activity as VCheckMainActivity))
+                viewModel.getCurrentStage()
             }
         }
 
@@ -143,8 +142,7 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
             }
         }
 
-        viewModel.getDocumentInfo(viewModel.repository.getVerifToken(activity as VCheckMainActivity),
-            uploadedDocID!!)
+        viewModel.getDocumentInfo(uploadedDocID!!)
 
 
         binding.checkInfoConfirmButton.setOnClickListener {
@@ -152,8 +150,7 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
                 Toast.makeText((activity as VCheckMainActivity),
                     R.string.check_doc_fields_validation_error, Toast.LENGTH_LONG).show()
             } else {
-                viewModel.updateAndConfirmDocument(viewModel.repository.getVerifToken(activity as VCheckMainActivity),
-                    uploadedDocID!!, composeConfirmedDocFieldsData())
+                viewModel.updateAndConfirmDocument(uploadedDocID!!, composeConfirmedDocFieldsData())
             }
         }
 
@@ -211,7 +208,7 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
                 data.number = docField.autoParsedValue
             }
         }
-        return DocUserDataRequestBody(data)
+        return DocUserDataRequestBody(data, args.checkDocInfoDataTO?.isForced ?: false)
     }
 
     private fun convertDocFieldToOptParsedData(docField: DocField, parsedDocFieldsData: ParsedDocFieldsData?) : DocFieldWitOptPreFilledData {

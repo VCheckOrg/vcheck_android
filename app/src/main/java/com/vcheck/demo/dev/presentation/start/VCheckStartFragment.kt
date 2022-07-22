@@ -37,6 +37,8 @@ internal class VCheckStartFragment : Fragment() {
 
     private lateinit var _viewModel: VCheckStartViewModel
 
+    private var verificationInitialized: Boolean = false
+
     private val requestPermissionsLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             if (permissions.all { it.value }) {
@@ -47,7 +49,6 @@ internal class VCheckStartFragment : Fragment() {
             }
         }
 
-    //TODO test!
     fun changeColorsToCustomIfPresent() {
         VCheckSDK.buttonsColorHex?.let {
             _binding!!.btnStartDemoFlow.setBackgroundColor(Color.parseColor(it))
@@ -64,7 +65,7 @@ internal class VCheckStartFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        appContainer = (activity?.application as VCheckSDKApp).appContainer
+        appContainer = VCheckSDKApp.instance.appContainer
         _viewModel = VCheckStartViewModel(appContainer.mainRepository)
     }
 
@@ -114,17 +115,18 @@ internal class VCheckStartFragment : Fragment() {
 
         _viewModel.createResponse.observe(viewLifecycleOwner) {
             if (it.data?.data != null) {
-                _viewModel.repository.storeVerifToken(
-                    (activity as VCheckMainActivity), it.data.data.token)
-
-                _viewModel.setVerifToken(_viewModel.repository.getVerifToken((activity as VCheckMainActivity)))
-
+                //_viewModel.repository.storeVerifToken((activity as VCheckMainActivity), it.data.data.token)
+                VCheckSDK.setVerificationToken(it.data.data.token)
                 _viewModel.initVerification()
             }
         }
 
         _viewModel.initResponse.observe(viewLifecycleOwner) {
-            if (it.data?.data != null) {
+            if (it.data?.data != null && !verificationInitialized) {
+                VCheckSDK.setVerificationId(it.data.data.id)
+
+                verificationInitialized = true
+
                 _viewModel.getCurrentStage()
             }
         }

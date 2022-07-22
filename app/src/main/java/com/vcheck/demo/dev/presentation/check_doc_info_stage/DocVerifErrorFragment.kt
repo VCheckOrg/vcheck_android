@@ -45,7 +45,7 @@ class DocVerifErrorFragment : ThemeWrapperFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val appContainer = (activity?.application as VCheckSDKApp).appContainer
+        val appContainer = VCheckSDKApp.instance.appContainer
         viewModel = DocVerifErrorViewModel(appContainer.mainRepository)
     }
 
@@ -71,8 +71,7 @@ class DocVerifErrorFragment : ThemeWrapperFragment() {
         }
 
         _binding!!.pseudoBtnProceedAnyway.setOnClickListener {
-            viewModel.setDocumentAsPrimary(viewModel.repository.getVerifToken(activity as VCheckMainActivity),
-                args.checkDocInfoDataTO.docId)
+            viewModel.setDocumentAsPrimary(args.checkDocInfoDataTO.docId, false)
         }
 
         viewModel.primaryDocStatusResponse.observe(viewLifecycleOwner) {

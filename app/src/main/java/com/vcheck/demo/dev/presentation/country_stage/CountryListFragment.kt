@@ -51,7 +51,7 @@ class CountryListFragment : ThemeWrapperFragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        appContainer = (activity?.application as VCheckSDKApp).appContainer
+        appContainer = VCheckSDKApp.instance.appContainer
     }
 
     override fun onCreateView(

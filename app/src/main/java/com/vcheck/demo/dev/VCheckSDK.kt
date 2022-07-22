@@ -2,10 +2,13 @@ package com.vcheck.demo.dev
 
 import android.app.Activity
 import android.content.Intent
-import com.vcheck.demo.dev.domain.VerificationClientCreationModel
-import com.vcheck.demo.dev.domain.VerificationSchemeType
+import com.vcheck.demo.dev.domain.*
 import com.vcheck.demo.dev.presentation.VCheckStartupActivity
 import com.vcheck.demo.dev.util.isValidHexColor
+import okhttp3.Call
+import okhttp3.Response
+import retrofit2.Callback
+import java.io.IOException
 import java.lang.IllegalArgumentException
 
 object VCheckSDK {
@@ -22,6 +25,9 @@ object VCheckSDK {
 
     internal var verificationClientCreationModel: VerificationClientCreationModel? = null
 
+    private var verificationToken: String? = null
+    private var verificationId: Int? = null
+
     internal var buttonsColorHex: String? = null
     internal var backgroundPrimaryColorHex: String? = null
     internal var backgroundSecondaryColorHex: String? = null
@@ -34,6 +40,8 @@ object VCheckSDK {
 
     //TODO add onInitError callback for client (?)
     fun start(partnerActivity: Activity) {
+
+        resetVerification()
 
         performPreStartChecks()
 
@@ -48,6 +56,11 @@ object VCheckSDK {
         } catch (e: ClassNotFoundException) {
             e.printStackTrace()
         }
+    }
+
+    private fun resetVerification() {
+        this.verificationToken = null
+        this.verificationId = null
     }
 
     private fun performPreStartChecks() {
@@ -137,22 +150,22 @@ object VCheckSDK {
     }
 
     fun colorActionButtons(colorHex: String): VCheckSDK {
-        buttonsColorHex = colorHex
+        this.buttonsColorHex = colorHex
         return this
     }
 
     fun colorBackgroundPrimary(colorHex: String): VCheckSDK {
-        backgroundPrimaryColorHex = colorHex
+        this.backgroundPrimaryColorHex = colorHex
         return this
     }
 
     fun colorBackgroundSecondary(colorHex: String): VCheckSDK {
-        backgroundSecondaryColorHex = colorHex
+        this.backgroundSecondaryColorHex = colorHex
         return this
     }
 
     fun colorBackgroundTertiary(colorHex: String): VCheckSDK {
-        backgroundTertiaryColorHex = colorHex
+        this.backgroundTertiaryColorHex = colorHex
         return this
     }
 
@@ -162,24 +175,58 @@ object VCheckSDK {
     }
 
     fun colorTextSecondary(colorHex: String): VCheckSDK {
-        secondaryTextColorHex = colorHex
+        this.secondaryTextColorHex = colorHex
         return this
     }
 
     fun colorBorders(colorHex: String): VCheckSDK {
-        borderColorHex = colorHex
+        this.borderColorHex = colorHex
         return this
     }
 
     fun resetCustomColors() {
-        buttonsColorHex = null
-        backgroundPrimaryColorHex = null
-        backgroundSecondaryColorHex = null
-        backgroundTertiaryColorHex = null
-        primaryTextColorHex = null
-        secondaryTextColorHex = null
-        borderColorHex = null
+        this.buttonsColorHex = null
+        this.backgroundPrimaryColorHex = null
+        this.backgroundSecondaryColorHex = null
+        this.backgroundTertiaryColorHex = null
+        this.primaryTextColorHex = null
+        this.secondaryTextColorHex = null
+        this.borderColorHex = null
     }
+
+    fun checkFinalVerificationStatus(): VerificationResult {
+        val response = VCheckSDKApp.instance.appContainer.mainRepository
+            .checkFinalVerificationStatus(getVerificationId()).execute()
+        return if (response.isSuccessful && response.body() != null) {
+            val bodyDeserialized: FinalVerifCheckResponseModel = response.body() as FinalVerifCheckResponseModel
+            VerificationResult(bodyDeserialized.data.status, "", "")
+        } else {
+            VerificationResult(0, "", "")
+        }
+    }
+
+    internal fun setVerificationToken(token: String) {
+        this.verificationToken = "Bearer $token"
+    }
+
+    internal fun getVerificationToken(): String {
+        if (verificationToken == null) {
+            throw RuntimeException("VCheckSDK - error: verification token is not set!")
+        }
+        return verificationToken ?: ""
+    }
+
+    internal fun setVerificationId(id: Int) {
+        this.verificationId = id
+    }
+
+    internal fun getVerificationId(): Int {
+        if (verificationId == null) {
+            throw RuntimeException("VCheckSDK - error: verification id not set!")
+        }
+        return verificationId ?: -1
+    }
+
 
 
 //    private var customVerificationServiceURL: String? = null

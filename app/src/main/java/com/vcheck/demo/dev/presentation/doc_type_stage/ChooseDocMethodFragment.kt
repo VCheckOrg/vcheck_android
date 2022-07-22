@@ -60,7 +60,7 @@ class ChooseDocMethodFragment : ThemeWrapperFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val appContainer = (activity?.application as VCheckSDKApp).appContainer
+        val appContainer = VCheckSDKApp.instance.appContainer
         _viewModel =
             ChooseDocMethodViewModel(appContainer.mainRepository)
     }
@@ -88,8 +88,6 @@ class ChooseDocMethodFragment : ThemeWrapperFragment() {
 
         val selectedCountryCode =
             _viewModel.repository.getSelectedCountryCode(activity as VCheckMainActivity)
-
-        _viewModel.setVerifToken(_viewModel.repository.getVerifToken((activity as VCheckMainActivity)))
 
         _viewModel.docTypesResponse.observe(viewLifecycleOwner) {
             if (it.data?.data != null) {

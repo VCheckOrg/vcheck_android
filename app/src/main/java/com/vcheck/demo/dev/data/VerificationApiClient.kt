@@ -12,9 +12,7 @@ interface VerificationApiClient {
     fun initVerification(@Header("Authorization") verifToken: String): Call<VerificationInitResponse>
 
     @GET("stages/current")
-    fun getCurrentStage(
-        @Header("Authorization") verifToken: String,
-    ) : Call<StageResponse>
+    fun getCurrentStage(@Header("Authorization") verifToken: String) : Call<StageResponse>
 
     @GET("documents/countries")
     fun getCountries(@Header("Authorization") verifToken: String): Call<CountriesResponse>
@@ -22,7 +20,7 @@ interface VerificationApiClient {
     @GET("documents/types")
     fun getCountryAvailableDocTypeInfo(
         @Header("Authorization") verifToken: String,
-        @Query("country") countryCode: String //TODO test!
+        @Query("country") countryCode: String
     ): Call<DocumentTypesForCountryResponse>
 
     @Headers("multipart: true")
@@ -78,7 +76,4 @@ interface VerificationApiClient {
         @Part image: MultipartBody.Part,
         @Part gesture: MultipartBody.Part
     ) : Call<LivenessGestureResponse>
-
-    //@GET("/verifications/{verification_id}")
-    //fun
 }

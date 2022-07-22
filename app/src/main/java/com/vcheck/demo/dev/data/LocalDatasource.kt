@@ -15,14 +15,6 @@ class LocalDatasource {
     private fun getSharedPreferences(ctx: Context): SharedPreferences =
         ctx.getSharedPreferences("vcheck_private_prefs", MODE_PRIVATE)
 
-    fun storeVerifToken(ctx: Context, verifToken: String) {
-        getSharedPreferences(ctx).edit().putString("verif_token", "Bearer $verifToken").apply()
-    }
-
-    fun getVerifToken(ctx: Context): String {
-        return getSharedPreferences(ctx).getString("verif_token", "")!!
-    }
-
     fun storeSelectedCountryCode(ctx: Context, countryCode: String) {
         getSharedPreferences(ctx).edit().putString("selected_country_code", countryCode).apply()
     }
@@ -55,3 +47,12 @@ class LocalDatasource {
         _livenessMilestonesList = null
     }
 }
+
+
+//fun storeVerifToken(ctx: Context, verifToken: String) {
+//    getSharedPreferences(ctx).edit().putString("verif_token", "Bearer $verifToken").apply()
+//}
+//
+//fun getVerifToken(ctx: Context): String {
+//    return getSharedPreferences(ctx).getString("verif_token", "")!!
+//}

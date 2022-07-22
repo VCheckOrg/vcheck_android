@@ -15,7 +15,7 @@ internal class VCheckStartupActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_vcheck_splash)
 
-        val repository = (application as VCheckSDKApp).appContainer.mainRepository
+        val repository = VCheckSDKApp.instance.appContainer.mainRepository
 
         repository.resetCacheOnStartup(this@VCheckStartupActivity)
 

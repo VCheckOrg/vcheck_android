@@ -17,15 +17,15 @@ class InProcessViewModel(val repository: MainRepository) : ViewModel() {
     var uploadResponse: MutableLiveData<Resource<LivenessUploadResponse>> = MutableLiveData(null)
     var stageResponse: MutableLiveData<Resource<StageResponse>> = MutableLiveData()
 
-    fun uploadLivenessVideo(token: String, video: MultipartBody.Part) {
-        repository.uploadLivenessVideo(token, video)
+    fun uploadLivenessVideo(video: MultipartBody.Part) {
+        repository.uploadLivenessVideo(video)
             .observeForever {
                 processResponse(it)
             }
     }
 
-    fun getCurrentStage(token: String) {
-        repository.getCurrentStage(token).observeForever {
+    fun getCurrentStage() {
+        repository.getCurrentStage().observeForever {
             processStageResponse(it)
         }
     }

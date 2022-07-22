@@ -13,10 +13,9 @@ class CheckPhotoViewModel(val repository: MainRepository) : ViewModel() {
 
     var uploadResponse: MutableLiveData<Resource<DocumentUploadResponse>> = MutableLiveData()
 
-    fun uploadVerificationDocuments(
-        token: String, documentUploadRequestBody: DocumentUploadRequestBody,
+    fun uploadVerificationDocuments(documentUploadRequestBody: DocumentUploadRequestBody,
         images: List<MultipartBody.Part>) {
-        repository.uploadVerificationDocuments(token, documentUploadRequestBody, images)
+        repository.uploadVerificationDocuments(documentUploadRequestBody, images)
             .observeForever {
                 processResponse(it)
             }

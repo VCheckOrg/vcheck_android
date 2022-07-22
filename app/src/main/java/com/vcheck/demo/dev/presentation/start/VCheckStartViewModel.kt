@@ -15,12 +15,6 @@ internal class VCheckStartViewModel (val repository: MainRepository) : ViewModel
     var countriesResponse: MutableLiveData<Resource<CountriesResponse>> = MutableLiveData()
     var stageResponse: MutableLiveData<Resource<StageResponse>> = MutableLiveData()
 
-    private lateinit var verifToken: String
-
-    fun setVerifToken(token: String) {
-        verifToken = token
-    }
-
     fun serviceTimestampRequest() {
         repository.getActualServiceTimestamp().observeForever { ts ->
             processTimestampResponse(ts)
@@ -34,19 +28,19 @@ internal class VCheckStartViewModel (val repository: MainRepository) : ViewModel
     }
 
     fun initVerification() {
-        repository.initVerification(verifToken).observeForever {
+        repository.initVerification().observeForever {
             processInitVerifResponse(it)
         }
     }
 
     fun getCurrentStage() {
-        repository.getCurrentStage(verifToken).observeForever {
+        repository.getCurrentStage().observeForever {
             processStageResponse(it)
         }
     }
 
     fun getCountriesList() {
-        repository.getCountries(verifToken).observeForever {
+        repository.getCountries().observeForever {
             processGetCountriesResponse(it)
         }
     }

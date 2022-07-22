@@ -10,5 +10,7 @@ data class DocumentUploadRequestBody(
 
 data class DocUserDataRequestBody(
     @SerializedName("user_data")
-    val user_data: ParsedDocFieldsData
+    val user_data: ParsedDocFieldsData,
+    @SerializedName("is_forced")
+    val isForced: Boolean
 )

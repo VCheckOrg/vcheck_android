@@ -72,7 +72,7 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val appContainer = (activity?.application as VCheckSDKApp).appContainer
+        val appContainer = VCheckSDKApp.instance.appContainer
         _viewModel = CheckPhotoViewModel(appContainer.mainRepository)
     }
 
@@ -160,8 +160,7 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
                 uploadDocPhotosLoadingIndicator.isVisible = true
                 tvProcessingDisclaimer.isVisible = true
 
-                _viewModel.uploadVerificationDocuments(
-                    _viewModel.repository.getVerifToken(activity as VCheckMainActivity), body, multipartList)
+                _viewModel.uploadVerificationDocuments(body, multipartList)
             }
 
             _viewModel.uploadErrorResponse.observe(viewLifecycleOwner) {
@@ -184,10 +183,12 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
                             CheckDocInfoDataTO(args.checkPhotoDataTO.selectedDocType,
                                 response.data.id,
                                 args.checkPhotoDataTO.photo1Path,
-                                args.checkPhotoDataTO.photo2Path), response.data.id)
+                                args.checkPhotoDataTO.photo2Path,
+                                true),
+                            response.data.id)
                     findNavController().navigate(action)
                 } else {
-                    Toast.makeText(activity, "Error: no document data in response", Toast.LENGTH_LONG).show()
+                    Log.e("DOCS", "Error: no document data in response ATM")
                 }
             } else {
                 _binding!!.replacePhotoButton.isVisible = true
@@ -197,7 +198,7 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
                 Toast.makeText(activity, "Error: [${codeIdxToVerificationCode(response.errorCode)}]", Toast.LENGTH_LONG).show()
             }
         } else {
-            Toast.makeText(activity, "Error: no document data in response", Toast.LENGTH_LONG).show()
+            Log.e("DOCS", "Error: no document data in response ATM")
         }
     }
 
@@ -213,12 +214,11 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
                             resource.data.data.id,
                             args.checkPhotoDataTO.photo1Path,
                             args.checkPhotoDataTO.photo2Path
-                        ), resource.data.data.id
-                    )
+                        ),
+                        resource.data.data.id)
                 findNavController().navigate(action)
             } else {
-                Toast.makeText(activity, "Error: no document data in response", Toast.LENGTH_LONG)
-                    .show()
+                Log.e("DOCS", "Error: no document data in response ATM")
             }
         }
     }

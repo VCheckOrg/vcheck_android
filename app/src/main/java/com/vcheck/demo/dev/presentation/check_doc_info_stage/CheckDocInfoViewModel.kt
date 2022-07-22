@@ -20,23 +20,23 @@ class CheckDocInfoViewModel(val repository: MainRepository) : ViewModel() {
 
     var stageResponse: MutableLiveData<Resource<StageResponse>> = MutableLiveData()
 
-    fun getDocumentInfo(token: String, docId: Int) {
-        repository.getDocumentInfo(token, docId).observeForever {
+    fun getDocumentInfo(docId: Int) {
+        repository.getDocumentInfo(docId).observeForever {
             documentInfoResponse.value = it
         }
     }
 
-    fun updateAndConfirmDocument(token: String, docId: Int,
+    fun updateAndConfirmDocument(docId: Int,
                                  userData: DocUserDataRequestBody) {
         Log.i("DOCUMENT", "UPDATING/CONFIRMING DOC: $userData")
-        repository.updateAndConfirmDocInfo(token, docId, userData)
+        repository.updateAndConfirmDocInfo(docId, userData)
             .observeForever {
                 processConfirmResponse(it)
             }
     }
 
-    fun getCurrentStage(token: String) {
-        repository.getCurrentStage(token).observeForever {
+    fun getCurrentStage() {
+        repository.getCurrentStage().observeForever {
             processStageResponse(it)
         }
     }

@@ -56,7 +56,7 @@ class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val appContainer = (activity?.application as VCheckSDKApp).appContainer
+        val appContainer = VCheckSDKApp.instance.appContainer
         _viewModel = InProcessViewModel(appContainer.mainRepository)
     }
 
@@ -90,8 +90,7 @@ class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
             (activity as VCheckLivenessActivity).processVideoOnResult(this@InProcessFragment)
         }
 
-        val token = ((activity as VCheckLivenessActivity).application as VCheckSDKApp)
-            .appContainer.mainRepository.getVerifToken(activity as VCheckLivenessActivity)
+        val token = VCheckSDK.getVerificationToken()
 
         if (token.isNotEmpty()) {
             _viewModel.uploadResponse.observe(viewLifecycleOwner) {
@@ -186,7 +185,7 @@ class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
                     Toast.makeText(activity, "Stage Error", Toast.LENGTH_LONG).show()
                 }
             }
-            _viewModel.getCurrentStage(token)
+            _viewModel.getCurrentStage()
         }
     }
 
@@ -205,15 +204,13 @@ class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
 
         Log.d("mux", getFolderSizeLabel(videoFile))
 
-        val token = ((activity as VCheckLivenessActivity).application as VCheckSDKApp)
-            .appContainer.mainRepository.getVerifToken(activity as VCheckLivenessActivity)
+        val token = VCheckSDK.getVerificationToken()
 
         (activity as VCheckLivenessActivity).runOnUiThread {
             if (token.isNotEmpty()) {
                 val partVideo: MultipartBody.Part = MultipartBody.Part.createFormData(
                     "video.mp4", videoFile.name, videoFile.asRequestBody("video/mp4".toMediaType()))
-                _viewModel.uploadLivenessVideo(_viewModel.repository
-                    .getVerifToken(activity as VCheckLivenessActivity), partVideo)
+                _viewModel.uploadLivenessVideo(partVideo)
             } else {
                 findNavController().navigate(R.id.action_inProcessFragment_to_livenessResultVideoViewFragment)
             }

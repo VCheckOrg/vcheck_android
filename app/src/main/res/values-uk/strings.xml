@@ -138,4 +138,13 @@
     <string name="liveness_stage_face_left">Поверніть голову ліворуч</string>
     <string name="liveness_stage_face_right">Поверніть голову праворуч</string>
     <string name="liveness_stage_open_mouth">Відкрийте рота</string>
+    <string name="invalid_document">Неправильний документ</string>
+    <string name="liveness_not_passed">Перевірку на жвавість не пройдено</string>
+    <string name="identity_verification_failed">Особа не підтверджена</string>
+    <string name="document_number_match">Верифікація не успішна. Для отримання детальнішої інформації зверніться до служби підтримки.</string>
+    <string name="document_name_surname_dob_match">Верифікація не пройдена. Для отримання детальнішої інформації зверніться до служби підтримки.</string>
+    <string name="document_photo_match">Верифікація не пройдена. Для отримання детальнішої інформації зверніться до служби підтримки.</string>
+    <string name="user_ip_match">Верифікація не пройдена. Для отримання детальнішої інформації зверніться до служби підтримки.</string>
+    <string name="age_restrictions">Верифікація не пройдена. Для отримання детальнішої інформації зверніться до служби підтримки.</string>
+    <string name="expired">Термін дії верифікації минув</string>
 </resources>

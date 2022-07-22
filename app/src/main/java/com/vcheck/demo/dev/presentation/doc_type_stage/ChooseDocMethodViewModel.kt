@@ -9,19 +9,11 @@ import com.vcheck.demo.dev.domain.DocumentTypesForCountryResponse
 class ChooseDocMethodViewModel (val repository: MainRepository) : ViewModel() {
 
     val clientError: MutableLiveData<String?> = MutableLiveData(null)
-    private val isSuccess: MutableLiveData<Boolean> = MutableLiveData()
-    private val isLoading: MutableLiveData<Boolean> = MutableLiveData()
 
     var docTypesResponse: MutableLiveData<Resource<DocumentTypesForCountryResponse>> = MutableLiveData()
 
-    private lateinit var verifToken: String
-
-    fun setVerifToken(token: String) {
-        verifToken = token
-    }
-
     fun getAvailableDocTypes(countryCode: String) {
-        repository.getCountryAvailableDocTypeInfo(verifToken, countryCode).observeForever {
+        repository.getCountryAvailableDocTypeInfo(countryCode).observeForever {
             processResponse(it)
         }
     }
@@ -29,20 +21,13 @@ class ChooseDocMethodViewModel (val repository: MainRepository) : ViewModel() {
     private fun processResponse(response: Resource<DocumentTypesForCountryResponse>){
         when(response.status) {
             Resource.Status.LOADING -> {
-                //setLoading()
             }
             Resource.Status.SUCCESS -> {
-                //setSuccess()
                 docTypesResponse.value = response
             }
             Resource.Status.ERROR -> {
-                setError(response.apiError!!.errorText)
-                //error.value = response.resourceError
+                clientError.value = response.apiError?.errorText ?: ""
             }
         }
-    }
-
-    private fun setError(message: String) {
-        clientError.value = message
     }
 }

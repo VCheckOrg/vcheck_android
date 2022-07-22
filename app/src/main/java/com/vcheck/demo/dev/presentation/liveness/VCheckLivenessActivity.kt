@@ -287,7 +287,6 @@ class VCheckLivenessActivity : AppCompatActivity(),
                 runOnUiThread {
                     val currentGesture = milestoneFlow.getGestureRequestFromCurrentStage()
                     appContainer.mainRepository.sendLivenessGestureAttempt(
-                        appContainer.mainRepository.getVerifToken(this@VCheckLivenessActivity),
                         image, MultipartBody.Part.createFormData("gesture", currentGesture))
                         .observeForever {
                             Log.d(TAG, "========= WAITING FOR ANY RESPONSE FOR GESTURE: ${currentGesture}...")
