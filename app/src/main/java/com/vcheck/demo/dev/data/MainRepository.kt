@@ -29,6 +29,8 @@ class MainRepository(
         val partnerVerificationId = vModel.partnerVerificationId ?: Date().time.toString()
         val sessionLifetime = vModel.sessionLifetime ?: RemoteApiConfigProvider.DEFAULT_SESSION_LIFETIME
         val verifCallbackURL = "${RemoteApiConfigProvider.VERIFICATIONS_API_BASE_URL}ping"
+        val sign = generateSHA256Hash(
+            "$partnerId$partnerUserId$partnerVerificationId$scheme$serviceTS$partnerSecret")
 
         return CreateVerificationRequestBody(
                 partner_id = partnerId,
@@ -39,8 +41,7 @@ class MainRepository(
                 partner_verification_id = partnerVerificationId,
                 callback_url = verifCallbackURL,
                 session_lifetime = sessionLifetime,
-                sign = generateSHA256Hash(
-                    "$partnerId$partnerUserId$partnerVerificationId$scheme$serviceTS$partnerSecret"))
+                sign = sign)
     }
 
     fun createVerification(createVerificationRequestBody: CreateVerificationRequestBody)
@@ -107,7 +108,8 @@ class MainRepository(
         else MutableLiveData(Resource.error(ApiError(null,BaseClientErrors.NO_TOKEN_AVAILABLE)))
     }
 
-    fun checkFinalVerificationStatus(verifId: Int): Call<FinalVerifCheckResponseModel> {
+    fun checkFinalVerificationStatus(verifId: Int)
+    : Call<FinalVerifCheckResponseModel> {
         return if (isTokenPresent()) remoteDatasource.checkFinalVerificationStatus(verifId)
         else throw RuntimeException("VCheckSDK - error: token is not present while checking verification status!")
     }

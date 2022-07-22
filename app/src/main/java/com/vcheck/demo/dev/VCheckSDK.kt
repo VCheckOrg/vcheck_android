@@ -196,7 +196,8 @@ object VCheckSDK {
 
     fun checkFinalVerificationStatus(): VerificationResult {
         val response = VCheckSDKApp.instance.appContainer.mainRepository
-            .checkFinalVerificationStatus(getVerificationId()).execute()
+            .checkFinalVerificationStatus(getVerificationId()
+            ).execute()
         return if (response.isSuccessful && response.body() != null) {
             val bodyDeserialized: FinalVerifCheckResponseModel = response.body() as FinalVerifCheckResponseModel
             VerificationResult(bodyDeserialized.data.status, "", "")

@@ -96,25 +96,9 @@ class RemoteDatasource(private val verificationApiClient: VerificationApiClient,
             verificationApiClient.sendLivenessGestureAttempt(VCheckSDK.getVerificationToken(), image, gesture))
     }
 
-    fun checkFinalVerificationStatus(verifId: Int): Call<FinalVerifCheckResponseModel> {
+    fun checkFinalVerificationStatus(verifId: Int)
+    : Call<FinalVerifCheckResponseModel> {
         return partnerApiClient.checkFinalVerificationStatus(
                 VCheckSDK.getVerificationToken(), verifId)
     }
 }
-
-
-//Test:
-//        val type = (0..1).random()
-//        return if ((0..1).random() == 1) {
-//            MutableLiveData(Resource.success(StageResponse(data = StageResponseData(
-//                id = 0, type = type), errorCode = 1, message = "USER_INTERACTED_COMPLETED")))
-//        } else {
-//            MutableLiveData(Resource.success(StageResponse(data = StageResponseData(
-//                id = 0, type = type), errorCode = 0, message = "VERIFICATION_NOT_INITIALIZED")))
-//        }
-
-//Deprecated:
-//    fun setDocumentAsPrimary(verifToken: String, docId: Int) : MutableLiveData<Resource<Response<Void>>> {
-//        return NetworkCall<Response<Void>>().makeCall(verificationApiClient.setDocumentAsPrimary(
-//            verifToken, docId))
-//    }
