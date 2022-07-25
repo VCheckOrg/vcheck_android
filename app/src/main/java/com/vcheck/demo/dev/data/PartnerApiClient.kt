@@ -15,6 +15,9 @@ interface PartnerApiClient {
     @GET("verifications/{verification_id}")
     fun checkFinalVerificationStatus(
         @Header("Authorization") verifToken: String,
-        @Path("verification_id") verifId: Int
+        @Path("verification_id") verifId: Int,
+        @Query("partner_id") partnerId: Int,
+        @Query("timestamp") timestamp: Int,
+        @Query("sign") sign: String
     ) : Call<FinalVerifCheckResponseModel>
 }

@@ -116,16 +116,16 @@ class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
     private fun handleVideoUploadResponse(uploadResponse: Resource<LivenessUploadResponse>, token: String) {
             Log.d(VCheckLivenessActivity.TAG, "UPLOAD RESPONSE DATA: ${uploadResponse.data}")
             if (uploadResponse.data!!.data.isFinal) {
-                onVideoUploadResponseSuccess(token)
+                onVideoUploadResponseSuccess()
             } else {
                 if (statusCodeToLivenessChallengeStatus(uploadResponse.data.data.status) == LivenessChallengeStatus.FAIL) {
                     if (uploadResponse.data.data.reason != null && uploadResponse.data.data.reason.isNotEmpty()) {
                         onBackendObstacleMet(strCodeToLivenessFailureReason(uploadResponse.data.data.reason))
                     } else {
-                        onVideoUploadResponseSuccess(token)
+                        onVideoUploadResponseSuccess()
                     }
                 } else {
-                    onVideoUploadResponseSuccess(token)
+                    onVideoUploadResponseSuccess()
                 }
             }
     }
@@ -170,23 +170,16 @@ class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
         }
     }
 
-    private fun onVideoUploadResponseSuccess(token: String) {
-        _binding!!.uploadVideoLoadingIndicator.isVisible = false
-        _binding!!.successButton.isVisible = true
-        _binding!!.inProcessTitle.isVisible = true
-        _binding!!.inProcessSubtitle.isVisible = true
-        _binding!!.successButton.isVisible = true
-        _binding!!.successButton.setOnClickListener {
-            _viewModel.stageResponse.observe(viewLifecycleOwner) {
-                Log.d("OkHttp", "STAGE DATA ERROR: ${it.apiError}")
-                if (it.data?.errorCode == null || it.data.errorCode == StageObstacleErrorType.USER_INTERACTED_COMPLETED.toTypeIdx()) {
-                    finishSDKFlow()
-                } else {
-                    Toast.makeText(activity, "Stage Error", Toast.LENGTH_LONG).show()
-                }
+    private fun onVideoUploadResponseSuccess() {
+        _viewModel.stageResponse.observe(viewLifecycleOwner) {
+            Log.d("OkHttp", "STAGE DATA ERROR: ${it.apiError}")
+            if (it.data?.errorCode == null || it.data.errorCode == StageObstacleErrorType.USER_INTERACTED_COMPLETED.toTypeIdx()) {
+                VCheckSDK.onApplicationFinish()
+            } else {
+                Toast.makeText(activity, "Stage Error", Toast.LENGTH_LONG).show()
             }
-            _viewModel.getCurrentStage()
         }
+        _viewModel.getCurrentStage()
     }
 
     private fun safeNavToFailFragment(id: Int) {
@@ -216,8 +209,11 @@ class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
             }
         }
     }
-
-    private fun finishSDKFlow() {
-        VCheckSDK.onFinish()
-    }
 }
+
+//        _binding!!.uploadVideoLoadingIndicator.isVisible = false
+//        _binding!!.successButton.isVisible = true
+//        _binding!!.inProcessTitle.isVisible = true
+//        _binding!!.inProcessSubtitle.isVisible = true
+//        _binding!!.successButton.isVisible = true
+//        _binding!!.successButton.setOnClickListener {

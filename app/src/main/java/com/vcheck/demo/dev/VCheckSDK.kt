@@ -5,10 +5,6 @@ import android.content.Intent
 import com.vcheck.demo.dev.domain.*
 import com.vcheck.demo.dev.presentation.VCheckStartupActivity
 import com.vcheck.demo.dev.util.isValidHexColor
-import okhttp3.Call
-import okhttp3.Response
-import retrofit2.Callback
-import java.io.IOException
 import java.lang.IllegalArgumentException
 
 object VCheckSDK {
@@ -18,15 +14,15 @@ object VCheckSDK {
     private var partnerId: Int? = null
     private var partnerSecret: String? = null
 
+    private var verificationToken: String? = null
+    private var verificationId: Int? = null
+
     private var verificationType: VerificationSchemeType? = null
     private var partnerUserId: String? = null
     private var partnerVerificationId: String? = null
     private var sessionLifetime: Int? = null
 
     internal var verificationClientCreationModel: VerificationClientCreationModel? = null
-
-    private var verificationToken: String? = null
-    private var verificationId: Int? = null
 
     internal var buttonsColorHex: String? = null
     internal var backgroundPrimaryColorHex: String? = null
@@ -110,7 +106,7 @@ object VCheckSDK {
         }
     }
 
-    fun onFinish() {
+    fun onApplicationFinish() {
         this.partnerEndCallback?.invoke()
     }
 
@@ -195,15 +191,41 @@ object VCheckSDK {
     }
 
     fun checkFinalVerificationStatus(): VerificationResult {
-        val response = VCheckSDKApp.instance.appContainer.mainRepository
-            .checkFinalVerificationStatus(getVerificationId()
-            ).execute()
-        return if (response.isSuccessful && response.body() != null) {
-            val bodyDeserialized: FinalVerifCheckResponseModel = response.body() as FinalVerifCheckResponseModel
-            VerificationResult(bodyDeserialized.data.status, "", "")
-        } else {
-            VerificationResult(0, "", "")
-        }
+        val call = VCheckSDKApp.instance.appContainer.mainRepository
+            .checkFinalVerificationStatus(getVerificationId(),
+            this.partnerId!!, this.partnerSecret!!)
+        return if (call != null) {
+            val response = call.execute()
+            if (response.isSuccessful && response.body() != null) {
+                val bodyDeserialized: FinalVerifCheckResponseModel = response.body() as FinalVerifCheckResponseModel
+                val data = bodyDeserialized.data
+                VerificationResult(
+                    isVerificationFinalizedAndSuccessful(data),
+                    isVerificationFinalizedAndFailed(data),
+                    isVerificationWaitingForManualCheck(data),
+                    data.status, data.scheme, data.createdAt, data.finalizedAt, data.rejectionReasons)
+            } else getErrorVerificationResult()
+        } else getErrorVerificationResult()
+    }
+
+    private fun isVerificationFinalizedAndSuccessful(data: FinalVerifCheckResponseData): Boolean {
+        return (data.status.lowercase() == "finalized" && data.isSuccess == true)
+    }
+
+    private fun isVerificationFinalizedAndFailed(data: FinalVerifCheckResponseData): Boolean {
+        return (data.status.lowercase() == "finalized" && data.isSuccess == false)
+    }
+
+    private fun isVerificationWaitingForManualCheck(data: FinalVerifCheckResponseData): Boolean {
+        return data.status.lowercase() == "waiting_manual_check"
+    }
+
+    private fun getErrorVerificationResult(): VerificationResult {
+        return VerificationResult(
+            isFinalizedAndSuccessful = false, isFinalizedAndFailed = false,
+            isWaitingForManualCheck = false, status = "sdk_client_error",
+            scheme = this.verificationType!!.toStringRepresentation(),
+            createdAt = null, finalizedAt = null, rejectionReasons = null)
     }
 
     internal fun setVerificationToken(token: String) {

@@ -3,9 +3,14 @@ package com.vcheck.demo.dev.domain
 import com.google.gson.annotations.SerializedName
 
 data class VerificationResult(
-    val status: Int,
-    val reasonCode: String?,
-    val reasonLocalized: String?
+    val isFinalizedAndSuccessful: Boolean,
+    val isFinalizedAndFailed: Boolean,
+    val isWaitingForManualCheck: Boolean,
+    val status: String,
+    val scheme: String,
+    val createdAt: String?,
+    val finalizedAt: String?,
+    val rejectionReasons: List<String>?
 )
 
 data class FinalVerifCheckResponseModel(
@@ -19,5 +24,15 @@ data class FinalVerifCheckResponseModel(
 
 data class FinalVerifCheckResponseData(
     @SerializedName("status")
-    val status: Int
+    val status: String,
+    @SerializedName("is_success")
+    val isSuccess: Boolean?,
+    @SerializedName("scheme")
+    val scheme: String,
+    @SerializedName("created_at")
+    val createdAt: String,
+    @SerializedName("finalized_at")
+    val finalizedAt: String?,
+    @SerializedName("rejection_reasons")
+    val rejectionReasons: List<String>?
 )

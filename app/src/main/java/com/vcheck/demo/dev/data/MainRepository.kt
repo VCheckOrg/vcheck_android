@@ -108,9 +108,11 @@ class MainRepository(
         else MutableLiveData(Resource.error(ApiError(null,BaseClientErrors.NO_TOKEN_AVAILABLE)))
     }
 
-    fun checkFinalVerificationStatus(verifId: Int)
-    : Call<FinalVerifCheckResponseModel> {
-        return if (isTokenPresent()) remoteDatasource.checkFinalVerificationStatus(verifId)
+    fun checkFinalVerificationStatus(verifId: Int,
+                                     partnerId: Int,
+                                     partnerSecret: String)
+    : Call<FinalVerifCheckResponseModel>? {
+        return if (isTokenPresent()) remoteDatasource.checkFinalVerificationStatus(verifId, partnerId, partnerSecret)
         else throw RuntimeException("VCheckSDK - error: token is not present while checking verification status!")
     }
 

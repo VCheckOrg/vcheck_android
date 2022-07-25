@@ -1,11 +1,16 @@
 package com.vcheck.demo.dev.data
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.vcheck.demo.dev.VCheckSDK
 import com.vcheck.demo.dev.domain.*
+import com.vcheck.demo.dev.util.generateSHA256Hash
 import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.Response
+import retrofit2.http.Header
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 class RemoteDatasource(private val verificationApiClient: VerificationApiClient,
                        private val partnerApiClient: PartnerApiClient) {
@@ -96,9 +101,19 @@ class RemoteDatasource(private val verificationApiClient: VerificationApiClient,
             verificationApiClient.sendLivenessGestureAttempt(VCheckSDK.getVerificationToken(), image, gesture))
     }
 
-    fun checkFinalVerificationStatus(verifId: Int)
-    : Call<FinalVerifCheckResponseModel> {
-        return partnerApiClient.checkFinalVerificationStatus(
-                VCheckSDK.getVerificationToken(), verifId)
+    fun checkFinalVerificationStatus(verifId: Int,
+                                     partnerId: Int,
+                                     partnerSecret: String)
+    : Call<FinalVerifCheckResponseModel>? {
+        val timestampResponse = verificationApiClient.getServiceTimestamp().execute()
+        return if (timestampResponse.isSuccessful) {
+            val timestamp = (timestampResponse.body() as String).toInt()
+            val sign = generateSHA256Hash("$partnerId$timestamp$verifId$partnerSecret")
+            partnerApiClient.checkFinalVerificationStatus(
+                VCheckSDK.getVerificationToken(), verifId, partnerId, timestamp, sign)
+        } else {
+            Log.d("VCheck - error: ","Cannot get service timestamp for check verification call!")
+            null
+        }
     }
 }
