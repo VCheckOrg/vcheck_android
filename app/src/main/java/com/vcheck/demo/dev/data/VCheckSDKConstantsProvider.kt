@@ -10,7 +10,7 @@ class VCheckSDKConstantsProvider {
         const val DEFAULT_SESSION_LIFETIME = 3600
 
         val vcheckSDKAvailableLanguagesList = listOf<String>(
-            "ua",
+            "uk",
             "en",
             "ru"
         )
