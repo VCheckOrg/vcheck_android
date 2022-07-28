@@ -3,9 +3,8 @@ package com.vcheck.demo.dev.domain
 import com.google.gson.annotations.SerializedName
 
 data class DocumentUploadRequestBody(
-    val country: String = "code",
-    val document_type: Int = 1,
-    //val is_handwritten: Boolean? = null //deprecated field
+    val country: String,
+    val document_type: Int,
 )
 
 data class DocUserDataRequestBody(

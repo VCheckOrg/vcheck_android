@@ -16,7 +16,6 @@ import com.vcheck.demo.dev.databinding.ChooseDocMethodFragmentBinding
 import com.vcheck.demo.dev.domain.DocType
 import com.vcheck.demo.dev.domain.DocTypeData
 import com.vcheck.demo.dev.domain.docCategoryIdxToType
-import com.vcheck.demo.dev.presentation.VCheckMainActivity
 import com.vcheck.demo.dev.util.ThemeWrapperFragment
 
 class ChooseDocMethodFragment : ThemeWrapperFragment() {
@@ -86,8 +85,7 @@ class ChooseDocMethodFragment : ThemeWrapperFragment() {
         _binding!!.docMethodForeignPassport.isVisible = false
         _binding!!.docMethodIdCard.isVisible = false
 
-        val selectedCountryCode =
-            _viewModel.repository.getSelectedCountryCode(activity as VCheckMainActivity)
+        val selectedCountryCode = VCheckSDK.getSelectedCountryCode()
 
         _viewModel.docTypesResponse.observe(viewLifecycleOwner) {
             if (it.data?.data != null) {

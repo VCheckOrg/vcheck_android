@@ -29,7 +29,7 @@ import com.vcheck.demo.dev.di.AppContainer
 import com.vcheck.demo.dev.domain.LivenessGestureResponse
 import com.vcheck.demo.dev.presentation.liveness.flow_logic.*
 import com.vcheck.demo.dev.presentation.liveness.ui.CameraConnectionFragment
-import com.vcheck.demo.dev.util.ContextUtils
+import com.vcheck.demo.dev.util.VCheckContextUtils
 import com.vcheck.demo.dev.util.setMargins
 import com.vcheck.demo.dev.util.vibrateDevice
 import com.vcheck.demo.dev.util.video.Muxer
@@ -469,9 +469,9 @@ class VCheckLivenessActivity : AppCompatActivity(),
     }
 
     override fun attachBaseContext(newBase: Context) {
-        val localeToSwitchTo: String = ContextUtils.getSavedLanguage(newBase)
+        val localeToSwitchTo: String = VCheckSDK.getSDKLangCode()
         val localeUpdatedContext: ContextWrapper =
-            ContextUtils.updateLocale(newBase, localeToSwitchTo)
+            VCheckContextUtils.updateLocale(newBase, localeToSwitchTo)
         super.attachBaseContext(localeUpdatedContext)
     }
 

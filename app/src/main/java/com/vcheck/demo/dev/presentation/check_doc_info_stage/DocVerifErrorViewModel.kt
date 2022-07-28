@@ -13,7 +13,7 @@ class DocVerifErrorViewModel(val repository: MainRepository) : ViewModel() {
     fun setDocumentAsPrimary(docId: Int,  isForced: Boolean) {
         repository.updateAndConfirmDocInfo(docId, DocUserDataRequestBody(ParsedDocFieldsData(), isForced))
             .observeForever {
-                primaryDocStatusResponse.value = true //TODO TEST WITH NEW ARCH! + refactor for handling errors
+                primaryDocStatusResponse.value = true
         }
     }
 }

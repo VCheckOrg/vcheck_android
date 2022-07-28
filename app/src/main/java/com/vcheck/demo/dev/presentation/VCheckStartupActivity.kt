@@ -6,8 +6,9 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.vcheck.demo.dev.R
+import com.vcheck.demo.dev.VCheckSDK
 import com.vcheck.demo.dev.VCheckSDKApp
-import com.vcheck.demo.dev.util.ContextUtils
+import com.vcheck.demo.dev.util.VCheckContextUtils
 
 internal class VCheckStartupActivity : AppCompatActivity() {
 
@@ -17,7 +18,7 @@ internal class VCheckStartupActivity : AppCompatActivity() {
 
         val repository = VCheckSDKApp.instance.appContainer.mainRepository
 
-        repository.resetCacheOnStartup(this@VCheckStartupActivity)
+        repository.resetCacheOnStartup()
 
         startActivity(Intent(this@VCheckStartupActivity, VCheckMainActivity::class.java))
     }
@@ -31,9 +32,9 @@ internal class VCheckStartupActivity : AppCompatActivity() {
     }
 
     override fun attachBaseContext(newBase: Context) {
-        val localeToSwitchTo: String = ContextUtils.getSavedLanguage(newBase)
+        val localeToSwitchTo: String = VCheckSDK.getSDKLangCode()
         val localeUpdatedContext: ContextWrapper =
-            ContextUtils.updateLocale(newBase, localeToSwitchTo)
+            VCheckContextUtils.updateLocale(newBase, localeToSwitchTo)
         super.attachBaseContext(localeUpdatedContext)
     }
 }

@@ -2,12 +2,16 @@ package com.vcheck.demo.dev
 
 import android.app.Activity
 import android.content.Intent
+import android.util.Log
+import com.vcheck.demo.dev.data.VCheckSDKConstantsProvider
 import com.vcheck.demo.dev.domain.*
 import com.vcheck.demo.dev.presentation.VCheckStartupActivity
 import com.vcheck.demo.dev.util.isValidHexColor
 import java.lang.IllegalArgumentException
 
 object VCheckSDK {
+
+    const val TAG = "VCheckSDK"
 
     private var partnerEndCallback: (() -> Unit)? = null
 
@@ -16,6 +20,8 @@ object VCheckSDK {
 
     private var verificationToken: String? = null
     private var verificationId: Int? = null
+    //TODO add on iOS!
+    private var selectedCountryCode: String? = null
 
     private var verificationType: VerificationSchemeType? = null
     private var partnerUserId: String? = null
@@ -23,6 +29,9 @@ object VCheckSDK {
     private var sessionLifetime: Int? = null
 
     internal var verificationClientCreationModel: VerificationClientCreationModel? = null
+
+    //TODO add on iOS!
+    internal var sdkLanguageCode: String? = null
 
     internal var buttonsColorHex: String? = null
     internal var backgroundPrimaryColorHex: String? = null
@@ -74,6 +83,16 @@ object VCheckSDK {
         if (partnerSecret == null) {
             throw IllegalArgumentException("VCheckSDK - error: partner secret must be provided | see VCheckSDK.partnerSecret(secret: String)")
         }
+        if (sdkLanguageCode == null) {
+            Log.w(TAG, "VCheckSDK - warning: sdk language code is not set; using English (en) locale as default. " +
+                    "| see VCheckSDK.sdkLanguageCode(langCode: String)")
+        }
+        if (sdkLanguageCode != null && !VCheckSDKConstantsProvider
+                .vcheckSDKAvailableLanguagesList.contains(sdkLanguageCode?.lowercase())) {
+            throw IllegalArgumentException("VCheckSDK - error: SDK is not localized with [$sdkLanguageCode] locale yet. " +
+                    "You may set one of the next locales: ${VCheckSDKConstantsProvider.vcheckSDKAvailableLanguagesList}, " +
+                    "or check out for the recent version of the SDK library")
+        }
         if (partnerUserId != null && partnerUserId!!.isEmpty()) {
             throw IllegalArgumentException("VCheckSDK - error: if provided, partner user ID must be unique to your service and not empty")
         }
@@ -108,6 +127,11 @@ object VCheckSDK {
 
     fun onApplicationFinish() {
         this.partnerEndCallback?.invoke()
+    }
+
+    fun languageCode(langCode: String): VCheckSDK {
+        this.sdkLanguageCode = langCode.lowercase()
+        return this
     }
 
     fun partnerEndCallback(callback: (() -> Unit)): VCheckSDK {
@@ -250,6 +274,17 @@ object VCheckSDK {
         return verificationId ?: -1
     }
 
+    internal fun getSDKLangCode(): String {
+        return sdkLanguageCode ?: "en"
+    }
+
+    internal fun getSelectedCountryCode(): String {
+        return selectedCountryCode ?: "ua"
+    }
+
+    internal fun setSelectedCountryCode(code: String) {
+        this.selectedCountryCode = code
+    }
 
 
 //    private var customVerificationServiceURL: String? = null

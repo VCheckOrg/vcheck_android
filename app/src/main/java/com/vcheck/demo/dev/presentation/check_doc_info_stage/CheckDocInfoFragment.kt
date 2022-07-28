@@ -20,7 +20,7 @@ import com.vcheck.demo.dev.domain.*
 import com.vcheck.demo.dev.presentation.VCheckMainActivity
 import com.vcheck.demo.dev.presentation.adapters.CheckDocInfoAdapter
 import com.vcheck.demo.dev.presentation.adapters.DocInfoEditCallback
-import com.vcheck.demo.dev.util.ContextUtils
+import com.vcheck.demo.dev.util.VCheckContextUtils
 import com.vcheck.demo.dev.util.ThemeWrapperFragment
 import java.io.File
 
@@ -85,7 +85,7 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
             //Stub; no back press needed here
         }
 
-        val currentLocaleCode = ContextUtils.getSavedLanguage(activity as VCheckMainActivity)
+        val currentLocaleCode = VCheckSDK.getSDKLangCode()
 
         binding.apply {
             photoCard2.isVisible = false

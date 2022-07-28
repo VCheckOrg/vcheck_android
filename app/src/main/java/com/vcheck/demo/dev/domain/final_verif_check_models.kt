@@ -2,6 +2,7 @@ package com.vcheck.demo.dev.domain
 
 import com.google.gson.annotations.SerializedName
 
+//TODO rename to VerificationCheckResult
 data class VerificationResult(
     val isFinalizedAndSuccessful: Boolean,
     val isFinalizedAndFailed: Boolean,

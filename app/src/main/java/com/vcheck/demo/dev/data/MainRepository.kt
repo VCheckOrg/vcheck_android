@@ -1,7 +1,5 @@
 package com.vcheck.demo.dev.data
 
-import android.content.Context
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.vcheck.demo.dev.VCheckSDK
 import com.vcheck.demo.dev.domain.*
@@ -27,8 +25,8 @@ class MainRepository(
         val scheme = vModel.verificationType.toStringRepresentation()
         val partnerUserId = vModel.partnerUserId ?: Date().time.toString()
         val partnerVerificationId = vModel.partnerVerificationId ?: Date().time.toString()
-        val sessionLifetime = vModel.sessionLifetime ?: RemoteApiConfigProvider.DEFAULT_SESSION_LIFETIME
-        val verifCallbackURL = "${RemoteApiConfigProvider.VERIFICATIONS_API_BASE_URL}ping"
+        val sessionLifetime = vModel.sessionLifetime ?: VCheckSDKConstantsProvider.DEFAULT_SESSION_LIFETIME
+        val verifCallbackURL = "${VCheckSDKConstantsProvider.VERIFICATIONS_API_BASE_URL}ping"
         val sign = generateSHA256Hash(
             "$partnerId$partnerUserId$partnerVerificationId$scheme$serviceTS$partnerSecret")
 
@@ -118,14 +116,6 @@ class MainRepository(
 
     //---- LOCAL SOURCE DATA OPS:
 
-    fun storeSelectedCountryCode(ctx: Context, countryCode: String) {
-        localDatasource.storeSelectedCountryCode(ctx, countryCode)
-    }
-
-    fun getSelectedCountryCode(ctx: Context): String {
-        return localDatasource.getSelectedCountryCode(ctx)
-    }
-
     fun setSelectedDocTypeWithData(data: DocTypeData) {
         localDatasource.setSelectedDocTypeWithData(data)
     }
@@ -142,37 +132,7 @@ class MainRepository(
         return localDatasource.getLivenessMilestonesList()
     }
 
-    fun resetCacheOnStartup(ctx: Context) {
-        localDatasource.resetCacheOnStartup(ctx)
+    fun resetCacheOnStartup() {
+        localDatasource.resetCacheOnStartup()
     }
 }
-
-//    fun setDocumentAsPrimary(token: String, docId: Int) : MutableLiveData<Resource<Response<Void>>> {
-//        return if (token.isNotEmpty()) {
-//            remoteDatasource.setDocumentAsPrimary(token, docId)
-//        } else {
-//            MutableLiveData(Resource.error(ApiError(BaseClientErrors.NO_TOKEN_AVAILABLE)))
-//        }
-//    }
-//    fun checkIfApiConfigShouldBeChanged(vModel: VerificationClientCreationModel): Boolean {
-//        var shouldUpdateApi = false
-//
-//        if (vModel.customVerificationServiceURL != null) {
-//            remoteApiConfigProvider.setVerificationsApiBaseUrl(vModel.customVerificationServiceURL!!)
-//            shouldUpdateApi = true
-//        }
-//        if (vModel.customPartnerServiceURL != null) {
-//            remoteApiConfigProvider.setPartnerApiBaseUrl(vModel.customPartnerServiceURL!!)
-//            shouldUpdateApi = true
-//        }
-//        return shouldUpdateApi
-//    }
-
-// Could do with app context + SharedPrefs!
-//fun storeVerifToken(ctx: Context, verifToken: String) {
-//    localDatasource.storeVerifToken(ctx, verifToken)
-//}
-//
-//fun getVerifToken(ctx: Context): String {
-//    return localDatasource.getVerifToken(ctx)
-//}

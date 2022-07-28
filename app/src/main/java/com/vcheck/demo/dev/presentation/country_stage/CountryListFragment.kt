@@ -133,10 +133,7 @@ class CountryListFragment : ThemeWrapperFragment(),
     }
 
     override fun onClick(country: String) {
-        appContainer.mainRepository.storeSelectedCountryCode(
-            activity as VCheckMainActivity,
-            country
-        )
+        VCheckSDK.setSelectedCountryCode(country)
         findNavController().popBackStack()
     }
 

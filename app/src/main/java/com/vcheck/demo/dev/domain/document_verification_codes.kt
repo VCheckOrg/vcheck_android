@@ -14,7 +14,7 @@ enum class DocumentVerificationCode {
     INVALID_FILES,// = 8
     PHOTO_TOO_LARGE,// = 9
     PARSING_ERROR,// = 10
-    INVALID_PAGE
+    INVALID_PAGE // = 11
 }
 
 fun DocumentVerificationCode.toCodeIdx(): Int {

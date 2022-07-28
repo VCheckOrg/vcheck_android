@@ -20,7 +20,6 @@ import com.vcheck.demo.dev.VCheckSDKApp
 import com.vcheck.demo.dev.data.Resource
 import com.vcheck.demo.dev.databinding.CheckPhotoFragmentBinding
 import com.vcheck.demo.dev.domain.*
-import com.vcheck.demo.dev.presentation.VCheckMainActivity
 import com.vcheck.demo.dev.presentation.transferrable_objects.CheckDocInfoDataTO
 import com.vcheck.demo.dev.presentation.transferrable_objects.ZoomPhotoTO
 import com.vcheck.demo.dev.util.ThemeWrapperFragment
@@ -139,7 +138,7 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
 
             confirmPhotoButton.setOnClickListener {
                 val body = DocumentUploadRequestBody(
-                    _viewModel.repository.getSelectedCountryCode(activity as VCheckMainActivity),
+                    VCheckSDK.getSelectedCountryCode(),
                     args.checkPhotoDataTO.selectedDocType.toCategoryIdx())
 
                 val multipartList: ArrayList<MultipartBody.Part> = ArrayList()
@@ -188,7 +187,7 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
                             response.data.id)
                     findNavController().navigate(action)
                 } else {
-                    Log.e("DOCS", "Error: no document data in response ATM")
+                    Log.e("DOCS", "Error: no document data in response")
                 }
             } else {
                 _binding!!.replacePhotoButton.isVisible = true
@@ -198,13 +197,11 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
                 Toast.makeText(activity, "Error: [${codeIdxToVerificationCode(response.errorCode)}]", Toast.LENGTH_LONG).show()
             }
         } else {
-            Log.e("DOCS", "Error: no document data in response ATM")
+            Log.e("DOCS", "Error: no document data in response")
         }
     }
 
     private fun handleDocUploadResponse(resource: Resource<DocumentUploadResponse>) {
-        Log.d("OkHTTP", "------ DATA: ${resource.data}")
-        Log.d("OkHTTP", "------ DATA-DATA: ${resource.data?.data}")
         if (resource.data?.data != null) {
             if (resource.data.data.id != null) {
                 val action = CheckPhotoFragmentDirections

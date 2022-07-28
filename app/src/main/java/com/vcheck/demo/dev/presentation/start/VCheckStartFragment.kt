@@ -25,7 +25,7 @@ import com.vcheck.demo.dev.di.AppContainer
 import com.vcheck.demo.dev.domain.*
 import com.vcheck.demo.dev.presentation.VCheckMainActivity
 import com.vcheck.demo.dev.presentation.transferrable_objects.CountriesListTO
-import com.vcheck.demo.dev.util.ContextUtils
+import com.vcheck.demo.dev.util.VCheckContextUtils
 import com.vcheck.demo.dev.util.toFlagEmoji
 import java.util.*
 
@@ -106,7 +106,7 @@ internal class VCheckStartFragment : Fragment() {
         _viewModel.timestampResponse.observe(viewLifecycleOwner) {
             if (it.data != null) {
                 val requestModel = _viewModel.repository.prepareVerificationRequest(
-                    it.data.toLong(), ContextUtils.getSavedLanguage(activity as VCheckMainActivity),
+                    it.data.toLong(), VCheckSDK.getSDKLangCode(),
                     VCheckSDK.verificationClientCreationModel!!)
                 Log.d("REQUEST MODEL"," : $requestModel")
                 _viewModel.createVerificationRequest(requestModel)
@@ -115,7 +115,6 @@ internal class VCheckStartFragment : Fragment() {
 
         _viewModel.createResponse.observe(viewLifecycleOwner) {
             if (it.data?.data != null) {
-                //_viewModel.repository.storeVerifToken((activity as VCheckMainActivity), it.data.data.token)
                 VCheckSDK.setVerificationToken(it.data.data.token)
                 _viewModel.initVerification()
             }
