@@ -19,19 +19,17 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VCheckSDK
-import com.vcheck.demo.dev.VCheckSDKApp
 import com.vcheck.demo.dev.databinding.FragmentDemoStartBinding
-import com.vcheck.demo.dev.di.AppContainer
+import com.vcheck.demo.dev.di.VCheckDIContainer
 import com.vcheck.demo.dev.domain.*
 import com.vcheck.demo.dev.presentation.VCheckMainActivity
 import com.vcheck.demo.dev.presentation.transferrable_objects.CountriesListTO
-import com.vcheck.demo.dev.util.VCheckContextUtils
 import com.vcheck.demo.dev.util.toFlagEmoji
 import java.util.*
 
 internal class VCheckStartFragment : Fragment() {
 
-    private lateinit var appContainer: AppContainer
+    private lateinit var appContainer: VCheckDIContainer
 
     private var _binding: FragmentDemoStartBinding? = null
 
@@ -64,9 +62,7 @@ internal class VCheckStartFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        appContainer = VCheckSDKApp.instance.appContainer
-        _viewModel = VCheckStartViewModel(appContainer.mainRepository)
+        _viewModel = VCheckStartViewModel(VCheckDIContainer.mainRepository)
     }
 
     override fun onCreateView(inflater: LayoutInflater,

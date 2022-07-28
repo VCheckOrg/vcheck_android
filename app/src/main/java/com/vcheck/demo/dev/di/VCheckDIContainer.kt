@@ -1,6 +1,5 @@
 package com.vcheck.demo.dev.di
 
-import com.vcheck.demo.dev.VCheckSDKApp
 import com.vcheck.demo.dev.data.*
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -10,7 +9,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 
-internal class AppContainer(val app: VCheckSDKApp) {
+object VCheckDIContainer {
 
     private var verificationRetrofit: Retrofit
 

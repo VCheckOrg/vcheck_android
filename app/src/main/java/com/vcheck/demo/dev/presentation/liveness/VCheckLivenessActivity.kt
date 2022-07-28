@@ -22,10 +22,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.navigation.findNavController
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VCheckSDK
-import com.vcheck.demo.dev.VCheckSDKApp
 import com.vcheck.demo.dev.data.Resource
 import com.vcheck.demo.dev.databinding.ActivityVcheckLivenessBinding
-import com.vcheck.demo.dev.di.AppContainer
+import com.vcheck.demo.dev.di.VCheckDIContainer
 import com.vcheck.demo.dev.domain.LivenessGestureResponse
 import com.vcheck.demo.dev.presentation.liveness.flow_logic.*
 import com.vcheck.demo.dev.presentation.liveness.ui.CameraConnectionFragment
@@ -54,8 +53,6 @@ class VCheckLivenessActivity : AppCompatActivity(),
         private const val STAGE_VIBRATION_DURATION_MILLIS: Long = 100
     }
 
-    private lateinit var appContainer: AppContainer
-
     private var gestureResponse: MutableLiveData<Resource<LivenessGestureResponse>> = MutableLiveData()
 
     private var binding: ActivityVcheckLivenessBinding? = null
@@ -81,8 +78,6 @@ class VCheckLivenessActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        appContainer = (application as VCheckSDKApp).appContainer
 
         binding = ActivityVcheckLivenessBinding.inflate(layoutInflater)
         val view = binding!!.root
@@ -110,7 +105,7 @@ class VCheckLivenessActivity : AppCompatActivity(),
     }
 
     private fun setMilestones() {
-        val milestonesList = appContainer.mainRepository.getLivenessMilestonesList()
+        val milestonesList = VCheckDIContainer.mainRepository.getLivenessMilestonesList()
         if (milestonesList != null) {
             milestoneFlow.setStagesList(milestonesList)
         } else {
@@ -286,7 +281,7 @@ class VCheckLivenessActivity : AppCompatActivity(),
                     "image.jpg", file.name, file.asRequestBody("image/jpeg".toMediaType()))
                 runOnUiThread {
                     val currentGesture = milestoneFlow.getGestureRequestFromCurrentStage()
-                    appContainer.mainRepository.sendLivenessGestureAttempt(
+                    VCheckDIContainer.mainRepository.sendLivenessGestureAttempt(
                         image, MultipartBody.Part.createFormData("gesture", currentGesture))
                         .observeForever {
                             Log.d(TAG, "========= WAITING FOR ANY RESPONSE FOR GESTURE: ${currentGesture}...")

@@ -14,13 +14,12 @@ import androidx.navigation.fragment.navArgs
 import com.squareup.picasso.Picasso
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VCheckSDK
-import com.vcheck.demo.dev.VCheckSDKApp
 import com.vcheck.demo.dev.databinding.CheckDocInfoFragmentBinding
+import com.vcheck.demo.dev.di.VCheckDIContainer
 import com.vcheck.demo.dev.domain.*
 import com.vcheck.demo.dev.presentation.VCheckMainActivity
 import com.vcheck.demo.dev.presentation.adapters.CheckDocInfoAdapter
 import com.vcheck.demo.dev.presentation.adapters.DocInfoEditCallback
-import com.vcheck.demo.dev.util.VCheckContextUtils
 import com.vcheck.demo.dev.util.ThemeWrapperFragment
 import java.io.File
 
@@ -63,8 +62,7 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val appContainer = VCheckSDKApp.instance.appContainer
-        viewModel = CheckDocInfoViewModel(appContainer.mainRepository)
+        viewModel = CheckDocInfoViewModel(VCheckDIContainer.mainRepository)
     }
 
     override fun onCreateView(

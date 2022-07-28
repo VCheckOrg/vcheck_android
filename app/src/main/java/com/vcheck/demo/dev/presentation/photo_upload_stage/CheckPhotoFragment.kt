@@ -16,9 +16,9 @@ import androidx.navigation.fragment.navArgs
 import com.squareup.picasso.Picasso
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VCheckSDK
-import com.vcheck.demo.dev.VCheckSDKApp
 import com.vcheck.demo.dev.data.Resource
 import com.vcheck.demo.dev.databinding.CheckPhotoFragmentBinding
+import com.vcheck.demo.dev.di.VCheckDIContainer
 import com.vcheck.demo.dev.domain.*
 import com.vcheck.demo.dev.presentation.transferrable_objects.CheckDocInfoDataTO
 import com.vcheck.demo.dev.presentation.transferrable_objects.ZoomPhotoTO
@@ -70,9 +70,7 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val appContainer = VCheckSDKApp.instance.appContainer
-        _viewModel = CheckPhotoViewModel(appContainer.mainRepository)
+        _viewModel = CheckPhotoViewModel(VCheckDIContainer.mainRepository)
     }
 
     override fun onCreateView(

@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VCheckSDK
-import com.vcheck.demo.dev.VCheckSDKApp
+import com.vcheck.demo.dev.di.VCheckDIContainer
 import com.vcheck.demo.dev.util.VCheckContextUtils
 
 internal class VCheckStartupActivity : AppCompatActivity() {
@@ -16,7 +16,7 @@ internal class VCheckStartupActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_vcheck_splash)
 
-        val repository = VCheckSDKApp.instance.appContainer.mainRepository
+        val repository = VCheckDIContainer.mainRepository
 
         repository.resetCacheOnStartup()
 

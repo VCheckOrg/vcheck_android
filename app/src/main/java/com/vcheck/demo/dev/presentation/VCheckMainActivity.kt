@@ -5,15 +5,11 @@ import android.graphics.Color
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.vcheck.demo.dev.VCheckSDK
-import com.vcheck.demo.dev.VCheckSDKApp
 import com.vcheck.demo.dev.databinding.ActivityVcheckMainBinding
-import com.vcheck.demo.dev.di.AppContainer
 import com.vcheck.demo.dev.util.VCheckContextUtils
 
 
 internal class VCheckMainActivity : AppCompatActivity() {
-
-    private lateinit var appContainer: AppContainer
 
     private lateinit var binding: ActivityVcheckMainBinding
 
@@ -25,8 +21,6 @@ internal class VCheckMainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        appContainer = (application as VCheckSDKApp).appContainer
 
         val languageCode = VCheckSDK.getSDKLangCode()
         VCheckContextUtils.updateLocale(this@VCheckMainActivity, languageCode)
@@ -51,4 +45,6 @@ internal class VCheckMainActivity : AppCompatActivity() {
             VCheckContextUtils.updateLocale(newBase, localeToSwitchTo)
         super.attachBaseContext(localeUpdatedContext)
     }
+
+
 }

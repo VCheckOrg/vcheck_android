@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.util.Log
 import com.vcheck.demo.dev.data.VCheckSDKConstantsProvider
+import com.vcheck.demo.dev.di.VCheckDIContainer
 import com.vcheck.demo.dev.domain.*
 import com.vcheck.demo.dev.presentation.VCheckStartupActivity
 import com.vcheck.demo.dev.util.isValidHexColor
@@ -31,7 +32,7 @@ object VCheckSDK {
     internal var verificationClientCreationModel: VerificationClientCreationModel? = null
 
     //TODO add on iOS!
-    internal var sdkLanguageCode: String? = null
+    private var sdkLanguageCode: String? = null
 
     internal var buttonsColorHex: String? = null
     internal var backgroundPrimaryColorHex: String? = null
@@ -66,6 +67,7 @@ object VCheckSDK {
     private fun resetVerification() {
         this.verificationToken = null
         this.verificationId = null
+        this.selectedCountryCode = null
     }
 
     private fun performPreStartChecks() {
@@ -215,7 +217,7 @@ object VCheckSDK {
     }
 
     fun checkFinalVerificationStatus(): VerificationResult {
-        val call = VCheckSDKApp.instance.appContainer.mainRepository
+        val call = VCheckDIContainer.mainRepository
             .checkFinalVerificationStatus(getVerificationId(),
             this.partnerId!!, this.partnerSecret!!)
         return if (call != null) {
@@ -267,7 +269,7 @@ object VCheckSDK {
         this.verificationId = id
     }
 
-    internal fun getVerificationId(): Int {
+    private fun getVerificationId(): Int {
         if (verificationId == null) {
             throw RuntimeException("VCheckSDK - error: verification id not set!")
         }

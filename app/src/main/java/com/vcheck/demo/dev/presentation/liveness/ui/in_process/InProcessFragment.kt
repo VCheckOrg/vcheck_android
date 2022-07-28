@@ -14,9 +14,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VCheckSDK
-import com.vcheck.demo.dev.VCheckSDKApp
 import com.vcheck.demo.dev.data.Resource
 import com.vcheck.demo.dev.databinding.InProcessFragmentBinding
+import com.vcheck.demo.dev.di.VCheckDIContainer
 import com.vcheck.demo.dev.domain.*
 import com.vcheck.demo.dev.presentation.liveness.VCheckLivenessActivity
 import com.vcheck.demo.dev.presentation.liveness.flow_logic.VideoProcessingListener
@@ -55,9 +55,7 @@ class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val appContainer = VCheckSDKApp.instance.appContainer
-        _viewModel = InProcessViewModel(appContainer.mainRepository)
+        _viewModel = InProcessViewModel(VCheckDIContainer.mainRepository)
     }
 
     override fun onCreateView(

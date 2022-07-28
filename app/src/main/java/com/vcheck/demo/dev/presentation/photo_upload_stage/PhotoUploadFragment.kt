@@ -20,8 +20,8 @@ import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.Picasso
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VCheckSDK
-import com.vcheck.demo.dev.VCheckSDKApp
 import com.vcheck.demo.dev.databinding.PhotoUploadFragmentBinding
+import com.vcheck.demo.dev.di.VCheckDIContainer
 import com.vcheck.demo.dev.domain.DocType
 import com.vcheck.demo.dev.domain.docCategoryIdxToType
 import com.vcheck.demo.dev.presentation.VCheckMainActivity
@@ -30,7 +30,6 @@ import com.vcheck.demo.dev.util.ThemeWrapperFragment
 import java.io.File
 import java.io.IOException
 
-//TODO rename to "TakePhotoFragment"
 class PhotoUploadFragment : ThemeWrapperFragment() {
 
     private var _binding: PhotoUploadFragmentBinding? = null
@@ -75,10 +74,7 @@ class PhotoUploadFragment : ThemeWrapperFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val appContainer = VCheckSDKApp.instance.appContainer
-        _viewModel =
-            PhotoUploadViewModel(appContainer.mainRepository)
+        _viewModel = PhotoUploadViewModel(VCheckDIContainer.mainRepository)
     }
 
     override fun onCreateView(

@@ -11,8 +11,8 @@ import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VCheckSDK
-import com.vcheck.demo.dev.VCheckSDKApp
 import com.vcheck.demo.dev.databinding.ChooseDocMethodFragmentBinding
+import com.vcheck.demo.dev.di.VCheckDIContainer
 import com.vcheck.demo.dev.domain.DocType
 import com.vcheck.demo.dev.domain.DocTypeData
 import com.vcheck.demo.dev.domain.docCategoryIdxToType
@@ -58,10 +58,7 @@ class ChooseDocMethodFragment : ThemeWrapperFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val appContainer = VCheckSDKApp.instance.appContainer
-        _viewModel =
-            ChooseDocMethodViewModel(appContainer.mainRepository)
+        _viewModel = ChooseDocMethodViewModel(VCheckDIContainer.mainRepository)
     }
 
     override fun onCreateView(

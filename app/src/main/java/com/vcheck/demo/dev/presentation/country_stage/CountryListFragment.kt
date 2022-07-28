@@ -12,12 +12,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VCheckSDK
-import com.vcheck.demo.dev.VCheckSDKApp
 import com.vcheck.demo.dev.presentation.adapters.CountryListAdapter
 import com.vcheck.demo.dev.databinding.CountryListFragmentBinding
-import com.vcheck.demo.dev.di.AppContainer
 import com.vcheck.demo.dev.domain.CountryTO
-import com.vcheck.demo.dev.presentation.VCheckMainActivity
 import com.vcheck.demo.dev.presentation.adapters.SearchCountryCallback
 import com.vcheck.demo.dev.util.ThemeWrapperFragment
 import java.text.Collator
@@ -27,7 +24,6 @@ class CountryListFragment : ThemeWrapperFragment(),
     CountryListAdapter.OnCountryItemClick, SearchCountryCallback {
 
     private lateinit var countriesList: List<CountryTO>
-    private lateinit var appContainer: AppContainer
     private lateinit var binding: CountryListFragmentBinding
     private val args: CountryListFragmentArgs by navArgs()
 
@@ -51,7 +47,6 @@ class CountryListFragment : ThemeWrapperFragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        appContainer = VCheckSDKApp.instance.appContainer
     }
 
     override fun onCreateView(

@@ -10,9 +10,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VCheckSDK
-import com.vcheck.demo.dev.VCheckSDKApp
 import com.vcheck.demo.dev.databinding.FragmentDocVerificationNotSuccessfulBinding
-import com.vcheck.demo.dev.presentation.VCheckMainActivity
+import com.vcheck.demo.dev.di.VCheckDIContainer
 import com.vcheck.demo.dev.util.ThemeWrapperFragment
 
 class DocVerifErrorFragment : ThemeWrapperFragment() {
@@ -45,8 +44,7 @@ class DocVerifErrorFragment : ThemeWrapperFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val appContainer = VCheckSDKApp.instance.appContainer
-        viewModel = DocVerifErrorViewModel(appContainer.mainRepository)
+        viewModel = DocVerifErrorViewModel(VCheckDIContainer.mainRepository)
     }
 
     override fun onCreateView(

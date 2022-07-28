@@ -11,10 +11,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VCheckSDK
-import com.vcheck.demo.dev.VCheckSDKApp
 import com.vcheck.demo.dev.databinding.ChooseCountryFragmentBinding
-import com.vcheck.demo.dev.di.AppContainer
-import com.vcheck.demo.dev.presentation.VCheckMainActivity
 import com.vcheck.demo.dev.presentation.transferrable_objects.CountriesListTO
 import com.vcheck.demo.dev.util.ThemeWrapperFragment
 import com.vcheck.demo.dev.util.toFlagEmoji
@@ -23,7 +20,6 @@ import java.util.*
 class ChooseCountryFragment : ThemeWrapperFragment() {
 
     lateinit var country: String
-    private lateinit var appContainer: AppContainer
     private lateinit var binding: ChooseCountryFragmentBinding
     private val args: ChooseCountryFragmentArgs by navArgs()
 
@@ -53,7 +49,6 @@ class ChooseCountryFragment : ThemeWrapperFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        appContainer = VCheckSDKApp.instance.appContainer
     }
 
     override fun onCreateView(
