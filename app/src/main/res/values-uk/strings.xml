@@ -133,7 +133,7 @@
     <string name="date_of_expiry_validation_error">Введіть валідний термін дії документа</string>
     <string name="retry">Спробувати знову</string>
     <string name="liveness_stage_face_up">Підніміть голову вгору</string>
-    <string name="liveness_stage_face_down">Наклоніть голову вниз</string>
+    <string name="liveness_stage_face_down">Опустіть голову вниз</string>
     <string name="liveness_stage_check_face_pos">Тримайте голову прямо</string>
     <string name="liveness_stage_face_left">Поверніть голову ліворуч</string>
     <string name="liveness_stage_face_right">Поверніть голову праворуч</string>

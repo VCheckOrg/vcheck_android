@@ -242,7 +242,8 @@ class PhotoUploadFragment : ThemeWrapperFragment() {
                 }
             }
         } catch (e: Exception) {
-            Toast.makeText(requireActivity(), e.localizedMessage, Toast.LENGTH_LONG).show()
+            //Toast.makeText(requireActivity(), e.localizedMessage, Toast.LENGTH_LONG).show()
+            Log.e("PHOTO_UPLOAD - ERROR", e.stackTrace.toString())
         }
     }
 
@@ -291,10 +292,8 @@ class PhotoUploadFragment : ThemeWrapperFragment() {
     }
 
     private fun dispatchTakePictureIntent(photoIdx: Int) {
-        Log.d("PHOTO", "------------ dispatchTakePictureIntent(photoIdx: $photoIdx)")
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
             // Ensure that there's a camera activity to handle the intent
-            //startActivity(takePictureIntent)
             takePictureIntent.resolveActivity((activity as VCheckMainActivity).packageManager)?.also {
                 // Create the File where the photo should go
                 val photoFile: File? = try {
@@ -304,13 +303,12 @@ class PhotoUploadFragment : ThemeWrapperFragment() {
                     Log.d("PHOTO", ex.stackTraceToString())
                     null
                 }
-                // Continue only if the File was successfully created
+                // Continue only if the file was successfully created
                 photoFile?.also {
                     val photoURI: Uri = FileProvider.getUriForFile(
                         (activity as VCheckMainActivity),
                         "com.vcheck.demo.dev",
-                        it
-                    )
+                        it)
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
                     startActivityForResult(takePictureIntent, photoIdx)
                 }

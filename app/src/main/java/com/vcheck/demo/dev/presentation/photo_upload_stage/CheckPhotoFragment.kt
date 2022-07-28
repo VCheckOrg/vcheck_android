@@ -176,13 +176,12 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
                 response.errorCode == DocumentVerificationCode.INVALID_PAGE.toCodeIdx()) {
                 if (response.data?.id != null) {
                     val action = CheckPhotoFragmentDirections
-                        .actionCheckPhotoFragmentToCheckInfoFragment(
+                        .actionCheckPhotoFragmentToDocVerificationNotSuccessfulFragment(
                             CheckDocInfoDataTO(args.checkPhotoDataTO.selectedDocType,
                                 response.data.id,
                                 args.checkPhotoDataTO.photo1Path,
                                 args.checkPhotoDataTO.photo2Path,
-                                true),
-                            response.data.id)
+                                true))
                     findNavController().navigate(action)
                 } else {
                     Log.e("DOCS", "Error: no document data in response")
@@ -208,8 +207,8 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
                             args.checkPhotoDataTO.selectedDocType,
                             resource.data.data.id,
                             args.checkPhotoDataTO.photo1Path,
-                            args.checkPhotoDataTO.photo2Path
-                        ),
+                            args.checkPhotoDataTO.photo2Path,
+                            false),
                         resource.data.data.id)
                 findNavController().navigate(action)
             } else {

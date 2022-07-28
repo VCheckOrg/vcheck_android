@@ -69,16 +69,10 @@ class DocVerifErrorFragment : ThemeWrapperFragment() {
         }
 
         _binding!!.pseudoBtnProceedAnyway.setOnClickListener {
-            viewModel.setDocumentAsPrimary(args.checkDocInfoDataTO.docId, false)
-        }
-
-        viewModel.primaryDocStatusResponse.observe(viewLifecycleOwner) {
-            if (it) {
-                val action = DocVerifErrorFragmentDirections
-                    .actionDocVerificationNotSuccessfulFragmentToCheckDocInfoFragment(args.checkDocInfoDataTO,
+            val action = DocVerifErrorFragmentDirections
+                .actionDocVerificationNotSuccessfulFragmentToCheckDocInfoFragment(args.checkDocInfoDataTO,
                     args.checkDocInfoDataTO.docId)
-                findNavController().navigate(action)
-            }
+            findNavController().navigate(action)
         }
     }
 }

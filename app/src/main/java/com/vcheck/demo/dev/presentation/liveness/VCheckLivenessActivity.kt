@@ -383,15 +383,15 @@ class VCheckLivenessActivity : AppCompatActivity(),
             }
             GestureMilestoneType.UpHeadPitchMilestone -> {
                 binding!!.arrowAnimationView.isVisible = true
-                binding!!.arrowAnimationView.setMargins(null, 0,
-                    null, 0)
+                binding!!.arrowAnimationView.setMargins(0, 0,
+                    0, 0)
                 binding!!.arrowAnimationView.rotation = 90F
                 binding!!.arrowAnimationView.playAnimation()
             }
             GestureMilestoneType.DownHeadPitchMilestone -> {
                 binding!!.arrowAnimationView.isVisible = true
-                binding!!.arrowAnimationView.setMargins(null, 0,
-                    300, 0) //TEST!
+                binding!!.arrowAnimationView.setMargins(0, 0,
+                    0, 0)
                 binding!!.arrowAnimationView.rotation = 270F
                 binding!!.arrowAnimationView.playAnimation()
             }

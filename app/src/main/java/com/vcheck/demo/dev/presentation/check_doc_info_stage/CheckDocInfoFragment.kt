@@ -63,6 +63,8 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = CheckDocInfoViewModel(VCheckDIContainer.mainRepository)
+
+        Log.d("COUNTRY", "======== CHOSEN COUNTRY: ${VCheckSDK.getSelectedCountryCode()}")
     }
 
     override fun onCreateView(

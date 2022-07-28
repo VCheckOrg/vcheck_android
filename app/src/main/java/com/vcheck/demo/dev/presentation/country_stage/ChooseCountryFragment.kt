@@ -74,8 +74,7 @@ class ChooseCountryFragment : ThemeWrapperFragment() {
         binding.chooseCountryCard.setOnClickListener {
             val action =
                 ChooseCountryFragmentDirections.actionChooseCountryFragmentToCountryListFragment(
-                    CountriesListTO(countryList)
-                )
+                    CountriesListTO(countryList))
             findNavController().navigate(action)
         }
 
