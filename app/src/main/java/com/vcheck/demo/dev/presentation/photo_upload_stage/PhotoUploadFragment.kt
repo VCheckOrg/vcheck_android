@@ -205,8 +205,7 @@ class PhotoUploadFragment : ThemeWrapperFragment() {
                             verifMethodTitle1.isVisible = true
                             verifMethodIcon1.isVisible = true
                             makePhotoButton1.isVisible = true
-                            photoUploadContinueButton.setBackgroundColor(Color.parseColor("#BFBFBF"))
-                            photoUploadContinueButton.setOnClickListener {}
+                            checkPhotoCompletenessAndSetProceedClickListener()
                         }
                     }
                     if (requestCode == 2) {
@@ -227,8 +226,7 @@ class PhotoUploadFragment : ThemeWrapperFragment() {
                             verifMethodTitle2.isVisible = true
                             verifMethodIcon2.isVisible = true
                             makePhotoButton2.isVisible = true
-                            photoUploadContinueButton.setBackgroundColor(Color.parseColor("#BFBFBF"))
-                            photoUploadContinueButton.setOnClickListener {}
+                            checkPhotoCompletenessAndSetProceedClickListener()
                         }
                     } else {
                         //Stub
@@ -242,8 +240,8 @@ class PhotoUploadFragment : ThemeWrapperFragment() {
                 }
             }
         } catch (e: Exception) {
-            //Toast.makeText(requireActivity(), e.localizedMessage, Toast.LENGTH_LONG).show()
-            Log.e("PHOTO_UPLOAD - ERROR", e.stackTrace.toString())
+            Toast.makeText(requireActivity(), e.localizedMessage, Toast.LENGTH_LONG).show()
+            Log.e("PHOTO_UPLOAD - ERROR", e.stackTraceToString())
         }
     }
 
@@ -252,6 +250,8 @@ class PhotoUploadFragment : ThemeWrapperFragment() {
             if (_photo1Path != null) {
                 prepareForNavigation(false)
             } else {
+                _binding!!.photoUploadContinueButton.setBackgroundColor(Color.parseColor("#BFBFBF"))
+                _binding!!.photoUploadContinueButton.setOnClickListener {}
                 Toast.makeText(activity, R.string.error_make_at_least_one_photo, Toast.LENGTH_LONG).show()
             }
         } else if (_docType == DocType.INNER_PASSPORT_OR_COMMON) {
@@ -260,11 +260,16 @@ class PhotoUploadFragment : ThemeWrapperFragment() {
             } else if (_photo2Path != null && _photo1Path != null) {
                 prepareForNavigation(false)
             } else {
+                _binding!!.photoUploadContinueButton.setBackgroundColor(Color.parseColor("#BFBFBF"))
+                _binding!!.photoUploadContinueButton.setOnClickListener {}
                 Toast.makeText(activity, R.string.error_make_at_least_one_photo, Toast.LENGTH_LONG).show()
             }
         } else {
             if (_photo1Path != null && _photo2Path != null) {
                 prepareForNavigation(true)
+            } else {
+                _binding!!.photoUploadContinueButton.setBackgroundColor(Color.parseColor("#BFBFBF"))
+                _binding!!.photoUploadContinueButton.setOnClickListener {}
             }
         }
     }
@@ -273,9 +278,12 @@ class PhotoUploadFragment : ThemeWrapperFragment() {
 
         if (VCheckSDK.buttonsColorHex != null) {
             _binding!!.photoUploadContinueButton.setBackgroundColor(Color.parseColor(VCheckSDK.buttonsColorHex))
-            _binding!!.photoUploadContinueButton.setTextColor(Color.parseColor(VCheckSDK.primaryTextColorHex))
         } else {
             _binding!!.photoUploadContinueButton.setBackgroundColor(Color.parseColor("#2E75FF"))
+        }
+        if (VCheckSDK.primaryTextColorHex != null) {
+            _binding!!.photoUploadContinueButton.setTextColor(Color.parseColor(VCheckSDK.primaryTextColorHex))
+        } else {
             _binding!!.photoUploadContinueButton.setTextColor(Color.WHITE)
         }
         _binding!!.photoUploadContinueButton.setOnClickListener {
