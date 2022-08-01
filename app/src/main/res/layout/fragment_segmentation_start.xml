@@ -35,13 +35,27 @@
                 android:layout_height="match_parent">
 
                 <ImageView
+                    android:id="@+id/back_arrow"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="28dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:padding="10dp"
+                    android:src="@drawable/back_arrow"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="ContentDescription" />
+
+                <ImageView
                     android:id="@+id/no_time_image"
                     android:layout_width="240dp"
                     android:layout_height="240dp"
                     android:layout_marginStart="28dp"
                     android:layout_marginTop="24dp"
                     android:layout_marginEnd="28dp"
-                    android:src="@drawable/no_time_image"
+                    android:src="@drawable/img_ua_inner_passport_large"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -51,10 +65,10 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="2dp"
+                    android:layout_marginTop="32dp"
                     android:layout_marginEnd="16dp"
                     android:gravity="center"
-                    android:text="@string/no_time_title"
+                    android:text="@string/segmentation_instr_inner_passport_title"
                     android:textColor="@color/vcheck_text"
                     android:textSize="18sp"
                     android:textStyle="bold"
@@ -70,7 +84,7 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
                     android:gravity="center"
-                    android:text="@string/no_time_subtitle"
+                    android:text="@string/segmentation_instr_inner_passport_descr"
                     android:textColor="#D8D8D8"
                     android:textSize="14sp"
                     android:textStyle="normal"
@@ -85,7 +99,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="24dp"
-                    android:text="@string/no_time_button"
+                    android:text="@string/make_photo_button"
                     android:textAllCaps="false"
                     android:textSize="16sp"
                     app:cornerRadius="4dp"
@@ -99,4 +113,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </ScrollView>
+</ScrollView>

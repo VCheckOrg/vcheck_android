@@ -46,6 +46,9 @@
         <action
             android:id="@+id/action_chooseDocMethodScreen_to_photoInstructionsFragment"
             app:destination="@id/photoInstructionsFragment" />
+        <action
+            android:id="@+id/action_chooseDocMethodScreen_to_segmentationStartFragment"
+            app:destination="@id/segmentationStartFragment" />
     </fragment>
 
     <fragment
@@ -198,5 +201,13 @@
             android:name="checkDocInfoDataTO"
             app:argType="com.vcheck.demo.dev.presentation.transferrable_objects.CheckDocInfoDataTO" />
     </fragment><action android:id="@+id/action_global_demoStartFragment" app:destination="@id/demoStartFragment"/>
+    <fragment
+        android:id="@+id/segmentationStartFragment"
+        android:name="com.vcheck.demo.dev.presentation.segmentation.SegmentationStartFragment"
+        android:label="SegmentationStartFragment" >
+        <action
+            android:id="@+id/action_segmentationStartFragment_to_checkDocInfoFragment"
+            app:destination="@id/checkDocInfoFragment" />
+    </fragment>
 
 </navigation>

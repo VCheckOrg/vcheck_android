@@ -103,8 +103,8 @@
     <string name="no_data_placeholder">Немає даних</string>
     <string name="permissions_denied">Для обробки фото документів та перевірки обличчя на живість потрібно прийняти запрошені дозволи</string>
     <string name="error_make_at_least_one_photo">Будь ласка, зробіть першу фотографію документа</string>
-    <string name="doc_verification_error_title">Помилка верифікації документа</string>
-    <string name="doc_verification_error_description">Щось пішло не так. Ми рекомендуємо сфотографувати документ ще раз.</string>
+    <string name="doc_verification_error_title">Верифікація документа неуспішна</string>
+    <string name="doc_verification_error_description">Не пройдено перевірку відповідності даних документа. Завантажте, будь ласка, коректний документ</string>
     <string name="doc_verif_continue_anyway"><u>Я впевнений (-а) в своєму документі, продовжити процес верифікації</u></string>
     <string name="reload_photo">Спробувати ще раз</string>
     <string name="check_doc_fields_validation_error">Перевірте правильність заповнення усіх полей документа</string>
@@ -147,4 +147,6 @@
     <string name="user_ip_match">Верифікація не пройдена. Для отримання детальнішої інформації зверніться до служби підтримки.</string>
     <string name="age_restrictions">Верифікація не пройдена. Для отримання детальнішої інформації зверніться до служби підтримки.</string>
     <string name="expired">Термін дії верифікації минув</string>
+    <string name="segmentation_instr_inner_passport_title">Make passport photo</string>
+    <string name="segmentation_instr_inner_passport_descr">Следуя инструкциям на экране сделайте фото полного разворота паспорта (видны обе страницы)</string>
 </resources>

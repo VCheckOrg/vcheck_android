@@ -258,7 +258,7 @@ class PhotoUploadFragment : ThemeWrapperFragment() {
             if (_photo1Path != null) {
                 prepareForNavigation(false)
             } else if (_photo2Path != null && _photo1Path != null) {
-                prepareForNavigation(false)
+                prepareForNavigation(true)
             } else {
                 _binding!!.photoUploadContinueButton.setBackgroundColor(Color.parseColor("#BFBFBF"))
                 _binding!!.photoUploadContinueButton.setOnClickListener {}

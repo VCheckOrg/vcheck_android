@@ -21,7 +21,7 @@ object VCheckSDK {
 
     private var verificationToken: String? = null
     private var verificationId: Int? = null
-    //TODO add on iOS!
+
     private var selectedCountryCode: String? = null
 
     private var verificationType: VerificationSchemeType? = null
@@ -31,7 +31,6 @@ object VCheckSDK {
 
     internal var verificationClientCreationModel: VerificationClientCreationModel? = null
 
-    //TODO add on iOS!
     private var sdkLanguageCode: String? = null
 
     internal var buttonsColorHex: String? = null
@@ -276,7 +275,7 @@ object VCheckSDK {
         return verificationId ?: -1
     }
 
-    internal fun getSDKLangCode(): String {
+    fun getSDKLangCode(): String {
         return sdkLanguageCode ?: "en"
     }
 

@@ -114,7 +114,7 @@
     <string name="permissions_denied">To process photo documents and check the face for liveness, you must provide the requested permissions</string>
     <string name="error_make_at_least_one_photo">Please make first photo of the document</string>
     <string name="doc_verification_error_title">Document verification is not successful</string>
-    <string name="doc_verification_error_description">Something went wrong. We recommend to re-upload the document.</string>
+    <string name="doc_verification_error_description">Document compliance check failed. Please, download the correct document</string>
     <string name="doc_verif_continue_anyway"><u>I am confident in my document, continue the verification process</u></string>
     <string name="reload_photo">Try again</string>
     <string name="check_doc_fields_validation_error">Some document fields are not properly filled or empty</string>
@@ -157,4 +157,7 @@
     <string name="user_ip_match">Verification failed. Contact support for details.</string>
     <string name="age_restrictions">Verification failed. Contact support for details.</string>
     <string name="expired">Verification expired</string>
+
+    <string name="segmentation_instr_inner_passport_title">Make passport photo</string>
+    <string name="segmentation_instr_inner_passport_descr">Следуя инструкциям на экране сделайте фото полного разворота паспорта (видны обе страницы)</string>
 </resources>

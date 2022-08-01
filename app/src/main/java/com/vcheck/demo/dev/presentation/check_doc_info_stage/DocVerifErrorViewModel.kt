@@ -8,12 +8,4 @@ import com.vcheck.demo.dev.domain.ParsedDocFieldsData
 
 class DocVerifErrorViewModel(val repository: MainRepository) : ViewModel() {
 
-    var primaryDocStatusResponse: MutableLiveData<Boolean> = MutableLiveData(false)
-
-    fun setDocumentAsPrimary(docId: Int,  isForced: Boolean) {
-        repository.updateAndConfirmDocInfo(docId, DocUserDataRequestBody(ParsedDocFieldsData(), isForced))
-            .observeForever {
-                primaryDocStatusResponse.value = true
-        }
-    }
 }
