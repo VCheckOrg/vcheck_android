@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Context.ACTIVITY_SERVICE
+import android.media.Image
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -127,6 +128,21 @@ private fun bytesToHuman(size: Long): String {
     return if (size >= Eb) floatForm(size.toDouble() / Eb) + " Eb" else "0"
 }
 
+
+fun fillBytes(
+    planes: Array<Image.Plane>,
+    yuvBytes: Array<ByteArray?>) {
+    // Because of the variable row stride it's not possible to know in
+    // advance the actual necessary dimensions of the yuv planes.
+    for (i in planes.indices) {
+        val buffer = planes[i].buffer
+        if (yuvBytes[i] == null) {
+            yuvBytes[i] = ByteArray(buffer.capacity())
+        }
+        buffer[yuvBytes[i]!!]
+    }
+}
+
 fun String.matchesURL(): Boolean {
     val regex = "\\b(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]"
     return Pattern.matches(regex, this)
@@ -138,3 +154,4 @@ fun String.isValidHexColor(): Boolean {
         //"#([0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})")
     return (rgbColorPattern.matcher(this).matches() || argbColorPattern.matcher(this).matches())
 }
+

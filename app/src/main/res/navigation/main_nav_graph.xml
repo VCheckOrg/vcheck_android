@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/livenessInstructionsFragment"
-        android:name="com.vcheck.demo.dev.presentation.screens.LivenessInstructionsFragment"
+        android:name="com.vcheck.demo.dev.presentation.liveness.ui.LivenessInstructionsFragment"
         android:label="fragment_main"
         tools:layout="@layout/liveness_instructions_fragment">
     </fragment>
@@ -203,7 +203,7 @@
     </fragment><action android:id="@+id/action_global_demoStartFragment" app:destination="@id/demoStartFragment"/>
     <fragment
         android:id="@+id/segmentationStartFragment"
-        android:name="com.vcheck.demo.dev.presentation.segmentation.SegmentationStartFragment"
+        android:name="com.vcheck.demo.dev.presentation.segmentation.ui.SegmentationStartFragment"
         android:label="SegmentationStartFragment" >
         <action
             android:id="@+id/action_segmentationStartFragment_to_checkDocInfoFragment"

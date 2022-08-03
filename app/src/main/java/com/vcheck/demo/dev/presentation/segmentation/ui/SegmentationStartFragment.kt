@@ -1,4 +1,4 @@
-package com.vcheck.demo.dev.presentation.segmentation
+package com.vcheck.demo.dev.presentation.segmentation.ui
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -24,6 +24,4 @@ class SegmentationStartFragment : Fragment() {
 
         _binding = FragmentSegmentationStartBinding.bind(view)
     }
-
-
 }

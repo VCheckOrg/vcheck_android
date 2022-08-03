@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/segmentation_nav_graph"
+    app:startDestination="@id/dummySegmentationStartFragment">
+
+    <fragment
+        android:id="@+id/dummySegmentationStartFragment"
+        android:name="com.vcheck.demo.dev.presentation.segmentation.ui.DummySegmentationStartFragment"
+        android:label="DummySegmentationStartFragment"
+        tools:layout="@layout/fragment_dummy_segmentation_start"/>
+</navigation>

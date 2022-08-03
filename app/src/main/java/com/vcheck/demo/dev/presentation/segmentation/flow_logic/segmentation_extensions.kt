@@ -1,4 +1,4 @@
-package com.vcheck.demo.dev.presentation.liveness.flow_logic
+package com.vcheck.demo.dev.presentation.segmentation.flow_logic
 
 import android.graphics.Bitmap
 import android.graphics.Matrix
@@ -7,7 +7,7 @@ import android.media.ImageReader
 import android.os.Environment
 import android.util.Log
 import android.view.Surface
-import com.vcheck.demo.dev.presentation.liveness.VCheckLivenessActivity
+import com.vcheck.demo.dev.presentation.segmentation.VCheckSegmentationActivity
 import com.vcheck.demo.dev.util.ImageUtils
 import com.vcheck.demo.dev.util.fillBytes
 import java.io.File
@@ -15,7 +15,7 @@ import java.io.FileOutputStream
 import java.io.OutputStream
 
 
-fun VCheckLivenessActivity.onImageAvailableImpl(reader: ImageReader?) {
+fun VCheckSegmentationActivity.onImageAvailableImpl(reader: ImageReader?) {
     // We need wait until we have some size from onPreviewSizeChosen
     openLivenessCameraParams?.apply {
         if (previewWidth == 0 || previewHeight == 0) {
@@ -60,7 +60,7 @@ fun VCheckLivenessActivity.onImageAvailableImpl(reader: ImageReader?) {
     }
 }
 
-fun VCheckLivenessActivity.getScreenOrientation(): Int {
+fun VCheckSegmentationActivity.getScreenOrientation(): Int {
     return when (windowManager.defaultDisplay.rotation) {
         Surface.ROTATION_270 -> 270
         Surface.ROTATION_180 -> 180
@@ -70,7 +70,7 @@ fun VCheckLivenessActivity.getScreenOrientation(): Int {
 }
 
 
-fun VCheckLivenessActivity.createTempFileForBitmapFrame(mBitmap: Bitmap): String {
+fun VCheckSegmentationActivity.createTempFileForBitmapFrame(mBitmap: Bitmap): String {
     val f3 = File(Environment.getExternalStorageDirectory().toString() + "/frames/")
     if (!f3.exists()) f3.mkdirs()
     var outStream: OutputStream? = null
@@ -90,7 +90,7 @@ fun VCheckLivenessActivity.createTempFileForBitmapFrame(mBitmap: Bitmap): String
 
 //TODO rotate image if image captured on samsung devices (?)
 //Most phone cameras are landscape, meaning if you take the photo in portrait, the resulting photos will be rotated 90 degrees.
-fun VCheckLivenessActivity.rotateBitmap(input: Bitmap): Bitmap? {
+fun VCheckSegmentationActivity.rotateBitmap(input: Bitmap): Bitmap? {
     val rotationMatrix = Matrix()
     rotationMatrix.setRotate(openLivenessCameraParams!!.sensorOrientation.toFloat())
     return Bitmap.createBitmap(input, 0, 0, input.width, input.height, rotationMatrix, true)

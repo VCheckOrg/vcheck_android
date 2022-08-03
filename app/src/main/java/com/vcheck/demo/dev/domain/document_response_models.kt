@@ -106,3 +106,13 @@ data class ParsedDocFieldsData(
     @SerializedName("surname")
     var surname: String? = null
 )
+
+
+data class SegmentationGestureResponse(
+    @SerializedName("data")
+    val success: Boolean = false,
+    @SerializedName("error_code")
+    var errorCode: Int = 0,
+    @SerializedName("message")
+    var message: String = ""
+)

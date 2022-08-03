@@ -76,4 +76,22 @@ interface VerificationApiClient {
         @Part image: MultipartBody.Part,
         @Part gesture: MultipartBody.Part
     ) : Call<LivenessGestureResponse>
+
+    @Headers("multipart: true")
+    @Multipart
+    @POST("documents/inspect")
+    fun sendSegmentationDocAttempt(
+        @Header("Authorization") verifToken: String,
+        @Part image: MultipartBody.Part,
+        @Part country: String,
+        @Part category: String,
+        @Part index: String
+    ) : Call<SegmentationGestureResponse>
+
+    /*
+    country - страна документа
+    category - категория документа (PASSPORT = 0, FOREIGN_PASSPORT = 1, ID_CARD = 2,)
+    index - индекс странички от 0
+    image (jpeg) - фото документа с применением маски
+     */
 }

@@ -27,7 +27,7 @@ import com.vcheck.demo.dev.databinding.ActivityVcheckLivenessBinding
 import com.vcheck.demo.dev.di.VCheckDIContainer
 import com.vcheck.demo.dev.domain.LivenessGestureResponse
 import com.vcheck.demo.dev.presentation.liveness.flow_logic.*
-import com.vcheck.demo.dev.presentation.liveness.ui.CameraConnectionFragment
+import com.vcheck.demo.dev.presentation.liveness.ui.LivenessCameraConnectionFragment
 import com.vcheck.demo.dev.util.VCheckContextUtils
 import com.vcheck.demo.dev.util.setMargins
 import com.vcheck.demo.dev.util.vibrateDevice
@@ -64,7 +64,7 @@ class VCheckLivenessActivity : AppCompatActivity(),
     var videoPath: String? = null //make private!
     var openLivenessCameraParams: LivenessCameraParams? = LivenessCameraParams()
 
-    private var camera2Fragment: CameraConnectionFragment? = null
+    private var camera2Fragment: LivenessCameraConnectionFragment? = null
 
     private var livenessSessionLimitCheckTime: Long = 0
     private var isLivenessSessionFinished: Boolean = false
@@ -137,7 +137,7 @@ class VCheckLivenessActivity : AppCompatActivity(),
                         if (milestoneFlow.areAllStagesPassed()) {
                             Log.d(TAG, "==============++++++++++++++++  PASSED ALL STAGES!")
                             finishLivenessSession()
-                            delayedNavigateOnLivenessSessionEnd()
+                            navigateOnLivenessSessionEnd()
                         } else {
                             val currentStage = milestoneFlow.getCurrentStage()
                             if (it.data != null && it.data.success && currentStage != null) {
@@ -185,8 +185,8 @@ class VCheckLivenessActivity : AppCompatActivity(),
             showSingleToast(e.message)
         }
 
-        camera2Fragment = CameraConnectionFragment.newInstance(
-            object : CameraConnectionFragment.ConnectionCallback {
+        camera2Fragment = LivenessCameraConnectionFragment.newInstance(
+            object : LivenessCameraConnectionFragment.ConnectionCallback {
                 override fun onPreviewSizeChosen(size: Size?, cameraRotation: Int) {
                     openLivenessCameraParams?.previewHeight = size!!.height
                     openLivenessCameraParams?.previewWidth = size.width
@@ -410,7 +410,7 @@ class VCheckLivenessActivity : AppCompatActivity(),
         blockProcessingByUI = false
     }
 
-    private fun delayedNavigateOnLivenessSessionEnd() {
+    private fun navigateOnLivenessSessionEnd() {
         runOnUiThread {
             binding!!.arrowAnimationView.isVisible = false
             binding!!.faceAnimationView.isVisible = false

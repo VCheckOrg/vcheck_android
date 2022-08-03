@@ -26,7 +26,7 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.vcheck.demo.dev.R
-import com.vcheck.demo.dev.presentation.liveness.VCheckLivenessActivity
+import com.vcheck.demo.dev.presentation.segmentation.VCheckSegmentationActivity
 import java.util.*
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
@@ -36,7 +36,7 @@ import java.util.concurrent.TimeUnit
  * Instantiated by newInstance.
  */
 //@SuppressLint("ValidFragment")
-class CameraConnectionFragment() : Fragment() {
+class LivenessCameraConnectionFragment() : Fragment() {
 
     private var cameraConnectionCallback: ConnectionCallback? = null
     private var imageListener: OnImageAvailableListener? = null
@@ -48,8 +48,8 @@ class CameraConnectionFragment() : Fragment() {
         fun newInstance(
             callback: ConnectionCallback,
             imageListener: OnImageAvailableListener)
-        : CameraConnectionFragment {
-            val fragment = CameraConnectionFragment()
+        : LivenessCameraConnectionFragment {
+            val fragment = LivenessCameraConnectionFragment()
             fragment.cameraConnectionCallback = callback
             fragment.imageListener = imageListener
             return fragment
@@ -161,7 +161,7 @@ class CameraConnectionFragment() : Fragment() {
 
     /** Sets up member variables related to camera.  */
     private fun setUpCameraOutputs() {
-        val activity = activity as VCheckLivenessActivity
+        val activity = activity as VCheckSegmentationActivity
         try {
             sensorOrientation = 270 //CameraCharacteristics.SENSOR_ORIENTATION
 
@@ -187,7 +187,7 @@ class CameraConnectionFragment() : Fragment() {
 
         textureView!!.post {
             backgroundHandler!!.post {
-                val activity = activity as VCheckLivenessActivity
+                val activity = activity as VCheckSegmentationActivity
                 val manager =
                     activity.getSystemService(Context.CAMERA_SERVICE) as CameraManager
                 try {
@@ -335,7 +335,7 @@ class CameraConnectionFragment() : Fragment() {
     class ErrorDialog : DialogFragment() {
 
         override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-            val activity = activity as VCheckLivenessActivity
+            val activity = activity as VCheckSegmentationActivity
             return AlertDialog.Builder(activity)
                 .setMessage(arguments?.getString(ARG_MESSAGE))
                 .setPositiveButton(

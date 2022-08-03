@@ -8,6 +8,8 @@ import com.vcheck.demo.dev.util.generateSHA256Hash
 import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.Response
+import retrofit2.http.Header
+import retrofit2.http.Part
 
 class RemoteDatasource(private val verificationApiClient: VerificationApiClient,
                        private val partnerApiClient: PartnerApiClient) {
@@ -96,6 +98,16 @@ class RemoteDatasource(private val verificationApiClient: VerificationApiClient,
         gesture: MultipartBody.Part): MutableLiveData<Resource<LivenessGestureResponse>> {
         return NetworkCall<LivenessGestureResponse>().makeCall(
             verificationApiClient.sendLivenessGestureAttempt(VCheckSDK.getVerificationToken(), image, gesture))
+    }
+
+    fun sendSegmentationDocAttempt(
+        image: MultipartBody.Part,
+        country: String,
+        category: String,
+        index: String): MutableLiveData<Resource<SegmentationGestureResponse>> {
+        return NetworkCall<SegmentationGestureResponse>().makeCall(
+            verificationApiClient.sendSegmentationDocAttempt(
+                VCheckSDK.getVerificationToken(), image, country, category, index))
     }
 
     fun checkFinalVerificationStatus(verifId: Int,

@@ -160,4 +160,11 @@
 
     <string name="segmentation_instr_inner_passport_title">Make passport photo</string>
     <string name="segmentation_instr_inner_passport_descr">Следуя инструкциям на экране сделайте фото полного разворота паспорта (видны обе страницы)</string>
+    <string name="segmentation_general_instruction">Приготовьте свой документ и разместите его в указанной зоне, как на примере выше.</string>
+    <string name="im_ready">Я готов(а)</string>
+
+    <string name="segmentation_single_page_hint">Put the document in the specified zone for automatic reading</string>
+    <string name="segmentation_front_side_hint">Place the front side of the document in the specified zone for automatic reading</string>
+    <string name="segmentation_back_side_hint">Place the back side of the document in the specified zone for automatic reading</string>
+    <string name="segmentation_stage_success">Document read successfully!</string>
 </resources>

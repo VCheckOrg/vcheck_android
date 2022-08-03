@@ -149,4 +149,11 @@
     <string name="expired">Срок действия верификации истек</string>
     <string name="segmentation_instr_inner_passport_title">Make passport photo</string>
     <string name="segmentation_instr_inner_passport_descr">Следуя инструкциям на экране сделайте фото полного разворота паспорта (видны обе страницы)</string>
+    <string name="segmentation_general_instruction">Приготовьте свой документ и разместите его в указанной зоне, как на примере выше.</string>
+    <string name="im_ready">Я готов(а)</string>
+
+    <string name="segmentation_single_page_hint">Поместите документ в указанную зону для автоматического считывания</string>
+    <string name="segmentation_front_side_hint">Поместите переднюю сторону документа в указанную зону для автоматического считывания</string>
+    <string name="segmentation_back_side_hint">Поместите заднюю сторону документа в указанную зону для автоматического считывания</string>
+    <string name="segmentation_stage_success">Документ считан успешно!</string>
 </resources>
