@@ -8,11 +8,12 @@ import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
 import android.media.ImageReader
 import android.os.*
-import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import android.util.Size
 import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.findNavController
@@ -25,7 +26,9 @@ import com.vcheck.demo.dev.domain.*
 import com.vcheck.demo.dev.presentation.liveness.flow_logic.LivenessCameraParams
 import com.vcheck.demo.dev.presentation.liveness.ui.LivenessCameraConnectionFragment
 import com.vcheck.demo.dev.presentation.segmentation.flow_logic.*
+import com.vcheck.demo.dev.presentation.transferrable_objects.CheckPhotoDataTO
 import com.vcheck.demo.dev.util.VCheckContextUtils
+import com.vcheck.demo.dev.util.pixelsToDp
 import com.vcheck.demo.dev.util.vibrateDevice
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -33,14 +36,15 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import kotlin.concurrent.fixedRateTimer
 
+
 class VCheckSegmentationActivity : AppCompatActivity(),
     ImageReader.OnImageAvailableListener {
 
     companion object {
         const val TAG = "LivenessActivity"
-        private const val LIVENESS_TIME_LIMIT_MILLIS: Long = 15000 //max is 15000
+        private const val LIVENESS_TIME_LIMIT_MILLIS: Long = 60000 //max is 60s
         private const val BLOCK_PIPELINE_TIME_MILLIS: Long = 800 //may reduce a bit
-        private const val GESTURE_REQUEST_DEBOUNCE_MILLIS: Long = 400
+        private const val GESTURE_REQUEST_DEBOUNCE_MILLIS: Long = 500
         private const val STAGE_VIBRATION_DURATION_MILLIS: Long = 100
     }
 
@@ -52,6 +56,8 @@ class VCheckSegmentationActivity : AppCompatActivity(),
     private var mToast: Toast? = null
 
     var streamSize: Size = Size(640, 480)
+
+    private var frameSize: Size? = null
 
     private lateinit var docData: DocTypeData
 
@@ -94,6 +100,8 @@ class VCheckSegmentationActivity : AppCompatActivity(),
         blockProcessingByUI = true
         blockRequestByProcessing = true
 
+        binding!!.scalableDocHandImage.isVisible = true
+
         //TODO animate instruction pictures!
 
         binding!!.readyButton.setOnClickListener {
@@ -102,7 +110,6 @@ class VCheckSegmentationActivity : AppCompatActivity(),
     }
 
     private fun indicateNextStage() {
-
 
         binding!!.tvSegmentationInstruction.setText(R.string.segmentation_stage_success)
 
@@ -141,6 +148,8 @@ class VCheckSegmentationActivity : AppCompatActivity(),
     }
 
     private fun setupDocCheckStage() {
+        binding!!.scalableDocHandImage.isVisible = false
+        binding!!.readyButton.isVisible = false
         setDocData()
         resetFlowForNewSession()
         setGestureResponsesObserver()
@@ -204,12 +213,28 @@ class VCheckSegmentationActivity : AppCompatActivity(),
         }
     }
 
-    fun finishLivenessSession() {
+    private fun finishLivenessSession() {
         isLivenessSessionFinished = true
         currentCheckBitmap = null
+
+        var photo1Path: String? = null
+        var photo2Path: String? = null
+
+        fullSizeBitmapList.forEachIndexed { index, bitmap ->
+            if (index == 0) {
+                photo1Path = createTempFileForBitmapFrame(bitmap)
+            }
+            if (index == 1) {
+                photo2Path = createTempFileForBitmapFrame(bitmap)
+            }
+        }
+
+        VCheckDIContainer.mainRepository.setCheckDocPhotosTO(CheckPhotoDataTO(
+            docCategoryIdxToType(docData.category), photo1Path!!, photo2Path))
+        finish()
     }
 
-    private fun enoughTimeForNextGesture(): Boolean {
+    private fun enoughTimeForNextCheck(): Boolean {
         return SystemClock.elapsedRealtime() - livenessSessionLimitCheckTime <= LIVENESS_TIME_LIMIT_MILLIS
     }
 
@@ -254,26 +279,41 @@ class VCheckSegmentationActivity : AppCompatActivity(),
 
     fun processImage() {
         try {
-            if (!blockProcessingByUI && !blockRequestByProcessing) {
-                Handler(Looper.getMainLooper()).post {
-                    openLivenessCameraParams?.apply {
+            //if (!blockProcessingByUI && !blockRequestByProcessing) {
+            Handler(Looper.getMainLooper()).post {
+                openLivenessCameraParams?.apply {
 
-                        imageConverter!!.run()
-                        rgbFrameBitmap = Bitmap.createBitmap(previewWidth, previewHeight, Bitmap.Config.ARGB_8888)
-                        rgbFrameBitmap?.setPixels(rgbBytes, 0, previewWidth, 0, 0, previewWidth, previewHeight)
+                    if (frameSize == null) {
 
-                        val finalBitmap = rotateBitmap(rgbFrameBitmap!!)!!
-                        //caching bitmap to array/list:
-                        //fullSizeBitmapList.add(finalBitmap)
-                        //TODO cache as image!
-                        //recycling bitmap:
-                        rgbFrameBitmap!!.recycle()
-                        //running post-inference callback
-                        postInferenceCallback!!.run()
-                        //updating cached bitmap for gesture request
-                        currentCheckBitmap = finalBitmap
+                        //TODO test!
+                        val desiredWidth = previewWidth.toFloat().pixelsToDp(this@VCheckSegmentationActivity).toInt()
+                       // val desiredHeight = previewHeight.toFloat().pixelsToDp(this@VCheckSegmentationActivity).toInt()
+
+                        val frameWidth = (desiredWidth * 0.76).toInt()
+                        val frameHeight = (frameWidth * 0.63).toInt()
+
+                        frameSize = Size(frameWidth, frameHeight)
+
+                        binding!!.segmentationFrame.layoutParams.width = frameWidth
+                        binding!!.segmentationFrame.layoutParams.height = frameHeight
                     }
+
+                    imageConverter!!.run()
+                    rgbFrameBitmap = Bitmap.createBitmap(previewWidth, previewHeight, Bitmap.Config.ARGB_8888)
+                    rgbFrameBitmap?.setPixels(rgbBytes, 0, previewWidth, 0, 0, previewWidth, previewHeight)
+
+                    val finalBitmap = rotateBitmap(rgbFrameBitmap!!)!!
+                    //caching bitmap to array/list:
+                    //fullSizeBitmapList.add(finalBitmap)
+                    //TODO cache as image!
+                    //recycling bitmap:
+                    rgbFrameBitmap!!.recycle()
+                    //running post-inference callback
+                    postInferenceCallback!!.run()
+                    //updating cached bitmap for gesture request
+                    currentCheckBitmap = finalBitmap
                 }
+                //}
             }
         } catch (e: Exception) {
             showSingleToast(e.message)
@@ -288,7 +328,7 @@ class VCheckSegmentationActivity : AppCompatActivity(),
         if (!isLivenessSessionFinished
             && !blockProcessingByUI
             && !blockRequestByProcessing
-            && enoughTimeForNextGesture()) {
+            && enoughTimeForNextCheck()) {
             if (currentCheckBitmap != null) {
                 blockRequestByProcessing = true
                 val minimizedBitmap = currentCheckBitmap!!.crop() //TODO test!
@@ -318,7 +358,19 @@ class VCheckSegmentationActivity : AppCompatActivity(),
 
     /// -------------------------------------------- UI functions
 
-    //private fun //ANIMATIONS
+//    private fun animateInstructionStage() {
+//        var v: View? = null
+//
+//        val animSetXY = AnimatorSet()
+//        val y: ObjectAnimator = ObjectAnimator.ofFloat(v,
+//            "translationY", v.getY(), targetY)
+//        val x: ObjectAnimator = ObjectAnimator.ofFloat(v,
+//            "translationX", v.getX(), targetX)
+//        animSetXY.playTogether(x, y)
+//        animSetXY.interpolator = LinearInterpolator(1f)
+//        animSetXY.duration = 300
+//        animSetXY.start()
+//    }
 
     private fun safeNavigateToResultDestination(actionIdForNav: Int) {
         try {

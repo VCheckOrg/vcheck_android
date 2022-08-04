@@ -147,8 +147,15 @@
     <string name="user_ip_match">Верификация не пройдена. Для уточнения деталей обратитесь в службу поддержки.</string>
     <string name="age_restrictions">Верификация не пройдена. Для уточнения деталей обратитесь в службу поддержки.</string>
     <string name="expired">Срок действия верификации истек</string>
-    <string name="segmentation_instr_inner_passport_title">Make passport photo</string>
-    <string name="segmentation_instr_inner_passport_descr">Следуя инструкциям на экране сделайте фото полного разворота паспорта (видны обе страницы)</string>
+
+    <string name="segmentation_instr_inner_passport_title">Сделайте фото паспорта</string>
+    <string name="segmentation_instr_foreign_passport_title">Сделайте фото загранпаспорта</string>
+    <string name="segmentation_instr_id_card_title">Сделайте фото ID карты</string>
+
+    <string name="segmentation_instr_inner_passport_descr">Следуя инструкциям на экране, сделайте фото полного разворота паспорта (видны обе страницы)</string>
+    <string name="segmentation_instr_foreign_passport_descr">Следуя инструкциям на экране, сделайте фото полного разворота загранпаспорта (видны обе страницы)</string>
+    <string name="segmentation_instr_id_card_descr">Следуя инструкциям на экране сделайте фото лицевой, а затем обратной сторон вашей ID карты</string>
+
     <string name="segmentation_general_instruction">Приготовьте свой документ и разместите его в указанной зоне, как на примере выше.</string>
     <string name="im_ready">Я готов(а)</string>
 
@@ -156,4 +163,6 @@
     <string name="segmentation_front_side_hint">Поместите переднюю сторону документа в указанную зону для автоматического считывания</string>
     <string name="segmentation_back_side_hint">Поместите заднюю сторону документа в указанную зону для автоматического считывания</string>
     <string name="segmentation_stage_success">Документ считан успешно!</string>
+
+
 </resources>

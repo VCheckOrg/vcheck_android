@@ -49,7 +49,7 @@
                     tools:ignore="ContentDescription" />
 
                 <ImageView
-                    android:id="@+id/no_time_image"
+                    android:id="@+id/doc_image"
                     android:layout_width="240dp"
                     android:layout_height="240dp"
                     android:layout_marginStart="28dp"
@@ -61,7 +61,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/no_time_title"
+                    android:id="@+id/doc_title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -74,10 +74,10 @@
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/no_time_image" />
+                    app:layout_constraintTop_toBottomOf="@+id/doc_image" />
 
                 <TextView
-                    android:id="@+id/no_time_subtitle"
+                    android:id="@+id/doc_subtitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -90,10 +90,10 @@
                     android:textStyle="normal"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/no_time_title" />
+                    app:layout_constraintTop_toBottomOf="@+id/doc_title" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/try_again_button"
+                    android:id="@+id/launch_segmentation_button"
                     android:layout_width="match_parent"
                     android:layout_height="70dp"
                     android:layout_marginStart="16dp"

@@ -3,6 +3,7 @@ package com.vcheck.demo.dev.data
 import androidx.lifecycle.MutableLiveData
 import com.vcheck.demo.dev.VCheckSDK
 import com.vcheck.demo.dev.domain.*
+import com.vcheck.demo.dev.presentation.transferrable_objects.CheckPhotoDataTO
 import com.vcheck.demo.dev.util.generateSHA256Hash
 import okhttp3.MultipartBody
 import retrofit2.Call
@@ -143,5 +144,13 @@ class MainRepository(
 
     fun resetCacheOnStartup() {
         localDatasource.resetCacheOnStartup()
+    }
+
+    fun setCheckDocPhotosTO(data: CheckPhotoDataTO) {
+        localDatasource.setCheckDocPhotosTO(data)
+    }
+
+    fun getCheckDocPhotosTO(): CheckPhotoDataTO? {
+        return localDatasource.getCheckDocPhotosTO()
     }
 }

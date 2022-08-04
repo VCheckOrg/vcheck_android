@@ -125,13 +125,3 @@ class ChooseDocMethodFragment : ThemeWrapperFragment() {
         }
     }
 }
-
-/*
-val mStartForResult: ActivityResultLauncher<Intent> =
-                registerForActivityResult(
-                    ActivityResultContracts.StartActivityForResult()) {
-
-                }
-            val intent = Intent((activity as VCheckMainActivity), VCheckSegmentationActivity::class.java)
-            mStartForResult.launch(intent)
- */

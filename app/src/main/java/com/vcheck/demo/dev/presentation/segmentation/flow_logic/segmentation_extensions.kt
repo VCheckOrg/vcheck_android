@@ -90,7 +90,7 @@ fun VCheckSegmentationActivity.createTempFileForBitmapFrame(mBitmap: Bitmap): St
 fun Bitmap.crop(): Bitmap {
     val originalWidth = this.width
     val originalHeight = this.height
-    val desiredWidth = (originalWidth * 0.8).toInt()
+    val desiredWidth = (originalWidth * 0.7).toInt()
     val desiredHeight = (originalWidth * 0.63).toInt()
     val cropHeightFromEachSide = ((originalHeight - desiredHeight) / 2).toInt()
     val cropWidthFromEachSide = ((originalWidth - desiredWidth) / 2).toInt()

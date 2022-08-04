@@ -147,10 +147,17 @@
     <string name="user_ip_match">Верифікація не пройдена. Для отримання детальнішої інформації зверніться до служби підтримки.</string>
     <string name="age_restrictions">Верифікація не пройдена. Для отримання детальнішої інформації зверніться до служби підтримки.</string>
     <string name="expired">Термін дії верифікації минув</string>
-    <string name="segmentation_instr_inner_passport_title">Make passport photo</string>
-    <string name="segmentation_instr_inner_passport_descr">Следуя инструкциям на экране сделайте фото полного разворота паспорта (видны обе страницы)</string>
-    <string name="segmentation_general_instruction">Приготовьте свой документ и разместите его в указанной зоне, как на примере выше.</string>
-    <string name="im_ready">Я готов(а)</string>
+
+    <string name="segmentation_instr_inner_passport_title">Зробіть фото паспорта</string>
+    <string name="segmentation_instr_foreign_passport_title">Зробіть фото закордонного паспорта</string>
+    <string name="segmentation_instr_id_card_title">Зробіть фото ID картки</string>
+
+    <string name="segmentation_instr_inner_passport_descr">Слідуючи інструкціям на екрані, зробіть фото повного розвороту паспорта (видні обидві сторінки)</string>
+    <string name="segmentation_instr_foreign_passport_descr">Слідуючи інструкціям на екрані, зробіть фото повного розвороту закордонного паспорта (видні обидві сторінки)</string>
+    <string name="segmentation_instr_id_card_descr">Слідуючи інструкціям на екрані зробіть фото лицьової, а потім зворотної сторони вашої ID картки</string>
+
+    <string name="segmentation_general_instruction">Приготуйте свій документ і розмістіть його у зазначеній зоні, як на прикладі вище.</string>
+    <string name="im_ready">Я готовий(а)</string>
 
     <string name="segmentation_single_page_hint">Помістіть документ у вказану зону для автоматичного зчитування</string>
     <string name="segmentation_front_side_hint">Помістіть передню сторону документа у вказану зону для автоматичного зчитування</string>

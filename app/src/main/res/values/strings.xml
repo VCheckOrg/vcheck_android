@@ -158,13 +158,19 @@
     <string name="age_restrictions">Verification failed. Contact support for details.</string>
     <string name="expired">Verification expired</string>
 
-    <string name="segmentation_instr_inner_passport_title">Make passport photo</string>
-    <string name="segmentation_instr_inner_passport_descr">Следуя инструкциям на экране сделайте фото полного разворота паспорта (видны обе страницы)</string>
-    <string name="segmentation_general_instruction">Приготовьте свой документ и разместите его в указанной зоне, как на примере выше.</string>
-    <string name="im_ready">Я готов(а)</string>
+    <string name="segmentation_instr_inner_passport_title">Take a photo of your passport</string>
+    <string name="segmentation_instr_foreign_passport_title">Take a photo of your foreign passport</string>
+    <string name="segmentation_instr_id_card_title">Take a photo of your ID-card</string>
+
+    <string name="segmentation_instr_inner_passport_descr">Follow the on-screen instructions to take a full-page photo of your passport (both pages visible)</string>
+    <string name="segmentation_instr_foreign_passport_descr">Following the instructions on the screen, take a photo of a full-page spread of your passport (both pages are visible)</string>
+    <string name="segmentation_instr_id_card_descr">Follow the on-screen instructions to take a photo of the front and then the back of your ID card</string>
+
+    <string name="segmentation_general_instruction">Prepare your document and place it in the specified zone as in the example above.</string>
+    <string name="im_ready">I\'m ready</string>
 
     <string name="segmentation_single_page_hint">Put the document in the specified zone for automatic reading</string>
     <string name="segmentation_front_side_hint">Place the front side of the document in the specified zone for automatic reading</string>
     <string name="segmentation_back_side_hint">Place the back side of the document in the specified zone for automatic reading</string>
-    <string name="segmentation_stage_success">Document read successfully!</string>
+    <string name="segmentation_stage_success">Document scanned successfully!</string>
 </resources>

@@ -74,6 +74,15 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <View
+            android:id="@+id/scalableDocHandImage"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/img_hand_foreign_passport"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="150dp"/>
+
+        <View
             android:id="@+id/segmentation_frame"
             android:layout_width="300dp"
             android:layout_height="200dp"
