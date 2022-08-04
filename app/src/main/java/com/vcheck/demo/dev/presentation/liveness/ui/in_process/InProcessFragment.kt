@@ -208,10 +208,3 @@ class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
         }
     }
 }
-
-//        _binding!!.uploadVideoLoadingIndicator.isVisible = false
-//        _binding!!.successButton.isVisible = true
-//        _binding!!.inProcessTitle.isVisible = true
-//        _binding!!.inProcessSubtitle.isVisible = true
-//        _binding!!.successButton.isVisible = true
-//        _binding!!.successButton.setOnClickListener {

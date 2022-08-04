@@ -10,4 +10,5 @@
         android:name="com.vcheck.demo.dev.presentation.segmentation.ui.DummySegmentationStartFragment"
         android:label="DummySegmentationStartFragment"
         tools:layout="@layout/fragment_dummy_segmentation_start"/>
+
 </navigation>

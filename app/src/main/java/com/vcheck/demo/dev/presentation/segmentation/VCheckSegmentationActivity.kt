@@ -1,5 +1,8 @@
 package com.vcheck.demo.dev.presentation.segmentation
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.Bitmap
@@ -10,9 +13,11 @@ import android.os.*
 import android.util.DisplayMetrics
 import android.util.Log
 import android.util.Size
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
@@ -90,17 +95,33 @@ class VCheckSegmentationActivity : AppCompatActivity(),
             //Stub; no back press needed throughout liveness flow
         }
 
+        setDocData()
         setCameraFragment()
         setupInstructionStage()
     }
 
     private fun setupInstructionStage() {
+
         blockProcessingByUI = true
         blockRequestByProcessing = true
 
-        binding!!.scalableDocHandImage.isVisible = true
+        binding!!.scalableDocHandView.isVisible = true
 
-        //TODO animate instruction pictures!
+        when(docCategoryIdxToType(docData.category)) {
+            DocType.ID_CARD -> {
+                binding!!.scalableDocHandView.background = AppCompatResources.getDrawable(
+                    this@VCheckSegmentationActivity, R.drawable.img_hand_id_card)
+            }
+            DocType.FOREIGN_PASSPORT -> {
+                binding!!.scalableDocHandView.background = AppCompatResources.getDrawable(
+                    this@VCheckSegmentationActivity, R.drawable.img_hand_foreign_passport)
+            } else -> {
+            binding!!.scalableDocHandView.background = AppCompatResources.getDrawable(
+                this@VCheckSegmentationActivity, R.drawable.img_hand_inner_passport)
+            }
+        }
+
+        animateInstructionStage()
 
         binding!!.readyButton.setOnClickListener {
             setupDocCheckStage()
@@ -110,8 +131,6 @@ class VCheckSegmentationActivity : AppCompatActivity(),
     private fun indicateNextStage() {
 
         binding!!.tvSegmentationInstruction.setText(R.string.segmentation_stage_success)
-
-        //TODO
 
         Handler(Looper.getMainLooper()).postDelayed ({
             setUIForNextStage()
@@ -146,11 +165,12 @@ class VCheckSegmentationActivity : AppCompatActivity(),
     }
 
     private fun setupDocCheckStage() {
-        binding!!.scalableDocHandImage.isVisible = false
+        binding!!.scalableDocHandView.isVisible = false
         binding!!.readyButton.isVisible = false
-        setDocData()
+        //binding!!.tvSegmentationInstruction.setText(R.string.segmentation_single_page_hint)
         resetFlowForNewSession()
         setGestureResponsesObserver()
+        setUIForNextStage()
     }
 
     private fun setDocData() {
@@ -267,14 +287,23 @@ class VCheckSegmentationActivity : AppCompatActivity(),
         val fragment: Fragment = camera2Fragment!!
         supportFragmentManager.beginTransaction().replace(R.id.seg_container, fragment).commit()
 
-        if (frameSize == null) {
+        setSegmentationFrameSize()
+    }
 
-            //TODO test!
+    override fun onImageAvailable(reader: ImageReader?) {
+        //calling verbose extension function, which leads to processImage()
+        if (!isLivenessSessionFinished) {
+            onImageAvailableImpl(reader)
+        }
+    }
+
+    private fun setSegmentationFrameSize() {
+        if (frameSize == null) {
             val displayMetrics: DisplayMetrics = resources.displayMetrics
             val factor: Float = displayMetrics.density
             val dpWidth = displayMetrics.widthPixels / factor
 
-            val frameWidth = ((dpWidth * 0.76) * factor).toInt()
+            val frameWidth = ((dpWidth * 0.86) * factor).toInt()
             val frameHeight = (frameWidth * 0.63).toInt()
 
             Log.d("SEG", "VIEW WIDTH: $dpWidth")
@@ -285,20 +314,11 @@ class VCheckSegmentationActivity : AppCompatActivity(),
             binding!!.segmentationFrame.layoutParams.width = frameSize!!.width
             binding!!.segmentationFrame.layoutParams.height = frameSize!!.height
         }
-
-    }
-
-    override fun onImageAvailable(reader: ImageReader?) {
-        //calling verbose extension function, which leads to processImage()
-        if (!isLivenessSessionFinished) {
-            onImageAvailableImpl(reader)
-        }
     }
 
     fun processImage() {
 
         try {
-            //if (!blockProcessingByUI && !blockRequestByProcessing) {
             Handler(Looper.getMainLooper()).post {
                 openLivenessCameraParams?.apply {
 
@@ -306,20 +326,19 @@ class VCheckSegmentationActivity : AppCompatActivity(),
                     rgbFrameBitmap = Bitmap.createBitmap(previewWidth, previewHeight, Bitmap.Config.ARGB_8888)
                     rgbFrameBitmap?.setPixels(rgbBytes, 0, previewWidth, 0, 0, previewWidth, previewHeight)
 
-                    currentCheckBitmap = rgbFrameBitmap!! //!!!
+                    val finalBitmap = rotateBitmap(rgbFrameBitmap!!)!!
 
-                    //val finalBitmap = rotateBitmap(rgbFrameBitmap!!)!!
+                    currentCheckBitmap = finalBitmap
                     //caching bitmap to array/list:
                     //fullSizeBitmapList.add(finalBitmap)
                     //TODO cache as image!
                     //recycling bitmap:
-                    //rgbFrameBitmap!!.recycle() //TODO recycle?
+                    rgbFrameBitmap!!.recycle() //TODO recycle?
                     //running post-inference callback
                     postInferenceCallback!!.run()
                     //updating cached bitmap for gesture request
                     //currentCheckBitmap = finalBitmap
                 }
-                //}
             }
         } catch (e: Exception) {
             showSingleToast(e.message)
@@ -338,6 +357,9 @@ class VCheckSegmentationActivity : AppCompatActivity(),
             if (currentCheckBitmap != null) {
                 blockRequestByProcessing = true
                 val minimizedBitmap = currentCheckBitmap!!.crop() //TODO test!
+
+                saveImageToGallery(minimizedBitmap, this@VCheckSegmentationActivity, "check")
+
                 val file = File(createTempFileForBitmapFrame(minimizedBitmap))
                 val image: MultipartBody.Part = MultipartBody.Part.createFormData(
                     "image.jpg", file.name, file.asRequestBody("image/jpeg".toMediaType()))
@@ -356,7 +378,9 @@ class VCheckSegmentationActivity : AppCompatActivity(),
         } else {
             if (!isLivenessSessionFinished && !blockProcessingByUI) {
                 runOnUiThread {
-                    onFatalObstacleWorthRetry(R.id.action_dummyLivenessStartDestFragment_to_noTimeFragment)
+                    //onFatalObstacleWorthRetry(R.id.action_dummySegmentationStartFragment_to_noTimeFragment)
+                    //TODO add fragment and nav
+                    Toast.makeText(this@VCheckSegmentationActivity, "TIMEOUT", Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -364,19 +388,35 @@ class VCheckSegmentationActivity : AppCompatActivity(),
 
     /// -------------------------------------------- UI functions
 
-//    private fun animateInstructionStage() {
-//        var v: View? = null
-//
-//        val animSetXY = AnimatorSet()
-//        val y: ObjectAnimator = ObjectAnimator.ofFloat(v,
-//            "translationY", v.getY(), targetY)
-//        val x: ObjectAnimator = ObjectAnimator.ofFloat(v,
-//            "translationX", v.getX(), targetX)
-//        animSetXY.playTogether(x, y)
-//        animSetXY.interpolator = LinearInterpolator(1f)
-//        animSetXY.duration = 300
-//        animSetXY.start()
-//    }
+    private fun animateInstructionStage() {
+
+        binding!!.scalableDocHandView.apply {
+            val scaleUpX = ObjectAnimator.ofFloat(this, "scaleX", 3f)
+            val scaleUpY = ObjectAnimator.ofFloat(this, "scaleY", 3f)
+            scaleUpX.duration = 1000
+            scaleUpY.duration = 1000
+            scaleUpX.repeatCount = ObjectAnimator.INFINITE
+            scaleUpY.repeatCount = ObjectAnimator.INFINITE
+
+            val moveLeftX: ObjectAnimator = ObjectAnimator.ofFloat(this,
+            "translationX", -350F)
+            val moveUpY: ObjectAnimator = ObjectAnimator.ofFloat(this,
+                "translationY", -200F)
+            moveLeftX.duration = 1000
+            moveUpY.duration = 1000
+            moveLeftX.repeatCount = ObjectAnimator.INFINITE
+            moveUpY.repeatCount = ObjectAnimator.INFINITE
+
+            val scaleUp = AnimatorSet()
+            val moveDiag = AnimatorSet()
+
+            scaleUp.play(scaleUpX).with(scaleUpY)
+            moveDiag.play(moveUpY).with(moveLeftX)
+
+            scaleUp.start()
+            moveDiag.start()
+        }
+    }
 
     private fun safeNavigateToResultDestination(actionIdForNav: Int) {
         try {
@@ -426,4 +466,25 @@ class VCheckSegmentationActivity : AppCompatActivity(),
 
         openLivenessCameraParams = null
     }
+
+    //        binding!!.scalableDocHandView.apply {
+//            val widthAnim = ValueAnimator.ofInt(this.measuredWidth, frameSize!!.width)
+//            widthAnim.addUpdateListener { animator ->
+//                val params: ViewGroup.LayoutParams = this.layoutParams
+//                params.width = animator.animatedValue as Int
+//                this.layoutParams = params
+//            }
+//            val heightAnim = ValueAnimator.ofInt(this.measuredWidth, frameSize!!.height)
+//            widthAnim.addUpdateListener { animator ->
+//                val params: ViewGroup.LayoutParams = this.layoutParams
+//                params.width = animator.animatedValue as Int
+//                this.layoutParams = params
+//            }
+//
+//            widthAnim.duration = 1000
+//            heightAnim.duration = 1000
+//
+//            widthAnim.start()
+//            heightAnim.start()
+//        }
 }
