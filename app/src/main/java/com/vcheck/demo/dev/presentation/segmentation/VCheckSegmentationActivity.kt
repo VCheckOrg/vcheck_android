@@ -4,14 +4,12 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.Rect
 import android.hardware.camera2.*
-import android.hardware.camera2.params.MeteringRectangle
 import android.media.ImageReader
 import android.os.*
+import android.util.DisplayMetrics
 import android.util.Log
 import android.util.Size
-import android.view.MotionEvent
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -26,12 +24,10 @@ import com.vcheck.demo.dev.databinding.ActivityVcheckSegmentationBinding
 import com.vcheck.demo.dev.di.VCheckDIContainer
 import com.vcheck.demo.dev.domain.*
 import com.vcheck.demo.dev.presentation.liveness.flow_logic.LivenessCameraParams
-import com.vcheck.demo.dev.presentation.liveness.ui.LivenessCameraConnectionFragment
 import com.vcheck.demo.dev.presentation.segmentation.flow_logic.*
 import com.vcheck.demo.dev.presentation.segmentation.ui.SegmentationCameraConnectionFragment
 import com.vcheck.demo.dev.presentation.transferrable_objects.CheckPhotoDataTO
 import com.vcheck.demo.dev.util.VCheckContextUtils
-import com.vcheck.demo.dev.util.pixelsToDp
 import com.vcheck.demo.dev.util.vibrateDevice
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -266,12 +262,30 @@ class VCheckSegmentationActivity : AppCompatActivity(),
             },
             this@VCheckSegmentationActivity)
 
-
-
         camera2Fragment!!.setCamera(cameraId)
 
         val fragment: Fragment = camera2Fragment!!
-        supportFragmentManager.beginTransaction().replace(R.id.container, fragment).commit()
+        supportFragmentManager.beginTransaction().replace(R.id.seg_container, fragment).commit()
+
+        if (frameSize == null) {
+
+            //TODO test!
+            val displayMetrics: DisplayMetrics = resources.displayMetrics
+            val factor: Float = displayMetrics.density
+            val dpWidth = displayMetrics.widthPixels / factor
+
+            val frameWidth = ((dpWidth * 0.76) * factor).toInt()
+            val frameHeight = (frameWidth * 0.63).toInt()
+
+            Log.d("SEG", "VIEW WIDTH: $dpWidth")
+            Log.d("SEG", "FRAME WIDTH: $frameWidth | FRAME HEIGHT: $frameHeight")
+
+            frameSize = Size(frameWidth, frameHeight)
+
+            binding!!.segmentationFrame.layoutParams.width = frameSize!!.width
+            binding!!.segmentationFrame.layoutParams.height = frameSize!!.height
+        }
+
     }
 
     override fun onImageAvailable(reader: ImageReader?) {
@@ -282,25 +296,11 @@ class VCheckSegmentationActivity : AppCompatActivity(),
     }
 
     fun processImage() {
+
         try {
             //if (!blockProcessingByUI && !blockRequestByProcessing) {
             Handler(Looper.getMainLooper()).post {
                 openLivenessCameraParams?.apply {
-
-                    if (frameSize == null) {
-
-                        //TODO test!
-                        val desiredWidth = previewWidth.toFloat().pixelsToDp(this@VCheckSegmentationActivity).toInt()
-                       // val desiredHeight = previewHeight.toFloat().pixelsToDp(this@VCheckSegmentationActivity).toInt()
-
-                        val frameWidth = (desiredWidth * 0.76).toInt()
-                        val frameHeight = (frameWidth * 0.63).toInt()
-
-                        frameSize = Size(frameWidth, frameHeight)
-
-                        binding!!.segmentationFrame.layoutParams.width = frameWidth
-                        binding!!.segmentationFrame.layoutParams.height = frameHeight
-                    }
 
                     imageConverter!!.run()
                     rgbFrameBitmap = Bitmap.createBitmap(previewWidth, previewHeight, Bitmap.Config.ARGB_8888)
