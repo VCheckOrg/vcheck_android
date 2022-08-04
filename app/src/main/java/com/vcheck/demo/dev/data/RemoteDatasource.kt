@@ -107,7 +107,10 @@ class RemoteDatasource(private val verificationApiClient: VerificationApiClient,
         index: String): MutableLiveData<Resource<SegmentationGestureResponse>> {
         return NetworkCall<SegmentationGestureResponse>().makeCall(
             verificationApiClient.sendSegmentationDocAttempt(
-                VCheckSDK.getVerificationToken(), image, country, category, index))
+                VCheckSDK.getVerificationToken(), image,
+                MultipartBody.Part.createFormData("country", country),
+                MultipartBody.Part.createFormData("category", category),
+                MultipartBody.Part.createFormData("index", index)))
     }
 
     fun checkFinalVerificationStatus(verifId: Int,

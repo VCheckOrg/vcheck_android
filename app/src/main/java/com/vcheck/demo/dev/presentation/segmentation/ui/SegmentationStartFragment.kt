@@ -23,6 +23,20 @@ class SegmentationStartFragment : Fragment() {
 
     private var _binding: FragmentSegmentationStartBinding? = null
 
+    private val mStartForResult: ActivityResultLauncher<Intent> = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()) {
+        Log.d("SEG", "------------ SEGMENTATION ACTIVITY FINISHED!")
+        if (VCheckDIContainer.mainRepository.getCheckDocPhotosTO() != null) {
+            val action = SegmentationStartFragmentDirections
+                .actionSegmentationStartFragmentToCheckPhotoFragment(
+                    VCheckDIContainer.mainRepository.getCheckDocPhotosTO()!!)
+            findNavController().navigate(action)
+        } else {
+            Toast.makeText((activity as VCheckMainActivity),
+                "Error: photo TO was not set!", Toast.LENGTH_LONG).show()
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
@@ -36,7 +50,7 @@ class SegmentationStartFragment : Fragment() {
         _binding = FragmentSegmentationStartBinding.bind(view)
 
         when (docCategoryIdxToType(VCheckDIContainer.mainRepository
-            .getSelectedDocTypeWithData()!!.category)) {
+            .getSelectedDocTypeWithData()?.category ?: 0)) { //!
             DocType.ID_CARD -> {
                 _binding!!.docImage.setImageResource(R.drawable.img_id_card_large)
                 _binding!!.docTitle.setText(R.string.segmentation_instr_id_card_title)
@@ -55,20 +69,6 @@ class SegmentationStartFragment : Fragment() {
         }
 
         _binding!!.launchSegmentationButton.setOnClickListener {
-
-            val mStartForResult: ActivityResultLauncher<Intent> = registerForActivityResult(
-                ActivityResultContracts.StartActivityForResult()) {
-                Log.d("SEG", "------------ SEGMENTATION ACTIVITY FINISHED!")
-                if (VCheckDIContainer.mainRepository.getCheckDocPhotosTO() != null) {
-                    val action = SegmentationStartFragmentDirections
-                        .actionSegmentationStartFragmentToCheckPhotoFragment(
-                            VCheckDIContainer.mainRepository.getCheckDocPhotosTO()!!)
-                    findNavController().navigate(action)
-                } else {
-                    Toast.makeText((activity as VCheckMainActivity),
-                        "Error: photo TO was not set!", Toast.LENGTH_LONG).show()
-                }
-            }
             val intent = Intent((activity as VCheckMainActivity), VCheckSegmentationActivity::class.java)
             mStartForResult.launch(intent)
         }

@@ -83,9 +83,9 @@ interface VerificationApiClient {
     fun sendSegmentationDocAttempt(
         @Header("Authorization") verifToken: String,
         @Part image: MultipartBody.Part,
-        @Part country: String,
-        @Part category: String,
-        @Part index: String
+        @Part country: MultipartBody.Part,
+        @Part category: MultipartBody.Part,
+        @Part index: MultipartBody.Part
     ) : Call<SegmentationGestureResponse>
 
     /*

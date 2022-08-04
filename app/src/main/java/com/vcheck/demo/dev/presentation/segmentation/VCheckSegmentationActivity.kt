@@ -4,12 +4,14 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.hardware.camera2.CameraCharacteristics
-import android.hardware.camera2.CameraManager
+import android.graphics.Rect
+import android.hardware.camera2.*
+import android.hardware.camera2.params.MeteringRectangle
 import android.media.ImageReader
 import android.os.*
 import android.util.Log
 import android.util.Size
+import android.view.MotionEvent
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -26,6 +28,7 @@ import com.vcheck.demo.dev.domain.*
 import com.vcheck.demo.dev.presentation.liveness.flow_logic.LivenessCameraParams
 import com.vcheck.demo.dev.presentation.liveness.ui.LivenessCameraConnectionFragment
 import com.vcheck.demo.dev.presentation.segmentation.flow_logic.*
+import com.vcheck.demo.dev.presentation.segmentation.ui.SegmentationCameraConnectionFragment
 import com.vcheck.demo.dev.presentation.transferrable_objects.CheckPhotoDataTO
 import com.vcheck.demo.dev.util.VCheckContextUtils
 import com.vcheck.demo.dev.util.pixelsToDp
@@ -65,7 +68,7 @@ class VCheckSegmentationActivity : AppCompatActivity(),
 
     var openLivenessCameraParams: LivenessCameraParams? = LivenessCameraParams()
 
-    private var camera2Fragment: LivenessCameraConnectionFragment? = null
+    private var camera2Fragment: SegmentationCameraConnectionFragment? = null
 
     private var livenessSessionLimitCheckTime: Long = 0
     private var isLivenessSessionFinished: Boolean = false
@@ -93,7 +96,6 @@ class VCheckSegmentationActivity : AppCompatActivity(),
 
         setCameraFragment()
         setupInstructionStage()
-        //initSetupUI()
     }
 
     private fun setupInstructionStage() {
@@ -244,18 +246,18 @@ class VCheckSegmentationActivity : AppCompatActivity(),
         try {
             for (cameraIdx in cameraManager.cameraIdList) {
                 val chars: CameraCharacteristics = cameraManager.getCameraCharacteristics(cameraIdx)
-                if (CameraCharacteristics.LENS_FACING_FRONT == chars.get(CameraCharacteristics.LENS_FACING)) {
+                if (CameraCharacteristics.LENS_FACING_BACK == chars.get(CameraCharacteristics.LENS_FACING)) {
                     cameraId = cameraIdx
                     break
                 }
             }
         } catch (e: Exception) {
-            Log.e(TAG, "FRONT CAMERA DETECTION ERROR: ${e.message}")
+            Log.e(TAG, "BACK CAMERA DETECTION ERROR: ${e.message}")
             showSingleToast(e.message)
         }
 
-        camera2Fragment = LivenessCameraConnectionFragment.newInstance(
-            object : LivenessCameraConnectionFragment.ConnectionCallback {
+        camera2Fragment = SegmentationCameraConnectionFragment.newInstance(
+            object : SegmentationCameraConnectionFragment.ConnectionCallback {
                 override fun onPreviewSizeChosen(size: Size?, cameraRotation: Int) {
                     openLivenessCameraParams?.previewHeight = size!!.height
                     openLivenessCameraParams?.previewWidth = size.width
@@ -263,6 +265,8 @@ class VCheckSegmentationActivity : AppCompatActivity(),
                 }
             },
             this@VCheckSegmentationActivity)
+
+
 
         camera2Fragment!!.setCamera(cameraId)
 
@@ -302,16 +306,18 @@ class VCheckSegmentationActivity : AppCompatActivity(),
                     rgbFrameBitmap = Bitmap.createBitmap(previewWidth, previewHeight, Bitmap.Config.ARGB_8888)
                     rgbFrameBitmap?.setPixels(rgbBytes, 0, previewWidth, 0, 0, previewWidth, previewHeight)
 
-                    val finalBitmap = rotateBitmap(rgbFrameBitmap!!)!!
+                    currentCheckBitmap = rgbFrameBitmap!! //!!!
+
+                    //val finalBitmap = rotateBitmap(rgbFrameBitmap!!)!!
                     //caching bitmap to array/list:
                     //fullSizeBitmapList.add(finalBitmap)
                     //TODO cache as image!
                     //recycling bitmap:
-                    rgbFrameBitmap!!.recycle()
+                    //rgbFrameBitmap!!.recycle() //TODO recycle?
                     //running post-inference callback
                     postInferenceCallback!!.run()
                     //updating cached bitmap for gesture request
-                    currentCheckBitmap = finalBitmap
+                    //currentCheckBitmap = finalBitmap
                 }
                 //}
             }

@@ -1,6 +1,5 @@
 package com.vcheck.demo.dev.presentation.segmentation.ui
 
-import com.vcheck.demo.dev.presentation.liveness.ui.AutoFitTextureView
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
@@ -9,25 +8,27 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.ImageFormat
 import android.graphics.Matrix
+import android.graphics.Rect
 import android.graphics.SurfaceTexture
 import android.hardware.camera2.*
 import android.hardware.camera2.CameraCaptureSession.CaptureCallback
+import android.hardware.camera2.params.MeteringRectangle
 import android.media.ImageReader
 import android.media.ImageReader.OnImageAvailableListener
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
+import android.util.Log
 import android.util.Size
-import android.view.LayoutInflater
-import android.view.Surface
+import android.view.*
 import android.view.TextureView.SurfaceTextureListener
-import android.view.View
-import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.vcheck.demo.dev.R
-import com.vcheck.demo.dev.presentation.liveness.VCheckLivenessActivity
+import com.vcheck.demo.dev.presentation.liveness.ui.AutoFitTextureView
+import com.vcheck.demo.dev.presentation.segmentation.VCheckSegmentationActivity
 import java.util.*
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
@@ -44,6 +45,7 @@ class SegmentationCameraConnectionFragment() : Fragment() {
 
     companion object {
         private const val FRAGMENT_DIALOG = "camera_dialog"
+        private const val CLICK_THRESHOLD = 200
 
         //removed chooseOptimalSize() !
         fun newInstance(
@@ -76,7 +78,7 @@ class SegmentationCameraConnectionFragment() : Fragment() {
             //Stub
         }
     }
-    private var cameraId: String? = null
+    var cameraId: String? = null
     private var textureView: AutoFitTextureView? = null
     private var captureSession: CameraCaptureSession? = null
     private var cameraDevice: CameraDevice? = null
@@ -100,6 +102,7 @@ class SegmentationCameraConnectionFragment() : Fragment() {
     private var previewReader: ImageReader? = null
     private var previewRequestBuilder: CaptureRequest.Builder? = null
     private var previewRequest: CaptureRequest? = null
+
     private val stateCallback: CameraDevice.StateCallback = object : CameraDevice.StateCallback() {
         override fun onOpened(cd: CameraDevice) {
             // This method is called when the camera is opened.  We start camera preview here.
@@ -162,7 +165,7 @@ class SegmentationCameraConnectionFragment() : Fragment() {
 
     /** Sets up member variables related to camera.  */
     private fun setUpCameraOutputs() {
-        val activity = activity as VCheckLivenessActivity
+        val activity = activity as VCheckSegmentationActivity
         try {
             sensorOrientation = 270 //CameraCharacteristics.SENSOR_ORIENTATION
 
@@ -188,7 +191,7 @@ class SegmentationCameraConnectionFragment() : Fragment() {
 
         textureView!!.post {
             backgroundHandler!!.post {
-                val activity = activity as VCheckLivenessActivity
+                val activity = activity as VCheckSegmentationActivity
                 val manager =
                     activity.getSystemService(Context.CAMERA_SERVICE) as CameraManager
                 try {
@@ -287,6 +290,7 @@ class SegmentationCameraConnectionFragment() : Fragment() {
             cameraDevice!!.createCaptureSession(
                 listOf(surface, previewReader!!.surface),
                 object : CameraCaptureSession.StateCallback() {
+                    @SuppressLint("ClickableViewAccessibility")
                     override fun onConfigured(cameraCaptureSession: CameraCaptureSession) {
                         // The camera is already closed
                         if (null == cameraDevice) {
@@ -295,18 +299,19 @@ class SegmentationCameraConnectionFragment() : Fragment() {
                         // When the session is ready, we start displaying the preview.
                         captureSession = cameraCaptureSession
                         try {
-                            // Auto focus should be continuous for camera preview.
-                            previewRequestBuilder!!.set(
-                                CaptureRequest.CONTROL_AF_MODE,
-                                CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE)
-                            // Flash is automatically enabled when necessary - disabled!
-//                            previewRequestBuilder!!.set(
-//                                CaptureRequest.CONTROL_AE_MODE,
-//                                CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH)
-                            // Finally, we start displaying the camera preview.
                             previewRequest = previewRequestBuilder!!.build()
                             captureSession!!.setRepeatingRequest(
                                 previewRequest!!, captureCallback, backgroundHandler)
+
+                            textureView!!.setOnTouchListener { v, event ->
+                                Log.d("SEG", "======= TOUCH EVENT: ${event.action}")
+                                val duration = event.eventTime - event.downTime
+                                if (event.action == MotionEvent.ACTION_UP && duration < CLICK_THRESHOLD) {
+                                    Log.d("SEG", "======= TOUCH EVENT SATISFIED PREDICATION!")
+                                    handleFocus(event)
+                                }
+                                true
+                            }
                         } catch (e: CameraAccessException) {
                             ErrorDialog.newInstance("Camera access exception occured from onConfigured()")
                                 .show(childFragmentManager, FRAGMENT_DIALOG)
@@ -338,7 +343,7 @@ class SegmentationCameraConnectionFragment() : Fragment() {
     class ErrorDialog : DialogFragment() {
 
         override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-            val activity = activity as VCheckLivenessActivity
+            val activity = activity as VCheckSegmentationActivity
             return AlertDialog.Builder(activity)
                 .setMessage(arguments?.getString(ARG_MESSAGE))
                 .setPositiveButton(
@@ -362,7 +367,89 @@ class SegmentationCameraConnectionFragment() : Fragment() {
         }
     }
 
+
+    fun handleFocus(event: MotionEvent) {
+        val pointerId = event.getPointerId(0)
+        val pointerIndex = event.findPointerIndex(pointerId)
+        // Get the pointer's current position
+        val x = event.getX(pointerIndex)
+        val y = event.getY(pointerIndex)
+        val touchRect =
+            Rect((x - 100).toInt(), (y - 100).toInt(), (x + 100).toInt(), (y + 100).toInt())
+        //if (mCameraId == null) return
+        val cm = (activity as VCheckSegmentationActivity)
+            .getSystemService(AppCompatActivity.CAMERA_SERVICE) as CameraManager
+        var cc: CameraCharacteristics? = null
+        try {
+            cc = cm.getCameraCharacteristics(cameraId!!)
+        } catch (e: CameraAccessException) {
+            e.printStackTrace()
+        }
+        val focusArea = MeteringRectangle(touchRect, MeteringRectangle.METERING_WEIGHT_DONT_CARE)
+        previewRequestBuilder!!.set(
+            CaptureRequest.CONTROL_AF_TRIGGER,
+            CameraMetadata.CONTROL_AF_TRIGGER_CANCEL
+        )
+        try {
+            captureSession!!.capture(
+                previewRequestBuilder!!.build(), captureCallback,
+                backgroundHandler
+            )
+            // After this, the camera will go back to the normal state of preview.
+            //mState = STATE_PREVIEW //TODO ?
+        } catch (e: CameraAccessException) {
+            Log.d("CAMERA", e.message.toString())
+        }
+        previewRequestBuilder!!.set(CaptureRequest.CONTROL_AE_REGIONS, arrayOf(focusArea))
+        previewRequestBuilder!!
+            .set(CaptureRequest.CONTROL_AF_REGIONS, arrayOf(focusArea))
+        previewRequestBuilder!!.set(
+            CaptureRequest.CONTROL_AF_MODE,
+            CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE)
+        previewRequestBuilder!!.set(
+            CaptureRequest.CONTROL_AF_TRIGGER,
+            CameraMetadata.CONTROL_AF_TRIGGER_START)
+        previewRequestBuilder!!.set(
+            CaptureRequest.CONTROL_AE_PRECAPTURE_TRIGGER,
+            CameraMetadata.CONTROL_AE_PRECAPTURE_TRIGGER_START)
+        try {
+            captureSession!!.setRepeatingRequest(
+                previewRequestBuilder!!.build(), captureCallback, backgroundHandler!!)
+            /* mManualFocusEngaged = true;*/
+        } catch (e: CameraAccessException) {
+            // error handling
+        }
+    }
+
 }
+
+
+// Auto focus should be continuous for camera preview.
+//                            previewRequestBuilder!!.set(
+//                                CaptureRequest.CONTROL_AF_MODE,
+//                                CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE)
+// Flash is automatically enabled when necessary - disabled!
+//                            previewRequestBuilder!!.set(
+//                                CaptureRequest.CONTROL_AE_MODE,
+//                                CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH)
+// Finally, we start displaying the camera preview.
+
+
+
+/* if (isMeteringAreaAESupported(cc)) {
+*/
+/*mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AE_REGIONS,
+        new MeteringRectangle[]{focusArea});*/
+/*
+}
+if (isMeteringAreaAFSupported(cc)) {
+*/
+/*mPreviewRequestBuilder
+        .set(CaptureRequest.CONTROL_AF_REGIONS, new MeteringRectangle[]{focusArea});
+mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE,
+        CaptureRequest.CONTROL_AF_MODE_AUTO);*/
+/*
+}*/
 
 // ------ Deprecated/obsolete logic:
 
