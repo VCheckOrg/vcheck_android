@@ -204,10 +204,11 @@
     <fragment
         android:id="@+id/segmentationStartFragment"
         android:name="com.vcheck.demo.dev.presentation.segmentation.ui.SegmentationStartFragment"
-        android:label="SegmentationStartFragment" >
+        android:label="SegmentationStartFragment"
+        tools:layout="@layout/fragment_segmentation_start">
         <action
-            android:id="@+id/action_segmentationStartFragment_to_checkDocInfoFragment"
-            app:destination="@id/checkDocInfoFragment" />
+            android:id="@+id/action_segmentationStartFragment_to_checkPhotoFragment"
+            app:destination="@id/checkPhotoFragment" />
     </fragment>
 
 </navigation>

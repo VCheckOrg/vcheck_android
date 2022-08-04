@@ -59,7 +59,7 @@ class VCheckLivenessActivity : AppCompatActivity(),
     private var mToast: Toast? = null
 
     var streamSize: Size = Size(640, 480)
-    private var bitmapArray: ArrayList<Bitmap>? = ArrayList()
+    private var bitmapList: ArrayList<Bitmap>? = ArrayList()
     private var muxer: Muxer? = null
     var videoPath: String? = null //make private!
     var openLivenessCameraParams: LivenessCameraParams? = LivenessCameraParams()
@@ -224,7 +224,7 @@ class VCheckLivenessActivity : AppCompatActivity(),
             }
         })
 
-        val finalList = CopyOnWriteArrayList(bitmapArray!!)
+        val finalList = CopyOnWriteArrayList(bitmapList!!)
         Thread { muxer!!.mux(finalList) }.start()
     }
 
@@ -251,7 +251,7 @@ class VCheckLivenessActivity : AppCompatActivity(),
 
                     val finalBitmap = rotateBitmap(rgbFrameBitmap!!)!!
                     //caching bitmap to array/list:
-                    bitmapArray?.add(finalBitmap)
+                    bitmapList?.add(finalBitmap)
                     //recycling bitmap:
                     rgbFrameBitmap!!.recycle()
                     //running post-inference callback
@@ -480,7 +480,7 @@ class VCheckLivenessActivity : AppCompatActivity(),
 
     override fun onDestroy() {
         super.onDestroy()
-        bitmapArray = null
+        bitmapList = null
         muxer = null
         openLivenessCameraParams = null
     }

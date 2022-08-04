@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.databinding.FragmentSegmentationStartBinding
+import com.vcheck.demo.dev.di.VCheckDIContainer
+import com.vcheck.demo.dev.domain.docCategoryIdxToType
 
 class SegmentationStartFragment : Fragment() {
 
@@ -23,5 +25,12 @@ class SegmentationStartFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         _binding = FragmentSegmentationStartBinding.bind(view)
+
+        val repository = VCheckDIContainer.mainRepository
+
+        when(docCategoryIdxToType(repository.getSelectedDocTypeWithData()!!.category)) {
+            //TODO
+        }
+
     }
 }

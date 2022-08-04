@@ -18,6 +18,7 @@ import com.vcheck.demo.dev.domain.DocTypeData
 import com.vcheck.demo.dev.domain.docCategoryIdxToType
 import com.vcheck.demo.dev.util.ThemeWrapperFragment
 
+
 class ChooseDocMethodFragment : ThemeWrapperFragment() {
 
     private var _binding: ChooseDocMethodFragmentBinding? = null
@@ -115,7 +116,22 @@ class ChooseDocMethodFragment : ThemeWrapperFragment() {
 
     private fun selectDocTypeDataAndNavigateForward(docTypeData: DocTypeData) {
         Log.d("DOC_TYPE_DATA", docTypeData.toString())
+
         _viewModel.repository.setSelectedDocTypeWithData(docTypeData)
-        findNavController().navigate(R.id.action_chooseDocMethodScreen_to_photoInstructionsFragment)
+        if (docTypeData.isSegmentationAvailable) {
+            //findNavController().navigate(R.id.action_chooseDocMethodScreen_to_segmentationStartFragment)
+        } else {
+            findNavController().navigate(R.id.action_chooseDocMethodScreen_to_photoInstructionsFragment)
+        }
     }
 }
+
+/*
+val mStartForResult: ActivityResultLauncher<Intent> =
+                registerForActivityResult(
+                    ActivityResultContracts.StartActivityForResult()) {
+
+                }
+            val intent = Intent((activity as VCheckMainActivity), VCheckSegmentationActivity::class.java)
+            mStartForResult.launch(intent)
+ */

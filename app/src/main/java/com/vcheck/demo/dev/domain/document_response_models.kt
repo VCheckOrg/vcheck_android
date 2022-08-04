@@ -39,7 +39,9 @@ data class DocTypeData(
     @SerializedName("auto")
     val auto: Boolean,
     @SerializedName("fields")
-    val docFields: List<DocField>
+    val docFields: List<DocField>,
+    @SerializedName("is_inspection_available")
+    val isSegmentationAvailable: Boolean
 )
 
 data class DocField(

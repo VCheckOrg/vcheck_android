@@ -2,7 +2,6 @@ package com.vcheck.demo.dev.presentation.segmentation.flow_logic
 
 import android.graphics.Bitmap
 import android.graphics.Matrix
-import android.media.Image
 import android.media.ImageReader
 import android.os.Environment
 import android.util.Log
@@ -85,6 +84,22 @@ fun VCheckSegmentationActivity.createTempFileForBitmapFrame(mBitmap: Bitmap): St
         e.printStackTrace()
         ""
     }
+}
+
+//TODO test!!
+fun Bitmap.crop(): Bitmap {
+    val originalWidth = this.width
+    val originalHeight = this.height
+    val desiredWidth = (originalWidth * 0.8).toInt()
+    val desiredHeight = (originalWidth * 0.63).toInt()
+    val cropHeightFromEachSide = ((originalHeight - desiredHeight) / 2).toInt()
+    val cropWidthFromEachSide = ((originalWidth - desiredWidth) / 2).toInt()
+    return Bitmap.createBitmap(
+        this,
+        cropHeightFromEachSide,
+        cropWidthFromEachSide,
+        desiredWidth,
+        desiredHeight)
 }
 
 
