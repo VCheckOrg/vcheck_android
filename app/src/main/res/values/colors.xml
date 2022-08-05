@@ -13,6 +13,7 @@
     <color name="vcheck_success">#00DF53</color>
     <color name="vcheck_success_half_filled">#5B00DF53</color>
     <color name="vcheck_unavailable_mask">#7C3B3B3B</color>
+    <color name="vcheck_stream_ui_mask">#B93B3B3B</color>
     <color name="vcheck_error_light">#FF877C</color>
     <color name="vcheck_util">#3B3B3B</color>
     <color name="vcheck_rounded_shape">#515151</color>

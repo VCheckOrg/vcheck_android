@@ -76,12 +76,17 @@
         <View
             android:id="@+id/scalableDocHandView"
             android:layout_width="80dp"
-            android:layout_height="120dp"
+            android:layout_height="80dp"
             android:background="@drawable/img_hand_id_card"
             app:layout_constraintEnd_toEndOf="@id/segmentation_frame"
             app:layout_constraintBottom_toBottomOf="@id/segmentation_frame"
             android:layout_marginBottom="-70dp"
             android:layout_marginEnd="-60dp"/>
+
+        <com.vcheck.demo.dev.util.RectOverlayView
+            android:id="@+id/segmentation_mask_wrapper"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
         <View
             android:id="@+id/segmentation_frame"
@@ -92,6 +97,32 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:background="@drawable/doc_frame_common_state"/>
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/doc_animation_view"
+            android:scaleX="1.0"
+            android:scaleY="1.0"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/id_card_turn_front"
+            android:layout_width="300dp"
+            android:layout_height="200dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:background="@drawable/doc_frame_common_state" />
+
+        <ImageView
+            android:id="@+id/closeIconBtn"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="22dp"
+            android:layout_marginEnd="22dp"
+            android:src="@drawable/cross_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -108,16 +139,3 @@
         app:navGraph="@navigation/segmentation_nav_graph" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!--        <com.airbnb.lottie.LottieAnimationView-->
-    <!--            android:id="@+id/arrow_animation_view"-->
-    <!--            android:layout_width="260dp"-->
-    <!--            android:layout_height="140dp"-->
-    <!--            android:scaleX="2.8"-->
-    <!--            android:scaleY="3.2"-->
-    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--            app:layout_constraintEnd_toEndOf="parent"-->
-    <!--            app:layout_constraintStart_toStartOf="parent"-->
-    <!--            app:lottie_autoPlay="true"-->
-    <!--            app:lottie_loop="true"-->
-    <!--            app:lottie_rawRes="@raw/arrow" />-->

@@ -65,12 +65,6 @@ fun VCheckSegmentationActivity.onImageAvailableImpl(reader: ImageReader?) {
 }
 
 fun VCheckSegmentationActivity.getScreenOrientation(): Int {
-//    return when (windowManager.defaultDisplay.rotation) {
-//        Surface.ROTATION_270 -> 270
-//        Surface.ROTATION_180 -> 180
-//        Surface.ROTATION_90 -> 90
-//        else -> 0
-//    }
     return 0
 }
 
@@ -96,14 +90,14 @@ fun VCheckSegmentationActivity.createTempFileForBitmapFrame(mBitmap: Bitmap): St
 fun Bitmap.crop(): Bitmap {
     val originalWidth = this.width
     val originalHeight = this.height
-    val desiredWidth = (originalWidth * 0.8).toInt()
+    val desiredWidth = (originalWidth * 0.75).toInt()
     val desiredHeight = (desiredWidth * 0.63).toInt()
     val cropHeightFromEachSide = ((originalHeight - desiredHeight) / 2)
     val cropWidthFromEachSide = ((originalWidth - desiredWidth) / 2)
 
-    Log.d("SEG", "----- CROPPING BITMAP | originalWidth=$originalWidth | originalHeight=$originalHeight | " +
-            "desiredWidth=$desiredWidth | desiredHeight=$desiredHeight | " +
-            "cropHeightFromEachSide=$cropHeightFromEachSide | cropWidthFromEachSide=$cropWidthFromEachSide")
+//    Log.d("SEG", "----- CROPPING BITMAP | originalWidth=$originalWidth | originalHeight=$originalHeight | " +
+//            "desiredWidth=$desiredWidth | desiredHeight=$desiredHeight | " +
+//            "cropHeightFromEachSide=$cropHeightFromEachSide | cropWidthFromEachSide=$cropWidthFromEachSide")
 
     //----- CROPPING BITMAP | originalWidth=640 | originalHeight=480 | desiredWidth=448 | desiredHeight=403 | cropHeightFromEachSide=38 | cropWidthFromEachSide=96
 
@@ -178,3 +172,10 @@ fun saveImageToStream(bitmap: Bitmap, outputStream: OutputStream?) {
         }
     }
 }
+
+//    return when (windowManager.defaultDisplay.rotation) {
+//        Surface.ROTATION_270 -> 270
+//        Surface.ROTATION_180 -> 180
+//        Surface.ROTATION_90 -> 90
+//        else -> 0
+//    }

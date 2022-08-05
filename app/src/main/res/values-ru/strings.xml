@@ -164,5 +164,5 @@
     <string name="segmentation_back_side_hint">Поместите заднюю сторону документа в указанную зону для автоматического считывания</string>
     <string name="segmentation_stage_success">Документ считан успешно!</string>
 
-
+    <string name="no_time_seg_title">Время, отведенное на сканирование документа, истекло</string>
 </resources>

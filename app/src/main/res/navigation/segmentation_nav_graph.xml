@@ -9,6 +9,15 @@
         android:id="@+id/dummySegmentationStartFragment"
         android:name="com.vcheck.demo.dev.presentation.segmentation.ui.DummySegmentationStartFragment"
         android:label="DummySegmentationStartFragment"
-        tools:layout="@layout/fragment_dummy_segmentation_start"/>
+        tools:layout="@layout/fragment_dummy_segmentation_start">
+        <action
+            android:id="@+id/action_dummySegmentationStartFragment_to_segTimeoutFragment"
+            app:destination="@id/segTimeoutFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/segTimeoutFragment"
+        android:name="com.vcheck.demo.dev.presentation.segmentation.ui.SegTimeoutFragment"
+        android:label="SegTimeoutFragment"
+        tools:layout="@layout/fragment_seg_timeout"/>
 
 </navigation>

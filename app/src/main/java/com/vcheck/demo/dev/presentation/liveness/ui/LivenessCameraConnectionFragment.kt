@@ -26,7 +26,7 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.vcheck.demo.dev.R
-import com.vcheck.demo.dev.presentation.segmentation.VCheckSegmentationActivity
+import com.vcheck.demo.dev.presentation.liveness.VCheckLivenessActivity
 import java.util.*
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
@@ -161,7 +161,7 @@ class LivenessCameraConnectionFragment() : Fragment() {
 
     /** Sets up member variables related to camera.  */
     private fun setUpCameraOutputs() {
-        val activity = activity as VCheckSegmentationActivity
+        val activity = activity as VCheckLivenessActivity
         try {
             sensorOrientation = 270 //CameraCharacteristics.SENSOR_ORIENTATION
 
@@ -187,7 +187,7 @@ class LivenessCameraConnectionFragment() : Fragment() {
 
         textureView!!.post {
             backgroundHandler!!.post {
-                val activity = activity as VCheckSegmentationActivity
+                val activity = activity as VCheckLivenessActivity
                 val manager =
                     activity.getSystemService(Context.CAMERA_SERVICE) as CameraManager
                 try {
@@ -335,7 +335,7 @@ class LivenessCameraConnectionFragment() : Fragment() {
     class ErrorDialog : DialogFragment() {
 
         override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-            val activity = activity as VCheckSegmentationActivity
+            val activity = activity as VCheckLivenessActivity
             return AlertDialog.Builder(activity)
                 .setMessage(arguments?.getString(ARG_MESSAGE))
                 .setPositiveButton(

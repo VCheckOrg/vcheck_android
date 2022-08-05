@@ -173,4 +173,7 @@
     <string name="segmentation_front_side_hint">Place the front side of the document in the specified zone for automatic reading</string>
     <string name="segmentation_back_side_hint">Place the back side of the document in the specified zone for automatic reading</string>
     <string name="segmentation_stage_success">Document scanned successfully!</string>
+
+    <string name="no_time_seg_title">The time to take document photo(s) has expired</string>
+
 </resources>

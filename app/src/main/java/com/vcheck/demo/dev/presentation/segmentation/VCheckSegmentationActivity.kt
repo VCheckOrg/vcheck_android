@@ -2,7 +2,6 @@ package com.vcheck.demo.dev.presentation.segmentation
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.Bitmap
@@ -13,7 +12,6 @@ import android.os.*
 import android.util.DisplayMetrics
 import android.util.Log
 import android.util.Size
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -28,11 +26,13 @@ import com.vcheck.demo.dev.data.Resource
 import com.vcheck.demo.dev.databinding.ActivityVcheckSegmentationBinding
 import com.vcheck.demo.dev.di.VCheckDIContainer
 import com.vcheck.demo.dev.domain.*
+import com.vcheck.demo.dev.presentation.liveness.VCheckLivenessActivity
 import com.vcheck.demo.dev.presentation.liveness.flow_logic.LivenessCameraParams
 import com.vcheck.demo.dev.presentation.segmentation.flow_logic.*
 import com.vcheck.demo.dev.presentation.segmentation.ui.SegmentationCameraConnectionFragment
 import com.vcheck.demo.dev.presentation.transferrable_objects.CheckPhotoDataTO
 import com.vcheck.demo.dev.util.VCheckContextUtils
+import com.vcheck.demo.dev.util.setMargins
 import com.vcheck.demo.dev.util.vibrateDevice
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -47,12 +47,10 @@ class VCheckSegmentationActivity : AppCompatActivity(),
     companion object {
         const val TAG = "LivenessActivity"
         private const val LIVENESS_TIME_LIMIT_MILLIS: Long = 60000 //max is 60s
-        private const val BLOCK_PIPELINE_TIME_MILLIS: Long = 800 //may reduce a bit
+        private const val BLOCK_PIPELINE_TIME_MILLIS: Long = 2200 //may reduce a bit
         private const val GESTURE_REQUEST_DEBOUNCE_MILLIS: Long = 500
         private const val STAGE_VIBRATION_DURATION_MILLIS: Long = 100
     }
-
-    //TODO add timeout 60s!
 
     private var segmentationResponse: MutableLiveData<Resource<SegmentationGestureResponse>> = MutableLiveData()
 
@@ -76,7 +74,7 @@ class VCheckSegmentationActivity : AppCompatActivity(),
     private var blockProcessingByUI: Boolean = false
     private var blockRequestByProcessing: Boolean = false
 
-    private var currentCheckBitmap: Bitmap? = null //!
+    private var currentCheckBitmap: Bitmap? = null
 
     private var fullSizeBitmapList: ArrayList<Bitmap> = ArrayList()
 
@@ -90,84 +88,21 @@ class VCheckSegmentationActivity : AppCompatActivity(),
         VCheckSDK.backgroundPrimaryColorHex?.let {
             binding!!.livenessActivityBackground.setBackgroundColor(Color.parseColor(it))
         }
-
         onBackPressedDispatcher.addCallback {
             //Stub; no back press needed throughout liveness flow
+        }
+        binding!!.closeIconBtn.setOnClickListener {
+            finish()
         }
 
         setDocData()
         setCameraFragment()
-        setupInstructionStage()
-    }
-
-    private fun setupInstructionStage() {
-
-        blockProcessingByUI = true
-        blockRequestByProcessing = true
-
-        binding!!.scalableDocHandView.isVisible = true
-
-        when(docCategoryIdxToType(docData.category)) {
-            DocType.ID_CARD -> {
-                binding!!.scalableDocHandView.background = AppCompatResources.getDrawable(
-                    this@VCheckSegmentationActivity, R.drawable.img_hand_id_card)
-            }
-            DocType.FOREIGN_PASSPORT -> {
-                binding!!.scalableDocHandView.background = AppCompatResources.getDrawable(
-                    this@VCheckSegmentationActivity, R.drawable.img_hand_foreign_passport)
-            } else -> {
-            binding!!.scalableDocHandView.background = AppCompatResources.getDrawable(
-                this@VCheckSegmentationActivity, R.drawable.img_hand_inner_passport)
-            }
-        }
-
-        animateInstructionStage()
-
-        binding!!.readyButton.setOnClickListener {
-            setupDocCheckStage()
-        }
-    }
-
-    private fun indicateNextStage() {
-
-        binding!!.tvSegmentationInstruction.setText(R.string.segmentation_stage_success)
-
-        Handler(Looper.getMainLooper()).postDelayed ({
-            setUIForNextStage()
-        }, BLOCK_PIPELINE_TIME_MILLIS)
-    }
-
-
-    private fun setUIForNextStage() {
-        when(docCategoryIdxToType(docData.category)) {
-            DocType.FOREIGN_PASSPORT -> {
-                binding!!.tvSegmentationInstruction.setText(R.string.segmentation_single_page_hint)
-            }
-            DocType.ID_CARD -> {
-                if (checkedDocIdx == 0) {
-                    binding!!.tvSegmentationInstruction.setText(R.string.segmentation_front_side_hint)
-                }
-                if (checkedDocIdx == 1) {
-                    binding!!.tvSegmentationInstruction.setText(R.string.segmentation_back_side_hint)
-                }
-            }
-            else -> {
-                if (checkedDocIdx == 0) {
-                    binding!!.tvSegmentationInstruction.setText(R.string.segmentation_front_side_hint)
-                }
-                if (checkedDocIdx == 1) {
-                    binding!!.tvSegmentationInstruction.setText(R.string.segmentation_back_side_hint)
-                }
-            }
-        }
-        blockProcessingByUI = false
-        blockRequestByProcessing = false
+        setupInstructionStageUI()
     }
 
     private fun setupDocCheckStage() {
         binding!!.scalableDocHandView.isVisible = false
         binding!!.readyButton.isVisible = false
-        //binding!!.tvSegmentationInstruction.setText(R.string.segmentation_single_page_hint)
         resetFlowForNewSession()
         setGestureResponsesObserver()
         setUIForNextStage()
@@ -178,6 +113,7 @@ class VCheckSegmentationActivity : AppCompatActivity(),
     }
 
     private fun resetFlowForNewSession() {
+        fullSizeBitmapList = ArrayList()
         blockProcessingByUI = false
         blockRequestByProcessing = false
         checkedDocIdx = 0
@@ -205,14 +141,15 @@ class VCheckSegmentationActivity : AppCompatActivity(),
                     if (!isLivenessSessionFinished) {
                         if (areAllDocPagesChecked()) {
                             Log.d(TAG, "==============++++++++++++++++  PASSED ALL PAGES!")
-                            finishLivenessSession()
-                            //delayedNavigateOnLivenessSessionEnd() //!
+                            finishLivenessSession(true)
                         } else {
                             if (it.data != null && it.data.success) {
                                 Log.d(TAG, "============== PASSED DOC PAGE: $checkedDocIdx")
+                                vibrateDevice(this@VCheckSegmentationActivity,
+                                    STAGE_VIBRATION_DURATION_MILLIS)
+                                fullSizeBitmapList.add(currentCheckBitmap!!)
                                 checkedDocIdx += 1
                                 if (!areAllDocPagesChecked()) {
-                                    fullSizeBitmapList.add(currentCheckBitmap!!) //!
                                     blockProcessingByUI = true
                                     indicateNextStage()
                                 }
@@ -221,8 +158,7 @@ class VCheckSegmentationActivity : AppCompatActivity(),
                                 blockRequestByProcessing = false
                             }
                             if (it.data != null && it.data.errorCode != 0) {
-                                //TODO: add error handling
-                                showSingleToast("GESTURE CHECK ERROR: [${it.data.errorCode}]")
+                                showSingleToast("Scan error: [${it.data.errorCode}]")
                             }
                         }
                     }
@@ -231,25 +167,27 @@ class VCheckSegmentationActivity : AppCompatActivity(),
         }
     }
 
-    private fun finishLivenessSession() {
+    private fun finishLivenessSession(withActivityFinish: Boolean) {
         isLivenessSessionFinished = true
         currentCheckBitmap = null
 
-        var photo1Path: String? = null
-        var photo2Path: String? = null
+        if (withActivityFinish) {
+            var photo1Path: String? = null
+            var photo2Path: String? = null
 
-        fullSizeBitmapList.forEachIndexed { index, bitmap ->
-            if (index == 0) {
-                photo1Path = createTempFileForBitmapFrame(bitmap)
+            fullSizeBitmapList.forEachIndexed { index, bitmap ->
+                if (index == 0) {
+                    photo1Path = createTempFileForBitmapFrame(bitmap)
+                }
+                if (index == 1) {
+                    photo2Path = createTempFileForBitmapFrame(bitmap)
+                }
             }
-            if (index == 1) {
-                photo2Path = createTempFileForBitmapFrame(bitmap)
-            }
+
+            VCheckDIContainer.mainRepository.setCheckDocPhotosTO(CheckPhotoDataTO(
+                docCategoryIdxToType(docData.category), photo1Path!!, photo2Path))
+            finish()
         }
-
-        VCheckDIContainer.mainRepository.setCheckDocPhotosTO(CheckPhotoDataTO(
-            docCategoryIdxToType(docData.category), photo1Path!!, photo2Path))
-        finish()
     }
 
     private fun enoughTimeForNextCheck(): Boolean {
@@ -303,16 +241,26 @@ class VCheckSegmentationActivity : AppCompatActivity(),
             val factor: Float = displayMetrics.density
             val dpWidth = displayMetrics.widthPixels / factor
 
-            val frameWidth = ((dpWidth * 0.86) * factor).toInt()
+            val frameWidth = ((dpWidth * 0.88) * factor).toInt()
             val frameHeight = (frameWidth * 0.63).toInt()
 
-            Log.d("SEG", "VIEW WIDTH: $dpWidth")
-            Log.d("SEG", "FRAME WIDTH: $frameWidth | FRAME HEIGHT: $frameHeight")
+//            Log.d("SEG", "VIEW WIDTH: $dpWidth")
+//            Log.d("SEG", "FRAME WIDTH: $frameWidth | FRAME HEIGHT: $frameHeight")
 
             frameSize = Size(frameWidth, frameHeight)
 
             binding!!.segmentationFrame.layoutParams.width = frameSize!!.width
             binding!!.segmentationFrame.layoutParams.height = frameSize!!.height
+
+            binding!!.segmentationMaskWrapper.post {
+                binding!!.segmentationMaskWrapper.setRectHoleSize(
+                    frameSize!!.width - 6, frameSize!!.height - 6)
+            }
+
+            binding!!.docAnimationView.post {
+                binding!!.docAnimationView.layoutParams.width = frameSize!!.width
+                binding!!.docAnimationView.layoutParams.height = frameSize!!.height
+            }
         }
     }
 
@@ -328,16 +276,13 @@ class VCheckSegmentationActivity : AppCompatActivity(),
 
                     val finalBitmap = rotateBitmap(rgbFrameBitmap!!)!!
 
+                    //caching full image bitmap (is order right??)
                     currentCheckBitmap = finalBitmap
-                    //caching bitmap to array/list:
-                    //fullSizeBitmapList.add(finalBitmap)
-                    //TODO cache as image!
                     //recycling bitmap:
-                    rgbFrameBitmap!!.recycle() //TODO recycle?
+                    rgbFrameBitmap!!.recycle()
                     //running post-inference callback
                     postInferenceCallback!!.run()
                     //updating cached bitmap for gesture request
-                    //currentCheckBitmap = finalBitmap
                 }
             }
         } catch (e: Exception) {
@@ -350,15 +295,19 @@ class VCheckSegmentationActivity : AppCompatActivity(),
     }
 
     private fun determineImageResult() {
+        if (!enoughTimeForNextCheck()) {
+            onFatalObstacleWorthRetry(
+                R.id.action_dummySegmentationStartFragment_to_segTimeoutFragment)
+        }
         if (!isLivenessSessionFinished
             && !blockProcessingByUI
             && !blockRequestByProcessing
             && enoughTimeForNextCheck()) {
             if (currentCheckBitmap != null) {
                 blockRequestByProcessing = true
-                val minimizedBitmap = currentCheckBitmap!!.crop() //TODO test!
+                val minimizedBitmap = currentCheckBitmap!!.crop()
 
-                saveImageToGallery(minimizedBitmap, this@VCheckSegmentationActivity, "check")
+                //saveImageToGallery(minimizedBitmap, this@VCheckSegmentationActivity, "check") //remove!
 
                 val file = File(createTempFileForBitmapFrame(minimizedBitmap))
                 val image: MultipartBody.Part = MultipartBody.Part.createFormData(
@@ -387,6 +336,83 @@ class VCheckSegmentationActivity : AppCompatActivity(),
     }
 
     /// -------------------------------------------- UI functions
+
+    private fun setupInstructionStageUI() {
+
+        blockProcessingByUI = true
+        blockRequestByProcessing = true
+        binding!!.docAnimationView.isVisible = false
+        binding!!.scalableDocHandView.isVisible = true
+
+        when(docCategoryIdxToType(docData.category)) {
+            DocType.ID_CARD -> {
+                binding!!.scalableDocHandView.background = AppCompatResources.getDrawable(
+                    this@VCheckSegmentationActivity, R.drawable.img_hand_id_card)
+            }
+            DocType.FOREIGN_PASSPORT -> {
+                binding!!.scalableDocHandView.background = AppCompatResources.getDrawable(
+                    this@VCheckSegmentationActivity, R.drawable.img_hand_foreign_passport)
+            } else -> {
+                binding!!.scalableDocHandView.background = AppCompatResources.getDrawable(
+                    this@VCheckSegmentationActivity, R.drawable.img_hand_inner_passport)
+            }
+        }
+
+        animateInstructionStage()
+
+        binding!!.readyButton.setOnClickListener {
+            setupDocCheckStage()
+        }
+    }
+
+    private fun indicateNextStage() {
+
+        binding!!.tvSegmentationInstruction.setMargins(
+            20, 45, 20, 20)
+        binding!!.tvSegmentationInstruction.setText(R.string.segmentation_stage_success)
+
+        if (docCategoryIdxToType(docData.category) == DocType.ID_CARD) {
+            binding!!.docAnimationView.isVisible = true
+            binding!!.docAnimationView.playAnimation()
+        } else {
+            binding!!.docAnimationView.isVisible = false
+        }
+
+        Handler(Looper.getMainLooper()).postDelayed ({
+            setUIForNextStage()
+        }, BLOCK_PIPELINE_TIME_MILLIS)
+    }
+
+    private fun setUIForNextStage() {
+
+        binding!!.docAnimationView.isVisible = false
+        binding!!.tvSegmentationInstruction.setMargins(
+            20, 45, 20, 20)
+
+        when(docCategoryIdxToType(docData.category)) {
+            DocType.FOREIGN_PASSPORT -> {
+                binding!!.tvSegmentationInstruction.setText(R.string.segmentation_single_page_hint)
+            }
+            DocType.ID_CARD -> {
+                if (checkedDocIdx == 0) {
+                    binding!!.tvSegmentationInstruction.setText(R.string.segmentation_front_side_hint)
+                }
+                if (checkedDocIdx == 1) {
+                    binding!!.tvSegmentationInstruction.setText(R.string.segmentation_back_side_hint)
+                }
+            }
+            else -> {
+                if (checkedDocIdx == 0) {
+                    binding!!.tvSegmentationInstruction.setText(R.string.segmentation_front_side_hint)
+                }
+                if (checkedDocIdx == 1) {
+                    binding!!.tvSegmentationInstruction.setText(R.string.segmentation_back_side_hint)
+                }
+            }
+        }
+        blockProcessingByUI = false
+        blockRequestByProcessing = false
+    }
 
     private fun animateInstructionStage() {
 
@@ -431,10 +457,10 @@ class VCheckSegmentationActivity : AppCompatActivity(),
     }
 
     private fun onFatalObstacleWorthRetry(actionIdForNav: Int) {
-        vibrateDevice(this@VCheckSegmentationActivity, STAGE_VIBRATION_DURATION_MILLIS)
-        finishLivenessSession()
+        vibrateDevice(this@VCheckSegmentationActivity,
+            STAGE_VIBRATION_DURATION_MILLIS)
+        finishLivenessSession(false)
         livenessSessionLimitCheckTime = SystemClock.elapsedRealtime()
-        //binding!!.livenessCosmeticsHolder.isVisible = false
         safeNavigateToResultDestination(actionIdForNav)
     }
 
@@ -466,25 +492,4 @@ class VCheckSegmentationActivity : AppCompatActivity(),
 
         openLivenessCameraParams = null
     }
-
-    //        binding!!.scalableDocHandView.apply {
-//            val widthAnim = ValueAnimator.ofInt(this.measuredWidth, frameSize!!.width)
-//            widthAnim.addUpdateListener { animator ->
-//                val params: ViewGroup.LayoutParams = this.layoutParams
-//                params.width = animator.animatedValue as Int
-//                this.layoutParams = params
-//            }
-//            val heightAnim = ValueAnimator.ofInt(this.measuredWidth, frameSize!!.height)
-//            widthAnim.addUpdateListener { animator ->
-//                val params: ViewGroup.LayoutParams = this.layoutParams
-//                params.width = animator.animatedValue as Int
-//                this.layoutParams = params
-//            }
-//
-//            widthAnim.duration = 1000
-//            heightAnim.duration = 1000
-//
-//            widthAnim.start()
-//            heightAnim.start()
-//        }
 }

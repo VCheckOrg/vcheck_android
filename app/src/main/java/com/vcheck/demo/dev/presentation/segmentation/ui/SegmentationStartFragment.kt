@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.fragment.findNavController
@@ -48,6 +49,10 @@ class SegmentationStartFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         _binding = FragmentSegmentationStartBinding.bind(view)
+
+        requireActivity().onBackPressedDispatcher.addCallback {
+            //Stub; no back press needed here
+        }
 
         when (docCategoryIdxToType(VCheckDIContainer.mainRepository
             .getSelectedDocTypeWithData()?.category ?: 0)) { //!
