@@ -76,6 +76,13 @@ class VCheckLivenessActivity : AppCompatActivity(),
     private var milestoneFlow: StandardMilestoneFlow =
         StandardMilestoneFlow()
 
+    //TODO finish text colors!
+    private fun changeColorsToCustomIfPresent() {
+        VCheckSDK.backgroundPrimaryColorHex?.let {
+            binding!!.livenessActivityBackground.setBackgroundColor(Color.parseColor(it))
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -83,9 +90,7 @@ class VCheckLivenessActivity : AppCompatActivity(),
         val view = binding!!.root
         setContentView(view)
 
-        VCheckSDK.backgroundPrimaryColorHex?.let {
-            binding!!.livenessActivityBackground.setBackgroundColor(Color.parseColor(it))
-        }
+        changeColorsToCustomIfPresent()
 
         onBackPressedDispatcher.addCallback {
             //Stub; no back press needed throughout liveness flow

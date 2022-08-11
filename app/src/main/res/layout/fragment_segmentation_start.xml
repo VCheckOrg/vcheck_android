@@ -18,9 +18,9 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/card"
             android:layout_width="match_parent"
-            android:layout_height="560dp"
+            android:layout_height="530dp"
             android:layout_marginStart="12dp"
-            android:layout_marginTop="34dp"
+            android:layout_marginTop="14dp"
             android:layout_marginEnd="12dp"
             android:layout_marginBottom="34dp"
             app:cardBackgroundColor="@color/vcheck_background_secondary"

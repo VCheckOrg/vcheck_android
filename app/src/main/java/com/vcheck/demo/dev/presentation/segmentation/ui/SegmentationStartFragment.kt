@@ -1,6 +1,8 @@
 package com.vcheck.demo.dev.presentation.segmentation.ui
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -13,28 +15,44 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.fragment.findNavController
 import com.vcheck.demo.dev.R
+import com.vcheck.demo.dev.VCheckSDK
 import com.vcheck.demo.dev.databinding.FragmentSegmentationStartBinding
 import com.vcheck.demo.dev.di.VCheckDIContainer
 import com.vcheck.demo.dev.domain.DocType
 import com.vcheck.demo.dev.domain.docCategoryIdxToType
 import com.vcheck.demo.dev.presentation.VCheckMainActivity
 import com.vcheck.demo.dev.presentation.segmentation.VCheckSegmentationActivity
+import com.vcheck.demo.dev.util.ThemeWrapperFragment
 
-class SegmentationStartFragment : Fragment() {
+class SegmentationStartFragment : ThemeWrapperFragment() {
 
     private var _binding: FragmentSegmentationStartBinding? = null
 
     private val mStartForResult: ActivityResultLauncher<Intent> = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()) {
-        Log.d("SEG", "------------ SEGMENTATION ACTIVITY FINISHED!")
         if (VCheckDIContainer.mainRepository.getCheckDocPhotosTO() != null) {
             val action = SegmentationStartFragmentDirections
                 .actionSegmentationStartFragmentToCheckPhotoFragment(
                     VCheckDIContainer.mainRepository.getCheckDocPhotosTO()!!)
             findNavController().navigate(action)
         } else {
-            Toast.makeText((activity as VCheckMainActivity),
-                "Error: photo TO was not set!", Toast.LENGTH_LONG).show()
+            Log.d("SEG", "Error: photo TO was not set!")
+        }
+    }
+
+    override fun changeColorsToCustomIfPresent() {
+        VCheckSDK.buttonsColorHex?.let {
+            _binding!!.launchSegmentationButton.setBackgroundColor(Color.parseColor(it))
+        }
+        VCheckSDK.backgroundPrimaryColorHex?.let {
+            _binding!!.noTimeBackground.background = ColorDrawable(Color.parseColor(it))
+        }
+        VCheckSDK.backgroundSecondaryColorHex?.let {
+            _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
+        }
+        VCheckSDK.primaryTextColorHex?.let {
+            _binding!!.docTitle.setTextColor(Color.parseColor(it))
+            _binding!!.docSubtitle.setTextColor(Color.parseColor(it))
         }
     }
 
@@ -52,6 +70,10 @@ class SegmentationStartFragment : Fragment() {
 
         requireActivity().onBackPressedDispatcher.addCallback {
             //Stub; no back press needed here
+        }
+
+        _binding!!.backArrow.setOnClickListener {
+            findNavController().popBackStack()
         }
 
         when (docCategoryIdxToType(VCheckDIContainer.mainRepository

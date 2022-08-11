@@ -18,15 +18,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.MutableLiveData
 import androidx.navigation.findNavController
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VCheckSDK
-import com.vcheck.demo.dev.data.Resource
 import com.vcheck.demo.dev.databinding.ActivityVcheckSegmentationBinding
 import com.vcheck.demo.dev.di.VCheckDIContainer
 import com.vcheck.demo.dev.domain.*
-import com.vcheck.demo.dev.presentation.liveness.VCheckLivenessActivity
 import com.vcheck.demo.dev.presentation.liveness.flow_logic.LivenessCameraParams
 import com.vcheck.demo.dev.presentation.segmentation.flow_logic.*
 import com.vcheck.demo.dev.presentation.segmentation.ui.SegmentationCameraConnectionFragment
@@ -45,14 +42,14 @@ class VCheckSegmentationActivity : AppCompatActivity(),
     ImageReader.OnImageAvailableListener {
 
     companion object {
-        const val TAG = "LivenessActivity"
+        const val TAG = "SegmentationActivity"
         private const val LIVENESS_TIME_LIMIT_MILLIS: Long = 60000 //max is 60s
-        private const val BLOCK_PIPELINE_TIME_MILLIS: Long = 2200 //may reduce a bit
+        private const val BLOCK_PIPELINE_TIME_MILLIS: Long = 2000 //may reduce a bit
         private const val GESTURE_REQUEST_DEBOUNCE_MILLIS: Long = 500
         private const val STAGE_VIBRATION_DURATION_MILLIS: Long = 100
     }
 
-    private var segmentationResponse: MutableLiveData<Resource<SegmentationGestureResponse>> = MutableLiveData()
+    //private var segmentationResponse: MutableLiveData<Resource<SegmentationGestureResponse>> = MutableLiveData()
 
     private var binding: ActivityVcheckSegmentationBinding? = null
     private var mToast: Toast? = null
@@ -76,7 +73,16 @@ class VCheckSegmentationActivity : AppCompatActivity(),
 
     private var currentCheckBitmap: Bitmap? = null
 
-    private var fullSizeBitmapList: ArrayList<Bitmap> = ArrayList()
+    //currently using 1st(+2nd) photo caching instead of putting them to array/list
+    private var photo1FullBitmap: Bitmap? = null
+    private var photo2FullBitmap: Bitmap? = null
+
+    //TODO finish text colors!
+    private fun changeColorsToCustomIfPresent() {
+        VCheckSDK.backgroundPrimaryColorHex?.let {
+            binding!!.livenessActivityBackground.setBackgroundColor(Color.parseColor(it))
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,14 +91,13 @@ class VCheckSegmentationActivity : AppCompatActivity(),
         val view = binding!!.root
         setContentView(view)
 
-        VCheckSDK.backgroundPrimaryColorHex?.let {
-            binding!!.livenessActivityBackground.setBackgroundColor(Color.parseColor(it))
-        }
+        changeColorsToCustomIfPresent()
+
         onBackPressedDispatcher.addCallback {
             //Stub; no back press needed throughout liveness flow
         }
         binding!!.closeIconBtn.setOnClickListener {
-            finish()
+            this@VCheckSegmentationActivity.finish()
         }
 
         setDocData()
@@ -104,7 +109,6 @@ class VCheckSegmentationActivity : AppCompatActivity(),
         binding!!.scalableDocHandView.isVisible = false
         binding!!.readyButton.isVisible = false
         resetFlowForNewSession()
-        setGestureResponsesObserver()
         setUIForNextStage()
     }
 
@@ -113,12 +117,13 @@ class VCheckSegmentationActivity : AppCompatActivity(),
     }
 
     private fun resetFlowForNewSession() {
-        fullSizeBitmapList = ArrayList()
+        photo1FullBitmap = null
+        photo2FullBitmap = null
         blockProcessingByUI = false
         blockRequestByProcessing = false
-        checkedDocIdx = 0
         livenessSessionLimitCheckTime = SystemClock.elapsedRealtime()
         isLivenessSessionFinished = false
+        checkedDocIdx = 0
         setGestureRequestDebounceTimer()
     }
 
@@ -128,38 +133,23 @@ class VCheckSegmentationActivity : AppCompatActivity(),
 
     private fun setGestureRequestDebounceTimer() {
         fixedRateTimer("timer", false, 0L, GESTURE_REQUEST_DEBOUNCE_MILLIS) {
-            determineImageResult()
-        }
-    }
+            if (!isLivenessSessionFinished) {
+                if (areAllDocPagesChecked()) {
+                    finishLivenessSession(true)
+                } else {
+                    if (!enoughTimeForNextCheck()) {
+                        onFatalObstacleWorthRetry(R.id.action_dummySegmentationStartFragment_to_segTimeoutFragment)
+                    } else if (!isLivenessSessionFinished
+                        && !blockProcessingByUI
+                        && !blockRequestByProcessing
+                        && enoughTimeForNextCheck()
+                        && currentCheckBitmap != null) {
 
-    private fun setGestureResponsesObserver() {
-        Handler(Looper.getMainLooper()).post {
-            segmentationResponse.observe(this@VCheckSegmentationActivity) {
-                //blockRequestByProcessing = false
-                runOnUiThread {
-                    Log.d(TAG, "============== GOT RESPONSE: ${it.data}")
-                    if (!isLivenessSessionFinished) {
-                        if (areAllDocPagesChecked()) {
-                            Log.d(TAG, "==============++++++++++++++++  PASSED ALL PAGES!")
-                            finishLivenessSession(true)
-                        } else {
-                            if (it.data != null && it.data.success) {
-                                Log.d(TAG, "============== PASSED DOC PAGE: $checkedDocIdx")
-                                vibrateDevice(this@VCheckSegmentationActivity,
-                                    STAGE_VIBRATION_DURATION_MILLIS)
-                                fullSizeBitmapList.add(currentCheckBitmap!!)
-                                checkedDocIdx += 1
-                                if (!areAllDocPagesChecked()) {
-                                    blockProcessingByUI = true
-                                    indicateNextStage()
-                                }
-                            } else {
-                                blockProcessingByUI = false
-                                blockRequestByProcessing = false
-                            }
-                            if (it.data != null && it.data.errorCode != 0) {
-                                showSingleToast("Scan error: [${it.data.errorCode}]")
-                            }
+                        blockProcessingByUI = true
+                        blockRequestByProcessing = true
+
+                        CalcThread().run {
+                            determineImageResult()
                         }
                     }
                 }
@@ -175,17 +165,16 @@ class VCheckSegmentationActivity : AppCompatActivity(),
             var photo1Path: String? = null
             var photo2Path: String? = null
 
-            fullSizeBitmapList.forEachIndexed { index, bitmap ->
-                if (index == 0) {
-                    photo1Path = createTempFileForBitmapFrame(bitmap)
-                }
-                if (index == 1) {
-                    photo2Path = createTempFileForBitmapFrame(bitmap)
-                }
+            photo1FullBitmap?.let {
+                photo1Path = createTempFileForBitmapFrame(it)
+            }
+            photo2FullBitmap?.let {
+                photo2Path = createTempFileForBitmapFrame(it)
             }
 
             VCheckDIContainer.mainRepository.setCheckDocPhotosTO(CheckPhotoDataTO(
                 docCategoryIdxToType(docData.category), photo1Path!!, photo2Path))
+
             finish()
         }
     }
@@ -256,7 +245,6 @@ class VCheckSegmentationActivity : AppCompatActivity(),
                 binding!!.segmentationMaskWrapper.setRectHoleSize(
                     frameSize!!.width - 6, frameSize!!.height - 6)
             }
-
             binding!!.docAnimationView.post {
                 binding!!.docAnimationView.layoutParams.width = frameSize!!.width
                 binding!!.docAnimationView.layoutParams.height = frameSize!!.height
@@ -269,13 +257,10 @@ class VCheckSegmentationActivity : AppCompatActivity(),
         try {
             Handler(Looper.getMainLooper()).post {
                 openLivenessCameraParams?.apply {
-
                     imageConverter!!.run()
                     rgbFrameBitmap = Bitmap.createBitmap(previewWidth, previewHeight, Bitmap.Config.ARGB_8888)
                     rgbFrameBitmap?.setPixels(rgbBytes, 0, previewWidth, 0, 0, previewWidth, previewHeight)
-
                     val finalBitmap = rotateBitmap(rgbFrameBitmap!!)!!
-
                     //caching full image bitmap (is order right??)
                     currentCheckBitmap = finalBitmap
                     //recycling bitmap:
@@ -295,42 +280,56 @@ class VCheckSegmentationActivity : AppCompatActivity(),
     }
 
     private fun determineImageResult() {
-        if (!enoughTimeForNextCheck()) {
-            onFatalObstacleWorthRetry(
-                R.id.action_dummySegmentationStartFragment_to_segTimeoutFragment)
-        }
-        if (!isLivenessSessionFinished
-            && !blockProcessingByUI
-            && !blockRequestByProcessing
-            && enoughTimeForNextCheck()) {
-            if (currentCheckBitmap != null) {
-                blockRequestByProcessing = true
-                val minimizedBitmap = currentCheckBitmap!!.crop()
 
-                //saveImageToGallery(minimizedBitmap, this@VCheckSegmentationActivity, "check") //remove!
+        blockRequestByProcessing = true
 
-                val file = File(createTempFileForBitmapFrame(minimizedBitmap))
-                val image: MultipartBody.Part = MultipartBody.Part.createFormData(
-                    "image.jpg", file.name, file.asRequestBody("image/jpeg".toMediaType()))
-                runOnUiThread {
-                    VCheckDIContainer.mainRepository.sendSegmentationDocAttempt(
-                        image,
-                        docData.country,
-                        docData.category.toString(),
-                        checkedDocIdx.toString())
-                        .observeForever {
-                            Log.d(TAG, "========= WAITING FOR ANY RESPONSE FOR PAGE IDX: ${checkedDocIdx}...")
-                            segmentationResponse.value = it
-                        }
-                }
-            }
+        val fullBitmap: Bitmap = currentCheckBitmap!!
+        val minimizedBitmap: Bitmap = fullBitmap.cropWithMask()
+
+        //saveImageToGallery(minimizedBitmap, this@VCheckSegmentationActivity, "check") //remove!
+
+        val file = File(createTempFileForBitmapFrame(minimizedBitmap))
+        val image: MultipartBody.Part = MultipartBody.Part.createFormData(
+            "image.jpg", file.name, file.asRequestBody("image/jpeg".toMediaType()))
+
+        val response = VCheckDIContainer.mainRepository.sendSegmentationDocAttempt(
+                image,
+                docData.country,
+                docData.category.toString(),
+                checkedDocIdx.toString())
+
+        if (response != null) {
+            processCheckResult(response, fullBitmap, checkedDocIdx)
         } else {
-            if (!isLivenessSessionFinished && !blockProcessingByUI) {
-                runOnUiThread {
-                    //onFatalObstacleWorthRetry(R.id.action_dummySegmentationStartFragment_to_noTimeFragment)
-                    //TODO add fragment and nav
-                    Toast.makeText(this@VCheckSegmentationActivity, "TIMEOUT", Toast.LENGTH_LONG).show()
+            Log.d(TAG, "========= --- RESPONSE FOR IDX IS NULL!")
+        }
+    }
+
+    private fun processCheckResult(it: SegmentationGestureResponse,
+                                    fullBitmap: Bitmap,
+                                    currentPageIdx: Int) {
+        runOnUiThread {
+            Log.d(TAG, "========= GOT RESPONSE FOR IDX __ $currentPageIdx __ : ${it.success}")
+            if (it.success) {
+                vibrateDevice(this@VCheckSegmentationActivity,
+                    STAGE_VIBRATION_DURATION_MILLIS)
+                if (currentPageIdx == 0 && photo1FullBitmap == null) {
+                    photo1FullBitmap = fullBitmap
                 }
+                if (currentPageIdx == 1 && photo2FullBitmap == null) {
+                    photo2FullBitmap = fullBitmap
+                }
+                if (!areAllDocPagesChecked() && currentPageIdx == checkedDocIdx) {
+                    indicateNextStage()
+                    checkedDocIdx += 1
+                    blockRequestByProcessing = false
+                }
+            } else {
+                blockProcessingByUI = false
+                blockRequestByProcessing = false
+            }
+            if (it.errorCode != 0) {
+                showSingleToast("Scan response error: [${it.errorCode}]")
             }
         }
     }
@@ -410,8 +409,8 @@ class VCheckSegmentationActivity : AppCompatActivity(),
                 }
             }
         }
+
         blockProcessingByUI = false
-        blockRequestByProcessing = false
     }
 
     private fun animateInstructionStage() {
@@ -444,9 +443,17 @@ class VCheckSegmentationActivity : AppCompatActivity(),
         }
     }
 
+    private fun onFatalObstacleWorthRetry(actionIdForNav: Int) {
+        vibrateDevice(this@VCheckSegmentationActivity,
+            STAGE_VIBRATION_DURATION_MILLIS)
+        finishLivenessSession(false)
+        livenessSessionLimitCheckTime = SystemClock.elapsedRealtime()
+        safeNavigateToResultDestination(actionIdForNav)
+    }
+
     private fun safeNavigateToResultDestination(actionIdForNav: Int) {
         try {
-            findNavController(R.id.liveness_host_fragment).navigate(actionIdForNav)
+            findNavController(R.id.segmentation_host_fragment).navigate(actionIdForNav)
         } catch (e: IllegalArgumentException) {
             Log.d(TAG, "Attempt of nav to major obstacle was made, but was already on another fragment")
         } catch (e: IllegalStateException) {
@@ -454,14 +461,6 @@ class VCheckSegmentationActivity : AppCompatActivity(),
         } catch (e: Exception) {
             showSingleToast(e.message)
         }
-    }
-
-    private fun onFatalObstacleWorthRetry(actionIdForNav: Int) {
-        vibrateDevice(this@VCheckSegmentationActivity,
-            STAGE_VIBRATION_DURATION_MILLIS)
-        finishLivenessSession(false)
-        livenessSessionLimitCheckTime = SystemClock.elapsedRealtime()
-        safeNavigateToResultDestination(actionIdForNav)
     }
 
     private fun showSingleToast(message: String?) {

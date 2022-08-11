@@ -23,7 +23,7 @@
     <string name="choose_doc_method_title">Select document type</string>
     <string name="choose_doc_method_description">Select the country of registration of your document, which will need to be photographed during the next step.</string>
     <string name="docMethodForeignPassport">International passport</string>
-    <string name="docMethodIdCard">Biometric passport (ID-card)</string>
+    <string name="docMethodIdCard">Biometric passport (ID card)</string>
     <string name="docMethodInnerPassport">Internal passport</string>
     <string name="image_color_text">the image must be in color</string>
     <string name="seen_all_text">all protective elements are visible</string>
@@ -160,7 +160,7 @@
 
     <string name="segmentation_instr_inner_passport_title">Take a photo of your passport</string>
     <string name="segmentation_instr_foreign_passport_title">Take a photo of your foreign passport</string>
-    <string name="segmentation_instr_id_card_title">Take a photo of your ID-card</string>
+    <string name="segmentation_instr_id_card_title">Take a photo of your ID card</string>
 
     <string name="segmentation_instr_inner_passport_descr">Follow the on-screen instructions to take a full-page photo of your passport (both pages visible)</string>
     <string name="segmentation_instr_foreign_passport_descr">Following the instructions on the screen, take a photo of a full-page spread of your passport (both pages are visible)</string>

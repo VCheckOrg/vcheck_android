@@ -9,7 +9,6 @@ import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
-import android.view.Surface
 import com.vcheck.demo.dev.presentation.segmentation.VCheckSegmentationActivity
 import com.vcheck.demo.dev.util.ImageUtils
 import com.vcheck.demo.dev.util.fillBytes
@@ -86,20 +85,13 @@ fun VCheckSegmentationActivity.createTempFileForBitmapFrame(mBitmap: Bitmap): St
     }
 }
 
-//TODO test!!
-fun Bitmap.crop(): Bitmap {
+fun Bitmap.cropWithMask(): Bitmap {
     val originalWidth = this.width
     val originalHeight = this.height
     val desiredWidth = (originalWidth * 0.75).toInt()
     val desiredHeight = (desiredWidth * 0.63).toInt()
     val cropHeightFromEachSide = ((originalHeight - desiredHeight) / 2)
     val cropWidthFromEachSide = ((originalWidth - desiredWidth) / 2)
-
-//    Log.d("SEG", "----- CROPPING BITMAP | originalWidth=$originalWidth | originalHeight=$originalHeight | " +
-//            "desiredWidth=$desiredWidth | desiredHeight=$desiredHeight | " +
-//            "cropHeightFromEachSide=$cropHeightFromEachSide | cropWidthFromEachSide=$cropWidthFromEachSide")
-
-    //----- CROPPING BITMAP | originalWidth=640 | originalHeight=480 | desiredWidth=448 | desiredHeight=403 | cropHeightFromEachSide=38 | cropWidthFromEachSide=96
 
     return Bitmap.createBitmap(
         this,
@@ -179,3 +171,10 @@ fun saveImageToStream(bitmap: Bitmap, outputStream: OutputStream?) {
 //        Surface.ROTATION_90 -> 90
 //        else -> 0
 //    }
+
+
+//    Log.d("SEG", "----- CROPPING BITMAP | originalWidth=$originalWidth | originalHeight=$originalHeight | " +
+//            "desiredWidth=$desiredWidth | desiredHeight=$desiredHeight | " +
+//            "cropHeightFromEachSide=$cropHeightFromEachSide | cropWidthFromEachSide=$cropWidthFromEachSide")
+
+//----- CROPPING BITMAP | originalWidth=640 | originalHeight=480 | desiredWidth=448 | desiredHeight=403 | cropHeightFromEachSide=38 | cropWidthFromEachSide=96

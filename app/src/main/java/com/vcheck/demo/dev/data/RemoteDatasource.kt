@@ -104,13 +104,19 @@ class RemoteDatasource(private val verificationApiClient: VerificationApiClient,
         image: MultipartBody.Part,
         country: String,
         category: String,
-        index: String): MutableLiveData<Resource<SegmentationGestureResponse>> {
-        return NetworkCall<SegmentationGestureResponse>().makeCall(
-            verificationApiClient.sendSegmentationDocAttempt(
+        index: String): SegmentationGestureResponse? {
+        //return NetworkCall<SegmentationGestureResponse>().makeCall(
+        val response = verificationApiClient.sendSegmentationDocAttempt(
                 VCheckSDK.getVerificationToken(), image,
                 MultipartBody.Part.createFormData("country", country),
                 MultipartBody.Part.createFormData("category", category),
-                MultipartBody.Part.createFormData("index", index)))
+                MultipartBody.Part.createFormData("index", index)).execute()
+        return if (response.isSuccessful) {
+            return response.body() as SegmentationGestureResponse
+        } else {
+            Log.d("VCheck - error: ","Cannot get service timestamp for check verification call!")
+            null
+        }
     }
 
     fun checkFinalVerificationStatus(verifId: Int,

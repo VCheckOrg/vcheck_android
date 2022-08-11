@@ -12,11 +12,10 @@ import androidx.navigation.fragment.findNavController
 import com.vcheck.demo.dev.R
 import com.vcheck.demo.dev.VCheckSDK
 import com.vcheck.demo.dev.databinding.FragmentSegTimeoutBinding
-import com.vcheck.demo.dev.databinding.NoTimeFragmentBinding
-import com.vcheck.demo.dev.presentation.liveness.VCheckLivenessActivity
 import com.vcheck.demo.dev.presentation.segmentation.VCheckSegmentationActivity
+import com.vcheck.demo.dev.util.ThemeWrapperFragment
 
-class SegTimeoutFragment : Fragment() {
+class SegTimeoutFragment : ThemeWrapperFragment() {
 
     private var _binding: FragmentSegTimeoutBinding? = null
 
@@ -32,7 +31,7 @@ class SegTimeoutFragment : Fragment() {
 
         _binding = FragmentSegTimeoutBinding.bind(view)
 
-        //changeColorsToCustomIfPresent()
+        changeColorsToCustomIfPresent()
 
         requireActivity().onBackPressedDispatcher.addCallback {
             //Stub; no back press needed here
@@ -43,6 +42,22 @@ class SegTimeoutFragment : Fragment() {
         _binding!!.tryAgainButton.setOnClickListener {
             findNavController().popBackStack()
             (activity as VCheckSegmentationActivity).recreate()
+        }
+    }
+
+    override fun changeColorsToCustomIfPresent() {
+        VCheckSDK.buttonsColorHex?.let {
+            _binding!!.tryAgainButton.setBackgroundColor(Color.parseColor(it))
+        }
+        VCheckSDK.backgroundPrimaryColorHex?.let {
+            _binding!!.noTimeBackground.background = ColorDrawable(Color.parseColor(it))
+        }
+        VCheckSDK.backgroundSecondaryColorHex?.let {
+            _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
+        }
+        VCheckSDK.primaryTextColorHex?.let {
+            _binding!!.noTimeTitle.setTextColor(Color.parseColor(it))
+            _binding!!.tryAgainButton.setTextColor(Color.parseColor(it))
         }
     }
 }

@@ -30,10 +30,9 @@ object VCheckDIContainer {
             val request: Request = original.newBuilder().build()
             val hasMultipart: Boolean = request.headers.names().contains("multipart")
             logging.setLevel(if (hasMultipart) HttpLoggingInterceptor.Level.HEADERS else HttpLoggingInterceptor.Level.BODY)
+            //logging.setLevel(HttpLoggingInterceptor.Level.BODY)
             chain.proceed(request)
         }.build()
-
-        //logging.setLevel(HttpLoggingInterceptor.Level.BODY)
 
         httpClient.addInterceptor(logging)
         httpClient.readTimeout(180, TimeUnit.SECONDS) //3min

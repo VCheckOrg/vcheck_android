@@ -403,8 +403,7 @@ class SegmentationCameraConnectionFragment() : Fragment() {
             override fun onCaptureCompleted(
                 session: CameraCaptureSession,
                 request: CaptureRequest,
-                result: TotalCaptureResult
-            ) {
+                result: TotalCaptureResult) {
                 super.onCaptureCompleted(session, request, result)
                 mManualFocusEngaged = false
                 if (request.tag == FOCUS_TAG) { // previously getTag == "Focus_tag"
@@ -488,89 +487,7 @@ class SegmentationCameraConnectionFragment() : Fragment() {
         return aeState >= 1
     }
 
-
-//    fun handleFocus(event: MotionEvent) {
-//        val pointerId = event.getPointerId(0)
-//        val pointerIndex = event.findPointerIndex(pointerId)
-//        // Get the pointer's current position
-//        val x = event.getX(pointerIndex)
-//        val y = event.getY(pointerIndex)
-//        val touchRect =
-//            Rect((x - 100).toInt(), (y - 100).toInt(), (x + 100).toInt(), (y + 100).toInt())
-//        //if (mCameraId == null) return
-//        val cm = (activity as VCheckSegmentationActivity)
-//            .getSystemService(AppCompatActivity.CAMERA_SERVICE) as CameraManager
-//        var cc: CameraCharacteristics? = null
-//        try {
-//            cc = cm.getCameraCharacteristics(cameraId!!)
-//        } catch (e: CameraAccessException) {
-//            e.printStackTrace()
-//        }
-//        val focusArea = MeteringRectangle(touchRect, MeteringRectangle.METERING_WEIGHT_DONT_CARE)
-//        previewRequestBuilder!!.set(
-//            CaptureRequest.CONTROL_AF_TRIGGER,
-//            CameraMetadata.CONTROL_AF_TRIGGER_CANCEL
-//        )
-//        try {
-//            captureSession!!.capture(
-//                previewRequestBuilder!!.build(), captureCallback,
-//                backgroundHandler
-//            )
-//            // After this, the camera will go back to the normal state of preview.
-//            //mState = STATE_PREVIEW //TODO ?
-//        } catch (e: CameraAccessException) {
-//            Log.d("CAMERA", e.message.toString())
-//        }
-//        previewRequestBuilder!!.set(CaptureRequest.CONTROL_AE_REGIONS, arrayOf(focusArea))
-//        previewRequestBuilder!!
-//            .set(CaptureRequest.CONTROL_AF_REGIONS, arrayOf(focusArea))
-//        previewRequestBuilder!!.set(
-//            CaptureRequest.CONTROL_AF_MODE,
-//            CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE)
-//        previewRequestBuilder!!.set(
-//            CaptureRequest.CONTROL_AF_TRIGGER,
-//            CameraMetadata.CONTROL_AF_TRIGGER_START)
-//        previewRequestBuilder!!.set(
-//            CaptureRequest.CONTROL_AE_PRECAPTURE_TRIGGER,
-//            CameraMetadata.CONTROL_AE_PRECAPTURE_TRIGGER_START)
-//        try {
-//            captureSession!!.setRepeatingRequest(
-//                previewRequestBuilder!!.build(), captureCallback, backgroundHandler!!)
-//            /* mManualFocusEngaged = true;*/
-//        } catch (e: CameraAccessException) {
-//            // error handling
-//        }
-//    }
-
 }
-
-
-// Auto focus should be continuous for camera preview.
-//                            previewRequestBuilder!!.set(
-//                                CaptureRequest.CONTROL_AF_MODE,
-//                                CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE)
-// Flash is automatically enabled when necessary - disabled!
-//                            previewRequestBuilder!!.set(
-//                                CaptureRequest.CONTROL_AE_MODE,
-//                                CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH)
-// Finally, we start displaying the camera preview.
-
-
-
-/* if (isMeteringAreaAESupported(cc)) {
-*/
-/*mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AE_REGIONS,
-        new MeteringRectangle[]{focusArea});*/
-/*
-}
-if (isMeteringAreaAFSupported(cc)) {
-*/
-/*mPreviewRequestBuilder
-        .set(CaptureRequest.CONTROL_AF_REGIONS, new MeteringRectangle[]{focusArea});
-mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE,
-        CaptureRequest.CONTROL_AF_MODE_AUTO);*/
-/*
-}*/
 
 // ------ Deprecated/obsolete logic:
 

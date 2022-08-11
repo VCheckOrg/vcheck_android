@@ -150,11 +150,11 @@
 
     <string name="segmentation_instr_inner_passport_title">Зробіть фото паспорта</string>
     <string name="segmentation_instr_foreign_passport_title">Зробіть фото закордонного паспорта</string>
-    <string name="segmentation_instr_id_card_title">Зробіть фото ID картки</string>
+    <string name="segmentation_instr_id_card_title">Зробіть фото ID-картки</string>
 
-    <string name="segmentation_instr_inner_passport_descr">Слідуючи інструкціям на екрані, зробіть фото повного розвороту паспорта (видні обидві сторінки)</string>
-    <string name="segmentation_instr_foreign_passport_descr">Слідуючи інструкціям на екрані, зробіть фото повного розвороту закордонного паспорта (видні обидві сторінки)</string>
-    <string name="segmentation_instr_id_card_descr">Слідуючи інструкціям на екрані зробіть фото лицьової, а потім зворотної сторони вашої ID картки</string>
+    <string name="segmentation_instr_inner_passport_descr">Дотримуючись інструкцій на екрані, зробіть фото повного розвороту паспорта (видні обидві сторінки)</string>
+    <string name="segmentation_instr_foreign_passport_descr">Дотримуючись інструкцій на екрані, зробіть фото повного розвороту закордонного паспорта (видні обидві сторінки)</string>
+    <string name="segmentation_instr_id_card_descr">Дотримуючись інструкцій на екрані, зробіть фото лицьової, а потім зворотньої сторони вашої ID-картки</string>
 
     <string name="segmentation_general_instruction">Приготуйте свій документ і розмістіть його у зазначеній зоні, як на прикладі вище.</string>
     <string name="im_ready">Я готовий(а)</string>
