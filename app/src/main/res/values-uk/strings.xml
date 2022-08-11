@@ -161,7 +161,7 @@
 
     <string name="segmentation_single_page_hint">Помістіть документ у вказану зону для автоматичного зчитування</string>
     <string name="segmentation_front_side_hint">Помістіть передню сторону документа у вказану зону для автоматичного зчитування</string>
-    <string name="segmentation_back_side_hint">Помістіть задню сторону документа у вказану зону для автоматичного зчитування</string>
+    <string name="segmentation_back_side_hint">Помістіть зворотню сторону документа у вказану зону для автоматичного зчитування</string>
     <string name="segmentation_stage_success">Документ зчитаний успішно!</string>
 
     <string name="no_time_seg_title">Час, відведений на сканування документу, вийшов</string>
