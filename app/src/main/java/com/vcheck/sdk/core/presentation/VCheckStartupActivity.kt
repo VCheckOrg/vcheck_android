@@ -3,8 +3,8 @@ package com.vcheck.sdk.core.presentation
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.di.VCheckDIContainer

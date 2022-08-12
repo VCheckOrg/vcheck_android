@@ -1,6 +1,7 @@
 package com.vcheck.sdk.core.presentation
 
-import android.content.*
+import android.content.Context
+import android.content.ContextWrapper
 import android.graphics.Color
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
