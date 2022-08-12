@@ -77,6 +77,7 @@ class CheckDocInfoAdapter(
                 val hint = when (localeCode) {
                     "uk" -> "РРРР-ММ-ДД"
                     "ru" -> "ГГГГ-ММ-ДД"
+                    "pl" -> "RRRR-MM-DD"
                     else -> "YYYY-MM-DD"
                 }
 

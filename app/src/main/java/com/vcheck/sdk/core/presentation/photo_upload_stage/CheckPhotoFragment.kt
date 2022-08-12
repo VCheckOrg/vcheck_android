@@ -185,7 +185,8 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
                                 true))
                     findNavController().navigate(action)
                 } else {
-                    Log.e("DOCS", "Error: no document data in response")
+                    Toast.makeText(activity, getString(R.string.doc_verification_error_description), Toast.LENGTH_LONG).show()
+                    findNavController().navigate(R.id.action_checkPhotoFragment_to_photoUploadScreen)
                 }
             } else {
                 _binding!!.replacePhotoButton.isVisible = true
@@ -194,8 +195,6 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
                 _binding!!.tvProcessingDisclaimer.isVisible = false
                 Toast.makeText(activity, "Error: [${codeIdxToVerificationCode(response.errorCode)}]", Toast.LENGTH_LONG).show()
             }
-        } else {
-            Log.e("DOCS", "Error: no document data in response")
         }
     }
 
@@ -213,7 +212,8 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
                         resource.data.data.id)
                 findNavController().navigate(action)
             } else {
-                Log.e("DOCS", "Error: no document data in response ATM")
+                Toast.makeText(activity, getString(R.string.doc_verification_error_description), Toast.LENGTH_LONG).show()
+                findNavController().navigate(R.id.action_checkPhotoFragment_to_photoUploadScreen)
             }
         }
     }

@@ -124,6 +124,9 @@
                 android:name="checkDocInfoDataTO"
                 app:argType="com.vcheck.sdk.core.presentation.transferrable_objects.CheckDocInfoDataTO" />
         </action>
+        <action
+            android:id="@+id/action_checkPhotoFragment_to_photoUploadScreen"
+            app:destination="@id/photoUploadScreen" />
     </fragment>
 
     <fragment
