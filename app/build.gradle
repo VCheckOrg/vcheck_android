@@ -1,5 +1,5 @@
 plugins {
-    id 'com.android.library' //'com.android.application' //!
+    id 'com.android.library' //'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'kotlin-parcelize'
@@ -11,16 +11,16 @@ android {
     compileSdk 32
 
     defaultConfig {
-        //applicationId "com.vcheck.demo.dev" //!
+        //applicationId "com.vcheck.sdk.core"
         minSdk 21
         targetSdk 32
-        versionCode 17
-        versionName "1.1.18"
+        versionCode 20
+        versionName "1.1.20"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.debug
 
-        resConfigs "en", "uk", "ru"
+        resConfigs "en", "uk", "ru", "pl"
     }
 
     buildFeatures {

@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.vcheck.demo.dev">
+    package="com.vcheck.sdk.core">
     <!-- For loading images from gallery -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:remove="android:maxSdkVersion" />
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" /> <!-- <uses-permission android:name="android.permission.CAMERA" android:required="true" /> -->
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+    <!-- <uses-permission android:name="android.permission.CAMERA" android:required="true" /> -->
     <uses-permission
         android:name="android.permission.CAMERA"
         tools:remove="android:maxSdkVersion" /> <!-- For logging solution events -->
@@ -34,29 +35,29 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true">
         <activity
-            android:name=".presentation.segmentation.VCheckSegmentationActivity"
+            android:name="com.vcheck.sdk.core.presentation.segmentation.VCheckSegmentationActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.VCheckStartupActivity"
+            android:name="com.vcheck.sdk.core.presentation.VCheckStartupActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity">
         </activity>
         <activity
-            android:name=".presentation.liveness.VCheckLivenessActivity"
+            android:name="com.vcheck.sdk.core.presentation.liveness.VCheckLivenessActivity"
             android:exported="false"
             android:largeHeap="true"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".presentation.VCheckMainActivity"
+            android:name="com.vcheck.sdk.core.presentation.VCheckMainActivity"
             android:largeHeap="true"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity">
         </activity>
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.vcheck.demo.dev"
+            android:authorities="com.vcheck.sdk.core"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

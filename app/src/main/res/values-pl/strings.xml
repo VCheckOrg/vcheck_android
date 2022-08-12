@@ -104,7 +104,7 @@
     <string name="permissions_denied">Aby przetworzyć dokumenty ze zdjęciami i sprawdzić autentyczność twarzy, musisz zaakceptować wymagane uprawnienia</string>
     <string name="error_make_at_least_one_photo">Proszę zrobić pierwsze zdjęcie dokumentu</string>
     <string name="doc_verification_error_title">Błąd weryfikacji dokumentu</string>
-    <string name="doc_verification_error_description">Coś poszło nie tak. Proszę ponownie zrobić zdjęcie dokumentu.</string>
+    <string name="doc_verification_error_description">Sprawdzenie zgodności dokumentów nie powiodło się. Proszę pobrać poprawny dokument</string>
     <string name="doc_verif_continue_anyway"><u>Jestem pewny swojego dokumentu, kontynuuj proces weryfikacji</u></string>
     <string name="reload_photo">Spróbuj ponownie</string>
     <string name="check_doc_fields_validation_error">Sprawdź, czy wszystkie pola dokumentu są poprawnie wypełnione</string>

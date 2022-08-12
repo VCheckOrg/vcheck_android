@@ -83,7 +83,7 @@
             android:layout_marginBottom="-70dp"
             android:layout_marginEnd="-60dp"/>
 
-        <com.vcheck.demo.dev.util.RectOverlayView
+        <com.vcheck.sdk.core.util.RectOverlayView
             android:id="@+id/segmentation_mask_wrapper"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
