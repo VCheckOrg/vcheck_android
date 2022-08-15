@@ -87,11 +87,4 @@ interface VerificationApiClient {
         @Part category: MultipartBody.Part,
         @Part index: MultipartBody.Part
     ) : Call<SegmentationGestureResponse>
-
-    /*
-    country - страна документа
-    category - категория документа (PASSPORT = 0, FOREIGN_PASSPORT = 1, ID_CARD = 2,)
-    index - индекс странички от 0
-    image (jpeg) - фото документа с применением маски
-     */
 }

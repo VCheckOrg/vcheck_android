@@ -46,6 +46,4 @@ internal class VCheckMainActivity : AppCompatActivity() {
             VCheckContextUtils.updateLocale(newBase, localeToSwitchTo)
         super.attachBaseContext(localeUpdatedContext)
     }
-
-
 }

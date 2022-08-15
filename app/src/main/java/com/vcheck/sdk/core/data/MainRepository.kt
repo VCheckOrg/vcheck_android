@@ -114,7 +114,6 @@ class MainRepository(
         index: String): SegmentationGestureResponse? {
         return if (isTokenPresent()) remoteDatasource.sendSegmentationDocAttempt(image, country, category, index)
         else null
-        //else MutableLiveData(Resource.error(ApiError(null,BaseClientErrors.NO_TOKEN_AVAILABLE)))
     }
 
     fun checkFinalVerificationStatus(verifId: Int,

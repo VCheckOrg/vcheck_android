@@ -7,7 +7,6 @@ import java.io.File
 import java.io.FileOutputStream
 
 
-
 /** Utility class for manipulating images.  */
 object ImageUtils {
     // This value is 2 ^ 18 - 1, and is used to clamp the RGB values before their ranges
@@ -98,11 +97,6 @@ object ImageUtils {
         u -= 128
         v -= 128
 
-        // This is the floating point equivalent. We do the conversion in integer
-        // because some Android devices do not have floating point in hardware.
-        // nR = (int)(1.164 * nY + 2.018 * nU);
-        // nG = (int)(1.164 * nY - 0.813 * nV - 0.391 * nU);
-        // nB = (int)(1.164 * nY + 1.596 * nV);
         val y1192 = 1192 * y
         var r = y1192 + 1634 * v
         var g = y1192 - 833 * v - 400 * u

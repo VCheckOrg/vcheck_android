@@ -103,7 +103,6 @@ class RemoteDatasource(private val verificationApiClient: VerificationApiClient,
         country: String,
         category: String,
         index: String): SegmentationGestureResponse? {
-        //return NetworkCall<SegmentationGestureResponse>().makeCall(
         val response = verificationApiClient.sendSegmentationDocAttempt(
                 VCheckSDK.getVerificationToken(), image,
                 MultipartBody.Part.createFormData("country", country),
