@@ -15,8 +15,8 @@ android {
         //applicationId "com.vcheck.sdk.core"
         minSdk 21
         targetSdk 32
-        versionCode 22
-        versionName "1.1.23"
+        versionCode 23
+        versionName "1.1.24"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.debug
@@ -42,13 +42,16 @@ android {
         jvmTarget = '1.8'
     }
 
-//    libraryVariants.all { variant ->
-//        variant.outputs.all { output ->
+    libraryVariants.all { variant ->
+        variant.outputs.all { output ->
+            if (variant.buildType.name == "release"){
+                outputFileName = "vcheck-sdk-test-release.aar"
+            }
 //            if (outputFile != null && outputFileName.endsWith('.aar')) {
 //                outputFileName = "vcheck-sdk-test-release.aar"
 //            }
-//        }
-//    }
+        }
+    }
 }
 
 dependencies {
@@ -89,8 +92,8 @@ afterEvaluate {
 
                 groupId "com.vcheck"
                 artifactId "sdk_test"
-                version "1.1.23"
-                artifact "$buildDir/outputs/aar/vcheck-sdk-test-release-1.1.23.aar"
+                version "1.1.24"
+                artifact "$buildDir/outputs/aar/vcheck-sdk-test-release.aar"
             }
         }
     }
