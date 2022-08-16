@@ -20,6 +20,7 @@ import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.Picasso
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
+import com.vcheck.sdk.core.VCheckSDK.TAG
 import com.vcheck.sdk.core.databinding.PhotoUploadFragmentBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.DocType
@@ -308,7 +309,7 @@ class PhotoUploadFragment : ThemeWrapperFragment() {
                     createImageFile(photoIdx)
                 } catch (ex: IOException) {
                     // Error occurred while creating the File
-                    Log.d("PHOTO", ex.stackTraceToString())
+                    Log.d(TAG, ex.stackTraceToString())
                     null
                 }
                 // Continue only if the file was successfully created

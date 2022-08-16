@@ -102,7 +102,6 @@ internal class VCheckStartFragment : Fragment() {
                 val requestModel = _viewModel.repository.prepareVerificationRequest(
                     it.data.toLong(), VCheckSDK.getSDKLangCode(),
                     VCheckSDK.verificationClientCreationModel!!)
-                Log.d("REQUEST MODEL"," : $requestModel")
                 _viewModel.createVerificationRequest(requestModel)
             }
         }
@@ -130,7 +129,6 @@ internal class VCheckStartFragment : Fragment() {
                 findNavController().navigate(R.id.action_demoStartFragment_to_livenessInstructionsFragment)
             } else {
                 if (it.data?.data != null) {
-                    Log.d("STAGING", "----- CURRENT STAGE TYPE: ${it.data.data.type}")
                     if (it.data.data.uploadedDocId != null) {
                         val action = VCheckStartFragmentDirections.actionDemoStartFragmentToCheckDocInfoFragment(
                             null, it.data.data.uploadedDocId)

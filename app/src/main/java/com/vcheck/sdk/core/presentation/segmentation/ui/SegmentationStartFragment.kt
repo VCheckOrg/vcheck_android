@@ -14,6 +14,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.fragment.findNavController
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
+import com.vcheck.sdk.core.VCheckSDK.TAG
 import com.vcheck.sdk.core.databinding.FragmentSegmentationStartBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.DocType
@@ -34,7 +35,7 @@ class SegmentationStartFragment : ThemeWrapperFragment() {
                     VCheckDIContainer.mainRepository.getCheckDocPhotosTO()!!)
             findNavController().navigate(action)
         } else {
-            Log.d("SEG", "Error: photo TO was not set!")
+            Log.d(TAG, "Error: photo transferrable object was not set!")
         }
     }
 

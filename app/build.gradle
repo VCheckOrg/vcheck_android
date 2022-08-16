@@ -14,8 +14,8 @@ android {
     defaultConfig {
         minSdk 21
         targetSdk 32
-        versionCode 25
-        versionName "1.1.26"
+        versionCode 26
+        versionName "1.1.27"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.debug
@@ -80,7 +80,7 @@ afterEvaluate {
 
                 groupId "com.vcheck"
                 artifactId "sdk_test"
-                version "1.1.26"
+                version "1.1.27"
                 
                 //artifact "$buildDir/outputs/aar/vcheck-sdk-test-release.aar"
             }

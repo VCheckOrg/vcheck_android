@@ -100,7 +100,6 @@ fun VCheckLivenessActivity.getAvailableDeviceRAM(): Long {
     val activityManager = getSystemService(ACTIVITY_SERVICE) as ActivityManager?
     activityManager!!.getMemoryInfo(mi)
     val memInMB = mi.totalMem / (1024 * 1024)
-    Log.d("PERFORMANCE", "================ MEM IN MB : ${bytesToHuman(mi.totalMem)}")
     return memInMB
 }
 

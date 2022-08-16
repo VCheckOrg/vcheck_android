@@ -172,7 +172,6 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
 
     private fun handleDocErrorResponse(response: BaseClientResponseModel?) {
         if (response != null) {
-            Log.d("DOCS", "DOCUMENT ERROR RESPONSE: ${response.toString()}")
             if (response.errorCode == DocumentVerificationCode.PARSING_ERROR.toCodeIdx() ||
                 response.errorCode == DocumentVerificationCode.INVALID_PAGE.toCodeIdx()) {
                 if (response.data?.id != null) {

@@ -14,6 +14,7 @@ import androidx.navigation.fragment.navArgs
 import com.squareup.picasso.Picasso
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
+import com.vcheck.sdk.core.VCheckSDK.TAG
 import com.vcheck.sdk.core.databinding.CheckDocInfoFragmentBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.*
@@ -63,8 +64,6 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = CheckDocInfoViewModel(VCheckDIContainer.mainRepository)
-
-        Log.d("COUNTRY", "======== CHOSEN COUNTRY: ${VCheckSDK.getSelectedCountryCode()}")
     }
 
     override fun onCreateView(
@@ -91,7 +90,6 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
             photoCard2.isVisible = false
 
             if (args.checkDocInfoDataTO != null) {
-                Log.d("DOCUMENT", "===== ARGS TO : ${args.checkDocInfoDataTO}")
                 uploadedDocID = args.checkDocInfoDataTO!!.docId
 
                 val docPhoto1File = File(args.checkDocInfoDataTO!!.photo1Path)
@@ -105,7 +103,6 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
                     photoCard2.isVisible = false
                 }
             } else {
-                Log.d("DOCUMENT", "===== ARGS TO IS MISSING! USING args.uploadedDocId")
                 uploadedDocID = args.uplaodedDocId
             }
         }
@@ -118,8 +115,7 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
         viewModel.documentInfoResponse.observe(viewLifecycleOwner) {
             if (it.data?.data != null) {
                 populateDocFields(it.data.data, currentLocaleCode)
-                //TODO!
-                populatePrevUploadedDocPhotos()
+                //populatePrevUploadedDocPhotos() //obsolete (?)
             }
         }
 
@@ -130,16 +126,16 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
         }
 
         viewModel.stageResponse.observe(viewLifecycleOwner) {
-            if (it.data?.errorCode == null || it.data.errorCode == StageObstacleErrorType.USER_INTERACTED_COMPLETED.toTypeIdx()) {
-                if (it.data?.data?.config != null) {
+            if (it.data?.data?.config != null) {
                     viewModel.repository.setLivenessMilestonesList((it.data.data.config.gestures))
                     findNavController().navigate(R.id.action_checkDocInfoFragment_to_livenessInstructionsFragment)
                 } else if (VCheckSDK.verificationClientCreationModel?.verificationType == VerificationSchemeType.DOCUMENT_UPLOAD_ONLY) {
                    VCheckSDK.onApplicationFinish()
                 }
-            } else {
-                findNavController().navigate(R.id.action_global_demoStartFragment)
-            }
+        // deprecated logic (?)
+//            else {
+//                findNavController().navigate(R.id.action_global_demoStartFragment)
+//            }
         }
 
         viewModel.getDocumentInfo(uploadedDocID!!)
@@ -159,13 +155,8 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
         }
     }
 
-    private fun populatePrevUploadedDocPhotos() {
-        //TODO
-    }
-
     private fun populateDocFields(preProcessedDocData: PreProcessedDocData, currentLocaleCode: String) {
         if (preProcessedDocData.type.docFields.isNotEmpty()) {
-            Log.d("DOC", "GOT AUTO-PARSED FIELDS: ${preProcessedDocData.type.docFields}")
             dataList = preProcessedDocData.type.docFields.map { docField ->
                 convertDocFieldToOptParsedData(docField, preProcessedDocData.parsedData)
             } as ArrayList<DocFieldWitOptPreFilledData>
@@ -173,14 +164,13 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
                 this@CheckDocInfoFragment, currentLocaleCode)
             binding.docInfoList.adapter = updatedAdapter
         } else {
-            Log.i("DOC", "__NO__ AVAILABLE AUTO-PARSED FIELDS!")
+            Log.i(TAG, "No available auto-parsed fields")
         }
     }
 
     private fun checkIfAnyFieldEmpty(): Boolean {
         var hasValidationErrors: Boolean = false
         dataList.forEach {
-            Log.d("DOC", "FIELD : ${it.autoParsedValue} | ${it.regex} | ${it.name} | ${it.title}")
             if (it.autoParsedValue.length < 2) {
                 hasValidationErrors = true
             }

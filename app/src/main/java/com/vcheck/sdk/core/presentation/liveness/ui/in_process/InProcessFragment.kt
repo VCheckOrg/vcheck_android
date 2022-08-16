@@ -92,7 +92,6 @@ class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
 
         if (token.isNotEmpty()) {
             _viewModel.uploadResponse.observe(viewLifecycleOwner) {
-                Log.d(VCheckLivenessActivity.TAG, "UPL COUNTER: $lazyUploadResponseCounter")
                 if (lazyUploadResponseCounter == 1 && it != null && it.data != null) {
                     handleVideoUploadResponse(it, token)
                 } else {
@@ -112,7 +111,6 @@ class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
     }
 
     private fun handleVideoUploadResponse(uploadResponse: Resource<LivenessUploadResponse>, token: String) {
-            Log.d(VCheckLivenessActivity.TAG, "UPLOAD RESPONSE DATA: ${uploadResponse.data}")
             if (uploadResponse.data!!.data.isFinal) {
                 onVideoUploadResponseSuccess()
             } else {
@@ -170,7 +168,6 @@ class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
 
     private fun onVideoUploadResponseSuccess() {
         _viewModel.stageResponse.observe(viewLifecycleOwner) {
-            Log.d("OkHttp", "STAGE DATA ERROR: ${it.apiError}")
             if (it.data?.errorCode == null || it.data.errorCode == StageObstacleErrorType.USER_INTERACTED_COMPLETED.toTypeIdx()) {
                 VCheckSDK.onApplicationFinish()
             } else {

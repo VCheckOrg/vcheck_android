@@ -137,16 +137,13 @@ class VCheckLivenessActivity : AppCompatActivity(),
             gestureResponse.observe(this@VCheckLivenessActivity) {
                 blockRequestByProcessing = false
                 runOnUiThread {
-                    Log.d(TAG, "============== GOT RESPONSE: ${it.data}")
                     if (!isLivenessSessionFinished) {
                         if (milestoneFlow.areAllStagesPassed()) {
-                            Log.d(TAG, "==============++++++++++++++++  PASSED ALL STAGES!")
                             finishLivenessSession()
                             navigateOnLivenessSessionEnd()
                         } else {
                             val currentStage = milestoneFlow.getCurrentStage()
                             if (it.data != null && it.data.success && currentStage != null) {
-                                Log.d(TAG, "============== PASSED MILESTONE: ${milestoneFlow.getCurrentStage()}")
                                 milestoneFlow.incrementCurrentStage()
                                 val nextStage = milestoneFlow.getCurrentStage()
                                 if (nextStage != null) {
@@ -155,7 +152,6 @@ class VCheckLivenessActivity : AppCompatActivity(),
                                 }
                             }
                             if (it.data != null && it.data.errorCode != 0) {
-                                //TODO: add error handling
                                 showSingleToast("GESTURE CHECK ERROR: [${it.data.errorCode}]")
                             }
                         }
@@ -289,7 +285,6 @@ class VCheckLivenessActivity : AppCompatActivity(),
                     VCheckDIContainer.mainRepository.sendLivenessGestureAttempt(
                         image, MultipartBody.Part.createFormData("gesture", currentGesture))
                         .observeForever {
-                            Log.d(TAG, "========= WAITING FOR ANY RESPONSE FOR GESTURE: ${currentGesture}...")
                             gestureResponse.value = it
                     }
                 }

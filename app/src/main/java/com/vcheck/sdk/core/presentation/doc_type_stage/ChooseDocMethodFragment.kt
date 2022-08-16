@@ -115,8 +115,6 @@ class ChooseDocMethodFragment : ThemeWrapperFragment() {
     }
 
     private fun selectDocTypeDataAndNavigateForward(docTypeData: DocTypeData) {
-        Log.d("DOC_TYPE_DATA", docTypeData.toString())
-
         _viewModel.repository.setSelectedDocTypeWithData(docTypeData)
         if (docTypeData.isSegmentationAvailable) {
             findNavController().navigate(R.id.action_chooseDocMethodScreen_to_segmentationStartFragment)
