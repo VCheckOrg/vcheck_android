@@ -30,9 +30,7 @@
     <application
         android:allowBackup="true"
         android:configChanges="locale"
-        android:icon="@mipmap/ic_launcher"
         android:requestLegacyExternalStorage="true"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true">
         <activity
             android:name="com.vcheck.sdk.core.presentation.segmentation.VCheckSegmentationActivity"
