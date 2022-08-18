@@ -77,7 +77,6 @@ afterEvaluate {
         publications {
             release(MavenPublication) {
                 from components.release
-
                 groupId "com.vcheck"
                 artifactId "sdk_test"
                 version "1.1.29"
