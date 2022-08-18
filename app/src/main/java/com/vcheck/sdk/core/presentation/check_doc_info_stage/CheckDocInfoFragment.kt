@@ -131,8 +131,8 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
                 viewModel.repository.setLivenessMilestonesList((it.data.data.config.gestures))
                 findNavController().navigate(R.id.action_checkDocInfoFragment_to_livenessInstructionsFragment)
             } else if (VCheckSDK.verificationClientCreationModel?.verificationType == VerificationSchemeType.DOCUMENT_UPLOAD_ONLY) {
-                VCheckSDK.onApplicationFinish() //!
                 (activity as VCheckMainActivity).finish()
+                VCheckSDK.onApplicationFinish() //!
             }
         }
 

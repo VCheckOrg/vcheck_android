@@ -170,7 +170,7 @@ class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
     private fun onVideoUploadResponseSuccess() {
         _viewModel.stageResponse.observe(viewLifecycleOwner) {
             if (it.data?.errorCode == null || it.data.errorCode == StageObstacleErrorType.USER_INTERACTED_COMPLETED.toTypeIdx()) {
-                (activity as VCheckMainActivity).finish()
+                (activity as VCheckLivenessActivity).finish()
                 VCheckSDK.onApplicationFinish() //!
             } else {
                 Toast.makeText(activity, "Stage Error", Toast.LENGTH_LONG).show()
