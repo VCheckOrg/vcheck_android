@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -170,7 +171,8 @@ class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
     private fun onVideoUploadResponseSuccess() {
         _viewModel.stageResponse.observe(viewLifecycleOwner) {
             if (it.data?.errorCode == null || it.data.errorCode == StageObstacleErrorType.USER_INTERACTED_COMPLETED.toTypeIdx()) {
-                (activity as VCheckLivenessActivity).finish()
+                //(activity as VCheckLivenessActivity).finish()
+                ActivityCompat.finishAffinity((activity as VCheckLivenessActivity))
                 VCheckSDK.onApplicationFinish() //!
             } else {
                 Toast.makeText(activity, "Stage Error", Toast.LENGTH_LONG).show()

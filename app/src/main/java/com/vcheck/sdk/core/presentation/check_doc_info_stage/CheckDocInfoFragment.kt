@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.core.app.ActivityCompat.finishAffinity
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -131,7 +132,8 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
                 viewModel.repository.setLivenessMilestonesList((it.data.data.config.gestures))
                 findNavController().navigate(R.id.action_checkDocInfoFragment_to_livenessInstructionsFragment)
             } else if (VCheckSDK.verificationClientCreationModel?.verificationType == VerificationSchemeType.DOCUMENT_UPLOAD_ONLY) {
-                (activity as VCheckMainActivity).finish()
+                //(activity as VCheckMainActivity).finish()
+                finishAffinity((activity as VCheckMainActivity))
                 VCheckSDK.onApplicationFinish() //!
             }
         }
