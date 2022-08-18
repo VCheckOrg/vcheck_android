@@ -1,5 +1,7 @@
 package com.vcheck.sdk.core.presentation.check_doc_info_stage
 
+import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -8,7 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.addCallback
-import androidx.core.app.ActivityCompat.finishAffinity
+import androidx.core.content.IntentCompat
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -22,9 +24,9 @@ import com.vcheck.sdk.core.domain.*
 import com.vcheck.sdk.core.presentation.VCheckMainActivity
 import com.vcheck.sdk.core.presentation.adapters.CheckDocInfoAdapter
 import com.vcheck.sdk.core.presentation.adapters.DocInfoEditCallback
-import com.vcheck.sdk.core.presentation.liveness.VCheckLivenessActivity
 import com.vcheck.sdk.core.util.ThemeWrapperFragment
 import java.io.File
+
 
 class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
 
@@ -132,8 +134,13 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
                 viewModel.repository.setLivenessMilestonesList((it.data.data.config.gestures))
                 findNavController().navigate(R.id.action_checkDocInfoFragment_to_livenessInstructionsFragment)
             } else if (VCheckSDK.verificationClientCreationModel?.verificationType == VerificationSchemeType.DOCUMENT_UPLOAD_ONLY) {
-                //(activity as VCheckMainActivity).finish()
-                finishAffinity((activity as VCheckMainActivity))
+                val intents = Intent((activity as VCheckMainActivity), VCheckSDK.partnerActivityClass)
+                intents.addFlags(
+                    Intent.FLAG_ACTIVITY_NEW_TASK
+                            or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                            or FLAG_ACTIVITY_CLEAR_TASK)
+                startActivity(intents)
+                (activity as VCheckMainActivity).finish()
                 VCheckSDK.onApplicationFinish() //!
             }
         }

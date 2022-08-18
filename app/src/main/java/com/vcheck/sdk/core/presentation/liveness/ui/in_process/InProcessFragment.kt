@@ -1,5 +1,6 @@
 package com.vcheck.sdk.core.presentation.liveness.ui.in_process
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -10,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityCompat.finishAffinity
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -171,8 +173,13 @@ class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
     private fun onVideoUploadResponseSuccess() {
         _viewModel.stageResponse.observe(viewLifecycleOwner) {
             if (it.data?.errorCode == null || it.data.errorCode == StageObstacleErrorType.USER_INTERACTED_COMPLETED.toTypeIdx()) {
-                //(activity as VCheckLivenessActivity).finish()
-                ActivityCompat.finishAffinity((activity as VCheckLivenessActivity))
+                val intents = Intent((activity as VCheckLivenessActivity), VCheckSDK.partnerActivityClass)
+                intents.addFlags(
+                    Intent.FLAG_ACTIVITY_NEW_TASK
+                            or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                            or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                startActivity(intents)
+                (activity as VCheckLivenessActivity).finish()
                 VCheckSDK.onApplicationFinish() //!
             } else {
                 Toast.makeText(activity, "Stage Error", Toast.LENGTH_LONG).show()

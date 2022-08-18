@@ -3,9 +3,11 @@ package com.vcheck.sdk.core
 import android.app.Activity
 import android.content.Intent
 import android.util.Log
+import androidx.core.content.IntentCompat
 import com.vcheck.sdk.core.data.VCheckSDKConstantsProvider
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.*
+import com.vcheck.sdk.core.presentation.VCheckMainActivity
 import com.vcheck.sdk.core.presentation.VCheckStartupActivity
 import com.vcheck.sdk.core.util.isValidHexColor
 import java.lang.IllegalArgumentException
@@ -15,6 +17,8 @@ object VCheckSDK {
     const val TAG = "VCheckSDK"
 
     private var partnerEndCallback: (() -> Unit)? = null
+
+    internal var partnerActivityClass: Class<Activity>? = null
 
     private var partnerId: Int? = null
     private var partnerSecret: String? = null
@@ -48,6 +52,8 @@ object VCheckSDK {
         resetVerification()
 
         performPreStartChecks()
+
+        this.partnerActivityClass = partnerActivity.javaClass
 
         this.verificationClientCreationModel = VerificationClientCreationModel(
             partnerId!!, partnerSecret!!, verificationType!!, partnerUserId,
