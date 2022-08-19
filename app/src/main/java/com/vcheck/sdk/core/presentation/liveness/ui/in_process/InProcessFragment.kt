@@ -1,5 +1,7 @@
 package com.vcheck.sdk.core.presentation.liveness.ui.in_process
 
+import android.app.ActivityManager
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -10,8 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.addCallback
-import androidx.core.app.ActivityCompat
-import androidx.core.app.ActivityCompat.finishAffinity
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -31,6 +31,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
+
 
 class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
 
@@ -174,14 +175,13 @@ class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
     private fun onVideoUploadResponseSuccess() {
         _viewModel.stageResponse.observe(viewLifecycleOwner) {
             if (it.data?.errorCode == null || it.data.errorCode == StageObstacleErrorType.USER_INTERACTED_COMPLETED.toTypeIdx()) {
-//                val intents = Intent((activity as VCheckLivenessActivity), VCheckSDK.partnerActivityClass)
-//                intents.addFlags(
-//                    Intent.FLAG_ACTIVITY_NEW_TASK
-//                            or Intent.FLAG_ACTIVITY_CLEAR_TOP
-//                            or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-//                startActivity(intents)
-                (activity as VCheckLivenessActivity).moveTaskToBack(false)
-                (activity as VCheckMainActivity).moveTaskToBack(false)
+                val intents = Intent((activity as VCheckLivenessActivity), VCheckStartupActivity::class.java)
+                intents.addFlags(
+                    Intent.FLAG_ACTIVITY_NEW_TASK
+                            or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                            or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                startActivity(intents)
+
                 (activity as VCheckStartupActivity).moveTaskToBack(false)
                 VCheckSDK.onApplicationFinish() //!
             } else {

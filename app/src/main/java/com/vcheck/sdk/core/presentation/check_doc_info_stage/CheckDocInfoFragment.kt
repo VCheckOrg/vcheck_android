@@ -22,6 +22,7 @@ import com.vcheck.sdk.core.databinding.CheckDocInfoFragmentBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.*
 import com.vcheck.sdk.core.presentation.VCheckMainActivity
+import com.vcheck.sdk.core.presentation.VCheckStartupActivity
 import com.vcheck.sdk.core.presentation.adapters.CheckDocInfoAdapter
 import com.vcheck.sdk.core.presentation.adapters.DocInfoEditCallback
 import com.vcheck.sdk.core.util.ThemeWrapperFragment
@@ -134,7 +135,9 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
                 viewModel.repository.setLivenessMilestonesList((it.data.data.config.gestures))
                 findNavController().navigate(R.id.action_checkDocInfoFragment_to_livenessInstructionsFragment)
             } else if (VCheckSDK.verificationClientCreationModel?.verificationType == VerificationSchemeType.DOCUMENT_UPLOAD_ONLY) {
-                val intents = Intent((activity as VCheckMainActivity), VCheckSDK.partnerActivityClass)
+
+                val intents = Intent((activity as VCheckMainActivity), VCheckStartupActivity::class.java)
+
                 intents.addFlags(
                     Intent.FLAG_ACTIVITY_NEW_TASK
                             or Intent.FLAG_ACTIVITY_CLEAR_TOP
