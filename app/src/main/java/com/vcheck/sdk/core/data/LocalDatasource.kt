@@ -11,6 +11,8 @@ class LocalDatasource {
 
     private var _checkDocPhotosTO: CheckPhotoDataTO? = null
 
+    private var _shouldFinishStartupActivity: Boolean = false
+
     fun setSelectedDocTypeWithData(data: DocTypeData) {
         _selectedDocTypeWithData = data
     }
@@ -33,6 +35,14 @@ class LocalDatasource {
 
     fun getCheckDocPhotosTO(): CheckPhotoDataTO? {
         return _checkDocPhotosTO
+    }
+
+    fun setFinishStartupActivity(s: Boolean) {
+        _shouldFinishStartupActivity = s
+    }
+
+    fun shouldFinishStartupActivity(): Boolean {
+        return _shouldFinishStartupActivity
     }
 
     fun resetCacheOnStartup() {

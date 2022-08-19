@@ -20,7 +20,13 @@ internal class VCheckStartupActivity : AppCompatActivity() {
 
         repository.resetCacheOnStartup()
 
-        startActivity(Intent(this@VCheckStartupActivity, VCheckMainActivity::class.java))
+        if (repository.shouldFinishStartupActivity()) {
+            repository.setFinishStartupActivity(false)
+            finish()
+            VCheckSDK.onApplicationFinish()
+        } else {
+            startActivity(Intent(this@VCheckStartupActivity, VCheckMainActivity::class.java))
+        }
     }
 
     override fun onResume() {

@@ -153,4 +153,12 @@ class MainRepository(
     fun getCheckDocPhotosTO(): CheckPhotoDataTO? {
         return localDatasource.getCheckDocPhotosTO()
     }
+
+    fun setFinishStartupActivity(s: Boolean) {
+        localDatasource.setFinishStartupActivity(s)
+    }
+
+    fun shouldFinishStartupActivity(): Boolean {
+        return localDatasource.shouldFinishStartupActivity()
+    }
 }

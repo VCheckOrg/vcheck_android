@@ -25,6 +25,7 @@ import com.vcheck.sdk.core.presentation.VCheckMainActivity
 import com.vcheck.sdk.core.presentation.VCheckStartupActivity
 import com.vcheck.sdk.core.presentation.adapters.CheckDocInfoAdapter
 import com.vcheck.sdk.core.presentation.adapters.DocInfoEditCallback
+import com.vcheck.sdk.core.presentation.liveness.VCheckLivenessActivity
 import com.vcheck.sdk.core.util.ThemeWrapperFragment
 import java.io.File
 
@@ -136,15 +137,17 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
                 findNavController().navigate(R.id.action_checkDocInfoFragment_to_livenessInstructionsFragment)
             } else if (VCheckSDK.verificationClientCreationModel?.verificationType == VerificationSchemeType.DOCUMENT_UPLOAD_ONLY) {
 
-                val intents = Intent((activity as VCheckMainActivity), VCheckStartupActivity::class.java)
+                (VCheckDIContainer).mainRepository.setFinishStartupActivity(true)
 
+                val intents = Intent((activity as VCheckMainActivity), VCheckStartupActivity::class.java)
                 intents.addFlags(
-                    Intent.FLAG_ACTIVITY_NEW_TASK
-                            or Intent.FLAG_ACTIVITY_CLEAR_TOP
-                            or FLAG_ACTIVITY_CLEAR_TASK)
+//                    Intent.FLAG_ACTIVITY_NEW_TASK
+//                            or Intent.FLAG_ACTIVITY_CLEAR_TASK
+//                            or
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 startActivity(intents)
-                (activity as VCheckMainActivity).finish()
-                VCheckSDK.onApplicationFinish() //!
+
+                //VCheckSDK.onApplicationFinish() //!
             }
         }
 
