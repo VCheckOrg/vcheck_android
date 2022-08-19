@@ -22,6 +22,7 @@ import com.vcheck.sdk.core.databinding.InProcessFragmentBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.*
 import com.vcheck.sdk.core.presentation.VCheckMainActivity
+import com.vcheck.sdk.core.presentation.VCheckStartupActivity
 import com.vcheck.sdk.core.presentation.liveness.VCheckLivenessActivity
 import com.vcheck.sdk.core.presentation.liveness.flow_logic.VideoProcessingListener
 import com.vcheck.sdk.core.util.ThemeWrapperFragment
@@ -173,13 +174,15 @@ class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
     private fun onVideoUploadResponseSuccess() {
         _viewModel.stageResponse.observe(viewLifecycleOwner) {
             if (it.data?.errorCode == null || it.data.errorCode == StageObstacleErrorType.USER_INTERACTED_COMPLETED.toTypeIdx()) {
-                val intents = Intent((activity as VCheckLivenessActivity), VCheckSDK.partnerActivityClass)
-                intents.addFlags(
-                    Intent.FLAG_ACTIVITY_NEW_TASK
-                            or Intent.FLAG_ACTIVITY_CLEAR_TOP
-                            or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                startActivity(intents)
-                (activity as VCheckLivenessActivity).finish()
+//                val intents = Intent((activity as VCheckLivenessActivity), VCheckSDK.partnerActivityClass)
+//                intents.addFlags(
+//                    Intent.FLAG_ACTIVITY_NEW_TASK
+//                            or Intent.FLAG_ACTIVITY_CLEAR_TOP
+//                            or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+//                startActivity(intents)
+                (activity as VCheckLivenessActivity).moveTaskToBack(false)
+                (activity as VCheckMainActivity).moveTaskToBack(false)
+                (activity as VCheckStartupActivity).moveTaskToBack(false)
                 VCheckSDK.onApplicationFinish() //!
             } else {
                 Toast.makeText(activity, "Stage Error", Toast.LENGTH_LONG).show()
