@@ -18,8 +18,6 @@ object VCheckSDK {
 
     private var partnerEndCallback: (() -> Unit)? = null
 
-    internal var partnerActivityClass: Class<Activity>? = null
-
     private var partnerId: Int? = null
     private var partnerSecret: String? = null
 
@@ -52,8 +50,6 @@ object VCheckSDK {
         resetVerification()
 
         performPreStartChecks()
-
-        this.partnerActivityClass = partnerActivity.javaClass
 
         this.verificationClientCreationModel = VerificationClientCreationModel(
             partnerId!!, partnerSecret!!, verificationType!!, partnerUserId,

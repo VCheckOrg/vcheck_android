@@ -175,18 +175,10 @@ class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
     private fun onVideoUploadResponseSuccess() {
         _viewModel.stageResponse.observe(viewLifecycleOwner) {
             if (it.data?.errorCode == null || it.data.errorCode == StageObstacleErrorType.USER_INTERACTED_COMPLETED.toTypeIdx()) {
-
                 (VCheckDIContainer).mainRepository.setFinishStartupActivity(true)
-
                 val intents = Intent((activity as VCheckLivenessActivity), VCheckStartupActivity::class.java)
-                intents.addFlags(
-//                    Intent.FLAG_ACTIVITY_NEW_TASK
-//                            or Intent.FLAG_ACTIVITY_CLEAR_TASK
-//                            or
-                            Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                intents.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 startActivity(intents)
-
-                //VCheckSDK.onApplicationFinish() //!
             } else {
                 Toast.makeText(activity, "Stage Error", Toast.LENGTH_LONG).show()
             }

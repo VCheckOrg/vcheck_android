@@ -136,18 +136,10 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
                 viewModel.repository.setLivenessMilestonesList((it.data.data.config.gestures))
                 findNavController().navigate(R.id.action_checkDocInfoFragment_to_livenessInstructionsFragment)
             } else if (VCheckSDK.verificationClientCreationModel?.verificationType == VerificationSchemeType.DOCUMENT_UPLOAD_ONLY) {
-
                 (VCheckDIContainer).mainRepository.setFinishStartupActivity(true)
-
                 val intents = Intent((activity as VCheckMainActivity), VCheckStartupActivity::class.java)
-                intents.addFlags(
-//                    Intent.FLAG_ACTIVITY_NEW_TASK
-//                            or Intent.FLAG_ACTIVITY_CLEAR_TASK
-//                            or
-                    Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                intents.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 startActivity(intents)
-
-                //VCheckSDK.onApplicationFinish() //!
             }
         }
 
