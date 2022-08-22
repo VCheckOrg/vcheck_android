@@ -62,14 +62,15 @@ internal class VCheckMainActivity : AppCompatActivity() {
         if (VCheckSDK.showCloseSDKButton) {
             binding.closeSDKBtnHolder.isVisible = true
             binding.closeSDKBtnHolder.setOnClickListener {
-                closeSDKFlow()
+                closeSDKFlow(false)
             }
         } else {
             binding.closeSDKBtnHolder.isVisible = false
         }
     }
 
-    fun closeSDKFlow() {
+    fun closeSDKFlow(shouldExecuteEndCallback: Boolean) {
+        (VCheckDIContainer).mainRepository.setFirePartnerCallback(shouldExecuteEndCallback)
         (VCheckDIContainer).mainRepository.setFinishStartupActivity(true)
         val intents = Intent(this@VCheckMainActivity, VCheckStartupActivity::class.java)
         intents.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)

@@ -323,23 +323,23 @@ class VCheckLivenessActivity : AppCompatActivity(),
     /// -------------------------------------------- UI functions
 
     private fun initSetupUI() {
-        binding!!.arrowAnimationView.isVisible = false
-        binding!!.faceAnimationView.isVisible = false
-        binding!!.stageSuccessAnimBorder.isVisible = false
-        binding!!.checkFaceTitle.text = getString(R.string.wait_for_liveness_start)
-        binding!!.imgViewStaticStageIndication.isVisible = false
+        binding.arrowAnimationView.isVisible = false
+        binding.faceAnimationView.isVisible = false
+        binding.stageSuccessAnimBorder.isVisible = false
+        binding.checkFaceTitle.text = getString(R.string.wait_for_liveness_start)
+        binding.imgViewStaticStageIndication.isVisible = false
     }
 
     private fun indicateNextMilestone(nextMilestoneType: GestureMilestoneType,
                                       indicateStageAsInitial: Boolean) {
 
-        binding!!.faceAnimationView.isVisible = false
-        binding!!.arrowAnimationView.isVisible = false
+        binding.faceAnimationView.isVisible = false
+        binding.arrowAnimationView.isVisible = false
 
         if (!indicateStageAsInitial) {
             vibrateDevice(this@VCheckLivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
-            binding!!.imgViewStaticStageIndication.isVisible = true
-            binding!!.stageSuccessAnimBorder.isVisible = true
+            binding.imgViewStaticStageIndication.isVisible = true
+            binding.stageSuccessAnimBorder.isVisible = true
             animateStageSuccessFrame()
 
             Handler(Looper.getMainLooper()).postDelayed ({
@@ -353,8 +353,8 @@ class VCheckLivenessActivity : AppCompatActivity(),
 
     private fun updateUIOnMilestoneSuccess(nextMilestoneType: GestureMilestoneType) {
 
-        binding!!.imgViewStaticStageIndication.isVisible = false
-        binding!!.faceAnimationView.cancelAnimation()
+        binding.imgViewStaticStageIndication.isVisible = false
+        binding.faceAnimationView.cancelAnimation()
         val faceAnimeRes = when(nextMilestoneType) {
             GestureMilestoneType.UpHeadPitchMilestone -> R.raw.up
             GestureMilestoneType.DownHeadPitchMilestone -> R.raw.down
@@ -364,49 +364,49 @@ class VCheckLivenessActivity : AppCompatActivity(),
             else -> null
         }
         if (faceAnimeRes != null) {
-            binding!!.faceAnimationView.isVisible = true
-            binding!!.faceAnimationView.setAnimation(faceAnimeRes)
-            binding!!.faceAnimationView.playAnimation()
+            binding.faceAnimationView.isVisible = true
+            binding.faceAnimationView.setAnimation(faceAnimeRes)
+            binding.faceAnimationView.playAnimation()
         } else {
-            binding!!.faceAnimationView.isVisible = true
-            binding!!.faceAnimationView.setAnimation(R.raw.mouth)
-            binding!!.faceAnimationView.pauseAnimation()
+            binding.faceAnimationView.isVisible = true
+            binding.faceAnimationView.setAnimation(R.raw.mouth)
+            binding.faceAnimationView.pauseAnimation()
         }
 
         when (nextMilestoneType) {
             GestureMilestoneType.OuterLeftHeadYawMilestone -> {
-                binding!!.arrowAnimationView.isVisible = true
-                binding!!.arrowAnimationView.setMargins(null, null,
+                binding.arrowAnimationView.isVisible = true
+                binding.arrowAnimationView.setMargins(null, null,
                     300, null)
-                binding!!.arrowAnimationView.rotation = 0F
-                binding!!.arrowAnimationView.playAnimation()
+                binding.arrowAnimationView.rotation = 0F
+                binding.arrowAnimationView.playAnimation()
             }
             GestureMilestoneType.OuterRightHeadYawMilestone -> {
-                binding!!.arrowAnimationView.isVisible = true
-                binding!!.arrowAnimationView.setMargins(null, null,
+                binding.arrowAnimationView.isVisible = true
+                binding.arrowAnimationView.setMargins(null, null,
                     -300, null)
-                binding!!.arrowAnimationView.rotation = 180F
-                binding!!.arrowAnimationView.playAnimation()
+                binding.arrowAnimationView.rotation = 180F
+                binding.arrowAnimationView.playAnimation()
             }
             GestureMilestoneType.UpHeadPitchMilestone -> {
-                binding!!.arrowAnimationView.isVisible = true
-                binding!!.arrowAnimationView.setMargins(0, 0,
+                binding.arrowAnimationView.isVisible = true
+                binding.arrowAnimationView.setMargins(0, 0,
                     0, 0)
-                binding!!.arrowAnimationView.rotation = 90F
-                binding!!.arrowAnimationView.playAnimation()
+                binding.arrowAnimationView.rotation = 90F
+                binding.arrowAnimationView.playAnimation()
             }
             GestureMilestoneType.DownHeadPitchMilestone -> {
-                binding!!.arrowAnimationView.isVisible = true
-                binding!!.arrowAnimationView.setMargins(0, 0,
+                binding.arrowAnimationView.isVisible = true
+                binding.arrowAnimationView.setMargins(0, 0,
                     0, 0)
-                binding!!.arrowAnimationView.rotation = 270F
-                binding!!.arrowAnimationView.playAnimation()
+                binding.arrowAnimationView.rotation = 270F
+                binding.arrowAnimationView.playAnimation()
             }
             else -> {
-                binding!!.arrowAnimationView.isVisible = false
+                binding.arrowAnimationView.isVisible = false
             }
         }
-        binding!!.checkFaceTitle.text = when(nextMilestoneType) {
+        binding.checkFaceTitle.text = when(nextMilestoneType) {
             GestureMilestoneType.UpHeadPitchMilestone -> getString(R.string.liveness_stage_face_up)
             GestureMilestoneType.DownHeadPitchMilestone -> getString(R.string.liveness_stage_face_down)
             GestureMilestoneType.OuterRightHeadYawMilestone -> getString(R.string.liveness_stage_face_right)
@@ -419,13 +419,13 @@ class VCheckLivenessActivity : AppCompatActivity(),
 
     private fun navigateOnLivenessSessionEnd() {
         runOnUiThread {
-            binding!!.arrowAnimationView.isVisible = false
-            binding!!.faceAnimationView.isVisible = false
-            binding!!.checkFaceTitle.text = getString(R.string.wait_for_liveness_start)
+            binding.arrowAnimationView.isVisible = false
+            binding.faceAnimationView.isVisible = false
+            binding.checkFaceTitle.text = getString(R.string.wait_for_liveness_start)
             vibrateDevice(this@VCheckLivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
-            binding!!.imgViewStaticStageIndication.isVisible = true
-            binding!!.stageSuccessAnimBorder.isVisible = true
-            binding!!.livenessCosmeticsHolder.isVisible = false
+            binding.imgViewStaticStageIndication.isVisible = true
+            binding.stageSuccessAnimBorder.isVisible = true
+            binding.livenessCosmeticsHolder.isVisible = false
             camera2Fragment?.onPause() //!
             safeNavigateToResultDestination(R.id.action_dummyLivenessStartDestFragment_to_inProcessFragment)
         }
@@ -447,16 +447,16 @@ class VCheckLivenessActivity : AppCompatActivity(),
         vibrateDevice(this@VCheckLivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
         finishLivenessSession()
         livenessSessionLimitCheckTime = SystemClock.elapsedRealtime()
-        binding!!.livenessCosmeticsHolder.isVisible = false
+        binding.livenessCosmeticsHolder.isVisible = false
         safeNavigateToResultDestination(actionIdForNav)
     }
 
     private fun animateStageSuccessFrame() {
-        binding!!.stageSuccessAnimBorder.animate().alpha(1F).setDuration(
+        binding.stageSuccessAnimBorder.animate().alpha(1F).setDuration(
             BLOCK_PIPELINE_TIME_MILLIS / 2).setInterpolator(
             DecelerateInterpolator())
             .withEndAction {
-                binding!!.stageSuccessAnimBorder.animate().alpha(0F).setDuration(
+                binding.stageSuccessAnimBorder.animate().alpha(0F).setDuration(
                     BLOCK_PIPELINE_TIME_MILLIS / 2)
                     .setInterpolator(AccelerateInterpolator()).start()
             }.start()
@@ -498,14 +498,15 @@ class VCheckLivenessActivity : AppCompatActivity(),
         if (VCheckSDK.showCloseSDKButton) {
             binding.closeSDKBtnHolder.isVisible = true
             binding.closeSDKBtnHolder.setOnClickListener {
-                closeSDKFlow()
+                closeSDKFlow(false)
             }
         } else {
             binding.closeSDKBtnHolder.isVisible = false
         }
     }
 
-    fun closeSDKFlow() {
+    fun closeSDKFlow(shouldExecuteEndCallback: Boolean) {
+        (VCheckDIContainer).mainRepository.setFirePartnerCallback(shouldExecuteEndCallback)
         (VCheckDIContainer).mainRepository.setFinishStartupActivity(true)
         val intents = Intent(this@VCheckLivenessActivity, VCheckStartupActivity::class.java)
         intents.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)

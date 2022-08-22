@@ -161,4 +161,12 @@ class MainRepository(
     fun shouldFinishStartupActivity(): Boolean {
         return localDatasource.shouldFinishStartupActivity()
     }
+
+    fun setFirePartnerCallback(s: Boolean) {
+        localDatasource.setFirePartnerCallback(s)
+    }
+
+    fun shouldFirePartnerCallback(): Boolean {
+        return localDatasource.shouldFirePartnerCallback()
+    }
 }

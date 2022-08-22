@@ -23,7 +23,10 @@ internal class VCheckStartupActivity : AppCompatActivity() {
         if (repository.shouldFinishStartupActivity()) {
             repository.setFinishStartupActivity(false)
             finish()
-            VCheckSDK.onApplicationFinish()
+            if (repository.shouldFirePartnerCallback()) {
+                repository.setFirePartnerCallback(false)
+                VCheckSDK.onApplicationFinish()
+            }
         } else {
             startActivity(Intent(this@VCheckStartupActivity, VCheckMainActivity::class.java))
         }

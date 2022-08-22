@@ -13,6 +13,8 @@ class LocalDatasource {
 
     private var _shouldFinishStartupActivity: Boolean = false
 
+    private var _shouldFirePartnerCallback: Boolean = false
+
     fun setSelectedDocTypeWithData(data: DocTypeData) {
         _selectedDocTypeWithData = data
     }
@@ -43,6 +45,14 @@ class LocalDatasource {
 
     fun shouldFinishStartupActivity(): Boolean {
         return _shouldFinishStartupActivity
+    }
+
+    fun setFirePartnerCallback(s: Boolean) {
+        _shouldFirePartnerCallback = s
+    }
+
+    fun shouldFirePartnerCallback(): Boolean {
+        return _shouldFirePartnerCallback
     }
 
     fun resetCacheOnStartup() {
