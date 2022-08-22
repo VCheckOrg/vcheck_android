@@ -165,5 +165,6 @@
     <string name="segmentation_stage_success">Dokument został zeskanowany pomyślnie!</string>
 
     <string name="no_time_seg_title">Czas przeznaczony na zeskanowanie dokumentu upłynął</string>
+    <string name="pop_sdk_title">Do początku weryfikacji</string>
 
 </resources>

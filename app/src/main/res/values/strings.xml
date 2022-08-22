@@ -175,5 +175,6 @@
     <string name="segmentation_stage_success">Document scanned successfully!</string>
 
     <string name="no_time_seg_title">The time to take document photo(s) has expired</string>
+    <string name="pop_sdk_title">To verification start</string>
 
 </resources>

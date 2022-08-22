@@ -1,21 +1,20 @@
 package com.vcheck.sdk.core.util
 
 import android.annotation.SuppressLint
-import android.app.ActivityManager
 import android.content.Context
-import android.content.Context.ACTIVITY_SERVICE
 import android.media.Image
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.util.Log
 import androidx.core.content.ContextCompat.getSystemService
-import com.vcheck.sdk.core.presentation.liveness.VCheckLivenessActivity
 import java.io.File
 import java.security.MessageDigest
-import java.util.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
+import android.util.Patterns
+import android.webkit.URLUtil
+import java.net.MalformedURLException
+import java.net.URL
 
 
 fun generateSHA256Hash(strToHash: String): String {
@@ -27,8 +26,6 @@ fun generateSHA256Hash(strToHash: String): String {
 }
 
 
-// Vibrates the device for 100 milliseconds.
-// Vibrate Permission is already in Manifest
 @SuppressLint("MissingPermission")
 fun vibrateDevice(context: Context, duration: Long) {
     val vibrator = getSystemService(context, Vibrator::class.java)
@@ -51,6 +48,7 @@ fun getFolderSizeLabel(file: File): String {
         "$size KB"
     }
 }
+
 
 fun getFolderSize(file: File): Long {
     var size: Long = 0
@@ -95,38 +93,6 @@ fun isValidDocRelatedDate(date: String): Boolean {
     }
 }
 
-fun VCheckLivenessActivity.getAvailableDeviceRAM(): Long {
-    val mi = ActivityManager.MemoryInfo()
-    val activityManager = getSystemService(ACTIVITY_SERVICE) as ActivityManager?
-    activityManager!!.getMemoryInfo(mi)
-    val memInMB = mi.totalMem / (1024 * 1024)
-    return memInMB
-}
-
-fun VCheckLivenessActivity.shouldDecreaseVideoStreamQuality(): Boolean {
-    return (getAvailableDeviceRAM() <= 2000)
-}
-
-private fun floatForm(d: Double): String {
-    return String.format(Locale.US, "%.2f", d)
-}
-
-private fun bytesToHuman(size: Long): String {
-    val Kb: Long = 1024
-    val Mb = Kb * 1024
-    val Gb = Mb * 1024
-    val Tb = Gb * 1024
-    val Pb = Tb * 1024
-    val Eb = Pb * 1024
-    if (size < Kb) return floatForm(size.toDouble()) + " byte"
-    if (size in Kb until Mb) return floatForm(size.toDouble() / Kb) + " KB"
-    if (size in Mb until Gb) return floatForm(size.toDouble() / Mb) + " MB"
-    if (size in Gb until Tb) return floatForm(size.toDouble() / Gb) + " GB"
-    if (size in Tb until Pb) return floatForm(size.toDouble() / Tb) + " TB"
-    if (size in Pb until Eb) return floatForm(size.toDouble() / Pb) + " Pb"
-    return if (size >= Eb) floatForm(size.toDouble() / Eb) + " Eb" else "0"
-}
-
 
 fun fillBytes(
     planes: Array<Image.Plane>,
@@ -142,37 +108,57 @@ fun fillBytes(
     }
 }
 
-fun String.matchesURL(): Boolean {
-    val regex = "\\b(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]"
-    return Pattern.matches(regex, this)
-}
 
 fun String.isValidHexColor(): Boolean {
     val rgbColorPattern = Pattern.compile("^#(?:[0-9a-fA-F]{3}){1,2}\$")
     val argbColorPattern = Pattern.compile("^#(?:[0-9a-fA-F]{3,4}){1,2}\$")
-        //"#([0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})")
     return (rgbColorPattern.matcher(this).matches() || argbColorPattern.matcher(this).matches())
 }
 
 
-///**
-// * This method converts dp unit to equivalent pixels, depending on device density.
-// *
-// * @param dp A value in dp (density independent pixels) unit. Which we need to convert into pixels
-// * @param context Context to get resources and device specific display metrics
-// * @return A float value to represent px equivalent to dp depending on device density
-// */
-//fun Float.dpToPixels(context: Context): Float {
-//    return this * (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+fun String.isValidUrl(): Boolean  {
+    try {
+        val url = URL(this)
+        return URLUtil.isValidUrl(url.toString()) && Patterns.WEB_URL.matcher(url.toString()).matches()
+    } catch (ignored: MalformedURLException) {
+        throw ignored
+    }
+}
+
+
+//fun Context.getAvailableDeviceRAM(): Long {
+//    val mi = ActivityManager.MemoryInfo()
+//    val activityManager = getSystemService(ACTIVITY_SERVICE) as ActivityManager?
+//    activityManager!!.getMemoryInfo(mi)
+//    val memInMB = mi.totalMem / (1024 * 1024)
+//    return memInMB
 //}
-//
-///**
-// * This method converts device specific pixels to density independent pixels.
-// *
-// * @param px A value in px (pixels) unit. Which we need to convert into db
-// * @param context Context to get resources and device specific display metrics
-// * @return A float value to represent dp equivalent to px value
-// */
-//fun Float.pixelsToDp(context: Context): Float {
-//    return this / (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+
+//fun String.matchesURL(): Boolean {
+//    val regex = "\\b(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]"
+//    return Pattern.matches(regex, this)
+//}
+
+//private fun floatForm(d: Double): String {
+//    return String.format(Locale.US, "%.2f", d)
+//}
+
+//fun VCheckLivenessActivity.shouldDecreaseVideoStreamQuality(): Boolean {
+//    return (getAvailableDeviceRAM() <= 2000)
+//}
+
+//private fun bytesToHuman(size: Long): String {
+//    val Kb: Long = 1024
+//    val Mb = Kb * 1024
+//    val Gb = Mb * 1024
+//    val Tb = Gb * 1024
+//    val Pb = Tb * 1024
+//    val Eb = Pb * 1024
+//    if (size < Kb) return floatForm(size.toDouble()) + " byte"
+//    if (size in Kb until Mb) return floatForm(size.toDouble() / Kb) + " KB"
+//    if (size in Mb until Gb) return floatForm(size.toDouble() / Mb) + " MB"
+//    if (size in Gb until Tb) return floatForm(size.toDouble() / Gb) + " GB"
+//    if (size in Tb until Pb) return floatForm(size.toDouble() / Tb) + " TB"
+//    if (size in Pb until Eb) return floatForm(size.toDouble() / Pb) + " Pb"
+//    return if (size >= Eb) floatForm(size.toDouble() / Eb) + " Eb" else "0"
 //}

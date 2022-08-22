@@ -3,11 +3,9 @@ package com.vcheck.sdk.core
 import android.app.Activity
 import android.content.Intent
 import android.util.Log
-import androidx.core.content.IntentCompat
 import com.vcheck.sdk.core.data.VCheckSDKConstantsProvider
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.*
-import com.vcheck.sdk.core.presentation.VCheckMainActivity
 import com.vcheck.sdk.core.presentation.VCheckStartupActivity
 import com.vcheck.sdk.core.util.isValidHexColor
 import java.lang.IllegalArgumentException
@@ -34,6 +32,9 @@ object VCheckSDK {
     internal var verificationClientCreationModel: VerificationClientCreationModel? = null
 
     private var sdkLanguageCode: String? = null
+
+    internal var showPartnerLogo: Boolean = false
+    internal var showCloseSDKButton: Boolean = true
 
     internal var buttonsColorHex: String? = null
     internal var backgroundPrimaryColorHex: String? = null
@@ -286,5 +287,15 @@ object VCheckSDK {
 
     internal fun setSelectedCountryCode(code: String) {
         this.selectedCountryCode = code
+    }
+
+    fun showPartnerLogo(show: Boolean): VCheckSDK {
+        this.showPartnerLogo = show
+        return this
+    }
+
+    fun showCloseSDKButton(show: Boolean): VCheckSDK {
+        this.showCloseSDKButton = show
+        return this
     }
 }

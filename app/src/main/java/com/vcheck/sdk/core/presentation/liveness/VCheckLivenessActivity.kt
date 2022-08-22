@@ -2,6 +2,7 @@ package com.vcheck.sdk.core.presentation.liveness
 
 import android.content.Context
 import android.content.ContextWrapper
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.hardware.camera2.CameraCharacteristics
@@ -26,6 +27,7 @@ import com.vcheck.sdk.core.data.Resource
 import com.vcheck.sdk.core.databinding.ActivityVcheckLivenessBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.LivenessGestureResponse
+import com.vcheck.sdk.core.presentation.VCheckStartupActivity
 import com.vcheck.sdk.core.presentation.liveness.flow_logic.*
 import com.vcheck.sdk.core.presentation.liveness.ui.LivenessCameraConnectionFragment
 import com.vcheck.sdk.core.util.VCheckContextUtils
@@ -55,7 +57,7 @@ class VCheckLivenessActivity : AppCompatActivity(),
 
     private var gestureResponse: MutableLiveData<Resource<LivenessGestureResponse>> = MutableLiveData()
 
-    private var binding: ActivityVcheckLivenessBinding? = null
+    private lateinit var binding: ActivityVcheckLivenessBinding
     private var mToast: Toast? = null
 
     var streamSize: Size = Size(640, 480)
@@ -76,10 +78,13 @@ class VCheckLivenessActivity : AppCompatActivity(),
     private var milestoneFlow: StandardMilestoneFlow =
         StandardMilestoneFlow()
 
-    //TODO finish text colors!
     private fun changeColorsToCustomIfPresent() {
         VCheckSDK.backgroundPrimaryColorHex?.let {
-            binding!!.livenessActivityBackground.setBackgroundColor(Color.parseColor(it))
+            binding.livenessActivityBackground.setBackgroundColor(Color.parseColor(it))
+        }
+        VCheckSDK.primaryTextColorHex?.let {
+            binding.backArrow.setColorFilter(Color.parseColor(it))
+            binding.popSdkTitle.setTextColor(Color.parseColor(it))
         }
     }
 
@@ -87,14 +92,16 @@ class VCheckLivenessActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
 
         binding = ActivityVcheckLivenessBinding.inflate(layoutInflater)
-        val view = binding!!.root
+        val view = binding.root
         setContentView(view)
-
-        changeColorsToCustomIfPresent()
 
         onBackPressedDispatcher.addCallback {
             //Stub; no back press needed throughout liveness flow
         }
+
+        changeColorsToCustomIfPresent()
+
+        setHeader()
 
         resetFlowForNewLivenessSession()
 
@@ -483,5 +490,25 @@ class VCheckLivenessActivity : AppCompatActivity(),
         bitmapList = null
         muxer = null
         openLivenessCameraParams = null
+    }
+
+    private fun setHeader() {
+        binding.logo.isVisible = VCheckSDK.showPartnerLogo
+
+        if (VCheckSDK.showCloseSDKButton) {
+            binding.closeSDKBtnHolder.isVisible = true
+            binding.closeSDKBtnHolder.setOnClickListener {
+                closeSDKFlow()
+            }
+        } else {
+            binding.closeSDKBtnHolder.isVisible = false
+        }
+    }
+
+    fun closeSDKFlow() {
+        (VCheckDIContainer).mainRepository.setFinishStartupActivity(true)
+        val intents = Intent(this@VCheckLivenessActivity, VCheckStartupActivity::class.java)
+        intents.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        startActivity(intents)
     }
 }

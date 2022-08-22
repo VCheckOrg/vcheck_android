@@ -165,5 +165,6 @@
     <string name="segmentation_stage_success">Документ зчитаний успішно!</string>
 
     <string name="no_time_seg_title">Час, відведений на сканування документу, вийшов</string>
+    <string name="pop_sdk_title">До старту верифікації</string>
 
 </resources>
