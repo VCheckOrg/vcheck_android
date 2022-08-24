@@ -132,11 +132,9 @@ fun String.isValidUrl(): Boolean  {
     }
 }
 
-
-
-//---------------------- RESIZING BITMAP UTILS:
-
-
+val File.size get() = if (!exists()) 0.0 else length().toDouble()
+val File.sizeInKb get() = size / 1024
+val File.sizeInMb get() = sizeInKb / 1024
 
 
 

@@ -152,8 +152,8 @@ fun saveImageToGallery(bitmap: Bitmap, context: Context, folderName: String) {
 fun contentValues() : ContentValues {
     val values = ContentValues()
     values.put(MediaStore.Images.Media.MIME_TYPE, "image/png")
-    values.put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis() / 1000);
-    values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
+    values.put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis() / 1000)
+    values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis())
     return values
 }
 

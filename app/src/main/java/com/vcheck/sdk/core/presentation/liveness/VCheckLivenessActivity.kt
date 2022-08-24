@@ -27,15 +27,22 @@ import com.vcheck.sdk.core.data.Resource
 import com.vcheck.sdk.core.databinding.ActivityVcheckLivenessBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.LivenessGestureResponse
+import com.vcheck.sdk.core.domain.SegmentationGestureResponse
 import com.vcheck.sdk.core.presentation.VCheckStartupActivity
 import com.vcheck.sdk.core.presentation.liveness.flow_logic.*
 import com.vcheck.sdk.core.presentation.liveness.ui.LivenessCameraConnectionFragment
+import com.vcheck.sdk.core.presentation.segmentation.VCheckSegmentationActivity
 import com.vcheck.sdk.core.util.VCheckContextUtils
 import com.vcheck.sdk.core.util.setMargins
+import com.vcheck.sdk.core.util.sizeInKb
 import com.vcheck.sdk.core.util.vibrateDevice
 import com.vcheck.sdk.core.util.video.Muxer
 import com.vcheck.sdk.core.util.video.MuxerConfig
 import com.vcheck.sdk.core.util.video.MuxingCompletionListener
+import id.zelory.compressor.Compressor
+import id.zelory.compressor.constraint.destination
+import id.zelory.compressor.constraint.size
+import kotlinx.coroutines.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -44,6 +51,7 @@ import java.io.IOException
 import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.concurrent.fixedRateTimer
 
+@OptIn(DelicateCoroutinesApi::class)
 class VCheckLivenessActivity : AppCompatActivity(),
     ImageReader.OnImageAvailableListener {
 
@@ -51,11 +59,13 @@ class VCheckLivenessActivity : AppCompatActivity(),
         const val TAG = "LivenessActivity"
         private const val LIVENESS_TIME_LIMIT_MILLIS: Long = 15000 //max is 15000
         private const val BLOCK_PIPELINE_TIME_MILLIS: Long = 800 //may reduce a bit
-        private const val GESTURE_REQUEST_DEBOUNCE_MILLIS: Long = 400
+        private const val GESTURE_REQUEST_DEBOUNCE_MILLIS: Long = 250
         private const val STAGE_VIBRATION_DURATION_MILLIS: Long = 100
     }
 
-    private var gestureResponse: MutableLiveData<Resource<LivenessGestureResponse>> = MutableLiveData()
+    private val scope = CoroutineScope(newSingleThreadContext("liveness"))
+
+    //private var gestureResponse: MutableLiveData<Resource<LivenessGestureResponse>> = MutableLiveData()
 
     private lateinit var binding: ActivityVcheckLivenessBinding
     private var mToast: Toast? = null
@@ -107,8 +117,6 @@ class VCheckLivenessActivity : AppCompatActivity(),
 
         setMilestones()
 
-        setGestureResponsesObserver()
-
         setCameraFragment()
 
         initSetupUI()
@@ -135,35 +143,8 @@ class VCheckLivenessActivity : AppCompatActivity(),
 
     private fun setGestureRequestDebounceTimer() {
         fixedRateTimer("timer", false, 0L, GESTURE_REQUEST_DEBOUNCE_MILLIS) {
-            determineImageResult()
-        }
-    }
-
-    private fun setGestureResponsesObserver() {
-        Handler(Looper.getMainLooper()).post {
-            gestureResponse.observe(this@VCheckLivenessActivity) {
-                blockRequestByProcessing = false
-                runOnUiThread {
-                    if (!isLivenessSessionFinished) {
-                        if (milestoneFlow.areAllStagesPassed()) {
-                            finishLivenessSession()
-                            navigateOnLivenessSessionEnd()
-                        } else {
-                            val currentStage = milestoneFlow.getCurrentStage()
-                            if (it.data != null && it.data.success && currentStage != null) {
-                                milestoneFlow.incrementCurrentStage()
-                                val nextStage = milestoneFlow.getCurrentStage()
-                                if (nextStage != null) {
-                                    blockProcessingByUI = true
-                                    indicateNextMilestone(nextStage, false)
-                                }
-                            }
-                            if (it.data != null && it.data.errorCode != 0) {
-                                showSingleToast("GESTURE CHECK ERROR: [${it.data.errorCode}]")
-                            }
-                        }
-                    }
-                }
+            scope.launch {
+                determineImageResult()
             }
         }
     }
@@ -277,29 +258,71 @@ class VCheckLivenessActivity : AppCompatActivity(),
         }
     }
 
-    private fun determineImageResult() {
+    private suspend fun determineImageResult() {
         if (!isLivenessSessionFinished
             && !blockProcessingByUI
             && !blockRequestByProcessing
             && enoughTimeForNextGesture()) {
             if (gestureCheckBitmap != null) {
                 blockRequestByProcessing = true
+
                 val file = File(createTempFileForBitmapFrame(gestureCheckBitmap!!))
-                val image: MultipartBody.Part = MultipartBody.Part.createFormData(
-                    "image.jpg", file.name, file.asRequestBody("image/jpeg".toMediaType()))
-                runOnUiThread {
-                    val currentGesture = milestoneFlow.getGestureRequestFromCurrentStage()
-                    VCheckDIContainer.mainRepository.sendLivenessGestureAttempt(
-                        image, MultipartBody.Part.createFormData("gesture", currentGesture))
-                        .observeForever {
-                            gestureResponse.value = it
+
+                val image: MultipartBody.Part = try {
+                    val compressedImageFile = Compressor.compress(this@VCheckLivenessActivity, file) {
+                        destination(file)
+                        size(99_000) // ~96 KB
                     }
+                    MultipartBody.Part.createFormData(
+                        "image.jpg", compressedImageFile.name, compressedImageFile.asRequestBody("image/jpeg".toMediaType()))
+                } catch (e: Exception) {
+                    MultipartBody.Part.createFormData(
+                        "image.jpg", file.name, file.asRequestBody("image/jpeg".toMediaType()))
+                } catch (e: Error) {
+                    MultipartBody.Part.createFormData(
+                        "image.jpg", file.name, file.asRequestBody("image/jpeg".toMediaType()))
+                }
+                //Log.d(TAG, "COMPRESSED FRAME SIZE: ${compressedImageFile.sizeInKb} KB")
+
+                val currentGesture = milestoneFlow.getGestureRequestFromCurrentStage()
+                val response = VCheckDIContainer.mainRepository.sendLivenessGestureAttempt(
+                        image, MultipartBody.Part.createFormData("gesture", currentGesture))
+
+                if (response != null) {
+                    processCheckResult(response)
+                } else {
+                    Log.d(VCheckSegmentationActivity.TAG, "========= --- RESPONSE FOR IDX IS NULL!")
                 }
             }
         } else {
             if (!isLivenessSessionFinished && !blockProcessingByUI) {
                 runOnUiThread {
                     onFatalObstacleWorthRetry(R.id.action_dummyLivenessStartDestFragment_to_noTimeFragment)
+                }
+            }
+        }
+    }
+
+    private fun processCheckResult(it: LivenessGestureResponse) {
+        blockRequestByProcessing = false
+        runOnUiThread {
+            if (!isLivenessSessionFinished) {
+                if (milestoneFlow.areAllStagesPassed()) {
+                    finishLivenessSession()
+                    navigateOnLivenessSessionEnd()
+                } else {
+                    val currentStage = milestoneFlow.getCurrentStage()
+                    if (it.success && currentStage != null) {
+                        milestoneFlow.incrementCurrentStage()
+                        val nextStage = milestoneFlow.getCurrentStage()
+                        if (nextStage != null) {
+                            blockProcessingByUI = true
+                            indicateNextMilestone(nextStage, false)
+                        }
+                    }
+                    if (it.errorCode != 0) {
+                        showSingleToast("GESTURE CHECK ERROR: [${it.errorCode}]")
+                    }
                 }
             }
         }
@@ -486,10 +509,12 @@ class VCheckLivenessActivity : AppCompatActivity(),
     }
 
     override fun onDestroy() {
-        super.onDestroy()
+        scope.cancel()
         bitmapList = null
         muxer = null
         openLivenessCameraParams = null
+
+        super.onDestroy()
     }
 
     private fun setHeader() {

@@ -26,15 +26,19 @@ import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.databinding.ActivityVcheckSegmentationBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.*
+import com.vcheck.sdk.core.presentation.liveness.VCheckLivenessActivity
 import com.vcheck.sdk.core.presentation.liveness.flow_logic.LivenessCameraParams
 import com.vcheck.sdk.core.presentation.segmentation.flow_logic.*
 import com.vcheck.sdk.core.presentation.segmentation.ui.SegmentationCameraConnectionFragment
 import com.vcheck.sdk.core.presentation.transferrable_objects.CheckPhotoDataTO
 import com.vcheck.sdk.core.util.VCheckContextUtils
 import com.vcheck.sdk.core.util.setMargins
+import com.vcheck.sdk.core.util.sizeInKb
 import com.vcheck.sdk.core.util.vibrateDevice
 import id.zelory.compressor.Compressor
+import id.zelory.compressor.constraint.destination
 import id.zelory.compressor.constraint.format
+import id.zelory.compressor.constraint.quality
 import id.zelory.compressor.constraint.size
 import kotlinx.coroutines.*
 import okhttp3.MediaType.Companion.toMediaType
@@ -49,9 +53,9 @@ class VCheckSegmentationActivity : AppCompatActivity(),
 
     companion object {
         const val TAG = "SegmentationActivity"
-        private const val LIVENESS_TIME_LIMIT_MILLIS: Long = 6000 //max is 60s //!!! add 0
+        private const val LIVENESS_TIME_LIMIT_MILLIS: Long = 60000 //max is 60s
         private const val BLOCK_PIPELINE_TIME_MILLIS: Long = 2000 //may reduce a bit
-        private const val GESTURE_REQUEST_DEBOUNCE_MILLIS: Long = 450
+        private const val GESTURE_REQUEST_DEBOUNCE_MILLIS: Long = 410
         private const val STAGE_VIBRATION_DURATION_MILLIS: Long = 100
     }
 
@@ -154,7 +158,7 @@ class VCheckSegmentationActivity : AppCompatActivity(),
                         blockProcessingByUI = true
                         blockRequestByProcessing = true
 
-                        scope.launch {  //!!!!
+                        scope.launch {  //!
                             determineImageResult()
                         }
                     }
@@ -245,7 +249,7 @@ class VCheckSegmentationActivity : AppCompatActivity(),
             val factor: Float = displayMetrics.density
             val dpWidth = displayMetrics.widthPixels / factor
 
-            val frameWidth = ((dpWidth * 0.88) * factor).toInt()
+            val frameWidth = ((dpWidth * 0.84) * factor).toInt()
             val frameHeight = (frameWidth * 0.63).toInt()
 
 //            Log.d("SEG", "VIEW WIDTH: $dpWidth")
@@ -301,20 +305,22 @@ class VCheckSegmentationActivity : AppCompatActivity(),
         val fullBitmap: Bitmap = currentCheckBitmap!!
         val minimizedBitmap: Bitmap = fullBitmap.cropWithMask()
 
-        //saveImageToGallery(minimizedBitmap, this@VCheckSegmentationActivity, "check") //remove!
-
         val file = File(createTempFileForBitmapFrame(minimizedBitmap))
 
-//        val compressedImageFile = Compressor.compress(this@VCheckSegmentationActivity, file) {
-//            format(Bitmap.CompressFormat.WEBP)
-//            size(99_000) // 96 KB
-//        }
-
-        val image: MultipartBody.Part = MultipartBody.Part.createFormData(
-            "image.jpg", file.name, file.asRequestBody("image/jpeg".toMediaType()))
-
-//        val image: MultipartBody.Part = MultipartBody.Part.createFormData(
-//            "image.jpg", file.name, file.asRequestBody("image/jpeg".toMediaType()))
+        val image: MultipartBody.Part = try {
+            val compressedImageFile = Compressor.compress(this@VCheckSegmentationActivity, file) {
+                destination(file)
+                size(99_000) // ~96 KB
+            }
+            MultipartBody.Part.createFormData(
+                "image.jpg", compressedImageFile.name, compressedImageFile.asRequestBody("image/jpeg".toMediaType()))
+        } catch (e: Exception) {
+            MultipartBody.Part.createFormData(
+                "image.jpg", file.name, file.asRequestBody("image/jpeg".toMediaType()))
+        } catch (e: Error) {
+            MultipartBody.Part.createFormData(
+                "image.jpg", file.name, file.asRequestBody("image/jpeg".toMediaType()))
+        }
 
         val response = VCheckDIContainer.mainRepository.sendSegmentationDocAttempt(
                 image,

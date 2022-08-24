@@ -94,9 +94,15 @@ class RemoteDatasource(private val verificationApiClient: VerificationApiClient,
 
     fun sendLivenessGestureAttempt(
         image: MultipartBody.Part,
-        gesture: MultipartBody.Part): MutableLiveData<Resource<LivenessGestureResponse>> {
-        return NetworkCall<LivenessGestureResponse>().makeCall(
-            verificationApiClient.sendLivenessGestureAttempt(VCheckSDK.getVerificationToken(), image, gesture))
+        gesture: MultipartBody.Part): LivenessGestureResponse? {
+        val response = verificationApiClient.sendLivenessGestureAttempt(
+            VCheckSDK.getVerificationToken(), image, gesture).execute()
+        return if (response.isSuccessful) {
+            return response.body() as LivenessGestureResponse
+        } else {
+            Log.d("VCheck - error: ","Liveness frame response is null")
+            null
+        }
     }
 
     fun sendSegmentationDocAttempt(
@@ -112,7 +118,7 @@ class RemoteDatasource(private val verificationApiClient: VerificationApiClient,
         return if (response.isSuccessful) {
             return response.body() as SegmentationGestureResponse
         } else {
-            Log.d("VCheck - error: ","Cannot get service timestamp for check verification call!")
+            Log.d("VCheck - error: ","Segmentation frame response is null")
             null
         }
     }

@@ -102,9 +102,9 @@ class MainRepository(
 
     fun sendLivenessGestureAttempt(
         image: MultipartBody.Part,
-        gesture: MultipartBody.Part): MutableLiveData<Resource<LivenessGestureResponse>> {
+        gesture: MultipartBody.Part): LivenessGestureResponse? {
         return if (isTokenPresent()) remoteDatasource.sendLivenessGestureAttempt(image, gesture)
-        else MutableLiveData(Resource.error(ApiError(null,BaseClientErrors.NO_TOKEN_AVAILABLE)))
+        else null
     }
 
     fun sendSegmentationDocAttempt(
