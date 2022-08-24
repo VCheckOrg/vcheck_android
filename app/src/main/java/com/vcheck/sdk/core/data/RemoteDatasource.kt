@@ -48,15 +48,16 @@ class RemoteDatasource(private val verificationApiClient: VerificationApiClient,
                     images[0],
                     MultipartBody.Part.createFormData("country", documentUploadRequestBody.country),
                     MultipartBody.Part.createFormData("category", documentUploadRequestBody.document_type.toString()),
+                    MultipartBody.Part.createFormData("manual", documentUploadRequestBody.manual.toString()),
                 ))
-        }
-        else {
+        } else {
             return NetworkCall<DocumentUploadResponse>().makeCall(verificationApiClient.uploadVerificationDocumentsForTwoPages(
                 VCheckSDK.getVerificationToken(),
                 images[0],
                 images[1],
                 MultipartBody.Part.createFormData("country", documentUploadRequestBody.country),
-                MultipartBody.Part.createFormData("category", documentUploadRequestBody.document_type.toString())
+                MultipartBody.Part.createFormData("category", documentUploadRequestBody.document_type.toString()),
+                MultipartBody.Part.createFormData("manual", documentUploadRequestBody.manual.toString()),
             ))
         }
     }

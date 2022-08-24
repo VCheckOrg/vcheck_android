@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class DocumentUploadRequestBody(
     val country: String,
     val document_type: Int,
+    val manual: Boolean
 )
 
 data class DocUserDataRequestBody(

@@ -25,7 +25,7 @@ internal class VCheckStartupActivity : AppCompatActivity() {
             finish()
             if (repository.shouldFirePartnerCallback()) {
                 repository.setFirePartnerCallback(false)
-                VCheckSDK.onApplicationFinish()
+                VCheckSDK.executePartnerCallback()
             }
         } else {
             startActivity(Intent(this@VCheckStartupActivity, VCheckMainActivity::class.java))

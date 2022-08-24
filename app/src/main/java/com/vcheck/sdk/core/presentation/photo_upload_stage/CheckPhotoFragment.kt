@@ -137,7 +137,8 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
             confirmPhotoButton.setOnClickListener {
                 val body = DocumentUploadRequestBody(
                     VCheckSDK.getSelectedCountryCode(),
-                    args.checkPhotoDataTO.selectedDocType.toCategoryIdx())
+                    args.checkPhotoDataTO.selectedDocType.toCategoryIdx(),
+                    _viewModel.repository.isPhotoUploadManual())
 
                 val multipartList: ArrayList<MultipartBody.Part> = ArrayList()
                 val photoFile1 = File(args.checkPhotoDataTO.photo1Path)
@@ -184,8 +185,10 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
                                 true))
                     findNavController().navigate(action)
                 } else {
-                    Toast.makeText(activity, getString(R.string.doc_verification_error_description), Toast.LENGTH_LONG).show()
-                    findNavController().navigate(R.id.action_checkPhotoFragment_to_photoUploadScreen)
+//                    Toast.makeText(activity, getString(R.string.doc_verification_error_description), Toast.LENGTH_LONG).show()
+//                    findNavController().navigate(R.id.action_checkPhotoFragment_to_photoUploadScreen)
+                    //!!!
+
                 }
             } else {
                 _binding!!.replacePhotoButton.isVisible = true
@@ -212,7 +215,7 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
                 findNavController().navigate(action)
             } else {
                 Toast.makeText(activity, getString(R.string.doc_verification_error_description), Toast.LENGTH_LONG).show()
-                findNavController().navigate(R.id.action_checkPhotoFragment_to_photoUploadScreen)
+//                findNavController().navigate(R.id.action_checkPhotoFragment_to_photoUploadScreen) //!
             }
         }
     }

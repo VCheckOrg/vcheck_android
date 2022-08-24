@@ -49,8 +49,8 @@
         <entry key="app/src/main/res/layout/activity_vcheck_splash.xml" value="0.16024017333984375" />
         <entry key="app/src/main/res/layout/camera_fragment.xml" value="0.2767210144927536" />
         <entry key="app/src/main/res/layout/check_doc_info_fragment.xml" value="0.16274108886718752" />
-        <entry key="app/src/main/res/layout/check_photo_fragment.xml" value="0.3007246376811594" />
-        <entry key="app/src/main/res/layout/choose_country_fragment.xml" value="0.3007246376811594" />
+        <entry key="app/src/main/res/layout/check_photo_fragment.xml" value="0.6481672646342844" />
+        <entry key="app/src/main/res/layout/choose_country_fragment.xml" value="0.7367231728374095" />
         <entry key="app/src/main/res/layout/choose_doc_method_fragment.xml" value="0.3007246376811594" />
         <entry key="app/src/main/res/layout/choose_method_fragment.xml" value="0.3007246376811594" />
         <entry key="app/src/main/res/layout/country_blocked_row.xml" value="0.3007246376811594" />
@@ -66,7 +66,8 @@
         <entry key="app/src/main/res/layout/fragment_fail_video_upload.xml" value="0.3007246376811594" />
         <entry key="app/src/main/res/layout/fragment_liveness.xml" value="0.2767210144927536" />
         <entry key="app/src/main/res/layout/fragment_liveness_result_video_view.xml" value="0.3007246376811594" />
-        <entry key="app/src/main/res/layout/fragment_seg_timeout.xml" value="0.214068603515625" />
+        <entry key="app/src/main/res/layout/fragment_seg_error.xml" value="0.6853751907979965" />
+        <entry key="app/src/main/res/layout/fragment_seg_timeout.xml" value="0.20059661865234374" />
         <entry key="app/src/main/res/layout/fragment_segmentation_start.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_separated_success.xml" value="0.3007246376811594" />
         <entry key="app/src/main/res/layout/frame_interference_fragment.xml" value="0.3007246376811594" />
@@ -78,7 +79,7 @@
         <entry key="app/src/main/res/layout/no_time_fragment.xml" value="0.1" />
         <entry key="app/src/main/res/layout/not_found_fragment.xml" value="0.3007246376811594" />
         <entry key="app/src/main/res/layout/os_not_support_fragment.xml" value="0.3007246376811594" />
-        <entry key="app/src/main/res/layout/photo_instructions_fragment.xml" value="0.3007246376811594" />
+        <entry key="app/src/main/res/layout/photo_instructions_fragment.xml" value="0.5674162270366281" />
         <entry key="app/src/main/res/layout/photo_upload_fragment.xml" value="0.3007246376811594" />
         <entry key="app/src/main/res/layout/segmentation_camera_fragment.xml" value="0.3007246376811594" />
         <entry key="app/src/main/res/layout/success_fragment.xml" value="0.2767210144927536" />

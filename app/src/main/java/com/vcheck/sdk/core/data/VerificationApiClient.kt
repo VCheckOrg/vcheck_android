@@ -31,6 +31,7 @@ interface VerificationApiClient {
         @Part photo1: MultipartBody.Part,
         @Part country: MultipartBody.Part,
         @Part category: MultipartBody.Part,
+        @Part manual: MultipartBody.Part
     ): Call<DocumentUploadResponse>
 
     @Headers("multipart: true")
@@ -42,6 +43,7 @@ interface VerificationApiClient {
         @Part photo2: MultipartBody.Part,
         @Part country: MultipartBody.Part,
         @Part category: MultipartBody.Part,
+        @Part manual: MultipartBody.Part
     ): Call<DocumentUploadResponse>
 
     @GET("documents/{document}/info")

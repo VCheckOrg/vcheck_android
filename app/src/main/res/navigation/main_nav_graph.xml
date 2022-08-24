@@ -33,12 +33,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/chooseMethodScreen"
-        android:name="com.vcheck.sdk.core.presentation.screens.ChooseMethodFragment"
-        android:label="choose_method_screen"
-        tools:layout="@layout/choose_method_fragment" />
-
-    <fragment
         android:id="@+id/chooseDocMethodScreen"
         android:name="com.vcheck.sdk.core.presentation.doc_type_stage.ChooseDocMethodFragment"
         android:label="choose_doc_method_screen"
@@ -88,18 +82,6 @@
         tools:layout="@layout/no_camera_fragment" />
 
     <fragment
-        android:id="@+id/osNotSupportFragment"
-        android:name="com.vcheck.sdk.core.presentation.screens.OsNotSupportFragment"
-        android:label="os_not_support_fragment"
-        tools:layout="@layout/os_not_support_fragment" />
-
-    <fragment
-        android:id="@+id/notFoundFragment"
-        android:name="com.vcheck.sdk.core.presentation.screens.NotFoundFragment"
-        android:label="not_found_fragment"
-        tools:layout="@layout/not_found_fragment" />
-
-    <fragment
         android:id="@+id/checkPhotoFragment"
         android:name="com.vcheck.sdk.core.presentation.photo_upload_stage.CheckPhotoFragment"
         android:label="check_photo_fragment"
@@ -125,8 +107,8 @@
                 app:argType="com.vcheck.sdk.core.presentation.transferrable_objects.CheckDocInfoDataTO" />
         </action>
         <action
-            android:id="@+id/action_checkPhotoFragment_to_photoUploadScreen"
-            app:destination="@id/photoUploadScreen" />
+            android:id="@+id/action_checkPhotoFragment_to_segErrorFragment"
+            app:destination="@id/segErrorFragment" />
     </fragment>
 
     <fragment
@@ -212,6 +194,21 @@
         <action
             android:id="@+id/action_segmentationStartFragment_to_checkPhotoFragment"
             app:destination="@id/checkPhotoFragment" />
+        <action
+            android:id="@+id/action_segmentationStartFragment_to_photoInstructionsFragment"
+            app:destination="@id/photoInstructionsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/segErrorFragment"
+        android:name="com.vcheck.sdk.core.presentation.segmentation.ui.SegErrorFragment"
+        android:label="SegErrorFragment"
+        tools:layout="@layout/fragment_seg_error">
+        <action
+            android:id="@+id/action_segErrorFragment_to_checkPhotoFragment"
+            app:destination="@id/checkPhotoFragment" />
+        <action
+            android:id="@+id/action_segErrorFragment_to_photoInstructionsFragment"
+            app:destination="@id/photoInstructionsFragment" />
     </fragment>
 
 </navigation>

@@ -169,4 +169,12 @@ class MainRepository(
     fun shouldFirePartnerCallback(): Boolean {
         return localDatasource.shouldFirePartnerCallback()
     }
+
+    fun setManualPhotoUpload() {
+        localDatasource.setManualPhotoUpload()
+    }
+
+    fun isPhotoUploadManual(): Boolean {
+        return localDatasource.isPhotoUploadManual()
+    }
 }

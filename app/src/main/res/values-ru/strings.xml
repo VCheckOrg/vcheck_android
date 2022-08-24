@@ -164,6 +164,10 @@
     <string name="segmentation_back_side_hint">Поместите обратную сторону документа в указанную зону для автоматического считывания</string>
     <string name="segmentation_stage_success">Документ считан успешно!</string>
 
-    <string name="no_time_seg_title">Время, отведенное на сканирование документа, истекло</string>
+    <string name="no_time_seg_title">Время на считывание документа истекло</string>
     <string name="pop_sdk_title">К началу верификации</string>
+    <string name="no_time_seg_subtitle">Мы не смогли обнаружить документ в заданной зоне. Убедитесь, что вы выбрали правильный тип документа и он хорошо виден в камеру.</string>
+    <string name="make_photo_by_hand">Сделать фото вручную</string>
+    <string name="fatal_error_seg_descr">Мы не смогли сделать полное сканирование документа. Для продолжения требуется сделать фото вручную.</string>
+
 </resources>

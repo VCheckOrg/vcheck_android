@@ -2,17 +2,24 @@ package com.vcheck.sdk.core.util
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.media.Image
 import android.os.Build
+import android.os.Environment
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.util.Log
 import androidx.core.content.ContextCompat.getSystemService
-import java.io.File
 import java.security.MessageDigest
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 import android.util.Patterns
 import android.webkit.URLUtil
+import androidx.exifinterface.media.ExifInterface
+import com.vcheck.sdk.core.VCheckSDK.TAG
+import java.io.*
 import java.net.MalformedURLException
 import java.net.URL
 
@@ -124,6 +131,13 @@ fun String.isValidUrl(): Boolean  {
         throw ignored
     }
 }
+
+
+
+//---------------------- RESIZING BITMAP UTILS:
+
+
+
 
 
 //fun Context.getAvailableDeviceRAM(): Long {

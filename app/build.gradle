@@ -70,6 +70,9 @@ dependencies {
 
     //Lottie animation handling
     implementation 'com.airbnb.android:lottie:5.0.3'
+
+    //Effectively compress bitmaps before sending to API
+    implementation 'id.zelory:compressor:3.0.1'
 }
 
 afterEvaluate {

@@ -28,6 +28,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.presentation.liveness.ui.AutoFitTextureView
+import com.vcheck.sdk.core.presentation.liveness.ui.LivenessCameraConnectionFragment
 import com.vcheck.sdk.core.presentation.segmentation.VCheckSegmentationActivity
 import java.util.*
 import java.util.concurrent.Semaphore
@@ -45,13 +46,9 @@ class SegmentationCameraConnectionFragment() : Fragment() {
     private var imageListener: OnImageAvailableListener? = null
 
     private var mCameraManager: CameraManager? = null
-    private var mCameraCharacteristics: CameraCharacteristics? = null
-    private var mManualFocusEngaged: Boolean = false
 
     companion object {
         private const val FRAGMENT_DIALOG = "camera_dialog"
-        private const val CLICK_THRESHOLD = 200
-        private const val FOCUS_TAG: String = "FOCUS_TAG"
 
         //removed chooseOptimalSize() !
         fun newInstance(
@@ -304,21 +301,22 @@ class SegmentationCameraConnectionFragment() : Fragment() {
                         // When the session is ready, we start displaying the preview.
                         captureSession = cameraCaptureSession
                         try {
+                            // Auto focus should be continuous for camera preview.
+                            previewRequestBuilder!!.set(
+                                CaptureRequest.CONTROL_AF_MODE,
+                                CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_VIDEO)
+                                //CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE)
+                                //CaptureRequest.CONTROL_AF_MODE_EDOF)
+                            // Flash is automatically enabled when necessary - disabled!
+//                            previewRequestBuilder!!.set(
+//                                CaptureRequest.CONTROL_AE_MODE,
+//                                CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH)
+                            // Finally, we start displaying the camera preview.
                             previewRequest = previewRequestBuilder!!.build()
                             captureSession!!.setRepeatingRequest(
                                 previewRequest!!, captureCallback, backgroundHandler)
-
-                            textureView!!.setOnTouchListener { v, event ->
-                                Log.d("SEG", "======= TOUCH EVENT: ${event.action}")
-                                val duration = event.eventTime - event.downTime
-                                if (event.action == MotionEvent.ACTION_UP && duration < CLICK_THRESHOLD) {
-                                    Log.d("SEG", "======= TOUCH EVENT SATISFIED PREDICATION!")
-                                    setFocusArea(event.x.toInt(), event.y.toInt())
-                                }
-                                true
-                            }
                         } catch (e: CameraAccessException) {
-                            ErrorDialog.newInstance("Camera access exception occured from onConfigured()")
+                            LivenessCameraConnectionFragment.ErrorDialog.newInstance("Camera access exception occured from onConfigured()")
                                 .show(childFragmentManager, FRAGMENT_DIALOG)
                         }
                     }
@@ -371,119 +369,131 @@ class SegmentationCameraConnectionFragment() : Fragment() {
             }
         }
     }
-
-    @Throws(CameraAccessException::class)
-    private fun setFocusArea(focus_point_x: Int, focus_point_y: Int) {
-        if (cameraId == null || mManualFocusEngaged) return
-        if (mCameraManager == null) {
-            mCameraManager = (activity as VCheckSegmentationActivity)
-                .getSystemService(Context.CAMERA_SERVICE) as CameraManager
-        }
-        var focusArea: MeteringRectangle? = null
-        if (mCameraManager != null) {
-            if (mCameraCharacteristics == null) {
-                mCameraCharacteristics = mCameraManager!!.getCameraCharacteristics(cameraId!!)
-            }
-            val sensorArraySize: Rect = mCameraCharacteristics!!.get(CameraCharacteristics.SENSOR_INFO_ACTIVE_ARRAY_SIZE)!!
-
-            val y = (focus_point_x.toFloat() /
-                    textureView!!.layoutParams.width * sensorArraySize.height().toFloat()).toInt() //currentWidth ??
-            val x = (focus_point_y.toFloat() /
-                    textureView!!.layoutParams.height * sensorArraySize.width().toFloat()).toInt() //currentHeight ??
-            val halfTouchLength = 150
-
-            focusArea = MeteringRectangle(
-                Math.max(x - halfTouchLength, 0),
-                Math.max(y - halfTouchLength, 0),
-                halfTouchLength * 2,
-                halfTouchLength * 2,
-                MeteringRectangle.METERING_WEIGHT_MAX - 1)
-        }
-        val mCaptureCallback: CaptureCallback = object : CaptureCallback() {
-            override fun onCaptureCompleted(
-                session: CameraCaptureSession,
-                request: CaptureRequest,
-                result: TotalCaptureResult) {
-                super.onCaptureCompleted(session, request, result)
-                mManualFocusEngaged = false
-                if (request.tag == FOCUS_TAG) { // previously getTag == "Focus_tag"
-                    //the focus trigger is complete -
-                    //resume repeating (preview surface will get frames), clear AF trigger
-                    previewRequestBuilder!!.set(
-                        CaptureRequest.CONTROL_AF_TRIGGER,
-                        CameraMetadata.CONTROL_AF_TRIGGER_IDLE
-                    )
-                    previewRequestBuilder!!.set(
-                        CaptureRequest.CONTROL_AF_TRIGGER,
-                        CameraMetadata.CONTROL_AF_TRIGGER_CANCEL
-                    )
-                    previewRequestBuilder!!.set(
-                        CaptureRequest.CONTROL_AF_TRIGGER,
-                        null
-                    ) // As documentation says AF_trigger can be null in some device
-                    try {
-                        captureSession!!.setRepeatingRequest(
-                            previewRequestBuilder!!.build(),
-                            null,
-                            backgroundHandler
-                        )
-                    } catch (e: CameraAccessException) {
-                        // error handling
-                    }
-                }
-            }
-
-            override fun onCaptureFailed(
-                session: CameraCaptureSession,
-                request: CaptureRequest,
-                failure: CaptureFailure
-            ) {
-                super.onCaptureFailed(session, request, failure)
-                mManualFocusEngaged = false
-            }
-        }
-        captureSession!!.stopRepeating() // Destroy current session
-        previewRequestBuilder!!.set(
-            CaptureRequest.CONTROL_AF_TRIGGER,
-            CameraMetadata.CONTROL_AF_TRIGGER_IDLE
-        )
-        previewRequestBuilder!!.set(
-            CaptureRequest.CONTROL_AF_TRIGGER,
-            CameraMetadata.CONTROL_AF_TRIGGER_START
-        )
-        captureSession!!.capture(
-            previewRequestBuilder!!.build(),
-            mCaptureCallback,
-            backgroundHandler
-        ) //Set all settings for once
-        if (isMeteringAreaAESupported()) {
-            previewRequestBuilder!!.set(CaptureRequest.CONTROL_AE_REGIONS, arrayOf(focusArea))
-        }
-        if (isMeteringAreaAFSupported()) {
-            previewRequestBuilder!!.set(CaptureRequest.CONTROL_AF_REGIONS, arrayOf(focusArea))
-            previewRequestBuilder!!.set(
-                CaptureRequest.CONTROL_AF_MODE,
-                CaptureRequest.CONTROL_AF_MODE_AUTO
-            )
-        }
-        previewRequestBuilder!!.setTag(FOCUS_TAG) //it will be checked inside mCaptureCallback
-        captureSession!!.capture(
-            previewRequestBuilder!!.build(),
-            mCaptureCallback,
-            backgroundHandler
-        )
-        mManualFocusEngaged = true
-    }
-
-
-    private fun isMeteringAreaAFSupported(): Boolean { // AF stands for AutoFocus
-        val afRegion: Int = mCameraCharacteristics!!.get(CameraCharacteristics.CONTROL_MAX_REGIONS_AF)!!
-        return afRegion >= 1
-    }
-
-
-    private fun isMeteringAreaAESupported(): Boolean { //AE stands for AutoExposure
-        val aeState: Int = mCameraCharacteristics!!.get(CameraCharacteristics.CONTROL_MAX_REGIONS_AE)!!
-        return aeState >= 1
-    }
 }
+
+
+
+//                            textureView!!.setOnTouchListener { v, event ->
+//                                Log.d("SEG", "======= TOUCH EVENT: ${event.action}")
+//                                val duration = event.eventTime - event.downTime
+//                                if (event.action == MotionEvent.ACTION_UP && duration < CLICK_THRESHOLD) {
+//                                    Log.d("SEG", "======= TOUCH EVENT SATISFIED PREDICATION!")
+//                                    setFocusArea(event.x.toInt(), event.y.toInt())
+//                                }
+//                                true
+//                            }
+
+//@Throws(CameraAccessException::class)
+//    private fun setFocusArea(focus_point_x: Int, focus_point_y: Int) {
+//        if (cameraId == null || mManualFocusEngaged) return
+//        if (mCameraManager == null) {
+//            mCameraManager = (activity as VCheckSegmentationActivity)
+//                .getSystemService(Context.CAMERA_SERVICE) as CameraManager
+//        }
+//        var focusArea: MeteringRectangle? = null
+//        if (mCameraManager != null) {
+//            if (mCameraCharacteristics == null) {
+//                mCameraCharacteristics = mCameraManager!!.getCameraCharacteristics(cameraId!!)
+//            }
+//            val sensorArraySize: Rect = mCameraCharacteristics!!.get(CameraCharacteristics.SENSOR_INFO_ACTIVE_ARRAY_SIZE)!!
+//
+//            val y = (focus_point_x.toFloat() /
+//                    textureView!!.layoutParams.width * sensorArraySize.height().toFloat()).toInt() //currentWidth ??
+//            val x = (focus_point_y.toFloat() /
+//                    textureView!!.layoutParams.height * sensorArraySize.width().toFloat()).toInt() //currentHeight ??
+//            val halfTouchLength = 150
+//
+//            focusArea = MeteringRectangle(
+//                Math.max(x - halfTouchLength, 0),
+//                Math.max(y - halfTouchLength, 0),
+//                halfTouchLength * 2,
+//                halfTouchLength * 2,
+//                MeteringRectangle.METERING_WEIGHT_MAX - 1)
+//        }
+//        val mCaptureCallback: CaptureCallback = object : CaptureCallback() {
+//            override fun onCaptureCompleted(
+//                session: CameraCaptureSession,
+//                request: CaptureRequest,
+//                result: TotalCaptureResult) {
+//                super.onCaptureCompleted(session, request, result)
+//                mManualFocusEngaged = false
+//                if (request.tag == FOCUS_TAG) { // previously getTag == "Focus_tag"
+//                    //the focus trigger is complete -
+//                    //resume repeating (preview surface will get frames), clear AF trigger
+//                    previewRequestBuilder!!.set(
+//                        CaptureRequest.CONTROL_AF_TRIGGER,
+//                        CameraMetadata.CONTROL_AF_TRIGGER_IDLE
+//                    )
+//                    previewRequestBuilder!!.set(
+//                        CaptureRequest.CONTROL_AF_TRIGGER,
+//                        CameraMetadata.CONTROL_AF_TRIGGER_CANCEL
+//                    )
+//                    previewRequestBuilder!!.set(
+//                        CaptureRequest.CONTROL_AF_TRIGGER,
+//                        null
+//                    ) // As documentation says AF_trigger can be null in some device
+//                    try {
+//                        captureSession!!.setRepeatingRequest(
+//                            previewRequestBuilder!!.build(),
+//                            null,
+//                            backgroundHandler
+//                        )
+//                    } catch (e: CameraAccessException) {
+//                        // error handling
+//                    }
+//                }
+//            }
+//
+//            override fun onCaptureFailed(
+//                session: CameraCaptureSession,
+//                request: CaptureRequest,
+//                failure: CaptureFailure
+//            ) {
+//                super.onCaptureFailed(session, request, failure)
+//                mManualFocusEngaged = false
+//            }
+//        }
+//        captureSession!!.stopRepeating() // Destroy current session
+//        previewRequestBuilder!!.set(
+//            CaptureRequest.CONTROL_AF_TRIGGER,
+//            CameraMetadata.CONTROL_AF_TRIGGER_IDLE
+//        )
+//        previewRequestBuilder!!.set(
+//            CaptureRequest.CONTROL_AF_TRIGGER,
+//            CameraMetadata.CONTROL_AF_TRIGGER_START
+//        )
+//        captureSession!!.capture(
+//            previewRequestBuilder!!.build(),
+//            mCaptureCallback,
+//            backgroundHandler
+//        ) //Set all settings for once
+//        if (isMeteringAreaAESupported()) {
+//            previewRequestBuilder!!.set(CaptureRequest.CONTROL_AE_REGIONS, arrayOf(focusArea))
+//        }
+//        if (isMeteringAreaAFSupported()) {
+//            previewRequestBuilder!!.set(CaptureRequest.CONTROL_AF_REGIONS, arrayOf(focusArea))
+//            previewRequestBuilder!!.set(
+//                CaptureRequest.CONTROL_AF_MODE,
+//                CaptureRequest.CONTROL_AF_MODE_AUTO
+//            )
+//        }
+//        previewRequestBuilder!!.setTag(FOCUS_TAG) //it will be checked inside mCaptureCallback
+//        captureSession!!.capture(
+//            previewRequestBuilder!!.build(),
+//            mCaptureCallback,
+//            backgroundHandler
+//        )
+//        mManualFocusEngaged = true
+//    }
+//
+//
+//    private fun isMeteringAreaAFSupported(): Boolean { // AF stands for AutoFocus
+//        val afRegion: Int = mCameraCharacteristics!!.get(CameraCharacteristics.CONTROL_MAX_REGIONS_AF)!!
+//        return afRegion >= 1
+//    }
+//
+//
+//    private fun isMeteringAreaAESupported(): Boolean { //AE stands for AutoExposure
+//        val aeState: Int = mCameraCharacteristics!!.get(CameraCharacteristics.CONTROL_MAX_REGIONS_AE)!!
+//        return aeState >= 1
+//    }

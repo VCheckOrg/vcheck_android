@@ -166,5 +166,8 @@
 
     <string name="no_time_seg_title">Час, відведений на сканування документу, вийшов</string>
     <string name="pop_sdk_title">До старту верифікації</string>
+    <string name="no_time_seg_subtitle">Ми не змогли знайти документ у заданій зоні. Переконайтеся, що ви вибрали правильний тип документа і його добре видно в камеру.</string>
+    <string name="make_photo_by_hand">Зробити фото вручну</string>
+    <string name="fatal_error_seg_descr">Ми не змогли зробити повне сканування документа. Для продовження потрібно зробити фото вручну.</string>
 
 </resources>

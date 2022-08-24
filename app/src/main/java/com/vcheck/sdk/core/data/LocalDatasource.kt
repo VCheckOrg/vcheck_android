@@ -15,6 +15,8 @@ class LocalDatasource {
 
     private var _shouldFirePartnerCallback: Boolean = false
 
+    private var _manualPhotoUpload: Boolean = false
+
     fun setSelectedDocTypeWithData(data: DocTypeData) {
         _selectedDocTypeWithData = data
     }
@@ -55,9 +57,18 @@ class LocalDatasource {
         return _shouldFirePartnerCallback
     }
 
+    fun setManualPhotoUpload() {
+        _manualPhotoUpload = true
+    }
+
+    fun isPhotoUploadManual(): Boolean {
+        return _manualPhotoUpload
+    }
+
     fun resetCacheOnStartup() {
         _checkDocPhotosTO = null
         _selectedDocTypeWithData = null
         _livenessMilestonesList = null
+        _manualPhotoUpload = false
     }
 }

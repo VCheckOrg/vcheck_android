@@ -12,6 +12,7 @@ import android.util.Log
 import com.vcheck.sdk.core.presentation.segmentation.VCheckSegmentationActivity
 import com.vcheck.sdk.core.util.ImageUtils
 import com.vcheck.sdk.core.util.fillBytes
+import kotlinx.coroutines.launch
 import java.io.File
 import java.io.File.separator
 import java.io.FileOutputStream
@@ -56,7 +57,9 @@ fun VCheckSegmentationActivity.onImageAvailableImpl(reader: ImageReader?) {
                 image.close()
                 isProcessingFrame = false
             }
-            processImage()
+            scope.launch {  //!!!!
+                processImage()
+            }
         } catch (e: Exception) {
             return
         }
@@ -115,7 +118,7 @@ fun VCheckSegmentationActivity.rotateBitmap(input: Bitmap): Bitmap? {
 
 //--------------
 
-/// @param folderName can be your app's name
+/// FOR TEST
 fun saveImageToGallery(bitmap: Bitmap, context: Context, folderName: String) {
     if (android.os.Build.VERSION.SDK_INT >= 29) {
         val values = contentValues()
@@ -164,6 +167,7 @@ fun saveImageToStream(bitmap: Bitmap, outputStream: OutputStream?) {
         }
     }
 }
+
 
 //    return when (windowManager.defaultDisplay.rotation) {
 //        Surface.ROTATION_270 -> 270

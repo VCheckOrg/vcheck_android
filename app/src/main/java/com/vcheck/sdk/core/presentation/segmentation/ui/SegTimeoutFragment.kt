@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.databinding.FragmentSegTimeoutBinding
+import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.presentation.segmentation.VCheckSegmentationActivity
 import com.vcheck.sdk.core.util.ThemeWrapperFragment
 
@@ -36,7 +37,11 @@ class SegTimeoutFragment : ThemeWrapperFragment() {
             //Stub; no back press needed here
         }
 
-        //(activity as VCheckSegmentationActivity).finishLivenessSession()
+        _binding!!.replacePhotoButton.setOnClickListener {
+            VCheckDIContainer.mainRepository.setManualPhotoUpload()
+            findNavController().popBackStack()
+            (activity as VCheckSegmentationActivity).finishWithExtra(isTimeoutToManual = true, isBackPress = false)
+        }
 
         _binding!!.tryAgainButton.setOnClickListener {
             findNavController().popBackStack()

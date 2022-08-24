@@ -1,5 +1,6 @@
 package com.vcheck.sdk.core.presentation.segmentation.ui
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -29,13 +30,23 @@ class SegmentationStartFragment : ThemeWrapperFragment() {
 
     private val mStartForResult: ActivityResultLauncher<Intent> = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()) {
-        if (VCheckDIContainer.mainRepository.getCheckDocPhotosTO() != null) {
-            val action = SegmentationStartFragmentDirections
-                .actionSegmentationStartFragmentToCheckPhotoFragment(
-                    VCheckDIContainer.mainRepository.getCheckDocPhotosTO()!!)
-            findNavController().navigate(action)
-        } else {
-            Log.d(TAG, "Error: photo transferrable object was not set!")
+        if (it.resultCode == Activity.RESULT_OK) {
+            if (!it.data!!.getBooleanExtra("is_back_press", false)) {
+                if (!it.data!!.getBooleanExtra("is_timeout_to_manual", false)) {
+                    if (VCheckDIContainer.mainRepository.getCheckDocPhotosTO() != null) {
+                        val action = SegmentationStartFragmentDirections
+                            .actionSegmentationStartFragmentToCheckPhotoFragment(
+                                VCheckDIContainer.mainRepository.getCheckDocPhotosTO()!!)
+                        findNavController().navigate(action)
+                    } else {
+                        Log.d(TAG, "Photo transferrable object was not set")
+                    }
+                } else {
+                    findNavController().navigate(R.id.action_segmentationStartFragment_to_photoInstructionsFragment)
+                }
+            } else {
+                Log.d(TAG, "Back press from SegmentationActivity")
+            }
         }
     }
 

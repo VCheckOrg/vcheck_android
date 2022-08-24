@@ -2,8 +2,10 @@ package com.vcheck.sdk.core.presentation.segmentation
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.hardware.camera2.*
@@ -31,25 +33,29 @@ import com.vcheck.sdk.core.presentation.transferrable_objects.CheckPhotoDataTO
 import com.vcheck.sdk.core.util.VCheckContextUtils
 import com.vcheck.sdk.core.util.setMargins
 import com.vcheck.sdk.core.util.vibrateDevice
+import id.zelory.compressor.Compressor
+import id.zelory.compressor.constraint.format
+import id.zelory.compressor.constraint.size
+import kotlinx.coroutines.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import kotlin.concurrent.fixedRateTimer
 
-
+@OptIn(DelicateCoroutinesApi::class)
 class VCheckSegmentationActivity : AppCompatActivity(),
     ImageReader.OnImageAvailableListener {
 
     companion object {
         const val TAG = "SegmentationActivity"
-        private const val LIVENESS_TIME_LIMIT_MILLIS: Long = 60000 //max is 60s
+        private const val LIVENESS_TIME_LIMIT_MILLIS: Long = 6000 //max is 60s //!!! add 0
         private const val BLOCK_PIPELINE_TIME_MILLIS: Long = 2000 //may reduce a bit
-        private const val GESTURE_REQUEST_DEBOUNCE_MILLIS: Long = 500
+        private const val GESTURE_REQUEST_DEBOUNCE_MILLIS: Long = 450
         private const val STAGE_VIBRATION_DURATION_MILLIS: Long = 100
     }
 
-    //private var segmentationResponse: MutableLiveData<Resource<SegmentationGestureResponse>> = MutableLiveData()
+    val scope = CoroutineScope(newSingleThreadContext("segmentation"))
 
     private var binding: ActivityVcheckSegmentationBinding? = null
     private var mToast: Toast? = null
@@ -97,7 +103,7 @@ class VCheckSegmentationActivity : AppCompatActivity(),
             //Stub; no back press needed throughout liveness flow
         }
         binding!!.closeIconBtn.setOnClickListener {
-            this@VCheckSegmentationActivity.finish()
+            finishWithExtra(isTimeoutToManual = false, isBackPress = true)
         }
 
         setDocData()
@@ -148,7 +154,7 @@ class VCheckSegmentationActivity : AppCompatActivity(),
                         blockProcessingByUI = true
                         blockRequestByProcessing = true
 
-                        CalcThread().run {
+                        scope.launch {  //!!!!
                             determineImageResult()
                         }
                     }
@@ -157,9 +163,18 @@ class VCheckSegmentationActivity : AppCompatActivity(),
         }
     }
 
+    fun finishWithExtra(isTimeoutToManual: Boolean, isBackPress: Boolean) {
+        val data = Intent()
+        data.putExtra("is_timeout_to_manual", isTimeoutToManual)
+        data.putExtra("is_back_press", isBackPress)
+        setResult(Activity.RESULT_OK, data)
+        finish()
+    }
+
     private fun finishLivenessSession(withActivityFinish: Boolean) {
         isLivenessSessionFinished = true
         currentCheckBitmap = null
+        scope.cancel()
 
         if (withActivityFinish) {
             var photo1Path: String? = null
@@ -175,7 +190,7 @@ class VCheckSegmentationActivity : AppCompatActivity(),
             VCheckDIContainer.mainRepository.setCheckDocPhotosTO(CheckPhotoDataTO(
                 docCategoryIdxToType(docData.category), photo1Path!!, photo2Path))
 
-            finish()
+            finishWithExtra(isTimeoutToManual = false, isBackPress = false)
         }
     }
 
@@ -252,7 +267,7 @@ class VCheckSegmentationActivity : AppCompatActivity(),
         }
     }
 
-    fun processImage() {
+    suspend fun processImage() {
 
         try {
             Handler(Looper.getMainLooper()).post {
@@ -261,7 +276,7 @@ class VCheckSegmentationActivity : AppCompatActivity(),
                     rgbFrameBitmap = Bitmap.createBitmap(previewWidth, previewHeight, Bitmap.Config.ARGB_8888)
                     rgbFrameBitmap?.setPixels(rgbBytes, 0, previewWidth, 0, 0, previewWidth, previewHeight)
                     val finalBitmap = rotateBitmap(rgbFrameBitmap!!)!!
-                    //caching full image bitmap (is order right??)
+                    //caching full image bitmap
                     currentCheckBitmap = finalBitmap
                     //recycling bitmap:
                     rgbFrameBitmap!!.recycle()
@@ -279,7 +294,7 @@ class VCheckSegmentationActivity : AppCompatActivity(),
         }
     }
 
-    private fun determineImageResult() {
+    private suspend fun determineImageResult() {
 
         blockRequestByProcessing = true
 
@@ -289,8 +304,17 @@ class VCheckSegmentationActivity : AppCompatActivity(),
         //saveImageToGallery(minimizedBitmap, this@VCheckSegmentationActivity, "check") //remove!
 
         val file = File(createTempFileForBitmapFrame(minimizedBitmap))
+
+//        val compressedImageFile = Compressor.compress(this@VCheckSegmentationActivity, file) {
+//            format(Bitmap.CompressFormat.WEBP)
+//            size(99_000) // 96 KB
+//        }
+
         val image: MultipartBody.Part = MultipartBody.Part.createFormData(
             "image.jpg", file.name, file.asRequestBody("image/jpeg".toMediaType()))
+
+//        val image: MultipartBody.Part = MultipartBody.Part.createFormData(
+//            "image.jpg", file.name, file.asRequestBody("image/jpeg".toMediaType()))
 
         val response = VCheckDIContainer.mainRepository.sendSegmentationDocAttempt(
                 image,
@@ -487,8 +511,9 @@ class VCheckSegmentationActivity : AppCompatActivity(),
     }
 
     override fun onDestroy() {
-        super.onDestroy()
-
+        scope.cancel()
         openLivenessCameraParams = null
+
+        super.onDestroy()
     }
 }
