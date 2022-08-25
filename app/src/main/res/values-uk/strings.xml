@@ -170,4 +170,5 @@
     <string name="make_photo_by_hand">Зробити фото вручну</string>
     <string name="fatal_error_seg_descr">Ми не змогли зробити повне сканування документа. Для продовження потрібно зробити фото вручну.</string>
 
+    <string name="segmentation_stage_success_first_page">Ми не змогли зробити повне сканування документа. Для продовження потрібно зробити фото вручну.</string>
 </resources>

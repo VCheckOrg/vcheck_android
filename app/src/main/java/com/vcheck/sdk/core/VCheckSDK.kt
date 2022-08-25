@@ -43,6 +43,8 @@ object VCheckSDK {
     internal var primaryTextColorHex: String? = null
     internal var secondaryTextColorHex: String? = null
     internal var borderColorHex: String? = null
+    internal var iconsColorHex: String? = null
+
     private const val wrongColorFormatPickDescr: String = "VCheckSDK - error: if provided, " +
             "custom color should be a valid HEX string (RGB or ARGB). Ex.: '#2A2A2A' or '#abdbe3'"
 
@@ -126,6 +128,9 @@ object VCheckSDK {
         if (borderColorHex != null && !borderColorHex!!.isValidHexColor()) {
             throw IllegalArgumentException(wrongColorFormatPickDescr)
         }
+        if (iconsColorHex != null && !iconsColorHex!!.isValidHexColor()) {
+            throw IllegalArgumentException(wrongColorFormatPickDescr)
+        }
     }
 
     internal fun executePartnerCallback() {
@@ -204,6 +209,11 @@ object VCheckSDK {
 
     fun colorBorders(colorHex: String): VCheckSDK {
         this.borderColorHex = colorHex
+        return this
+    }
+
+    fun colorIcons(colorHex: String): VCheckSDK {
+        this.iconsColorHex = colorHex
         return this
     }
 

@@ -276,13 +276,14 @@ class VCheckLivenessActivity : AppCompatActivity(),
                     MultipartBody.Part.createFormData(
                         "image.jpg", compressedImageFile.name, compressedImageFile.asRequestBody("image/jpeg".toMediaType()))
                 } catch (e: Exception) {
+                    Log.d(TAG, "Exception while compressing Liveness frame image. Attempting to send default frame. \n${e.printStackTrace()}")
                     MultipartBody.Part.createFormData(
                         "image.jpg", file.name, file.asRequestBody("image/jpeg".toMediaType()))
                 } catch (e: Error) {
+                    Log.d(TAG, "Error while compressing Liveness frame image. Attempting to send default frame. \n${e.printStackTrace()}")
                     MultipartBody.Part.createFormData(
                         "image.jpg", file.name, file.asRequestBody("image/jpeg".toMediaType()))
                 }
-                //Log.d(TAG, "COMPRESSED FRAME SIZE: ${compressedImageFile.sizeInKb} KB")
 
                 val currentGesture = milestoneFlow.getGestureRequestFromCurrentStage()
                 val response = VCheckDIContainer.mainRepository.sendLivenessGestureAttempt(

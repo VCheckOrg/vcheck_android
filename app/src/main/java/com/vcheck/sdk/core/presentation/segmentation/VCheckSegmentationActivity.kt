@@ -8,12 +8,18 @@ import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.hardware.camera2.*
+import android.hardware.camera2.CameraCharacteristics
+import android.hardware.camera2.CameraManager
 import android.media.ImageReader
-import android.os.*
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.os.SystemClock
 import android.util.DisplayMetrics
 import android.util.Log
 import android.util.Size
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.DecelerateInterpolator
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -25,7 +31,10 @@ import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.databinding.ActivityVcheckSegmentationBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
-import com.vcheck.sdk.core.domain.*
+import com.vcheck.sdk.core.domain.DocType
+import com.vcheck.sdk.core.domain.DocTypeData
+import com.vcheck.sdk.core.domain.SegmentationGestureResponse
+import com.vcheck.sdk.core.domain.docCategoryIdxToType
 import com.vcheck.sdk.core.presentation.liveness.VCheckLivenessActivity
 import com.vcheck.sdk.core.presentation.liveness.flow_logic.LivenessCameraParams
 import com.vcheck.sdk.core.presentation.segmentation.flow_logic.*
@@ -33,12 +42,9 @@ import com.vcheck.sdk.core.presentation.segmentation.ui.SegmentationCameraConnec
 import com.vcheck.sdk.core.presentation.transferrable_objects.CheckPhotoDataTO
 import com.vcheck.sdk.core.util.VCheckContextUtils
 import com.vcheck.sdk.core.util.setMargins
-import com.vcheck.sdk.core.util.sizeInKb
 import com.vcheck.sdk.core.util.vibrateDevice
 import id.zelory.compressor.Compressor
 import id.zelory.compressor.constraint.destination
-import id.zelory.compressor.constraint.format
-import id.zelory.compressor.constraint.quality
 import id.zelory.compressor.constraint.size
 import kotlinx.coroutines.*
 import okhttp3.MediaType.Companion.toMediaType
@@ -61,7 +67,7 @@ class VCheckSegmentationActivity : AppCompatActivity(),
 
     val scope = CoroutineScope(newSingleThreadContext("segmentation"))
 
-    private var binding: ActivityVcheckSegmentationBinding? = null
+    private lateinit var binding: ActivityVcheckSegmentationBinding
     private var mToast: Toast? = null
 
     var streamSize: Size = Size(640, 480)
@@ -87,10 +93,9 @@ class VCheckSegmentationActivity : AppCompatActivity(),
     private var photo1FullBitmap: Bitmap? = null
     private var photo2FullBitmap: Bitmap? = null
 
-    //TODO finish text colors!
     private fun changeColorsToCustomIfPresent() {
         VCheckSDK.backgroundPrimaryColorHex?.let {
-            binding!!.livenessActivityBackground.setBackgroundColor(Color.parseColor(it))
+            binding.livenessActivityBackground.setBackgroundColor(Color.parseColor(it))
         }
     }
 
@@ -98,7 +103,7 @@ class VCheckSegmentationActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
 
         binding = ActivityVcheckSegmentationBinding.inflate(layoutInflater)
-        val view = binding!!.root
+        val view = binding.root
         setContentView(view)
 
         changeColorsToCustomIfPresent()
@@ -106,7 +111,7 @@ class VCheckSegmentationActivity : AppCompatActivity(),
         onBackPressedDispatcher.addCallback {
             //Stub; no back press needed throughout liveness flow
         }
-        binding!!.closeIconBtn.setOnClickListener {
+        binding.closeIconBtn.setOnClickListener {
             finishWithExtra(isTimeoutToManual = false, isBackPress = true)
         }
 
@@ -116,8 +121,9 @@ class VCheckSegmentationActivity : AppCompatActivity(),
     }
 
     private fun setupDocCheckStage() {
-        binding!!.scalableDocHandView.isVisible = false
-        binding!!.readyButton.isVisible = false
+        binding.darkFrameOverlay.isVisible = false
+        binding.scalableDocHandView.isVisible = false
+        binding.readyButton.isVisible = false
         resetFlowForNewSession()
         setUIForNextStage()
     }
@@ -257,16 +263,19 @@ class VCheckSegmentationActivity : AppCompatActivity(),
 
             frameSize = Size(frameWidth, frameHeight)
 
-            binding!!.segmentationFrame.layoutParams.width = frameSize!!.width
-            binding!!.segmentationFrame.layoutParams.height = frameSize!!.height
+            binding.segmentationFrame.layoutParams.width = frameSize!!.width
+            binding.segmentationFrame.layoutParams.height = frameSize!!.height
 
-            binding!!.segmentationMaskWrapper.post {
-                binding!!.segmentationMaskWrapper.setRectHoleSize(
+            binding.darkFrameOverlay.layoutParams.width = frameSize!!.width
+            binding.darkFrameOverlay.layoutParams.height = frameSize!!.height
+
+            binding.segmentationMaskWrapper.post {
+                binding.segmentationMaskWrapper.setRectHoleSize(
                     frameSize!!.width - 6, frameSize!!.height - 6)
             }
-            binding!!.docAnimationView.post {
-                binding!!.docAnimationView.layoutParams.width = frameSize!!.width
-                binding!!.docAnimationView.layoutParams.height = frameSize!!.height
+            binding.docAnimationView.post {
+                binding.docAnimationView.layoutParams.width = frameSize!!.width
+                binding.docAnimationView.layoutParams.height = frameSize!!.height
             }
         }
     }
@@ -315,9 +324,11 @@ class VCheckSegmentationActivity : AppCompatActivity(),
             MultipartBody.Part.createFormData(
                 "image.jpg", compressedImageFile.name, compressedImageFile.asRequestBody("image/jpeg".toMediaType()))
         } catch (e: Exception) {
+            Log.d(TAG, "Exception while compressing Liveness frame image. Attempting to send default frame. \n${e.printStackTrace()}")
             MultipartBody.Part.createFormData(
                 "image.jpg", file.name, file.asRequestBody("image/jpeg".toMediaType()))
         } catch (e: Error) {
+            Log.d(TAG, "Error while compressing Liveness frame image. Attempting to send default frame. \n${e.printStackTrace()}")
             MultipartBody.Part.createFormData(
                 "image.jpg", file.name, file.asRequestBody("image/jpeg".toMediaType()))
         }
@@ -370,43 +381,55 @@ class VCheckSegmentationActivity : AppCompatActivity(),
 
         blockProcessingByUI = true
         blockRequestByProcessing = true
-        binding!!.docAnimationView.isVisible = false
-        binding!!.scalableDocHandView.isVisible = true
+        binding.docAnimationView.isVisible = false
+        binding.scalableDocHandView.isVisible = true
 
         when(docCategoryIdxToType(docData.category)) {
             DocType.ID_CARD -> {
-                binding!!.scalableDocHandView.background = AppCompatResources.getDrawable(
+                binding.scalableDocHandView.background = AppCompatResources.getDrawable(
                     this@VCheckSegmentationActivity, R.drawable.img_hand_id_card)
             }
             DocType.FOREIGN_PASSPORT -> {
-                binding!!.scalableDocHandView.background = AppCompatResources.getDrawable(
+                binding.scalableDocHandView.background = AppCompatResources.getDrawable(
                     this@VCheckSegmentationActivity, R.drawable.img_hand_foreign_passport)
             } else -> {
-                binding!!.scalableDocHandView.background = AppCompatResources.getDrawable(
+                binding.scalableDocHandView.background = AppCompatResources.getDrawable(
                     this@VCheckSegmentationActivity, R.drawable.img_hand_inner_passport)
             }
         }
 
         animateInstructionStage()
 
-        binding!!.readyButton.setOnClickListener {
+        binding.readyButton.setOnClickListener {
             setupDocCheckStage()
         }
     }
 
     private fun indicateNextStage() {
 
-        binding!!.tvSegmentationInstruction.setMargins(
+        binding.tvSegmentationInstruction.setMargins(
             20, 45, 20, 20)
-        binding!!.tvSegmentationInstruction.setText(R.string.segmentation_stage_success)
 
-        if (docCategoryIdxToType(docData.category) == DocType.ID_CARD) {
-            binding!!.docAnimationView.isVisible = true
-            binding!!.docAnimationView.playAnimation()
+        if (docCategoryIdxToType(docData.category) == DocType.ID_CARD && checkedDocIdx == 1) {
+            binding.tvSegmentationInstruction.setText(R.string.segmentation_stage_success_first_page)
         } else {
-            binding!!.docAnimationView.isVisible = false
+            binding.tvSegmentationInstruction.setText(R.string.segmentation_stage_success)
         }
 
+        binding.segmentationFrame.isVisible = false
+
+        fadeDarkOverlayIn()
+
+        binding.docAnimationView.isVisible = docCategoryIdxToType(docData.category) == DocType.ID_CARD
+
+        animateStageSuccessFrame()
+
+        Handler(Looper.getMainLooper()).postDelayed ({
+            binding.docAnimationView.playAnimation()
+        }, 900)
+        Handler(Looper.getMainLooper()).postDelayed ({
+            fadeDarkOverlayOut()
+        }, 3500)
         Handler(Looper.getMainLooper()).postDelayed ({
             setUIForNextStage()
         }, BLOCK_PIPELINE_TIME_MILLIS)
@@ -414,28 +437,32 @@ class VCheckSegmentationActivity : AppCompatActivity(),
 
     private fun setUIForNextStage() {
 
-        binding!!.docAnimationView.isVisible = false
-        binding!!.tvSegmentationInstruction.setMargins(
+        binding.segmentationFrame.isVisible = true
+
+        binding.docAnimationView.isVisible = false
+        binding.darkFrameOverlay.isVisible = false
+
+        binding.tvSegmentationInstruction.setMargins(
             20, 45, 20, 20)
 
         when(docCategoryIdxToType(docData.category)) {
             DocType.FOREIGN_PASSPORT -> {
-                binding!!.tvSegmentationInstruction.setText(R.string.segmentation_single_page_hint)
+                binding.tvSegmentationInstruction.setText(R.string.segmentation_single_page_hint)
             }
             DocType.ID_CARD -> {
                 if (checkedDocIdx == 0) {
-                    binding!!.tvSegmentationInstruction.setText(R.string.segmentation_front_side_hint)
+                    binding.tvSegmentationInstruction.setText(R.string.segmentation_front_side_hint)
                 }
                 if (checkedDocIdx == 1) {
-                    binding!!.tvSegmentationInstruction.setText(R.string.segmentation_back_side_hint)
+                    binding.tvSegmentationInstruction.setText(R.string.segmentation_back_side_hint)
                 }
             }
             else -> {
                 if (checkedDocIdx == 0) {
-                    binding!!.tvSegmentationInstruction.setText(R.string.segmentation_front_side_hint)
+                    binding.tvSegmentationInstruction.setText(R.string.segmentation_front_side_hint)
                 }
                 if (checkedDocIdx == 1) {
-                    binding!!.tvSegmentationInstruction.setText(R.string.segmentation_back_side_hint)
+                    binding.tvSegmentationInstruction.setText(R.string.segmentation_back_side_hint)
                 }
             }
         }
@@ -445,7 +472,7 @@ class VCheckSegmentationActivity : AppCompatActivity(),
 
     private fun animateInstructionStage() {
 
-        binding!!.scalableDocHandView.apply {
+        binding.scalableDocHandView.apply {
             val scaleUpX = ObjectAnimator.ofFloat(this, "scaleX", 3f)
             val scaleUpY = ObjectAnimator.ofFloat(this, "scaleY", 3f)
             scaleUpX.duration = 1000
@@ -471,6 +498,34 @@ class VCheckSegmentationActivity : AppCompatActivity(),
             scaleUp.start()
             moveDiag.start()
         }
+    }
+
+    private fun animateStageSuccessFrame() {
+        binding.stageSuccessFrame.animate().alpha(1F)
+            .setDuration(900)
+            .setInterpolator(
+            DecelerateInterpolator())
+            .withEndAction {
+                binding.stageSuccessFrame.animate().alpha(0F)
+                    .setDuration(900)
+                    .setInterpolator(AccelerateInterpolator()).start()
+            }.start()
+    }
+
+    private fun fadeDarkOverlayIn() {
+        binding.darkFrameOverlay.animate().alpha(1F)
+            .setDuration(900)
+            .setInterpolator(
+                DecelerateInterpolator())
+            .start()
+    }
+
+    private fun fadeDarkOverlayOut() {
+        binding.darkFrameOverlay.animate().alpha(0F)
+            .setDuration(900)
+            .setInterpolator(
+                AccelerateInterpolator())
+            .start()
     }
 
     private fun onFatalObstacleWorthRetry(actionIdForNav: Int) {

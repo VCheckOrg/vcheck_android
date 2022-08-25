@@ -179,7 +179,7 @@
     <string name="no_time_seg_subtitle">We could not find the document in the given zone. Make sure you have selected the correct document type and that it\'s clearly visible in the camera.</string>
     <string name="make_photo_by_hand">Make photo by hand</string>
     <string name="fatal_error_seg_descr">We were unable to do a full scan of the document. To continue, you need to take a photo manually.</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="segmentation_stage_success_first_page">Front side scanned successfully. Please turn over the document/page.</string>
 
 </resources>
