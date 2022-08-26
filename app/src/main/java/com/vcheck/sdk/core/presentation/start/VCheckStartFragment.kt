@@ -73,6 +73,8 @@ internal class VCheckStartFragment : Fragment() {
 
         _binding = FragmentDemoStartBinding.bind(view)
 
+        _binding!!.startCallChainLoadingIndicator.isVisible = true
+
         _binding!!.startCallChainLoadingIndicator.isVisible = false
         _binding!!.btnStartDemoFlow.isVisible = false
 
@@ -97,7 +99,6 @@ internal class VCheckStartFragment : Fragment() {
 
         _viewModel.initResponse.observe(viewLifecycleOwner) {
             if (it.data?.data != null && !verificationInitialized) {
-                //VCheckSDK.setVerificationId(it.data.data.id)
 
                 verificationInitialized = true
 

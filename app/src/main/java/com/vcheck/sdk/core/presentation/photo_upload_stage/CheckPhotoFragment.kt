@@ -130,8 +130,7 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
             }
 
             replacePhotoButton.setOnClickListener {
-                findNavController().popBackStack()
-                findNavController().navigate(R.id.action_global_chooseDocMethodScreen)
+                findNavController().navigate(R.id.action_global_photoUploadScreen)
             }
 
             confirmPhotoButton.setOnClickListener {
@@ -184,11 +183,6 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
                                 args.checkPhotoDataTO.photo2Path,
                                 true))
                     findNavController().navigate(action)
-                } else {
-//                    Toast.makeText(activity, getString(R.string.doc_verification_error_description), Toast.LENGTH_LONG).show()
-//                    findNavController().navigate(R.id.action_checkPhotoFragment_to_photoUploadScreen)
-                    //!!!
-
                 }
             } else {
                 _binding!!.replacePhotoButton.isVisible = true
@@ -215,7 +209,6 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
                 findNavController().navigate(action)
             } else {
                 Toast.makeText(activity, getString(R.string.doc_verification_error_description), Toast.LENGTH_LONG).show()
-//                findNavController().navigate(R.id.action_checkPhotoFragment_to_photoUploadScreen) //!
             }
         }
     }

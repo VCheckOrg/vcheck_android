@@ -61,11 +61,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         tools:context="org.tensorflow.lite.examples.classification.CameraActivity">
-
-        <com.vcheck.sdk.core.util.RectOverlayView
-            android:id="@+id/segmentation_mask_wrapper"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
     </FrameLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -77,6 +72,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
+        <com.vcheck.sdk.core.util.RectOverlayView
+            android:id="@+id/segmentation_mask_wrapper"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
         <View
             android:id="@+id/scalableDocHandView"
@@ -96,7 +96,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:background="@color/vcheck_stream_ui_mask"/>
+            android:background="@color/vcheck_stream_ui_mask_light"/>
 
         <View
             android:id="@+id/segmentation_frame"
@@ -122,16 +122,12 @@
             android:id="@+id/doc_animation_view"
             android:scaleX="1.0"
             android:scaleY="1.0"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="true"
-            app:lottie_rawRes="@raw/id_card_turn_side"
             android:layout_width="300dp"
             android:layout_height="200dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:background="@drawable/doc_frame_common_state" />
+            app:layout_constraintBottom_toBottomOf="parent" />
 
         <ImageView
             android:id="@+id/closeIconBtn"

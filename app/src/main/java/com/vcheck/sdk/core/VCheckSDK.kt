@@ -20,9 +20,6 @@ object VCheckSDK {
     private var selectedCountryCode: String? = null
 
     private var verificationType: VerificationSchemeType? = null
-    private var partnerUserId: String? = null
-    private var partnerVerificationId: String? = null
-    private var sessionLifetime: Int? = null
 
     private var sdkLanguageCode: String? = null
 
@@ -83,15 +80,6 @@ object VCheckSDK {
                     "You may set one of the next locales: ${VCheckSDKConstantsProvider.vcheckSDKAvailableLanguagesList}, " +
                     "or check out for the recent version of the SDK library")
         }
-        if (partnerUserId != null && partnerUserId!!.isEmpty()) {
-            throw IllegalArgumentException("VCheckSDK - error: if provided, partner user ID must be unique to your service and not empty")
-        }
-        if (partnerVerificationId != null && partnerVerificationId!!.isEmpty()) {
-            throw IllegalArgumentException("VCheckSDK - error: if provided, partner verification ID must be unique to your service and not empty")
-        }
-        if (sessionLifetime != null && sessionLifetime!! < 300) {
-            throw IllegalArgumentException("VCheckSDK - error: if provided, custom session lifetime should not be less than 300 seconds")
-        }
         if (buttonsColorHex != null && !buttonsColorHex!!.isValidHexColor()) {
             throw IllegalArgumentException(wrongColorFormatPickDescr)
         }
@@ -143,21 +131,6 @@ object VCheckSDK {
 
     fun verificationType(type: VerificationSchemeType): VCheckSDK {
         this.verificationType = type
-        return this
-    }
-
-    fun partnerUserId(puid: String): VCheckSDK {
-        this.partnerUserId = puid
-        return this
-    }
-
-    fun partnerVerificationId(pverid: String): VCheckSDK {
-        this.partnerVerificationId = pverid
-        return this
-    }
-
-    fun sessionLifetime(lifetime: Int): VCheckSDK {
-        this.sessionLifetime = lifetime
         return this
     }
 

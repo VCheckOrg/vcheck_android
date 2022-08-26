@@ -169,7 +169,6 @@
             app:argType="com.vcheck.sdk.core.presentation.transferrable_objects.ZoomPhotoTO" />
     </fragment>
     <action android:id="@+id/action_global_errorFragment" app:destination="@id/errorFragment" />
-    <action android:id="@+id/action_global_chooseDocMethodScreen" app:destination="@id/chooseDocMethodScreen" />
     <fragment
         android:id="@+id/docVerificationNotSuccessfulFragment"
         android:name="com.vcheck.sdk.core.presentation.check_doc_info_stage.DocVerifErrorFragment"
@@ -209,6 +208,6 @@
         <action
             android:id="@+id/action_segErrorFragment_to_photoInstructionsFragment"
             app:destination="@id/photoInstructionsFragment" />
-    </fragment>
+    </fragment><action android:id="@+id/action_global_photoUploadScreen" app:destination="@id/photoUploadScreen"/><action android:id="@+id/action_global_chooseDocMethodScreen" app:destination="@id/chooseDocMethodScreen"/>
 
 </navigation>

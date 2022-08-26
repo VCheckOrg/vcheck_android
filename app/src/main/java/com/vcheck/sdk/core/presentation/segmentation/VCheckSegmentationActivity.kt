@@ -60,7 +60,7 @@ class VCheckSegmentationActivity : AppCompatActivity(),
     companion object {
         const val TAG = "SegmentationActivity"
         private const val LIVENESS_TIME_LIMIT_MILLIS: Long = 60000 //max is 60s
-        private const val BLOCK_PIPELINE_TIME_MILLIS: Long = 2000 //may reduce a bit
+        private const val BLOCK_PIPELINE_TIME_MILLIS: Long = 3800 //may reduce a bit
         private const val GESTURE_REQUEST_DEBOUNCE_MILLIS: Long = 410
         private const val STAGE_VIBRATION_DURATION_MILLIS: Long = 100
     }
@@ -266,12 +266,12 @@ class VCheckSegmentationActivity : AppCompatActivity(),
             binding.segmentationFrame.layoutParams.width = frameSize!!.width
             binding.segmentationFrame.layoutParams.height = frameSize!!.height
 
-            binding.darkFrameOverlay.layoutParams.width = frameSize!!.width
-            binding.darkFrameOverlay.layoutParams.height = frameSize!!.height
+            binding.darkFrameOverlay.layoutParams.width = frameSize!!.width - 8
+            binding.darkFrameOverlay.layoutParams.height = frameSize!!.height - 8
 
             binding.segmentationMaskWrapper.post {
                 binding.segmentationMaskWrapper.setRectHoleSize(
-                    frameSize!!.width - 6, frameSize!!.height - 6)
+                    frameSize!!.width - 8, frameSize!!.height - 8)
             }
             binding.docAnimationView.post {
                 binding.docAnimationView.layoutParams.width = frameSize!!.width
@@ -352,8 +352,6 @@ class VCheckSegmentationActivity : AppCompatActivity(),
         runOnUiThread {
             Log.d(TAG, "========= GOT RESPONSE FOR IDX __ $currentPageIdx __ : ${it.success}")
             if (it.success) {
-                vibrateDevice(this@VCheckSegmentationActivity,
-                    STAGE_VIBRATION_DURATION_MILLIS)
                 if (currentPageIdx == 0 && photo1FullBitmap == null) {
                     photo1FullBitmap = fullBitmap
                 }
@@ -361,8 +359,8 @@ class VCheckSegmentationActivity : AppCompatActivity(),
                     photo2FullBitmap = fullBitmap
                 }
                 if (!areAllDocPagesChecked() && currentPageIdx == checkedDocIdx) {
-                    indicateNextStage()
                     checkedDocIdx += 1
+                    indicateNextStage()
                     blockRequestByProcessing = false
                 }
             } else {
@@ -381,6 +379,10 @@ class VCheckSegmentationActivity : AppCompatActivity(),
 
         blockProcessingByUI = true
         blockRequestByProcessing = true
+
+        binding.darkFrameOverlay.isVisible = false
+        binding.stageSuccessFrame.isVisible = false
+
         binding.docAnimationView.isVisible = false
         binding.scalableDocHandView.isVisible = true
 
@@ -407,6 +409,14 @@ class VCheckSegmentationActivity : AppCompatActivity(),
 
     private fun indicateNextStage() {
 
+        vibrateDevice(this@VCheckSegmentationActivity, STAGE_VIBRATION_DURATION_MILLIS)
+
+        binding.segmentationFrame.isVisible = false
+        binding.darkFrameOverlay.isVisible = true
+        binding.stageSuccessFrame.isVisible = true
+        binding.darkFrameOverlay.alpha = 0F
+        binding.stageSuccessFrame.alpha = 0F
+
         binding.tvSegmentationInstruction.setMargins(
             20, 45, 20, 20)
 
@@ -416,20 +426,25 @@ class VCheckSegmentationActivity : AppCompatActivity(),
             binding.tvSegmentationInstruction.setText(R.string.segmentation_stage_success)
         }
 
-        binding.segmentationFrame.isVisible = false
-
         fadeDarkOverlayIn()
 
         binding.docAnimationView.isVisible = docCategoryIdxToType(docData.category) == DocType.ID_CARD
 
         animateStageSuccessFrame()
 
-        Handler(Looper.getMainLooper()).postDelayed ({
-            binding.docAnimationView.playAnimation()
-        }, 900)
+        if (binding.docAnimationView.isVisible && checkedDocIdx == 1) {
+            Handler(Looper.getMainLooper()).postDelayed({
+                if (docCategoryIdxToType(docData.category) == DocType.ID_CARD) {
+                    binding.docAnimationView.setAnimation(R.raw.id_card_turn_side)
+                    binding.docAnimationView.playAnimation()
+                }
+            }, 900)
+        }
+
         Handler(Looper.getMainLooper()).postDelayed ({
             fadeDarkOverlayOut()
-        }, 3500)
+        }, 3000)
+
         Handler(Looper.getMainLooper()).postDelayed ({
             setUIForNextStage()
         }, BLOCK_PIPELINE_TIME_MILLIS)
@@ -438,9 +453,9 @@ class VCheckSegmentationActivity : AppCompatActivity(),
     private fun setUIForNextStage() {
 
         binding.segmentationFrame.isVisible = true
-
         binding.docAnimationView.isVisible = false
         binding.darkFrameOverlay.isVisible = false
+        binding.stageSuccessFrame.isVisible = false
 
         binding.tvSegmentationInstruction.setMargins(
             20, 45, 20, 20)
