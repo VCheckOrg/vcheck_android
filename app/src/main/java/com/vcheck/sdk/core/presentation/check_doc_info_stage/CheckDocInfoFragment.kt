@@ -51,7 +51,7 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
         }
         VCheckSDK.primaryTextColorHex?.let {
             binding.checkFilledDataTitle.setTextColor(Color.parseColor(it))
-            binding.checkInfoConfirmButton.setTextColor(Color.parseColor(it))
+            //binding.checkInfoConfirmButton.setTextColor(Color.parseColor(it))
         }
         VCheckSDK.secondaryTextColorHex?.let {
             binding.checkFilledDataDescription.setTextColor(Color.parseColor(it))

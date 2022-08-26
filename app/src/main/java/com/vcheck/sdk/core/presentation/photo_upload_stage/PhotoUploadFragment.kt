@@ -55,11 +55,7 @@ class PhotoUploadFragment : ThemeWrapperFragment() {
             _binding!!.takePhotoTitle.setTextColor(Color.parseColor(it))
             _binding!!.takePhotoTitle2.setTextColor(Color.parseColor(it))
             _binding!!.backArrow.setColorFilter(Color.parseColor(it))
-            _binding!!.takePhotoIcon.setColorFilter(Color.parseColor(it))
-            _binding!!.takePhotoIcon2.setColorFilter(Color.parseColor(it))
-            _binding!!.makePhotoButton1.setCardBackgroundColor(Color.parseColor(it))
-            _binding!!.makePhotoButton2.setCardBackgroundColor(Color.parseColor(it))
-            _binding!!.photoUploadContinueButton.setTextColor(Color.parseColor(it))
+            //_binding!!.photoUploadContinueButton.setTextColor(Color.parseColor(it))
         }
         VCheckSDK.backgroundTertiaryColorHex?.let {
             _binding!!.methodCard1Background.setCardBackgroundColor(Color.parseColor(it))
@@ -70,6 +66,12 @@ class PhotoUploadFragment : ThemeWrapperFragment() {
         VCheckSDK.borderColorHex?.let {
             _binding!!.methodCard1.setCardBackgroundColor(Color.parseColor(it))
             _binding!!.methodCard2.setCardBackgroundColor(Color.parseColor(it))
+            _binding!!.makePhotoButton1.setCardBackgroundColor(Color.parseColor(it))
+            _binding!!.makePhotoButton2.setCardBackgroundColor(Color.parseColor(it))
+        }
+        VCheckSDK.iconsColorHex?.let {
+            _binding!!.takePhotoIcon.setColorFilter(Color.parseColor(it))
+            _binding!!.takePhotoIcon2.setColorFilter(Color.parseColor(it))
         }
     }
 
@@ -283,7 +285,7 @@ class PhotoUploadFragment : ThemeWrapperFragment() {
             _binding!!.photoUploadContinueButton.setBackgroundColor(Color.parseColor("#2E75FF"))
         }
         if (VCheckSDK.primaryTextColorHex != null) {
-            _binding!!.photoUploadContinueButton.setTextColor(Color.parseColor(VCheckSDK.primaryTextColorHex))
+            //_binding!!.photoUploadContinueButton.setTextColor(Color.parseColor(VCheckSDK.primaryTextColorHex))
         } else {
             _binding!!.photoUploadContinueButton.setTextColor(Color.WHITE)
         }

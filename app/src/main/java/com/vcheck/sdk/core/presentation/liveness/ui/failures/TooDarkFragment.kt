@@ -34,7 +34,7 @@ class TooDarkFragment : ThemeWrapperFragment() {
         VCheckSDK.primaryTextColorHex?.let {
             _binding!!.tooDarkTitle.setTextColor(Color.parseColor(it))
             _binding!!.tooDarkDescription.setTextColor(Color.parseColor(it))
-            _binding!!.tooDarkRepeatButton.setTextColor(Color.parseColor(it))
+            //_binding!!.tooDarkRepeatButton.setTextColor(Color.parseColor(it))
         }
     }
 

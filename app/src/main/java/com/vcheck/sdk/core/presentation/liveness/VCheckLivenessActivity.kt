@@ -95,6 +95,7 @@ class VCheckLivenessActivity : AppCompatActivity(),
         VCheckSDK.primaryTextColorHex?.let {
             binding.backArrow.setColorFilter(Color.parseColor(it))
             binding.popSdkTitle.setTextColor(Color.parseColor(it))
+            binding.checkFaceTitle.setTextColor(Color.parseColor(it))
         }
     }
 

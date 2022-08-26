@@ -34,7 +34,7 @@ class WrongMoveFragment : ThemeWrapperFragment()  {
         VCheckSDK.primaryTextColorHex?.let {
             _binding!!.wrongMoveTitle.setTextColor(Color.parseColor(it))
             _binding!!.wrongMoveDescription.setTextColor(Color.parseColor(it))
-            _binding!!.wrongMoveRepeatButton.setTextColor(Color.parseColor(it))
+            //_binding!!.wrongMoveRepeatButton.setTextColor(Color.parseColor(it))
         }
     }
 

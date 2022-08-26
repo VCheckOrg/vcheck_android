@@ -34,7 +34,7 @@ class FrameInterferenceFragment : ThemeWrapperFragment() {
         VCheckSDK.primaryTextColorHex?.let {
             _binding!!.frameInterferenceTitle.setTextColor(Color.parseColor(it))
             _binding!!.frameInterferenceDescription.setTextColor(Color.parseColor(it))
-            _binding!!.frameInterferenceButton.setTextColor(Color.parseColor(it))
+            //_binding!!.frameInterferenceButton.setTextColor(Color.parseColor(it))
         }
     }
 

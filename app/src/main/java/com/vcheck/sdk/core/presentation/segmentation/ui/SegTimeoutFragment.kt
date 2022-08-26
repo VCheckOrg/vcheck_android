@@ -61,7 +61,10 @@ class SegTimeoutFragment : ThemeWrapperFragment() {
         }
         VCheckSDK.primaryTextColorHex?.let {
             _binding!!.noTimeTitle.setTextColor(Color.parseColor(it))
-            _binding!!.tryAgainButton.setTextColor(Color.parseColor(it))
+            //_binding!!.tryAgainButton.setTextColor(Color.parseColor(it))
+        }
+        VCheckSDK.secondaryTextColorHex?.let {
+            _binding!!.noTimeSubtitle.setTextColor(Color.parseColor(it))
         }
     }
 }

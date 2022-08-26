@@ -62,6 +62,8 @@ class SegmentationStartFragment : ThemeWrapperFragment() {
         }
         VCheckSDK.primaryTextColorHex?.let {
             _binding!!.docTitle.setTextColor(Color.parseColor(it))
+        }
+        VCheckSDK.secondaryTextColorHex?.let {
             _binding!!.docSubtitle.setTextColor(Color.parseColor(it))
         }
     }
@@ -77,6 +79,8 @@ class SegmentationStartFragment : ThemeWrapperFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         _binding = FragmentSegmentationStartBinding.bind(view)
+
+        changeColorsToCustomIfPresent()
 
         requireActivity().onBackPressedDispatcher.addCallback {
             //Stub; no back press needed here

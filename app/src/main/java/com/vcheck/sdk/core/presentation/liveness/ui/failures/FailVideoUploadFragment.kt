@@ -32,7 +32,7 @@ class FailVideoUploadFragment : ThemeWrapperFragment() {
         VCheckSDK.primaryTextColorHex?.let {
             _binding!!.failVerificationTitle.setTextColor(Color.parseColor(it))
             _binding!!.failVerificationDescription.setTextColor(Color.parseColor(it))
-            _binding!!.retryButton.setTextColor(Color.parseColor(it))
+            //_binding!!.retryButton.setTextColor(Color.parseColor(it))
         }
     }
 

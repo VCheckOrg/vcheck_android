@@ -43,9 +43,6 @@ class ChooseDocMethodFragment : ThemeWrapperFragment() {
             _binding!!.docMethodTitle2.setTextColor(Color.parseColor(it))
             _binding!!.docMethodTitle3.setTextColor(Color.parseColor(it))
             _binding!!.backArrow.setColorFilter(Color.parseColor(it))
-            _binding!!.docMethodIcon1.setColorFilter(Color.parseColor(it))
-            _binding!!.docMethodIcon2.setColorFilter(Color.parseColor(it))
-            _binding!!.docMethodIcon3.setColorFilter(Color.parseColor(it))
         }
         VCheckSDK.secondaryTextColorHex?.let {
             _binding!!.chooseDocMethodDescription.setTextColor(Color.parseColor(it))
@@ -54,6 +51,11 @@ class ChooseDocMethodFragment : ThemeWrapperFragment() {
             _binding!!.docMethodInnerPassport.setCardBackgroundColor(Color.parseColor(it))
             _binding!!.docMethodForeignPassport.setCardBackgroundColor(Color.parseColor(it))
             _binding!!.docMethodIdCard.setCardBackgroundColor(Color.parseColor(it))
+        }
+        VCheckSDK.iconsColorHex?.let {
+            _binding!!.docMethodIcon1.setColorFilter(Color.parseColor(it))
+            _binding!!.docMethodIcon2.setColorFilter(Color.parseColor(it))
+            _binding!!.docMethodIcon3.setColorFilter(Color.parseColor(it))
         }
     }
 

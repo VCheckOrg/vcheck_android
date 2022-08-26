@@ -40,7 +40,7 @@ class ChooseCountryFragment : ThemeWrapperFragment() {
             binding.chooseCountryTitle.setTextColor(Color.parseColor(it))
             binding.chooseCountryCardTitle.setTextColor(Color.parseColor(it))
             binding.countryTitle.setTextColor(Color.parseColor(it))
-            binding.chooseCountryContinueButton.setTextColor(Color.parseColor(it))
+            //binding.chooseCountryContinueButton.setTextColor(Color.parseColor(it))
         }
         VCheckSDK.secondaryTextColorHex?.let {
             binding.chooseCountryDescription.setTextColor(Color.parseColor(it))

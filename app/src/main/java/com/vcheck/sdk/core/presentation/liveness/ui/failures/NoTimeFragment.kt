@@ -31,7 +31,7 @@ class NoTimeFragment : ThemeWrapperFragment() {
         VCheckSDK.primaryTextColorHex?.let {
             _binding!!.noTimeTitle.setTextColor(Color.parseColor(it))
             _binding!!.noTimeSubtitle.setTextColor(Color.parseColor(it))
-            _binding!!.tryAgainButton.setTextColor(Color.parseColor(it))
+            //_binding!!.tryAgainButton.setTextColor(Color.parseColor(it))
         }
     }
 

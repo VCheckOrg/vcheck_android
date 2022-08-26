@@ -97,6 +97,9 @@ class VCheckSegmentationActivity : AppCompatActivity(),
         VCheckSDK.backgroundPrimaryColorHex?.let {
             binding.livenessActivityBackground.setBackgroundColor(Color.parseColor(it))
         }
+        VCheckSDK.primaryTextColorHex?.let {
+            binding.tvSegmentationInstruction.setTextColor(Color.parseColor(it))
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

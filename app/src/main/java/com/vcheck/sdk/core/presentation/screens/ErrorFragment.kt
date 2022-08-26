@@ -28,7 +28,7 @@ class ErrorFragment : ThemeWrapperFragment() {
         }
         VCheckSDK.primaryTextColorHex?.let {
             _binding!!.errorTitle.setTextColor(Color.parseColor(it))
-            _binding!!.errorButton.setTextColor(Color.parseColor(it))
+            //_binding!!.errorButton.setTextColor(Color.parseColor(it))
         }
         VCheckSDK.secondaryTextColorHex?.let {
             _binding!!.errorDescription.setTextColor(Color.parseColor(it))

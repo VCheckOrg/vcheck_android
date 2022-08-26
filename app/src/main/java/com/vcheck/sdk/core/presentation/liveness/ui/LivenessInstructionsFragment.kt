@@ -48,15 +48,17 @@ class LivenessInstructionsFragment : ThemeWrapperFragment() {
             binding!!.noInterferenceText.setTextColor(Color.parseColor(it))
             binding!!.goodLightText.setTextColor(Color.parseColor(it))
             binding!!.fixedCameraText.setTextColor(Color.parseColor(it))
+            //binding!!.livenessStartButton.setTextColor(Color.parseColor(it))
+        }
+        VCheckSDK.secondaryTextColorHex?.let {
+            binding!!.faceCheckDescription.setTextColor(Color.parseColor(it))
+        }
+        VCheckSDK.iconsColorHex?.let {
             binding!!.requestedMovementsIcon.setColorFilter(Color.parseColor(it))
             binding!!.smoothMovementsIcon.setColorFilter(Color.parseColor(it))
             binding!!.noInterferenceIcon.setColorFilter(Color.parseColor(it))
             binding!!.goodLightIcon.setColorFilter(Color.parseColor(it))
             binding!!.fixedCameraIcon.setColorFilter(Color.parseColor(it))
-            binding!!.livenessStartButton.setTextColor(Color.parseColor(it))
-        }
-        VCheckSDK.secondaryTextColorHex?.let {
-            binding!!.faceCheckDescription.setTextColor(Color.parseColor(it))
         }
     }
 

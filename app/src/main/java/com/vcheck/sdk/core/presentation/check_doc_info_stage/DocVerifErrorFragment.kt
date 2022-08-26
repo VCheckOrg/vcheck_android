@@ -34,7 +34,7 @@ class DocVerifErrorFragment : ThemeWrapperFragment() {
         }
         VCheckSDK.primaryTextColorHex?.let {
             _binding!!.errorTitle.setTextColor(Color.parseColor(it))
-            _binding!!.errorTryAgainButton.setTextColor(Color.parseColor(it))
+            //_binding!!.errorTryAgainButton.setTextColor(Color.parseColor(it))
             _binding!!.pseudoBtnProceedAnyway.setTextColor(Color.parseColor(it))
         }
         VCheckSDK.secondaryTextColorHex?.let {

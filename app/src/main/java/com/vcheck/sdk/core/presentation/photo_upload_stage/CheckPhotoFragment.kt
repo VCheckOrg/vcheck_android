@@ -55,7 +55,7 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
             _binding!!.checkPhotoTitle.setTextColor(Color.parseColor(it))
             _binding!!.tvProcessingDisclaimer.setTextColor(Color.parseColor(it))
             _binding!!.uploadDocPhotosLoadingIndicator.setIndicatorColor(Color.parseColor(it))
-            _binding!!.confirmPhotoButton.setTextColor(Color.parseColor(it))
+            //_binding!!.confirmPhotoButton.setTextColor(Color.parseColor(it))
             _binding!!.replacePhotoButton.setTextColor(Color.parseColor(it))
             _binding!!.replacePhotoButton.strokeColor = ColorStateList.valueOf(Color.parseColor(it))
         }

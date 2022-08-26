@@ -65,8 +65,6 @@ class SegErrorFragment : ThemeWrapperFragment() {
             //Stub; no back press needed here
         }
 
-        //(activity as VCheckSegmentationActivity).finishLivenessSession()
-
         _binding!!.replacePhotoButton.setOnClickListener {
             VCheckDIContainer.mainRepository.setManualPhotoUpload()
             findNavController().navigate(R.id.action_segErrorFragment_to_photoInstructionsFragment)
@@ -88,8 +86,8 @@ class SegErrorFragment : ThemeWrapperFragment() {
         VCheckSDK.backgroundSecondaryColorHex?.let {
             _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.primaryTextColorHex?.let {
-            _binding!!.tryAgainButton.setTextColor(Color.parseColor(it))
-        }
+//        VCheckSDK.primaryTextColorHex?.let {
+//            _binding!!.tryAgainButton.setTextColor(Color.parseColor(it))
+//        }
     }
 }

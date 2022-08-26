@@ -50,7 +50,8 @@ class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
         VCheckSDK.primaryTextColorHex?.let {
             _binding!!.inProcessTitle.setTextColor(Color.parseColor(it))
             _binding!!.inProcessSubtitle.setTextColor(Color.parseColor(it))
-            _binding!!.successButton.setTextColor(Color.parseColor(it))
+            _binding!!.uploadVideoLoadingIndicator.setIndicatorColor(Color.parseColor(it))
+            //_binding!!.successButton.setTextColor(Color.parseColor(it))
         }
     }
 

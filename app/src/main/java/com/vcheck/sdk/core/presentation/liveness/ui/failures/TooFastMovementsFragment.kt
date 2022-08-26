@@ -34,7 +34,7 @@ class TooFastMovementsFragment : ThemeWrapperFragment() {
         VCheckSDK.primaryTextColorHex?.let {
             _binding!!.tooFastMovementsTitle.setTextColor(Color.parseColor(it))
             _binding!!.tooFastMovementsDescription.setTextColor(Color.parseColor(it))
-            _binding!!.tooFastMovementsRepeatButton.setTextColor(Color.parseColor(it))
+            //_binding!!.tooFastMovementsRepeatButton.setTextColor(Color.parseColor(it))
         }
     }
 

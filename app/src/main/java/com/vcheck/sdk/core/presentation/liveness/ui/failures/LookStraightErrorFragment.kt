@@ -34,7 +34,7 @@ class LookStraightErrorFragment : ThemeWrapperFragment() {
         VCheckSDK.primaryTextColorHex?.let {
             _binding!!.lookStratightErrorTitle.setTextColor(Color.parseColor(it))
             _binding!!.lookStratightErrorSubtitle.setTextColor(Color.parseColor(it))
-            _binding!!.lookStratightErrorButton.setTextColor(Color.parseColor(it))
+            //_binding!!.lookStratightErrorButton.setTextColor(Color.parseColor(it))
         }
     }
 
