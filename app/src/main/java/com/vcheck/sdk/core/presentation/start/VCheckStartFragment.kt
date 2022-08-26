@@ -7,7 +7,6 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -84,38 +83,21 @@ internal class VCheckStartFragment : Fragment() {
     }
 
     private fun performStartupLogic() {
-        //Launching main flow if all permissions are set
-        _binding!!.startCallChainLoadingIndicator.isVisible = true
-        if (VCheckSDK.verificationClientCreationModel == null) {
-            //TODO: fix cases when verificationClientCreationModel == null !
-            Toast.makeText(activity, "Client error: Verification was not created properly", Toast.LENGTH_LONG).show()
-        } else {
-            setResponseListeners()
-            _viewModel.serviceTimestampRequest()
-        }
+        setResponseListeners()
+        _viewModel.serviceTimestampRequest()
     }
 
     private fun setResponseListeners() {
 
         _viewModel.timestampResponse.observe(viewLifecycleOwner) {
             if (it.data != null) {
-                val requestModel = _viewModel.repository.prepareVerificationRequest(
-                    it.data.toLong(), VCheckSDK.getSDKLangCode(),
-                    VCheckSDK.verificationClientCreationModel!!)
-                _viewModel.createVerificationRequest(requestModel)
-            }
-        }
-
-        _viewModel.createResponse.observe(viewLifecycleOwner) {
-            if (it.data?.data != null) {
-                VCheckSDK.setVerificationToken(it.data.data.token)
                 _viewModel.initVerification()
             }
         }
 
         _viewModel.initResponse.observe(viewLifecycleOwner) {
             if (it.data?.data != null && !verificationInitialized) {
-                VCheckSDK.setVerificationId(it.data.data.id)
+                //VCheckSDK.setVerificationId(it.data.data.id)
 
                 verificationInitialized = true
 

@@ -4,11 +4,8 @@ import androidx.lifecycle.MutableLiveData
 import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.domain.*
 import com.vcheck.sdk.core.presentation.transferrable_objects.CheckPhotoDataTO
-import com.vcheck.sdk.core.util.generateSHA256Hash
 import okhttp3.MultipartBody
-import retrofit2.Call
 import retrofit2.Response
-import java.util.*
 
 class MainRepository(
     private val remoteDatasource: RemoteDatasource,
@@ -16,36 +13,6 @@ class MainRepository(
 
     private fun isTokenPresent(): Boolean {
         return VCheckSDK.getVerificationToken().isNotEmpty()
-    }
-
-    fun prepareVerificationRequest(serviceTS: Long, deviceDefaultLocaleCode: String,
-            vModel: VerificationClientCreationModel): CreateVerificationRequestBody {
-
-        val partnerId = vModel.partnerId
-        val partnerSecret = vModel.partnerSecret
-        val scheme = vModel.verificationType.toStringRepresentation()
-        val partnerUserId = vModel.partnerUserId ?: Date().time.toString()
-        val partnerVerificationId = vModel.partnerVerificationId ?: Date().time.toString()
-        val sessionLifetime = vModel.sessionLifetime ?: VCheckSDKConstantsProvider.DEFAULT_SESSION_LIFETIME
-        val verifCallbackURL = "${VCheckSDKConstantsProvider.VERIFICATIONS_API_BASE_URL}ping"
-        val sign = generateSHA256Hash(
-            "$partnerId$partnerUserId$partnerVerificationId$scheme$serviceTS$partnerSecret")
-
-        return CreateVerificationRequestBody(
-                partner_id = partnerId,
-                timestamp = serviceTS,
-                scheme = scheme,
-                locale = deviceDefaultLocaleCode,
-                partner_user_id = partnerUserId,
-                partner_verification_id = partnerVerificationId,
-                callback_url = verifCallbackURL,
-                session_lifetime = sessionLifetime,
-                sign = sign)
-    }
-
-    fun createVerification(createVerificationRequestBody: CreateVerificationRequestBody)
-        : MutableLiveData<Resource<CreateVerificationAttemptResponse>> {
-        return remoteDatasource.createVerificationRequest(createVerificationRequestBody)
     }
 
     fun initVerification(): MutableLiveData<Resource<VerificationInitResponse>> {
@@ -114,14 +81,6 @@ class MainRepository(
         index: String): SegmentationGestureResponse? {
         return if (isTokenPresent()) remoteDatasource.sendSegmentationDocAttempt(image, country, category, index)
         else null
-    }
-
-    fun checkFinalVerificationStatus(verifId: Int,
-                                     partnerId: Int,
-                                     partnerSecret: String)
-    : Call<FinalVerifCheckResponseModel>? {
-        return if (isTokenPresent()) remoteDatasource.checkFinalVerificationStatus(verifId, partnerId, partnerSecret)
-        else throw RuntimeException("VCheckSDK - error: token is not present while checking verification status!")
     }
 
     //---- LOCAL SOURCE DATA OPS:

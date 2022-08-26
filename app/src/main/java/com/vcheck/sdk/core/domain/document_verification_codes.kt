@@ -1,7 +1,6 @@
 package com.vcheck.sdk.core.domain
 
 
-//TODO duplicate for iOS!
 enum class DocumentVerificationCode {
     VERIFICATION_NOT_INITIALIZED,// = 0
     USER_INTERACTED_COMPLETED,// = 1

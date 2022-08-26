@@ -130,7 +130,7 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
             if (it.data?.data?.config != null) {
                 viewModel.repository.setLivenessMilestonesList((it.data.data.config.gestures))
                 findNavController().navigate(R.id.action_checkDocInfoFragment_to_livenessInstructionsFragment)
-            } else if (VCheckSDK.verificationClientCreationModel?.verificationType == VerificationSchemeType.DOCUMENT_UPLOAD_ONLY) {
+            } else if (VCheckSDK.getVerificationType() == VerificationSchemeType.DOCUMENT_UPLOAD_ONLY) {
                 (activity as VCheckMainActivity).closeSDKFlow(true)
             }
         }

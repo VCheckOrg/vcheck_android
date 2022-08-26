@@ -10,7 +10,6 @@ internal class VCheckStartViewModel (val repository: MainRepository) : ViewModel
     val clientError: MutableLiveData<String?> = MutableLiveData(null)
 
     var timestampResponse: MutableLiveData<Resource<String>> = MutableLiveData()
-    var createResponse: MutableLiveData<Resource<CreateVerificationAttemptResponse>> = MutableLiveData()
     var initResponse: MutableLiveData<Resource<VerificationInitResponse>> = MutableLiveData()
     var countriesResponse: MutableLiveData<Resource<CountriesResponse>> = MutableLiveData()
     var stageResponse: MutableLiveData<Resource<StageResponse>> = MutableLiveData()
@@ -18,12 +17,6 @@ internal class VCheckStartViewModel (val repository: MainRepository) : ViewModel
     fun serviceTimestampRequest() {
         repository.getActualServiceTimestamp().observeForever { ts ->
             processTimestampResponse(ts)
-        }
-    }
-
-    fun createVerificationRequest(createVerificationRequestBody: CreateVerificationRequestBody) {
-        repository.createVerification(createVerificationRequestBody).observeForever {
-            processCreateVerifResponse(it)
         }
     }
 
@@ -53,19 +46,6 @@ internal class VCheckStartViewModel (val repository: MainRepository) : ViewModel
                 if (response.data != null) {
                     timestampResponse.value = response
                 }
-            }
-            Resource.Status.ERROR -> {
-                clientError.value = response.apiError!!.errorText
-            }
-        }
-    }
-
-    private fun processCreateVerifResponse(response: Resource<CreateVerificationAttemptResponse>) {
-        when (response.status) {
-            Resource.Status.LOADING -> {
-            }
-            Resource.Status.SUCCESS -> {
-                createResponse.value = response
             }
             Resource.Status.ERROR -> {
                 clientError.value = response.apiError!!.errorText

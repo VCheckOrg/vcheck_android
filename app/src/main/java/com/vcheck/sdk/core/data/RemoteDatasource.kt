@@ -4,25 +4,14 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.domain.*
-import com.vcheck.sdk.core.util.generateSHA256Hash
 import okhttp3.MultipartBody
-import retrofit2.Call
 import retrofit2.Response
 
-class RemoteDatasource(private val verificationApiClient: VerificationApiClient,
-                       private val partnerApiClient: PartnerApiClient) {
-
-    fun createVerificationRequest(verificationRequestBody: CreateVerificationRequestBody):
-            MutableLiveData<Resource<CreateVerificationAttemptResponse>> {
-        return NetworkCall<CreateVerificationAttemptResponse>().makeCall(
-            partnerApiClient.createVerificationRequest(verificationRequestBody)
-        )
-    }
+class RemoteDatasource(private val verificationApiClient: VerificationApiClient) {
 
     fun initVerification(): MutableLiveData<Resource<VerificationInitResponse>> {
         return NetworkCall<VerificationInitResponse>().makeCall(
-            verificationApiClient.initVerification(VCheckSDK.getVerificationToken())
-        )
+            verificationApiClient.initVerification(VCheckSDK.getVerificationToken()))
     }
 
     fun getCountries(): MutableLiveData<Resource<CountriesResponse>> {
@@ -119,22 +108,6 @@ class RemoteDatasource(private val verificationApiClient: VerificationApiClient,
             return response.body() as SegmentationGestureResponse
         } else {
             Log.d("VCheck - error: ","Segmentation frame response is null")
-            null
-        }
-    }
-
-    fun checkFinalVerificationStatus(verifId: Int,
-                                     partnerId: Int,
-                                     partnerSecret: String)
-    : Call<FinalVerifCheckResponseModel>? {
-        val timestampResponse = verificationApiClient.getServiceTimestamp().execute()
-        return if (timestampResponse.isSuccessful) {
-            val timestamp = (timestampResponse.body() as String).toInt()
-            val sign = generateSHA256Hash("$partnerId$timestamp$verifId$partnerSecret")
-            partnerApiClient.checkFinalVerificationStatus(
-                VCheckSDK.getVerificationToken(), verifId, partnerId, timestamp, sign)
-        } else {
-            Log.d("VCheck - error: ","Cannot get service timestamp for check verification call!")
             null
         }
     }

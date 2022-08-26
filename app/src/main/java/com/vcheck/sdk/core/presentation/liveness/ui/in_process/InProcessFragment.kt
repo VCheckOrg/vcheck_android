@@ -1,8 +1,5 @@
 package com.vcheck.sdk.core.presentation.liveness.ui.in_process
 
-import android.app.ActivityManager
-import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -21,8 +18,6 @@ import com.vcheck.sdk.core.data.Resource
 import com.vcheck.sdk.core.databinding.InProcessFragmentBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.*
-import com.vcheck.sdk.core.presentation.VCheckMainActivity
-import com.vcheck.sdk.core.presentation.VCheckStartupActivity
 import com.vcheck.sdk.core.presentation.liveness.VCheckLivenessActivity
 import com.vcheck.sdk.core.presentation.liveness.flow_logic.VideoProcessingListener
 import com.vcheck.sdk.core.util.ThemeWrapperFragment

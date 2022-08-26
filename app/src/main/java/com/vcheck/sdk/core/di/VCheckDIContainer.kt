@@ -13,11 +13,8 @@ object VCheckDIContainer {
 
     private var verificationRetrofit: Retrofit
 
-    private var partnerRetrofit: Retrofit
-
     init {
         verificationRetrofit = getVerifApiRetrofit()
-        partnerRetrofit = getPartnerApiRetrofit()
     }
 
     private fun getHttpClient(): OkHttpClient.Builder {
@@ -49,17 +46,8 @@ object VCheckDIContainer {
             .build()
     }
 
-    private fun getPartnerApiRetrofit(): Retrofit {
-        return Retrofit.Builder()
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(getHttpClient().build())
-            .baseUrl(VCheckSDKConstantsProvider.PARTNER_API_BASE_URL) //TEST(DEV)
-            .build()
-    }
-
     private var remoteDataSource = RemoteDatasource(
-        verificationRetrofit.create(VerificationApiClient::class.java),
-        partnerRetrofit.create(PartnerApiClient::class.java))
+        verificationRetrofit.create(VerificationApiClient::class.java))
 
     private val localDatasource = LocalDatasource()
 

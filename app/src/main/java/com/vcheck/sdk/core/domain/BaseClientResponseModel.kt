@@ -2,7 +2,6 @@ package com.vcheck.sdk.core.domain
 
 import com.google.gson.annotations.SerializedName
 
-//TODO implement similar mechanism in iOS!
 data class BaseClientResponseModel(
     @SerializedName("data")
     val data: BaseClientResponseData?,

@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.util.Log
 import com.vcheck.sdk.core.data.VCheckSDKConstantsProvider
-import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.*
 import com.vcheck.sdk.core.presentation.VCheckStartupActivity
 import com.vcheck.sdk.core.util.isValidHexColor
@@ -16,11 +15,7 @@ object VCheckSDK {
 
     private var partnerEndCallback: (() -> Unit)? = null
 
-    private var partnerId: Int? = null
-    private var partnerSecret: String? = null
-
     private var verificationToken: String? = null
-    private var verificationId: Int? = null
 
     private var selectedCountryCode: String? = null
 
@@ -28,8 +23,6 @@ object VCheckSDK {
     private var partnerUserId: String? = null
     private var partnerVerificationId: String? = null
     private var sessionLifetime: Int? = null
-
-    internal var verificationClientCreationModel: VerificationClientCreationModel? = null
 
     private var sdkLanguageCode: String? = null
 
@@ -54,10 +47,6 @@ object VCheckSDK {
 
         performPreStartChecks()
 
-        this.verificationClientCreationModel = VerificationClientCreationModel(
-            partnerId!!, partnerSecret!!, verificationType!!, partnerUserId,
-            partnerVerificationId, sessionLifetime)
-
         val intent: Intent?
         try {
             intent = Intent(partnerActivity, VCheckStartupActivity::class.java)
@@ -68,12 +57,14 @@ object VCheckSDK {
     }
 
     private fun resetVerification() {
-        this.verificationToken = null
-        this.verificationId = null
         this.selectedCountryCode = null
     }
 
     private fun performPreStartChecks() {
+        if (verificationToken == null) {
+            throw IllegalArgumentException("VCheckSDK - error: verification token must be provided |" +
+                    " see VCheckSDK.verificationToken(token: String)")
+        }
         if (verificationType == null) {
             throw IllegalArgumentException("VCheckSDK - error: verification type must be provided |" +
                     " see VCheckSDK.verificationType(type: VerificationSchemeType)")
@@ -81,12 +72,6 @@ object VCheckSDK {
         if (partnerEndCallback == null) {
             throw IllegalArgumentException("VCheckSDK - error: partner application's callback function " +
                     "(invoked on SDK flow finish) must be provided by partner app | see VCheckSDK.partnerEndCallback(callback: (() -> Unit))")
-        }
-        if (partnerId == null) {
-            throw IllegalArgumentException("VCheckSDK - error: partner ID must be provided | see VCheckSDK.partnerId(id: Int)")
-        }
-        if (partnerSecret == null) {
-            throw IllegalArgumentException("VCheckSDK - error: partner secret must be provided | see VCheckSDK.partnerSecret(secret: String)")
         }
         if (sdkLanguageCode == null) {
             Log.w(TAG, "VCheckSDK - warning: sdk language code is not set; using English (en) locale as default. " +
@@ -147,13 +132,12 @@ object VCheckSDK {
         return this
     }
 
-    fun partnerId(id: Int): VCheckSDK {
-        this.partnerId = id
-        return this
+    fun getVerificationType(): VerificationSchemeType? {
+        return this.verificationType
     }
 
-    fun partnerSecret(secret: String): VCheckSDK {
-        this.partnerSecret = secret
+    fun verificationToken(token: String): VCheckSDK {
+        this.verificationToken = token
         return this
     }
 
@@ -227,64 +211,11 @@ object VCheckSDK {
         this.borderColorHex = null
     }
 
-    fun checkFinalVerificationStatus(): VerificationResult {
-        val call = VCheckDIContainer.mainRepository
-            .checkFinalVerificationStatus(getVerificationId(),
-            this.partnerId!!, this.partnerSecret!!)
-        return if (call != null) {
-            val response = call.execute()
-            if (response.isSuccessful && response.body() != null) {
-                val bodyDeserialized: FinalVerifCheckResponseModel = response.body() as FinalVerifCheckResponseModel
-                val data = bodyDeserialized.data
-                VerificationResult(
-                    isVerificationFinalizedAndSuccessful(data),
-                    isVerificationFinalizedAndFailed(data),
-                    isVerificationWaitingForManualCheck(data),
-                    data.status, data.scheme, data.createdAt, data.finalizedAt, data.rejectionReasons)
-            } else getErrorVerificationResult()
-        } else getErrorVerificationResult()
-    }
-
-    private fun isVerificationFinalizedAndSuccessful(data: FinalVerifCheckResponseData): Boolean {
-        return (data.status.lowercase() == "finalized" && data.isSuccess == true)
-    }
-
-    private fun isVerificationFinalizedAndFailed(data: FinalVerifCheckResponseData): Boolean {
-        return (data.status.lowercase() == "finalized" && data.isSuccess == false)
-    }
-
-    private fun isVerificationWaitingForManualCheck(data: FinalVerifCheckResponseData): Boolean {
-        return data.status.lowercase() == "waiting_manual_check"
-    }
-
-    private fun getErrorVerificationResult(): VerificationResult {
-        return VerificationResult(
-            isFinalizedAndSuccessful = false, isFinalizedAndFailed = false,
-            isWaitingForManualCheck = false, status = "sdk_client_error",
-            scheme = this.verificationType!!.toStringRepresentation(),
-            createdAt = null, finalizedAt = null, rejectionReasons = null)
-    }
-
-    internal fun setVerificationToken(token: String) {
-        this.verificationToken = "Bearer $token"
-    }
-
-    internal fun getVerificationToken(): String {
+    fun getVerificationToken(): String {
         if (verificationToken == null) {
             throw RuntimeException("VCheckSDK - error: verification token is not set!")
         }
-        return verificationToken ?: ""
-    }
-
-    internal fun setVerificationId(id: Int) {
-        this.verificationId = id
-    }
-
-    private fun getVerificationId(): Int {
-        if (verificationId == null) {
-            throw RuntimeException("VCheckSDK - error: verification id not set!")
-        }
-        return verificationId ?: -1
+        return "Bearer " + verificationToken!!
     }
 
     fun getSDKLangCode(): String {
