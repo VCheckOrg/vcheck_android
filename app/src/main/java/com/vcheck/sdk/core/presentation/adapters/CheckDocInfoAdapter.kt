@@ -60,11 +60,9 @@ class CheckDocInfoAdapter(
             VCheckSDK.backgroundSecondaryColorHex?.let {
                 binding.docInfoRowBackground.background = ColorDrawable(Color.parseColor(it))
             }
-            VCheckSDK.backgroundTertiaryColorHex?.let {
-                binding.infoField.background = ColorDrawable(Color.parseColor(it))
-            }
             VCheckSDK.primaryTextColorHex?.let {
                 binding.docFieldTitle.setTextColor(Color.parseColor(it))
+                binding.infoField.background = ColorDrawable(Color.parseColor(it))
                 binding.infoField.setTextColor(Color.parseColor(it))
                 binding.infoField.setHintTextColor(Color.parseColor(it))
             }

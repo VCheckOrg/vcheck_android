@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -32,11 +33,16 @@ class LivenessInstructionsFragment : ThemeWrapperFragment() {
     private var isLeftCycle: Boolean = true
 
     override fun changeColorsToCustomIfPresent() {
+        val drawable = binding!!.cosmeticRoundedFrame.background as GradientDrawable
         VCheckSDK.buttonsColorHex?.let {
             binding!!.livenessStartButton.setBackgroundColor(Color.parseColor(it))
         }
         VCheckSDK.backgroundPrimaryColorHex?.let {
             binding!!.livenessIstructionsBackground.background = ColorDrawable(Color.parseColor(it))
+            drawable.setColor(Color.parseColor(it))
+        }
+        VCheckSDK.borderColorHex?.let {
+            drawable.setStroke(5, Color.parseColor(it))
         }
         VCheckSDK.backgroundSecondaryColorHex?.let {
             binding!!.card.setCardBackgroundColor(Color.parseColor(it))

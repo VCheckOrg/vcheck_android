@@ -58,7 +58,7 @@
         <entry key="app/src/main/res/layout/country_blocked_row.xml" value="0.3007246376811594" />
         <entry key="app/src/main/res/layout/country_list_fragment.xml" value="0.3007246376811594" />
         <entry key="app/src/main/res/layout/country_row.xml" value="0.3007246376811594" />
-        <entry key="app/src/main/res/layout/doc_info_row.xml" value="0.3007246376811594" />
+        <entry key="app/src/main/res/layout/doc_info_row.xml" value="0.31290322580645163" />
         <entry key="app/src/main/res/layout/error_fragment.xml" value="0.3007246376811594" />
         <entry key="app/src/main/res/layout/fail_verification_fragment.xml" value="0.3007246376811594" />
         <entry key="app/src/main/res/layout/fragment_demo_start.xml" value="0.324189603501472" />
@@ -68,7 +68,7 @@
         <entry key="app/src/main/res/layout/fragment_fail_video_upload.xml" value="0.3007246376811594" />
         <entry key="app/src/main/res/layout/fragment_liveness.xml" value="0.2767210144927536" />
         <entry key="app/src/main/res/layout/fragment_liveness_result_video_view.xml" value="0.3007246376811594" />
-        <entry key="app/src/main/res/layout/fragment_seg_error.xml" value="0.6853751907979965" />
+        <entry key="app/src/main/res/layout/fragment_seg_error.xml" value="0.12043683630580893" />
         <entry key="app/src/main/res/layout/fragment_seg_timeout.xml" value="0.20059661865234374" />
         <entry key="app/src/main/res/layout/fragment_segmentation_start.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_separated_success.xml" value="0.3007246376811594" />

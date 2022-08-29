@@ -168,7 +168,7 @@
     <string name="pop_sdk_title">К началу верификации</string>
     <string name="no_time_seg_subtitle">Мы не смогли обнаружить документ в заданной зоне. Убедитесь, что вы выбрали правильный тип документа и он хорошо виден в камеру.</string>
     <string name="make_photo_by_hand">Сделать фото вручную</string>
-    <string name="fatal_error_seg_descr">Мы не смогли сделать полное сканирование документа. Для продолжения требуется сделать фото вручную.</string>
+    <string name="fatal_error_seg">Мы не смогли сделать полное сканирование документа. Для продолжения требуется сделать фото вручную.</string>
 
-    <string name="segmentation_stage_success_first_page">Передняя сторона успешно считана. Пожалуйста, переверните документ/страницу.</string>
+    <string name="segmentation_stage_success_first_page">Лицевая сторона успешно отсканирована. Пожалуйста, переверните документ/страницу.</string>
 </resources>

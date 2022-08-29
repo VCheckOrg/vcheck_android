@@ -1,5 +1,6 @@
 package com.vcheck.sdk.core.presentation.segmentation.ui
 
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -61,6 +62,8 @@ class SegTimeoutFragment : ThemeWrapperFragment() {
         }
         VCheckSDK.primaryTextColorHex?.let {
             _binding!!.noTimeTitle.setTextColor(Color.parseColor(it))
+            _binding!!.replacePhotoButton.setTextColor(Color.parseColor(it))
+            _binding!!.replacePhotoButton.strokeColor = ColorStateList.valueOf(Color.parseColor(it))
             //_binding!!.tryAgainButton.setTextColor(Color.parseColor(it))
         }
         VCheckSDK.secondaryTextColorHex?.let {

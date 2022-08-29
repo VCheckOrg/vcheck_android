@@ -2,23 +2,27 @@ package com.vcheck.sdk.core.presentation.country_stage
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
-import com.vcheck.sdk.core.presentation.adapters.CountryListAdapter
 import com.vcheck.sdk.core.databinding.CountryListFragmentBinding
 import com.vcheck.sdk.core.domain.CountryTO
+import com.vcheck.sdk.core.presentation.adapters.CountryListAdapter
 import com.vcheck.sdk.core.presentation.adapters.SearchCountryCallback
 import com.vcheck.sdk.core.util.ThemeWrapperFragment
 import java.text.Collator
 import java.util.*
+
 
 class CountryListFragment : ThemeWrapperFragment(),
     CountryListAdapter.OnCountryItemClick, SearchCountryCallback {
@@ -28,6 +32,8 @@ class CountryListFragment : ThemeWrapperFragment(),
     private val args: CountryListFragmentArgs by navArgs()
 
     override fun changeColorsToCustomIfPresent() {
+        val searchText = binding.searchCountry
+            .findViewById(androidx.appcompat.R.id.search_src_text) as TextView
         VCheckSDK.backgroundPrimaryColorHex?.let {
             binding.backgroundCountryList.background = ColorDrawable(Color.parseColor(it))
             binding.searchCountry.background = ColorDrawable(Color.parseColor(it))
@@ -35,10 +41,18 @@ class CountryListFragment : ThemeWrapperFragment(),
         VCheckSDK.primaryTextColorHex?.let {
             binding.countryListBackArrow.setColorFilter(Color.parseColor(it))
             binding.tvNoCountriesFoundPlaceholder.setTextColor(Color.parseColor(it))
-
-            val searchText =
-                binding.searchCountry.findViewById<TextView>(androidx.appcompat.R.id.search_src_text)
             searchText.setTextColor(Color.parseColor(it))
+        }
+        VCheckSDK.secondaryTextColorHex?.let {
+            searchText.setHintTextColor(Color.parseColor(it))
+            val icon: ImageView = binding.searchCountry
+                .findViewById(androidx.appcompat.R.id.search_button)
+            val whiteIcon: Drawable = icon.drawable
+            whiteIcon.setTint(Color.parseColor(it))
+            icon.setImageDrawable(whiteIcon)
+            val clearBtn: ImageView = binding.searchCountry
+                .findViewById(androidx.appcompat.R.id.search_close_btn)
+            clearBtn.setColorFilter(Color.parseColor(it))
         }
         VCheckSDK.borderColorHex?.let {
             binding.searchCountryBorder.setCardBackgroundColor(Color.parseColor(it))
@@ -106,7 +120,7 @@ class CountryListFragment : ThemeWrapperFragment(),
         binding.countriesList.adapter = countryListAdapter
 
         binding.searchCountry.setOnQueryTextListener(object :
-            androidx.appcompat.widget.SearchView.OnQueryTextListener {
+            SearchView.OnQueryTextListener {
 
             override fun onQueryTextSubmit(p0: String?): Boolean {
                 binding.countriesList.isVisible = true

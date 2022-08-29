@@ -3,8 +3,9 @@ package com.vcheck.sdk.core.presentation.liveness
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.Color
+import android.graphics.*
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.ShapeDrawable
 import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
 import android.media.ImageReader
@@ -65,8 +66,6 @@ class VCheckLivenessActivity : AppCompatActivity(),
 
     private val scope = CoroutineScope(newSingleThreadContext("liveness"))
 
-    //private var gestureResponse: MutableLiveData<Resource<LivenessGestureResponse>> = MutableLiveData()
-
     private lateinit var binding: ActivityVcheckLivenessBinding
     private var mToast: Toast? = null
 
@@ -89,13 +88,18 @@ class VCheckLivenessActivity : AppCompatActivity(),
         StandardMilestoneFlow()
 
     private fun changeColorsToCustomIfPresent() {
+        val drawable = binding.cosmeticRoundedFrame.background as GradientDrawable
         VCheckSDK.backgroundPrimaryColorHex?.let {
             binding.livenessActivityBackground.setBackgroundColor(Color.parseColor(it))
+            drawable.setColor(Color.parseColor(it))
         }
         VCheckSDK.primaryTextColorHex?.let {
             binding.backArrow.setColorFilter(Color.parseColor(it))
             binding.popSdkTitle.setTextColor(Color.parseColor(it))
             binding.checkFaceTitle.setTextColor(Color.parseColor(it))
+        }
+        VCheckSDK.borderColorHex?.let {
+            drawable.setStroke(7, Color.parseColor(it))
         }
     }
 

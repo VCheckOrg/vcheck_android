@@ -168,7 +168,7 @@
     <string name="pop_sdk_title">Do początku weryfikacji</string>
     <string name="no_time_seg_subtitle">Nie mogliśmy znaleźć dokumentu w danej strefie. Upewnij się, że wybrałeś właściwy typ dokumentu i że jest on wyraźnie widoczny w aparacie.</string>
     <string name="make_photo_by_hand">Zrób zdjęcie ręcznie</string>
-    <string name="fatal_error_seg_descr">Nie byliśmy w stanie wykonać pełnego skanu dokumentu. Aby kontynuować, musisz zrobić zdjęcie ręcznie.</string>
+    <string name="fatal_error_seg">Nie byliśmy w stanie wykonać pełnego skanu dokumentu. Aby kontynuować, musisz zrobić zdjęcie ręcznie.</string>
 
-    <string name="segmentation_stage_success_first_page">Nie byliśmy w stanie wykonać pełnego skanu dokumentu. Aby kontynuować, musisz zrobić zdjęcie ręcznie.</string>
+    <string name="segmentation_stage_success_first_page">Strona przednia zeskanowana pomyślnie. Proszę odwrócić dokument/stronę.</string>
 </resources>

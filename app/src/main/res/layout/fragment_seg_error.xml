@@ -54,7 +54,7 @@
                     android:layout_marginTop="40dp"
                     android:layout_marginEnd="16dp"
                     android:gravity="center"
-                    android:text="@string/fatal_error_seg_descr"
+                    android:text="@string/fatal_error_seg"
                     android:textColor="#D8D8D8"
                     android:textSize="14sp"
                     android:textStyle="normal"

@@ -27,7 +27,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="20dp"
         app:cardCornerRadius="8dp"
-        app:cardBackgroundColor="#7F7F7F"
+        app:cardBackgroundColor="@color/vcheck_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -37,15 +37,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/vcheck_background_tertiary"
-            android:layout_margin="1dp"
-            app:cardCornerRadius="8dp">
+            android:layout_margin="1.5dp"
+            app:cardCornerRadius="6dp"
+            app:cardBackgroundColor="#7F7F7F">
 
             <EditText
                 android:id="@+id/info_field"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/vcheck_background_tertiary"
-                android:layout_margin="1dp"
                 android:paddingStart="16dp"
                 android:paddingTop="12dp"
                 android:paddingEnd="16dp"

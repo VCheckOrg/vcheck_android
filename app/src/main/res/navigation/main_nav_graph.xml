@@ -208,6 +208,7 @@
         <action
             android:id="@+id/action_segErrorFragment_to_photoInstructionsFragment"
             app:destination="@id/photoInstructionsFragment" />
-    </fragment><action android:id="@+id/action_global_photoUploadScreen" app:destination="@id/photoUploadScreen"/><action android:id="@+id/action_global_chooseDocMethodScreen" app:destination="@id/chooseDocMethodScreen"/>
+    </fragment>
+    <action android:id="@+id/action_global_chooseDocMethodScreen" app:destination="@id/chooseDocMethodScreen"/>
 
 </navigation>
