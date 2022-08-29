@@ -301,7 +301,8 @@ class VCheckLivenessActivity : AppCompatActivity(),
                 }
             }
         } else {
-            if (!isLivenessSessionFinished && !blockProcessingByUI) {
+            //if (!isLivenessSessionFinished && !blockProcessingByUI) { //obsolete logic (?)
+            if (!enoughTimeForNextGesture()) {
                 runOnUiThread {
                     onFatalObstacleWorthRetry(R.id.action_dummyLivenessStartDestFragment_to_noTimeFragment)
                 }

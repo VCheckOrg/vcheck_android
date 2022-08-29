@@ -45,11 +45,14 @@ class CountryListFragment : ThemeWrapperFragment(),
         }
         VCheckSDK.secondaryTextColorHex?.let {
             searchText.setHintTextColor(Color.parseColor(it))
+            //--
             val icon: ImageView = binding.searchCountry
-                .findViewById(androidx.appcompat.R.id.search_button)
-            val whiteIcon: Drawable = icon.drawable
-            whiteIcon.setTint(Color.parseColor(it))
-            icon.setImageDrawable(whiteIcon)
+                .findViewById(androidx.appcompat.R.id.search_mag_icon)
+            icon.setColorFilter(Color.parseColor(it))
+//            val whiteIcon: Drawable = icon.drawable
+//            whiteIcon.setTint(Color.parseColor(it))
+//            icon.setImageDrawable(whiteIcon)
+            //--
             val clearBtn: ImageView = binding.searchCountry
                 .findViewById(androidx.appcompat.R.id.search_close_btn)
             clearBtn.setColorFilter(Color.parseColor(it))
@@ -57,10 +60,6 @@ class CountryListFragment : ThemeWrapperFragment(),
         VCheckSDK.borderColorHex?.let {
             binding.searchCountryBorder.setCardBackgroundColor(Color.parseColor(it))
         }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(
