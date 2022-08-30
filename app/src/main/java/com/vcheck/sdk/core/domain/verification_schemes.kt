@@ -9,3 +9,8 @@ enum class VerificationSchemeType {
 fun VerificationSchemeType.toStringRepresentation(): String {
     return this.name.lowercase()
 }
+
+enum class VCheckEnvironment {
+    PARTNER,
+    DEV
+}

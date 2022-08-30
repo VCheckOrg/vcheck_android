@@ -5,6 +5,7 @@ import android.graphics.Matrix
 import android.media.ImageReader
 import android.os.Environment
 import android.util.Log
+import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.presentation.segmentation.VCheckSegmentationActivity
 import com.vcheck.sdk.core.util.ImageUtils
 import com.vcheck.sdk.core.util.fillBytes
@@ -85,10 +86,12 @@ fun VCheckSegmentationActivity.createTempFileForBitmapFrame(mBitmap: Bitmap): St
 }
 
 fun Bitmap.cropWithMask(): Bitmap {
+    val maskDimens = VCheckDIContainer.mainRepository.getSelectedDocTypeWithData()!!.maskDimensions!!
+
     val originalWidth = this.width
     val originalHeight = this.height
-    val desiredWidth = (originalWidth * 0.75).toInt()
-    val desiredHeight = (desiredWidth * 0.63).toInt()
+    val desiredWidth = (originalWidth * (maskDimens.widthPercent / 100)).toInt()
+    val desiredHeight = (desiredWidth * maskDimens.ratio).toInt()
     val cropHeightFromEachSide = ((originalHeight - desiredHeight) / 2)
     val cropWidthFromEachSide = ((originalWidth - desiredWidth) / 2)
 

@@ -41,7 +41,16 @@ data class DocTypeData(
     @SerializedName("fields")
     val docFields: List<DocField>,
     @SerializedName("is_inspection_available")
-    val isSegmentationAvailable: Boolean
+    val isSegmentationAvailable: Boolean,
+    @SerializedName("mask")
+    val maskDimensions: MaskDimensions?
+)
+
+data class MaskDimensions(
+    @SerializedName("ratio")
+    val ratio: Double,
+    @SerializedName("width_percent")
+    val widthPercent: Double //!
 )
 
 data class DocField(

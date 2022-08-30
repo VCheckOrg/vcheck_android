@@ -51,6 +51,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
+import java.lang.NullPointerException
 import kotlin.concurrent.fixedRateTimer
 
 @OptIn(DelicateCoroutinesApi::class)
@@ -253,38 +254,45 @@ class VCheckSegmentationActivity : AppCompatActivity(),
     }
 
     private fun setSegmentationFrameSize() {
-        if (frameSize == null) {
-            val displayMetrics: DisplayMetrics = resources.displayMetrics
-            val factor: Float = displayMetrics.density
-            val dpWidth = displayMetrics.widthPixels / factor
 
-            val frameWidth = ((dpWidth * 0.84) * factor).toInt()
-            val frameHeight = (frameWidth * 0.63).toInt()
+        val maskDimens = VCheckDIContainer.mainRepository.getSelectedDocTypeWithData()?.maskDimensions
+
+        if (maskDimens != null) {
+            if (frameSize == null) {
+                val displayMetrics: DisplayMetrics = resources.displayMetrics
+                val factor: Float = displayMetrics.density
+                val dpWidth = displayMetrics.widthPixels / factor
+
+                val frameWidth = ((dpWidth * (maskDimens.widthPercent / 100)) * factor).toInt()
+                val frameHeight = (frameWidth * maskDimens.ratio).toInt()
 
 //            Log.d("SEG", "VIEW WIDTH: $dpWidth")
 //            Log.d("SEG", "FRAME WIDTH: $frameWidth | FRAME HEIGHT: $frameHeight")
 
-            frameSize = Size(frameWidth, frameHeight)
+                frameSize = Size(frameWidth, frameHeight)
 
-            binding.segmentationFrame.layoutParams.width = frameSize!!.width
-            binding.segmentationFrame.layoutParams.height = frameSize!!.height
+                binding.segmentationFrame.layoutParams.width = frameSize!!.width
+                binding.segmentationFrame.layoutParams.height = frameSize!!.height
 
-            binding.darkFrameOverlay.layoutParams.width = frameSize!!.width - 8
-            binding.darkFrameOverlay.layoutParams.height = frameSize!!.height - 8
+                binding.darkFrameOverlay.layoutParams.width = frameSize!!.width - 8
+                binding.darkFrameOverlay.layoutParams.height = frameSize!!.height - 8
 
-            binding.segmentationMaskWrapper.post {
-                binding.segmentationMaskWrapper.setRectHoleSize(
-                    frameSize!!.width - 8, frameSize!!.height - 8)
+                binding.segmentationMaskWrapper.post {
+                    binding.segmentationMaskWrapper.setRectHoleSize(
+                        frameSize!!.width - 8, frameSize!!.height - 8)
+                }
+                binding.docAnimationView.post {
+                    binding.docAnimationView.layoutParams.width = frameSize!!.width
+                    binding.docAnimationView.layoutParams.height = frameSize!!.height
+                }
             }
-            binding.docAnimationView.post {
-                binding.docAnimationView.layoutParams.width = frameSize!!.width
-                binding.docAnimationView.layoutParams.height = frameSize!!.height
-            }
+        } else {
+            showSingleToast("Error: cannot retrieve mask dimensions from document type info")
+            return
         }
     }
 
     suspend fun processImage() {
-
         try {
             Handler(Looper.getMainLooper()).post {
                 openLivenessCameraParams?.apply {

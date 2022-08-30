@@ -1,6 +1,8 @@
 package com.vcheck.sdk.core.di
 
+import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.data.*
+import com.vcheck.sdk.core.domain.VCheckEnvironment
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
@@ -42,7 +44,10 @@ object VCheckDIContainer {
         return Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .client(getHttpClient().build())
-            .baseUrl(VCheckSDKConstantsProvider.VERIFICATIONS_API_BASE_URL) //TEST(DEV)
+            .baseUrl(
+                if (VCheckSDK.getEnvironment() == VCheckEnvironment.DEV)
+                    VCheckSDKConstantsProvider.DEV_VERIFICATIONS_API_BASE_URL
+                else VCheckSDKConstantsProvider.PARTNER_VERIFICATIONS_API_BASE_URL)
             .build()
     }
 

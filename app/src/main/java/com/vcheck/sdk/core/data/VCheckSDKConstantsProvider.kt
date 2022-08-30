@@ -4,7 +4,8 @@ class VCheckSDKConstantsProvider {
 
     companion object {
 
-        const val VERIFICATIONS_API_BASE_URL = "https://test-verification.vycheck.com/api/v1/"
+        const val DEV_VERIFICATIONS_API_BASE_URL = "https://test-verification.vycheck.com/api/v1/"
+        const val PARTNER_VERIFICATIONS_API_BASE_URL = "https://verification.vycheck.com/api/v1/"
 
         val vcheckSDKAvailableLanguagesList = listOf<String>(
             "uk",

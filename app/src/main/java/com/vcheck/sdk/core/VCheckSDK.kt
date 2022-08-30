@@ -23,6 +23,8 @@ object VCheckSDK {
 
     private var sdkLanguageCode: String? = null
 
+    private var environment: VCheckEnvironment? = null
+
     internal var showPartnerLogo: Boolean = false
     internal var showCloseSDKButton: Boolean = true
 
@@ -79,6 +81,10 @@ object VCheckSDK {
             throw IllegalArgumentException("VCheckSDK - error: SDK is not localized with [$sdkLanguageCode] locale yet. " +
                     "You may set one of the next locales: ${VCheckSDKConstantsProvider.vcheckSDKAvailableLanguagesList}, " +
                     "or check out for the recent version of the SDK library")
+        }
+        if (environment == null) {
+            throw IllegalArgumentException("VCheckSDK - warning: sdk environment is not set; using DEV environment by default " +
+                    "| see VCheckSDK.shared.environment(env: VCheckEnvironment)")
         }
         if (buttonsColorHex != null && !buttonsColorHex!!.isValidHexColor()) {
             throw IllegalArgumentException(wrongColorFormatPickDescr)
@@ -211,5 +217,14 @@ object VCheckSDK {
     fun showCloseSDKButton(show: Boolean): VCheckSDK {
         this.showCloseSDKButton = show
         return this
+    }
+
+    fun environment(env: VCheckEnvironment): VCheckSDK {
+        this.environment = env
+        return this
+    }
+
+    internal fun getEnvironment(): VCheckEnvironment {
+        return this.environment ?: VCheckEnvironment.DEV
     }
 }

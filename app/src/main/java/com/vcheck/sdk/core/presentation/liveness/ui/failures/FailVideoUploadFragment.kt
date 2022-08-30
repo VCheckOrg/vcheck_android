@@ -2,6 +2,7 @@ package com.vcheck.sdk.core.presentation.liveness.ui.failures
 
 import android.content.ClipDescription
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -25,6 +26,7 @@ class FailVideoUploadFragment : ThemeWrapperFragment() {
         }
         VCheckSDK.backgroundPrimaryColorHex?.let {
             _binding!!.failVideoUploadBackground.background = ColorDrawable(Color.parseColor(it))
+            _binding!!.contactSupportButton.setBackgroundColor(Color.parseColor(it))
         }
         VCheckSDK.backgroundSecondaryColorHex?.let {
             _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
@@ -32,7 +34,8 @@ class FailVideoUploadFragment : ThemeWrapperFragment() {
         VCheckSDK.primaryTextColorHex?.let {
             _binding!!.failVerificationTitle.setTextColor(Color.parseColor(it))
             _binding!!.failVerificationDescription.setTextColor(Color.parseColor(it))
-            //_binding!!.retryButton.setTextColor(Color.parseColor(it))
+            _binding!!.contactSupportButton.setTextColor(Color.parseColor(it))
+            _binding!!.contactSupportButton.strokeColor = ColorStateList.valueOf(Color.parseColor(it))
         }
     }
 
