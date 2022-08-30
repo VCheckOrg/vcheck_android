@@ -50,7 +50,7 @@
     <string name="frame_interference_button">Попробовать снова</string>
     <string name="fail_verification_title">Верификация неуспешна</string>
     <string name="fail_verification_description">К сожалению, нам не удалось верифицировать вашу заявку. Если вы не согласны с данным решением, просьба обратиться в службу поддержки</string>
-    <string name="fail_verification_support_button">Обратиться в службу поддер…</string>
+    <string name="fail_verification_support_button">Обратиться в службу поддержки</string>
     <string name="fail_verification_close_button">Закрыть</string>
     <string name="error_title">Что-то пошло не так :(</string>
     <string name="error_description">По какой-то причине мы не смогли загрузить контент данной страницы. Попробуйте перезагрузить страницу</string>

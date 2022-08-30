@@ -35,7 +35,6 @@ import com.vcheck.sdk.core.domain.DocType
 import com.vcheck.sdk.core.domain.DocTypeData
 import com.vcheck.sdk.core.domain.SegmentationGestureResponse
 import com.vcheck.sdk.core.domain.docCategoryIdxToType
-import com.vcheck.sdk.core.presentation.liveness.VCheckLivenessActivity
 import com.vcheck.sdk.core.presentation.liveness.flow_logic.LivenessCameraParams
 import com.vcheck.sdk.core.presentation.segmentation.flow_logic.*
 import com.vcheck.sdk.core.presentation.segmentation.ui.SegmentationCameraConnectionFragment
@@ -51,7 +50,6 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
-import java.lang.NullPointerException
 import kotlin.concurrent.fixedRateTimer
 
 @OptIn(DelicateCoroutinesApi::class)
@@ -260,10 +258,10 @@ class VCheckSegmentationActivity : AppCompatActivity(),
         if (maskDimens != null) {
             if (frameSize == null) {
                 val displayMetrics: DisplayMetrics = resources.displayMetrics
-                val factor: Float = displayMetrics.density
-                val dpWidth = displayMetrics.widthPixels / factor
+                val densityFactor: Float = displayMetrics.density
+                val dpWidth = displayMetrics.widthPixels / densityFactor
 
-                val frameWidth = ((dpWidth * (maskDimens.widthPercent / 100)) * factor).toInt()
+                val frameWidth = ((dpWidth * (maskDimens.widthPercent / 100)) * densityFactor).toInt()
                 val frameHeight = (frameWidth * maskDimens.ratio).toInt()
 
 //            Log.d("SEG", "VIEW WIDTH: $dpWidth")
@@ -276,6 +274,9 @@ class VCheckSegmentationActivity : AppCompatActivity(),
 
                 binding.darkFrameOverlay.layoutParams.width = frameSize!!.width - 8
                 binding.darkFrameOverlay.layoutParams.height = frameSize!!.height - 8
+
+                binding.stageSuccessFrame.layoutParams.width = frameSize!!.width
+                binding.stageSuccessFrame.layoutParams.height = frameSize!!.height
 
                 binding.segmentationMaskWrapper.post {
                     binding.segmentationMaskWrapper.setRectHoleSize(

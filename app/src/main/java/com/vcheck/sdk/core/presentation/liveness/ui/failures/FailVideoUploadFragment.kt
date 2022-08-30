@@ -26,10 +26,10 @@ class FailVideoUploadFragment : ThemeWrapperFragment() {
         }
         VCheckSDK.backgroundPrimaryColorHex?.let {
             _binding!!.failVideoUploadBackground.background = ColorDrawable(Color.parseColor(it))
-            _binding!!.contactSupportButton.setBackgroundColor(Color.parseColor(it))
         }
         VCheckSDK.backgroundSecondaryColorHex?.let {
             _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
+            _binding!!.contactSupportButton.setBackgroundColor(Color.parseColor(it))
         }
         VCheckSDK.primaryTextColorHex?.let {
             _binding!!.failVerificationTitle.setTextColor(Color.parseColor(it))
