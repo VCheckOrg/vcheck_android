@@ -96,10 +96,8 @@ class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
         if (token.isNotEmpty()) {
             _viewModel.uploadResponse.observe(viewLifecycleOwner) {
                 if (it != null) {
-                    if (it.data?.data?.isFinal != null && it.data.data.isFinal) {
+                    if (it.data != null) {
                         handleVideoUploadResponse(it)
-                    } else if (it.data != null) {
-                            handleVideoUploadResponse(it)
                     }
                     Log.d("LIVENESS", "RESPONSE: ${it.data} | DATA: ${it.data?.data}")
                 } else {
@@ -119,6 +117,9 @@ class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
     }
 
     private fun handleVideoUploadResponse(uploadResponse: Resource<LivenessUploadResponse>) {
+        if (uploadResponse.data?.data?.isFinal != null && uploadResponse.data.data.isFinal) {
+            onVideoUploadResponseSuccess()
+        } else {
             if (statusCodeToLivenessChallengeStatus(uploadResponse.data!!.data.status) == LivenessChallengeStatus.FAIL) {
                 if (uploadResponse.data.data.reason != null && uploadResponse.data.data.reason.isNotEmpty()) {
                     onBackendObstacleMet(strCodeToLivenessFailureReason(uploadResponse.data.data.reason))
@@ -128,6 +129,7 @@ class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
             } else {
                 onVideoUploadResponseSuccess()
             }
+        }
     }
 
     private fun onBackendObstacleMet(reason: LivenessFailureReason) {
