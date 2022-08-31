@@ -34,9 +34,6 @@ class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
     private var _binding: InProcessFragmentBinding? = null
     private lateinit var _viewModel: InProcessViewModel
 
-    //counting video upload chained api responses; 1st one is ping; we need 2nd to claim result
-    //private var lazyUploadResponseCounter = 0
-
     override fun changeColorsToCustomIfPresent() {
         VCheckSDK.buttonsColorHex?.let {
             _binding!!.successButton.setBackgroundColor(Color.parseColor(it))
@@ -58,7 +55,6 @@ class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _viewModel = InProcessViewModel(VCheckDIContainer.mainRepository)
-        //lazyUploadResponseCounter = 0
     }
 
     override fun onCreateView(
@@ -99,9 +95,6 @@ class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
                     if (it.data != null) {
                         handleVideoUploadResponse(it)
                     }
-                    Log.d("LIVENESS", "RESPONSE: ${it.data} | DATA: ${it.data?.data}")
-                } else {
-                    Log.d("LIVENESS", "RESPONSE == NULL")
                 }
             }
 
