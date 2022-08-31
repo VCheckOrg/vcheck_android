@@ -1,5 +1,5 @@
 plugins {
-    id 'com.android.library' //'com.android.application'
+    id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'kotlin-parcelize'
@@ -14,7 +14,7 @@ android {
     defaultConfig {
         minSdk 21
         targetSdk 32
-        versionCode 15
+        versionCode 16
         versionName "1.0.16"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
