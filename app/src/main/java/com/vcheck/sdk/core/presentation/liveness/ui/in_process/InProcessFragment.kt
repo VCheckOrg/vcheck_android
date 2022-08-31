@@ -117,7 +117,9 @@ class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
                 onVideoUploadResponseSuccess()
             } else {
                 if (statusCodeToLivenessChallengeStatus(uploadResponse.data.data.status) == LivenessChallengeStatus.FAIL) {
-                    if (uploadResponse.data.data.reason != null && uploadResponse.data.data.reason.isNotEmpty()) {
+                    if (uploadResponse.data.data.isFinal) {
+                        onVideoUploadResponseSuccess()
+                    } else if (uploadResponse.data.data.reason != null && uploadResponse.data.data.reason.isNotEmpty()) {
                         onBackendObstacleMet(strCodeToLivenessFailureReason(uploadResponse.data.data.reason))
                     } else {
                         onVideoUploadResponseSuccess()
