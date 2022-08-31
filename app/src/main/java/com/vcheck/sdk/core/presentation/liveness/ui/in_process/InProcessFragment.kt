@@ -58,6 +58,7 @@ class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _viewModel = InProcessViewModel(VCheckDIContainer.mainRepository)
+        lazyUploadResponseCounter = 0
     }
 
     override fun onCreateView(
@@ -103,7 +104,7 @@ class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
                         lazyUploadResponseCounter =+ 1
                     }
                 }
-                Log.d("LIVENESS", "RESPONSE: $it | COUNTER: $lazyUploadResponseCounter")
+                Log.d("LIVENESS", "RESPONSE: ${it.data} | DATA: ${it.data?.data} | COUNTER: $lazyUploadResponseCounter")
             }
 
             _viewModel.clientError.observe(viewLifecycleOwner) {

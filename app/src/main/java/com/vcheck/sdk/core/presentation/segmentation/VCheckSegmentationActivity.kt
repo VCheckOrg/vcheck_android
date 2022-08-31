@@ -62,6 +62,7 @@ class VCheckSegmentationActivity : AppCompatActivity(),
         private const val BLOCK_PIPELINE_TIME_MILLIS: Long = 3800 //may reduce a bit
         private const val GESTURE_REQUEST_DEBOUNCE_MILLIS: Long = 410
         private const val STAGE_VIBRATION_DURATION_MILLIS: Long = 100
+        private const val MASK_UI_MULTIPLY_FACTOR: Double = 1.1
     }
 
     val scope = CoroutineScope(newSingleThreadContext("segmentation"))
@@ -261,7 +262,8 @@ class VCheckSegmentationActivity : AppCompatActivity(),
                 val densityFactor: Float = displayMetrics.density
                 val dpWidth = displayMetrics.widthPixels / densityFactor
 
-                val frameWidth = ((dpWidth * (maskDimens.widthPercent / 100)) * densityFactor).toInt()
+                val frameWidth = (((dpWidth * (maskDimens.widthPercent / 100)) * densityFactor)
+                        * MASK_UI_MULTIPLY_FACTOR).toInt()
                 val frameHeight = (frameWidth * maskDimens.ratio).toInt()
 
 //            Log.d("SEG", "VIEW WIDTH: $dpWidth")

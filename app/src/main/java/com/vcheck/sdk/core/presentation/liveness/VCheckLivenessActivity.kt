@@ -49,7 +49,9 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import java.io.IOException
+import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
+import kotlin.collections.ArrayList
 import kotlin.concurrent.fixedRateTimer
 
 @OptIn(DelicateCoroutinesApi::class)
@@ -65,6 +67,8 @@ class VCheckLivenessActivity : AppCompatActivity(),
     }
 
     private val scope = CoroutineScope(newSingleThreadContext("liveness"))
+
+    private var timer: Timer? = null
 
     private lateinit var binding: ActivityVcheckLivenessBinding
     private var mToast: Toast? = null
@@ -147,7 +151,7 @@ class VCheckLivenessActivity : AppCompatActivity(),
     }
 
     private fun setGestureRequestDebounceTimer() {
-        fixedRateTimer("timer", false, 0L, GESTURE_REQUEST_DEBOUNCE_MILLIS) {
+        timer = fixedRateTimer("timer", false, 0L, GESTURE_REQUEST_DEBOUNCE_MILLIS) {
             scope.launch {
                 determineImageResult()
             }
@@ -456,6 +460,7 @@ class VCheckLivenessActivity : AppCompatActivity(),
             binding.imgViewStaticStageIndication.isVisible = true
             binding.stageSuccessAnimBorder.isVisible = true
             binding.livenessCosmeticsHolder.isVisible = false
+            timer?.cancel()
             camera2Fragment?.onPause() //!
             safeNavigateToResultDestination(R.id.action_dummyLivenessStartDestFragment_to_inProcessFragment)
         }
@@ -476,7 +481,8 @@ class VCheckLivenessActivity : AppCompatActivity(),
     private fun onFatalObstacleWorthRetry(actionIdForNav: Int) {
         vibrateDevice(this@VCheckLivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
         finishLivenessSession()
-        livenessSessionLimitCheckTime = SystemClock.elapsedRealtime()
+        timer?.cancel()
+        //livenessSessionLimitCheckTime = SystemClock.elapsedRealtime()
         binding.livenessCosmeticsHolder.isVisible = false
         safeNavigateToResultDestination(actionIdForNav)
     }
@@ -517,6 +523,7 @@ class VCheckLivenessActivity : AppCompatActivity(),
 
     override fun onDestroy() {
         scope.cancel()
+        timer?.cancel()
         bitmapList = null
         muxer = null
         openLivenessCameraParams = null
