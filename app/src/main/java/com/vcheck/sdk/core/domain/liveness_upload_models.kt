@@ -23,7 +23,7 @@ data class LivenessUploadResponse(
 )
 
 data class LivenessUploadResponseData(
-    @SerializedName("is_final")
+    @SerializedName("is_primary")
     val isFinal: Boolean?,
     @SerializedName("status")
     val status: Int,
