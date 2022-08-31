@@ -94,10 +94,14 @@ class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
 
         if (token.isNotEmpty()) {
             _viewModel.uploadResponse.observe(viewLifecycleOwner) {
-                if (lazyUploadResponseCounter == 1 && it != null && it.data != null) {
-                    handleVideoUploadResponse(it, token)
+                if (it.data != null && it.data.data.isFinal) {
+                    handleVideoUploadResponse(it)
                 } else {
-                    lazyUploadResponseCounter =+ 1
+                    if (lazyUploadResponseCounter == 1 && it != null && it.data != null) {
+                        handleVideoUploadResponse(it)
+                    } else {
+                        lazyUploadResponseCounter =+ 1
+                    }
                 }
             }
 
@@ -112,21 +116,15 @@ class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
         }
     }
 
-    private fun handleVideoUploadResponse(uploadResponse: Resource<LivenessUploadResponse>, token: String) {
-            if (uploadResponse.data!!.data.isFinal) {
-                onVideoUploadResponseSuccess()
-            } else {
-                if (statusCodeToLivenessChallengeStatus(uploadResponse.data.data.status) == LivenessChallengeStatus.FAIL) {
-                    if (uploadResponse.data.data.isFinal) {
-                        onVideoUploadResponseSuccess()
-                    } else if (uploadResponse.data.data.reason != null && uploadResponse.data.data.reason.isNotEmpty()) {
-                        onBackendObstacleMet(strCodeToLivenessFailureReason(uploadResponse.data.data.reason))
-                    } else {
-                        onVideoUploadResponseSuccess()
-                    }
+    private fun handleVideoUploadResponse(uploadResponse: Resource<LivenessUploadResponse>) {
+            if (statusCodeToLivenessChallengeStatus(uploadResponse.data!!.data.status) == LivenessChallengeStatus.FAIL) {
+                if (uploadResponse.data.data.reason != null && uploadResponse.data.data.reason.isNotEmpty()) {
+                    onBackendObstacleMet(strCodeToLivenessFailureReason(uploadResponse.data.data.reason))
                 } else {
                     onVideoUploadResponseSuccess()
                 }
+            } else {
+                onVideoUploadResponseSuccess()
             }
     }
 
