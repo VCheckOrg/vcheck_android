@@ -94,7 +94,7 @@ class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
 
         if (token.isNotEmpty()) {
             _viewModel.uploadResponse.observe(viewLifecycleOwner) {
-                if (it.data != null && it.data.data.isFinal) {
+                if (it != null && it.data?.data?.isFinal != null && it.data.data.isFinal) {
                     handleVideoUploadResponse(it)
                 } else {
                     if (lazyUploadResponseCounter == 1 && it != null && it.data != null) {
@@ -103,6 +103,7 @@ class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
                         lazyUploadResponseCounter =+ 1
                     }
                 }
+                Log.d("LIVENESS", "RESPONSE: $it | COUNTER: $lazyUploadResponseCounter")
             }
 
             _viewModel.clientError.observe(viewLifecycleOwner) {
