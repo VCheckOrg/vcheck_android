@@ -95,16 +95,20 @@ class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
 
         if (token.isNotEmpty()) {
             _viewModel.uploadResponse.observe(viewLifecycleOwner) {
-                if (it != null && it.data?.data?.isFinal != null && it.data.data.isFinal) {
-                    handleVideoUploadResponse(it)
-                } else {
-                    if (lazyUploadResponseCounter == 1 && it != null && it.data != null) {
+                if (it != null) {
+                    if (it.data?.data?.isFinal != null && it.data.data.isFinal) {
                         handleVideoUploadResponse(it)
                     } else {
-                        lazyUploadResponseCounter =+ 1
+                        if (lazyUploadResponseCounter == 1 && it.data != null) {
+                            handleVideoUploadResponse(it)
+                        } else {
+                            lazyUploadResponseCounter =+ 1
+                        }
                     }
+                    Log.d("LIVENESS", "RESPONSE: ${it.data} | DATA: ${it.data?.data} | COUNTER: $lazyUploadResponseCounter")
+                } else {
+                    Log.d("LIVENESS", "RESPONSE == NULL")
                 }
-                Log.d("LIVENESS", "RESPONSE: ${it.data} | DATA: ${it.data?.data} | COUNTER: $lazyUploadResponseCounter")
             }
 
             _viewModel.clientError.observe(viewLifecycleOwner) {
