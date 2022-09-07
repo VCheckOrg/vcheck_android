@@ -40,9 +40,6 @@
         <action
             android:id="@+id/action_chooseDocMethodScreen_to_photoInstructionsFragment"
             app:destination="@id/photoInstructionsFragment" />
-        <action
-            android:id="@+id/action_chooseDocMethodScreen_to_segmentationStartFragment"
-            app:destination="@id/segmentationStartFragment" />
     </fragment>
 
     <fragment
@@ -67,6 +64,9 @@
         <action
             android:id="@+id/action_photoInstructionsFragment_to_photoUploadScreen"
             app:destination="@id/photoUploadScreen" />
+        <action
+            android:id="@+id/action_photoInstructionsFragment_to_segmentationStartFragment"
+            app:destination="@id/segmentationStartFragment" />
     </fragment>
 
     <fragment
@@ -193,9 +193,6 @@
         <action
             android:id="@+id/action_segmentationStartFragment_to_checkPhotoFragment"
             app:destination="@id/checkPhotoFragment" />
-        <action
-            android:id="@+id/action_segmentationStartFragment_to_photoInstructionsFragment"
-            app:destination="@id/photoInstructionsFragment" />
     </fragment>
     <fragment
         android:id="@+id/segErrorFragment"
@@ -209,6 +206,6 @@
             android:id="@+id/action_segErrorFragment_to_photoInstructionsFragment"
             app:destination="@id/photoInstructionsFragment" />
     </fragment>
-    <action android:id="@+id/action_global_chooseDocMethodScreen" app:destination="@id/chooseDocMethodScreen"/>
+    <action android:id="@+id/action_global_chooseDocMethodScreen" app:destination="@id/chooseDocMethodScreen"/><action android:id="@+id/action_global_photoInstructionsFragment" app:destination="@id/photoInstructionsFragment"/>
 
 </navigation>

@@ -40,8 +40,8 @@
     <string name="fail_verification_title">Weryfikacja nie powiodła się</string>
     <string name="frame_interference_button">Spróbuj ponownie</string>
     <string name="start_demo_flow">Spróbuj ponownie</string>
-    <string name="photo_instructions_title">Wymagania dotyczące zdjęć</string>
-    <string name="photo_instructions_description">Zdjęcie Twojego dokumentu musi spełniać następujące wymagania:</string>
+    <string name="photo_instructions_title">Wymagania dotyczące dokumentów</string>
+    <string name="photo_instructions_description">Przesłany dokument musi spełniać następujące wymagania:</string>
     <string name="wrong_move_description">Ruch, który należało wykonać, nie został wykonany poprawnie. Postaraj się wykonać dokładnie te ruchy, o które Cię proszą. Ruchy powinny być płynne i terminowe.</string>
     <string name="choose_doc_method_description">W celu dalszego przetwarzania i walidacji proszę wskazać poniżej, który typ odpowiada Twojemu dokumentowi.</string>
     <string name="docMethodIdCard">Dowód osobisty</string>
@@ -50,7 +50,7 @@
     <string name="seen_four_corners_text">wszystkie 4 rogi dokumentu są w pełni widoczne</string>
     <string name="valid_dispatch_text">ważne w momencie wysyłki</string>
     <string name="no_foreign_objects_text">nie ma żadnych obcych przedmiotów: okładek, palców, spinaczy itp.</string>
-    <string name="original_doc_text">sfotografowany lub zeskanowany z oryginałów</string>
+    <string name="original_doc_text">oryginał (nie kserokopia, nie zdjęcie)</string>
     <string name="photo_upload_title_common_forward">Zdjęcie pierwszej strony dokumentu (z Twoim zdjęciem).</string>
     <string name="photo_upload_title_foreign">Pełne rozłożenie dokumentu z Twoim zdjęciem</string>
     <string name="check_filled_data_description">Sprawdź, czy wszystkie dane dokumentu zostały poprawnie rozpoznane?</string>

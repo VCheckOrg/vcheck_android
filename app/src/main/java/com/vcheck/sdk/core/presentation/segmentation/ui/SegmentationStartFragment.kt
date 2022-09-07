@@ -42,7 +42,7 @@ class SegmentationStartFragment : ThemeWrapperFragment() {
                         Log.d(TAG, "Photo transferrable object was not set")
                     }
                 } else {
-                    findNavController().navigate(R.id.action_segmentationStartFragment_to_photoInstructionsFragment)
+                    findNavController().navigate(R.id.action_global_photoInstructionsFragment)
                 }
             } else {
                 Log.d(TAG, "Back press from SegmentationActivity")
@@ -62,6 +62,7 @@ class SegmentationStartFragment : ThemeWrapperFragment() {
         }
         VCheckSDK.primaryTextColorHex?.let {
             _binding!!.docTitle.setTextColor(Color.parseColor(it))
+            _binding!!.backArrow.setColorFilter(Color.parseColor(it))
         }
         VCheckSDK.secondaryTextColorHex?.let {
             _binding!!.docSubtitle.setTextColor(Color.parseColor(it))

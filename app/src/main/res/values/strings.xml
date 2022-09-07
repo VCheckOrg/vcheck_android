@@ -15,8 +15,8 @@
     <string name="search">Search</string>
     <string name="choose_country_title">Select the country</string>
     <string name="choose_country_description">Select the country of registration of your document, which should be uploaded in the next step.</string>
-    <string name="photo_instructions_title">Photo requirements</string>
-    <string name="photo_instructions_description">The photo of your document must face the following requirements:</string>
+    <string name="photo_instructions_title">Document requirements</string>
+    <string name="photo_instructions_description">Submitted document must meet the following requirements:</string>
     <string name="photo_instructions_button">Next</string>
     <string name="choose_country_card_title">Country</string>
     <string name="proceed">Continue</string>
@@ -30,7 +30,7 @@
     <string name="seen_four_corners_text">all 4 corners of the document are fully visible</string>
     <string name="valid_dispatch_text">valid at the time of dispatch</string>
     <string name="no_foreign_objects_text">no foreign objects: covers, fingers, paper clips, etc.</string>
-    <string name="original_doc_text">photographed or scanned from originals</string>
+    <string name="original_doc_text">original (not a photocopy, not a photo)</string>
     <string name="make_document_photo_title">Take a photo of a document</string>
     <string name="photo_upload_title_common_forward">Photo of the first page / side of the document (with your photo)</string>
     <string name="photo_upload_title_common_back">Photo of the last page / side with your photo (if you have multiple photos in the document)</string>

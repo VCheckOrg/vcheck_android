@@ -118,10 +118,6 @@ class ChooseDocMethodFragment : ThemeWrapperFragment() {
 
     private fun selectDocTypeDataAndNavigateForward(docTypeData: DocTypeData) {
         _viewModel.repository.setSelectedDocTypeWithData(docTypeData)
-        if (docTypeData.isSegmentationAvailable) {
-            findNavController().navigate(R.id.action_chooseDocMethodScreen_to_segmentationStartFragment)
-        } else {
-            findNavController().navigate(R.id.action_chooseDocMethodScreen_to_photoInstructionsFragment)
-        }
+        findNavController().navigate(R.id.action_chooseDocMethodScreen_to_photoInstructionsFragment)
     }
 }

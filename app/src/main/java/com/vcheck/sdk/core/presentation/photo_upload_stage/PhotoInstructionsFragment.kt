@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.databinding.PhotoInstructionsFragmentBinding
+import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.util.ThemeWrapperFragment
 
 class PhotoInstructionsFragment : ThemeWrapperFragment() {
@@ -30,7 +31,7 @@ class PhotoInstructionsFragment : ThemeWrapperFragment() {
         }
         VCheckSDK.primaryTextColorHex?.let {
             _binding!!.photoInstructionsTitle.setTextColor(Color.parseColor(it))
-            _binding!!.imageColorText.setTextColor(Color.parseColor(it))
+            //_binding!!.imageColorText.setTextColor(Color.parseColor(it))
             _binding!!.seenAllText.setTextColor(Color.parseColor(it))
             _binding!!.seenFourCornersText.setTextColor(Color.parseColor(it))
             _binding!!.validDispatchText.setTextColor(Color.parseColor(it))
@@ -43,7 +44,7 @@ class PhotoInstructionsFragment : ThemeWrapperFragment() {
             _binding!!.photoInstructionsDescription.setTextColor(Color.parseColor(it))
         }
         VCheckSDK.iconsColorHex?.let {
-            _binding!!.imageColorIcon.setColorFilter(Color.parseColor(it))
+            //_binding!!.imageColorIcon.setColorFilter(Color.parseColor(it))
             _binding!!.seenAllIcon.setColorFilter(Color.parseColor(it))
             _binding!!.seenFourCornersIcon.setColorFilter(Color.parseColor(it))
             _binding!!.validDispatchIcon.setColorFilter(Color.parseColor(it))
@@ -71,8 +72,12 @@ class PhotoInstructionsFragment : ThemeWrapperFragment() {
         }
 
         _binding!!.photoInstructionsButton.setOnClickListener {
-            val action = PhotoInstructionsFragmentDirections.actionPhotoInstructionsFragmentToPhotoUploadScreen()
-            findNavController().navigate(action)
+            val docTypeData = VCheckDIContainer.mainRepository.getSelectedDocTypeWithData()
+            if (docTypeData?.isSegmentationAvailable == true) {
+                findNavController().navigate(R.id.action_photoInstructionsFragment_to_segmentationStartFragment)
+            } else {
+                findNavController().navigate(R.id.action_photoInstructionsFragment_to_photoUploadScreen)
+            }
         }
     }
 }

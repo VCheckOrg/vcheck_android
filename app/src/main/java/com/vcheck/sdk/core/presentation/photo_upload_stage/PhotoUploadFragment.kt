@@ -284,11 +284,8 @@ class PhotoUploadFragment : ThemeWrapperFragment() {
         } else {
             _binding!!.photoUploadContinueButton.setBackgroundColor(Color.parseColor("#2E75FF"))
         }
-        if (VCheckSDK.primaryTextColorHex != null) {
-            //_binding!!.photoUploadContinueButton.setTextColor(Color.parseColor(VCheckSDK.primaryTextColorHex))
-        } else {
-            _binding!!.photoUploadContinueButton.setTextColor(Color.WHITE)
-        }
+        _binding!!.photoUploadContinueButton.setTextColor(Color.WHITE)
+
         _binding!!.photoUploadContinueButton.setOnClickListener {
             val action = PhotoUploadFragmentDirections
                 .actionPhotoUploadScreenToCheckPhotoFragment(
