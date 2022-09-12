@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.util.Log
 import com.vcheck.sdk.core.data.VCheckSDKConstantsProvider
+import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.*
 import com.vcheck.sdk.core.presentation.VCheckStartupActivity
 import com.vcheck.sdk.core.util.isValidHexColor
@@ -56,6 +57,7 @@ object VCheckSDK {
     }
 
     private fun resetVerification() {
+        VCheckDIContainer.mainRepository.resetCache()
         this.selectedCountryCode = null
     }
 

@@ -18,10 +18,9 @@ internal class VCheckStartupActivity : AppCompatActivity() {
 
         val repository = VCheckDIContainer.mainRepository
 
-        repository.resetCacheOnStartup()
-
         if (repository.shouldFinishStartupActivity()) {
             repository.setFinishStartupActivity(false)
+            repository.resetCache()
             finish()
             if (repository.shouldFirePartnerCallback()) {
                 repository.setFirePartnerCallback(false)

@@ -101,8 +101,8 @@ class MainRepository(
         return localDatasource.getLivenessMilestonesList()
     }
 
-    fun resetCacheOnStartup() {
-        localDatasource.resetCacheOnStartup()
+    fun resetCache() {
+        localDatasource.resetCache()
     }
 
     fun setCheckDocPhotosTO(data: CheckPhotoDataTO) {

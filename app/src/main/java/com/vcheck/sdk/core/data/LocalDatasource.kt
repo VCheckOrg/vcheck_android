@@ -65,7 +65,7 @@ class LocalDatasource {
         return _manualPhotoUpload
     }
 
-    fun resetCacheOnStartup() {
+    fun resetCache() {
         _checkDocPhotosTO = null
         _selectedDocTypeWithData = null
         _livenessMilestonesList = null
