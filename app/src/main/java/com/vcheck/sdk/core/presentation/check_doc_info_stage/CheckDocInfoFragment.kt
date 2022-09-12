@@ -91,14 +91,14 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
 
         val currentLocaleCode = VCheckSDK.getSDKLangCode()
 
+        uploadedDocID = if (args.checkDocInfoDataTO != null) {
+            args.checkDocInfoDataTO!!.docId
+        } else {
+            args.uplaodedDocId
+        }
+
         binding.apply {
             photoCard2.isVisible = false
-
-            uploadedDocID = if (args.checkDocInfoDataTO != null) {
-                args.checkDocInfoDataTO!!.docId
-            } else {
-                args.uplaodedDocId
-            }
         }
 
         dataList = mutableListOf()
@@ -153,27 +153,39 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
 
         if (data.images.isNotEmpty()) {
 
-            val progress = CircularProgressDrawable(requireActivity())
-            progress.setColorSchemeColors(
-                R.color.vcheck_text,
-                R.color.vcheck_text,
-                R.color.vcheck_text)
-            progress.centerRadius = 30f
-            progress.strokeWidth = 5f
-            progress.start()
+            val progress1 = CircularProgressDrawable(requireActivity())
+            progress1.setColorSchemeColors(R.color.vcheck_text)
+            VCheckSDK.primaryTextColorHex?.let {
+                progress1.setColorSchemeColors(Color.parseColor(it))
+            }
+            progress1.centerRadius = 30f
+            progress1.strokeWidth = 5f
+            progress1.start()
 
-            binding.photoCard1.isVisible = true
-            apiPicasso.load(baseURL + data.images[0]).fit().centerInside()
-                .placeholder(progress)
-                .error(R.drawable.ic_baseline_error_outline_24)
-                .into(binding.passportImage1)
-
-            if (data.images.size > 1) {
-                binding.photoCard2.isVisible = true
-                apiPicasso.load(baseURL + data.images[1]).fit().centerInside()
-                    .placeholder(progress)
+            if (data.images.isNotEmpty()) {
+                binding.photoCard1.isVisible = true
+                apiPicasso.load(baseURL + data.images[0]).fit().centerInside()
+                    .placeholder(progress1)
                     .error(R.drawable.ic_baseline_error_outline_24)
-                    .into(binding.passportImage2)
+                    .into(binding.passportImage1)
+
+                if (data.images.size > 1) {
+                    binding.photoCard2.isVisible = true
+
+                    val progress2 = CircularProgressDrawable(requireActivity())
+                    progress2.setColorSchemeColors(R.color.vcheck_text)
+                    VCheckSDK.primaryTextColorHex?.let {
+                        progress2.setColorSchemeColors(Color.parseColor(it))
+                    }
+                    progress2.centerRadius = 30f
+                    progress2.strokeWidth = 5f
+                    progress2.start()
+
+                    apiPicasso.load(baseURL + data.images[1]).fit().centerInside()
+                        .placeholder(progress2)
+                        .error(R.drawable.ic_baseline_error_outline_24)
+                        .into(binding.passportImage2)
+                }
             }
         }
     }
