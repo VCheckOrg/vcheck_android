@@ -97,7 +97,7 @@ data class PreProcessedDocumentResponse(
 data class PreProcessedDocData(
     @SerializedName("id")
     val id: Int,
-    @SerializedName("images")
+    @SerializedName("pages")
     val images: ArrayList<String> = arrayListOf(),
     @SerializedName("is_primary")
     val isPrimary: Boolean,
@@ -106,7 +106,7 @@ data class PreProcessedDocData(
     @SerializedName("status")
     val status: Int,
     @SerializedName("type")
-    val type: DocTypeData
+    val type: DocTypeData,
 )
 
 data class ParsedDocFieldsData(
@@ -119,7 +119,6 @@ data class ParsedDocFieldsData(
     @SerializedName("surname")
     var surname: String? = null
 )
-
 
 data class SegmentationGestureResponse(
     @SerializedName("data")

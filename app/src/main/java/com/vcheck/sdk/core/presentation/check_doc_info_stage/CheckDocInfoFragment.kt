@@ -11,6 +11,7 @@ import androidx.activity.addCallback
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.squareup.picasso.OkHttp3Downloader
 import com.squareup.picasso.Picasso
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
@@ -22,6 +23,9 @@ import com.vcheck.sdk.core.presentation.VCheckMainActivity
 import com.vcheck.sdk.core.presentation.adapters.CheckDocInfoAdapter
 import com.vcheck.sdk.core.presentation.adapters.DocInfoEditCallback
 import com.vcheck.sdk.core.util.ThemeWrapperFragment
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
+import okhttp3.Response
 import java.io.File
 
 
@@ -93,16 +97,16 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
             if (args.checkDocInfoDataTO != null) {
                 uploadedDocID = args.checkDocInfoDataTO!!.docId
 
-                val docPhoto1File = File(args.checkDocInfoDataTO!!.photo1Path)
-                Picasso.get().load(docPhoto1File).fit().centerInside().into(passportImage1)
-
-                if (args.checkDocInfoDataTO!!.photo2Path != null) {
-                    photoCard2.isVisible = true
-                    val docPhoto2File = File(args.checkDocInfoDataTO!!.photo2Path!!)
-                    Picasso.get().load(docPhoto2File).fit().centerInside().into(passportImage2)
-                } else {
-                    photoCard2.isVisible = false
-                }
+//                val docPhoto1File = File(args.checkDocInfoDataTO!!.photo1Path)
+//                Picasso.get().load(docPhoto1File).fit().centerInside().into(passportImage1)
+//
+//                if (args.checkDocInfoDataTO!!.photo2Path != null) {
+//                    photoCard2.isVisible = true
+//                    val docPhoto2File = File(args.checkDocInfoDataTO!!.photo2Path!!)
+//                    Picasso.get().load(docPhoto2File).fit().centerInside().into(passportImage2)
+//                } else {
+//                    photoCard2.isVisible = false
+//                }
             } else {
                 uploadedDocID = args.uplaodedDocId
             }
@@ -116,7 +120,15 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
         viewModel.documentInfoResponse.observe(viewLifecycleOwner) {
             if (it.data?.data != null) {
                 populateDocFields(it.data.data, currentLocaleCode)
-                //populatePrevUploadedDocPhotos() //obsolete (?)
+
+                val apiPicasso = getPicassoForAPI()
+
+                if (it.data.data.images.isNotEmpty()) {
+                    apiPicasso.load(it.data.data.images[0]).fit().centerInside().into(binding.passportImage1)
+                }
+                if (it.data.data.images.size > 1) {
+                    apiPicasso.load(it.data.data.images[1]).fit().centerInside().into(binding.passportImage2)
+                }
             }
         }
 
@@ -221,4 +233,19 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
             )
         }
     }
+
+    private fun getPicassoForAPI() : Picasso {
+        val client = OkHttpClient.Builder()
+            .addInterceptor(Interceptor { chain ->
+                val newRequest = chain.request().newBuilder()
+                    .addHeader("Authorization", VCheckSDK.getVerificationToken())
+                    .build()
+                chain.proceed(newRequest)
+            })
+            .build()
+        return Picasso.Builder(requireActivity())
+            .downloader(OkHttp3Downloader(client))
+            .build()
+    }
+
 }
