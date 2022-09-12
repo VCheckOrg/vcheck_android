@@ -2,6 +2,8 @@ package com.vcheck.sdk.core.presentation.check_doc_info_stage
 
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -108,7 +110,9 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
 
         viewModel.documentInfoResponse.observe(viewLifecycleOwner) {
             if (it.data?.data != null) {
+
                 populateDocImages(it.data.data)
+
                 populateDocFields(it.data.data, currentLocaleCode)
             }
         }
@@ -153,36 +157,22 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
 
         if (data.images.isNotEmpty()) {
 
-            val progress1 = CircularProgressDrawable(requireActivity())
-            progress1.setColorSchemeColors(R.color.vcheck_text)
-            VCheckSDK.primaryTextColorHex?.let {
-                progress1.setColorSchemeColors(Color.parseColor(it))
-            }
-            progress1.centerRadius = 30f
-            progress1.strokeWidth = 5f
-            progress1.start()
-
             if (data.images.isNotEmpty()) {
                 binding.photoCard1.isVisible = true
+
+                Handler(Looper.myLooper()!!).postDelayed({
+                    binding.imgIndicator1Holder.isVisible = false
+                    binding.imgIndicator2Holder.isVisible = false
+                }, 3000)
+
                 apiPicasso.load(baseURL + data.images[0]).fit().centerInside()
-                    .placeholder(progress1)
                     .error(R.drawable.ic_baseline_error_outline_24)
                     .into(binding.passportImage1)
 
                 if (data.images.size > 1) {
                     binding.photoCard2.isVisible = true
 
-                    val progress2 = CircularProgressDrawable(requireActivity())
-                    progress2.setColorSchemeColors(R.color.vcheck_text)
-                    VCheckSDK.primaryTextColorHex?.let {
-                        progress2.setColorSchemeColors(Color.parseColor(it))
-                    }
-                    progress2.centerRadius = 30f
-                    progress2.strokeWidth = 5f
-                    progress2.start()
-
                     apiPicasso.load(baseURL + data.images[1]).fit().centerInside()
-                        .placeholder(progress2)
                         .error(R.drawable.ic_baseline_error_outline_24)
                         .into(binding.passportImage2)
                 }
