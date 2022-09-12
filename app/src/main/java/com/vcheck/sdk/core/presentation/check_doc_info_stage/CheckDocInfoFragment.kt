@@ -16,6 +16,7 @@ import com.squareup.picasso.Picasso
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.VCheckSDK.TAG
+import com.vcheck.sdk.core.data.VCheckSDKConstantsProvider
 import com.vcheck.sdk.core.databinding.CheckDocInfoFragmentBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.*
@@ -25,8 +26,6 @@ import com.vcheck.sdk.core.presentation.adapters.DocInfoEditCallback
 import com.vcheck.sdk.core.util.ThemeWrapperFragment
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.Response
-import java.io.File
 
 
 class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
@@ -94,21 +93,10 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
         binding.apply {
             photoCard2.isVisible = false
 
-            if (args.checkDocInfoDataTO != null) {
-                uploadedDocID = args.checkDocInfoDataTO!!.docId
-
-//                val docPhoto1File = File(args.checkDocInfoDataTO!!.photo1Path)
-//                Picasso.get().load(docPhoto1File).fit().centerInside().into(passportImage1)
-//
-//                if (args.checkDocInfoDataTO!!.photo2Path != null) {
-//                    photoCard2.isVisible = true
-//                    val docPhoto2File = File(args.checkDocInfoDataTO!!.photo2Path!!)
-//                    Picasso.get().load(docPhoto2File).fit().centerInside().into(passportImage2)
-//                } else {
-//                    photoCard2.isVisible = false
-//                }
+            uploadedDocID = if (args.checkDocInfoDataTO != null) {
+                args.checkDocInfoDataTO!!.docId
             } else {
-                uploadedDocID = args.uplaodedDocId
+                args.uplaodedDocId
             }
         }
 
@@ -119,16 +107,8 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
 
         viewModel.documentInfoResponse.observe(viewLifecycleOwner) {
             if (it.data?.data != null) {
+                populateDocImages(it.data.data)
                 populateDocFields(it.data.data, currentLocaleCode)
-
-                val apiPicasso = getPicassoForAPI()
-
-                if (it.data.data.images.isNotEmpty()) {
-                    apiPicasso.load(it.data.data.images[0]).fit().centerInside().into(binding.passportImage1)
-                }
-                if (it.data.data.images.size > 1) {
-                    apiPicasso.load(it.data.data.images[1]).fit().centerInside().into(binding.passportImage2)
-                }
             }
         }
 
@@ -161,6 +141,28 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
 
         viewModel.clientError.observe(viewLifecycleOwner) {
             if (it != null) Toast.makeText(activity, it, Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun populateDocImages(data: PreProcessedDocData) {
+        val apiPicasso = getPicassoForAPI()
+        val baseURL = if (VCheckSDK.getEnvironment() == VCheckEnvironment.DEV)
+            VCheckSDKConstantsProvider.DEV_VERIFICATIONS_SERVICE_URL
+        else VCheckSDKConstantsProvider.PARTNER_VERIFICATIONS_SERVICE_URL
+
+        if (data.images.isNotEmpty()) {
+
+            binding.photoCard1.isVisible = true
+            apiPicasso.load(baseURL + data.images[0]).fit().centerInside()
+                .error(R.drawable.ic_baseline_error_outline_24)
+                .into(binding.passportImage1)
+
+            if (data.images.size > 1) {
+                binding.photoCard2.isVisible = true
+                apiPicasso.load(baseURL + data.images[1]).fit().centerInside()
+                    .error(R.drawable.ic_baseline_error_outline_24)
+                    .into(binding.passportImage2)
+            }
         }
     }
 
