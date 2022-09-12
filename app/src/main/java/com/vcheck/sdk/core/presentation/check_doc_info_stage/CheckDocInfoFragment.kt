@@ -11,6 +11,7 @@ import androidx.activity.addCallback
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.squareup.picasso.OkHttp3Downloader
 import com.squareup.picasso.Picasso
 import com.vcheck.sdk.core.R
@@ -152,14 +153,25 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
 
         if (data.images.isNotEmpty()) {
 
+            val progress = CircularProgressDrawable(requireActivity())
+            progress.setColorSchemeColors(
+                R.color.vcheck_text,
+                R.color.vcheck_text,
+                R.color.vcheck_text)
+            progress.centerRadius = 30f
+            progress.strokeWidth = 5f
+            progress.start()
+
             binding.photoCard1.isVisible = true
             apiPicasso.load(baseURL + data.images[0]).fit().centerInside()
+                .placeholder(progress)
                 .error(R.drawable.ic_baseline_error_outline_24)
                 .into(binding.passportImage1)
 
             if (data.images.size > 1) {
                 binding.photoCard2.isVisible = true
                 apiPicasso.load(baseURL + data.images[1]).fit().centerInside()
+                    .placeholder(progress)
                     .error(R.drawable.ic_baseline_error_outline_24)
                     .into(binding.passportImage2)
             }
