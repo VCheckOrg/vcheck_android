@@ -120,7 +120,12 @@ internal class VCheckStartFragment : Fragment() {
                         val action = VCheckStartFragmentDirections.actionDemoStartFragmentToCheckDocInfoFragment(
                             null, it.data.data.uploadedDocId)
                         findNavController().navigate(action)
-                    } else if (it.data.data.type == StageType.DOCUMENT_UPLOAD.toTypeIdx()) {
+                    } else if (it.data.data.primaryDocId != null) {
+                        val action = VCheckStartFragmentDirections.actionDemoStartFragmentToCheckDocInfoFragment(
+                            null, it.data.data.primaryDocId)
+                        findNavController().navigate(action)
+                    }
+                    else if (it.data.data.type == StageType.DOCUMENT_UPLOAD.toTypeIdx()) {
                         _viewModel.getCountriesList()
                     } else {
                         if (it.data.data.config != null) {
