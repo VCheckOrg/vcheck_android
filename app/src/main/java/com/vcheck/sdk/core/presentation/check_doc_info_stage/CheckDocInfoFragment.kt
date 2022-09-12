@@ -2,8 +2,6 @@ package com.vcheck.sdk.core.presentation.check_doc_info_stage
 
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +11,6 @@ import androidx.activity.addCallback
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.squareup.picasso.OkHttp3Downloader
 import com.squareup.picasso.Picasso
 import com.vcheck.sdk.core.R
@@ -160,20 +157,15 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
             if (data.images.isNotEmpty()) {
                 binding.photoCard1.isVisible = true
 
-                Handler(Looper.myLooper()!!).postDelayed({
-                    binding.imgIndicator1Holder.isVisible = false
-                    binding.imgIndicator2Holder.isVisible = false
-                }, 3000)
-
                 apiPicasso.load(baseURL + data.images[0]).fit().centerInside()
-                    .error(R.drawable.ic_baseline_error_outline_24)
+                    .error(R.drawable.ic_baseline_error_24)
                     .into(binding.passportImage1)
 
                 if (data.images.size > 1) {
                     binding.photoCard2.isVisible = true
 
                     apiPicasso.load(baseURL + data.images[1]).fit().centerInside()
-                        .error(R.drawable.ic_baseline_error_outline_24)
+                        .error(R.drawable.ic_baseline_error_24)
                         .into(binding.passportImage2)
                 }
             }
