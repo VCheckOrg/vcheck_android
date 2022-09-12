@@ -102,7 +102,11 @@ internal class VCheckStartFragment : Fragment() {
 
                 verificationInitialized = true
 
-                _viewModel.getCurrentStage()
+                if (it.data.data.status > VerificationStatuses.WAITING_USER_INTERACTION) {
+                    findNavController().navigate(R.id.action_demoStartFragment_to_verifSentFragment)
+                } else {
+                    _viewModel.getCurrentStage()
+                }
             }
         }
 

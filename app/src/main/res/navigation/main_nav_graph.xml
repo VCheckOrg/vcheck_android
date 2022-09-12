@@ -156,6 +156,9 @@
         <action
             android:id="@+id/action_demoStartFragment_to_checkDocInfoFragment"
             app:destination="@id/checkDocInfoFragment" />
+        <action
+            android:id="@+id/action_demoStartFragment_to_verifSentFragment"
+            app:destination="@id/verifSentFragment" />
     </fragment>
 
 
@@ -207,5 +210,10 @@
             app:destination="@id/photoInstructionsFragment" />
     </fragment>
     <action android:id="@+id/action_global_chooseDocMethodScreen" app:destination="@id/chooseDocMethodScreen"/><action android:id="@+id/action_global_photoInstructionsFragment" app:destination="@id/photoInstructionsFragment"/>
+    <fragment
+        android:id="@+id/verifSentFragment"
+        android:name="com.vcheck.sdk.core.presentation.screens.VerifSentFragment"
+        android:label="fragment_verif_sent"
+        tools:layout="@layout/fragment_verif_sent" />
 
 </navigation>

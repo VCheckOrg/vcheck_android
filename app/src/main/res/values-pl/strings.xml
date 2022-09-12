@@ -67,7 +67,7 @@
     <string name="os_not_support_copy_button">Skopiuj link</string>
     <string name="not_found_title">Nie znaleźliśmy strony o tym adresie:(</string>
     <string name="look_stratight_error_title">Nie udało się skupić na twarzy</string>
-    <string name="in_process_title">Twoja aplikacja została przesłana do ostatniego etapu weryfikacji.</string>
+    <string name="in_process_title">Twoja aplikacja już jest na etapie przetwarzania</string>
     <string name="no_time_title">Czas na wykonanie ruchu upłynął</string>
     <string name="no_time_correct_text"><u>Wszystko zostało zakończone poprawnie, wyślij do wglądu</u></string>
     <string name="no_camera_link_button">Skopiuj link</string>
@@ -75,7 +75,7 @@
     <string name="look_stratight_error_send_text">Wszystko zostało zakończone poprawnie, wyślij do wglądu</string>
     <string name="os_not_support_description">Niestety ten mobilny system operacyjny nie jest obsługiwany. Aby pomyślnie przejść procedurę weryfikacji, zalecamy skopiowanie poniższego linku i kontynuowanie na komputerze osobistym</string>
     <string name="frame_interference_description">W kadrze może znajdować się kilka osób lub obce przedmioty. Podczas ponownego sprawdzania upewnij się, że w kadrze znajduje się tylko Twoja twarz i że jest wyraźnie widoczna.</string>
-    <string name="in_process_subtitle">To może zająć troche czasu. Możesz teraz wrócić do głównego serwisu.</string>
+    <string name="in_process_subtitle">To może zająć troche czasu.</string>
     <string name="make_document_photo_description">Upewnij się, że każde wykonane zdjęcie jest czytelne (wszystkie 4 rogi dokumentu są widoczne, palce nie zakrywają danych)</string>
     <string name="check_photo_description">Sprawdź czytelność informacji na zdjęciu. Upewnij się, że wszystkie 4 rogi dokumentu są widoczne na zdjęciu.</string>
     <string name="error_description">Z jakiegoś powodu nie zmogliśmy załadować zawartości tej strony. Spróbuj ponownie załadować stronę</string>
