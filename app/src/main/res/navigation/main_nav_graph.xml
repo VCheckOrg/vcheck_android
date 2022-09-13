@@ -44,7 +44,7 @@
 
     <fragment
         android:id="@+id/photoUploadScreen"
-        android:name="com.vcheck.sdk.core.presentation.photo_upload_stage.PhotoUploadFragment"
+        android:name="com.vcheck.sdk.core.presentation.photo_upload_stage.TakeDocPhotoFragment"
         android:label="photo_upload_screen"
         tools:layout="@layout/photo_upload_fragment">
         <action

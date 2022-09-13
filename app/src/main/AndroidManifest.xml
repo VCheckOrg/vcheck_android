@@ -34,22 +34,27 @@
         android:supportsRtl="true">
         <activity
             android:name="com.vcheck.sdk.core.presentation.segmentation.VCheckSegmentationActivity"
-            android:exported="false" />
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="false"
+            android:screenOrientation="portrait">
+        </activity>
         <activity
             android:name="com.vcheck.sdk.core.presentation.VCheckStartupActivity"
             android:exported="true"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity">
         </activity>
         <activity
             android:name="com.vcheck.sdk.core.presentation.liveness.VCheckLivenessActivity"
             android:exported="false"
-            android:largeHeap="true"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name="com.vcheck.sdk.core.presentation.VCheckMainActivity"
-            android:largeHeap="true"
+            android:exported="false"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity">
         </activity>

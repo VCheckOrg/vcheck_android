@@ -81,7 +81,7 @@
     <string name="not_found_title">We didn\'t find a page with that address :(</string>
     <string name="look_stratight_error_title">Failed to focus on face</string>
     <string name="no_time_title">The time to complete the movement has expired</string>
-    <string name="in_process_title">Your application is already sent for final verification stage</string>
+    <string name="in_process_title">Your application is already processing</string>
     <string name="no_time_correct_text"><u>Everything was completed correctly, send for verification</u></string>
     <string name="no_camera_link_button">Copy link</string>
     <string name="passport_title">Upload a photo of the front spread (spread with your photo).</string>
@@ -181,7 +181,5 @@
     <string name="fatal_error_seg">We were unable to do a full scan of the document. To continue, you need to take a photo manually.</string>
 
     <string name="segmentation_stage_success_first_page">Front side scanned successfully. Please turn over the document/page.</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

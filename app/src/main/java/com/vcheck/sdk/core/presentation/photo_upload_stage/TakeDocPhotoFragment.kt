@@ -31,11 +31,10 @@ import com.vcheck.sdk.core.util.ThemeWrapperFragment
 import java.io.File
 import java.io.IOException
 
-class PhotoUploadFragment : ThemeWrapperFragment() {
+class TakeDocPhotoFragment : ThemeWrapperFragment() {
 
     private var _binding: PhotoUploadFragmentBinding? = null
 
-    private lateinit var _viewModel: PhotoUploadViewModel
     private lateinit var _docType: DocType
 
     private var _photo1Path: String? = null
@@ -75,11 +74,6 @@ class PhotoUploadFragment : ThemeWrapperFragment() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        _viewModel = PhotoUploadViewModel(VCheckDIContainer.mainRepository)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -94,7 +88,7 @@ class PhotoUploadFragment : ThemeWrapperFragment() {
 
         changeColorsToCustomIfPresent()
 
-        val docTypeWithData = _viewModel.repository.getSelectedDocTypeWithData()
+        val docTypeWithData = VCheckDIContainer.mainRepository.getSelectedDocTypeWithData()
 
         if (docTypeWithData == null) {
             Toast.makeText((activity as VCheckMainActivity),
@@ -287,7 +281,7 @@ class PhotoUploadFragment : ThemeWrapperFragment() {
         _binding!!.photoUploadContinueButton.setTextColor(Color.WHITE)
 
         _binding!!.photoUploadContinueButton.setOnClickListener {
-            val action = PhotoUploadFragmentDirections
+            val action = TakeDocPhotoFragmentDirections
                 .actionPhotoUploadScreenToCheckPhotoFragment(
                     CheckPhotoDataTO(_docType, _photo1Path!!, _photo2Path))
             findNavController().navigate(action)

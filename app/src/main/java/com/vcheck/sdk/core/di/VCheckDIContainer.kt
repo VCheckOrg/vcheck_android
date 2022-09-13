@@ -51,11 +51,11 @@ object VCheckDIContainer {
             .build()
     }
 
-    private var remoteDataSource = RemoteDatasource(
+    private val remoteDataSource = RemoteDatasource(
         verificationRetrofit.create(VerificationApiClient::class.java))
 
     private val localDatasource = LocalDatasource()
 
-    var mainRepository = MainRepository(remoteDataSource, localDatasource)
+    val mainRepository = MainRepository(remoteDataSource, localDatasource)
 
 }
