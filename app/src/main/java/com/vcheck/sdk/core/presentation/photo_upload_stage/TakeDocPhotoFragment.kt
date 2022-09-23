@@ -330,7 +330,6 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
             } else {
                 _photo2Path = this.path
             }
-            Log.d("PHOTO", "SAVING A FILE: ${this.path}")
         }
     }
 }

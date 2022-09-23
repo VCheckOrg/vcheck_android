@@ -77,7 +77,6 @@ fun VCheckSegmentationActivity.createTempFileForBitmapFrame(mBitmap: Bitmap): St
         outStream = FileOutputStream(file)
         mBitmap.compress(Bitmap.CompressFormat.JPEG, 90, outStream)
         outStream.close()
-        Log.d("Liveness","----------- SAVED IMAGE: PATH: ${file.path}")
         file.path
     } catch (e: Exception) {
         e.printStackTrace()

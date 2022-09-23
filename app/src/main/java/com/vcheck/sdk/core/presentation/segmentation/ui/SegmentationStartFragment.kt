@@ -45,7 +45,7 @@ class SegmentationStartFragment : ThemeWrapperFragment() {
                     findNavController().navigate(R.id.action_global_photoInstructionsFragment)
                 }
             } else {
-                Log.d(TAG, "Back press from SegmentationActivity")
+                //Log.d(TAG, "Back press from SegmentationActivity")
             }
         }
     }

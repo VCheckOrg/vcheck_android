@@ -62,6 +62,13 @@ object VCheckSDK {
     }
 
     private fun performPreStartChecks() {
+        if (environment == null) {
+            Log.i(TAG, "VCheckSDK - warning: sdk environment is not set | see VCheckSDK.environment(env: VCheckEnvironment)")
+            environment = VCheckEnvironment.DEV
+        }
+        if (environment == VCheckEnvironment.DEV) {
+            Log.i(TAG, "VCheckSDK - warning: using DEV environment | see VCheckSDK.environment(env: VCheckEnvironment)")
+        }
         if (verificationToken == null) {
             throw IllegalArgumentException("VCheckSDK - error: verification token must be provided |" +
                     " see VCheckSDK.verificationToken(token: String)")
@@ -83,10 +90,6 @@ object VCheckSDK {
             throw IllegalArgumentException("VCheckSDK - error: SDK is not localized with [$sdkLanguageCode] locale yet. " +
                     "You may set one of the next locales: ${VCheckSDKConstantsProvider.vcheckSDKAvailableLanguagesList}, " +
                     "or check out for the recent version of the SDK library")
-        }
-        if (environment == null) {
-            throw IllegalArgumentException("VCheckSDK - warning: sdk environment is not set; using DEV environment by default " +
-                    "| see VCheckSDK.shared.environment(env: VCheckEnvironment)")
         }
         if (buttonsColorHex != null && !buttonsColorHex!!.isValidHexColor()) {
             throw IllegalArgumentException(wrongColorFormatPickDescr)

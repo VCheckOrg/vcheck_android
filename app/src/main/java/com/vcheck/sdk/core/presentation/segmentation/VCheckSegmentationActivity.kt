@@ -364,7 +364,6 @@ class VCheckSegmentationActivity : AppCompatActivity(),
                                     fullBitmap: Bitmap,
                                     currentPageIdx: Int) {
         runOnUiThread {
-            Log.d(TAG, "========= GOT RESPONSE FOR IDX __ $currentPageIdx __ : ${it.success}")
             if (it.success) {
                 if (currentPageIdx == 0 && photo1FullBitmap == null) {
                     photo1FullBitmap = fullBitmap

@@ -211,7 +211,6 @@ class VCheckLivenessActivity : AppCompatActivity(),
 
         muxer!!.setOnMuxingCompletedListener(object : MuxingCompletionListener {
             override fun onVideoSuccessful(file: File) {
-                Log.d(TAG, "Video muxed - file path: ${file.absolutePath}")
                 runOnUiThread {
                     videoProcessingListener.onVideoProcessed(file.path)
                 }
@@ -346,7 +345,6 @@ class VCheckLivenessActivity : AppCompatActivity(),
             File.createTempFile(
                 "faceVideo${System.currentTimeMillis()}", ".mp4", storageDir).apply {
                 videoPath = this.path
-                Log.d("VIDEO", "SAVING A FILE: ${this.path}")
             }
         } catch (e: IOException) {
             showSingleToast(e.message)
