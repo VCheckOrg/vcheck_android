@@ -1,12 +1,9 @@
 package com.vcheck.sdk.core.presentation.photo_upload_stage
 
-import android.app.Activity
-import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,8 +19,6 @@ import com.vcheck.sdk.core.data.Resource
 import com.vcheck.sdk.core.databinding.CheckPhotoFragmentBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.*
-import com.vcheck.sdk.core.presentation.VCheckMainActivity
-import com.vcheck.sdk.core.presentation.segmentation.VCheckSegmentationActivity
 import com.vcheck.sdk.core.presentation.transferrable_objects.CheckDocInfoDataTO
 import com.vcheck.sdk.core.presentation.transferrable_objects.ZoomPhotoTO
 import com.vcheck.sdk.core.util.ThemeWrapperFragment
@@ -32,7 +27,6 @@ import okhttp3.MultipartBody
 import okhttp3.MultipartBody.Part.Companion.createFormData
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
-import java.lang.Exception
 
 
 class CheckPhotoFragment : ThemeWrapperFragment() {

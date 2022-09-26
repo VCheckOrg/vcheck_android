@@ -42,7 +42,7 @@ class SegmentationStartFragment : ThemeWrapperFragment() {
                         Log.d(TAG, "Photo transferrable object was not set")
                     }
                 } else {
-                    findNavController().navigate(R.id.action_global_photoInstructionsFragment)
+                    findNavController().navigate(R.id.action_global_photoUploadScreen)
                 }
             } else {
                 //Log.d(TAG, "Back press from SegmentationActivity")

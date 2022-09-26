@@ -209,11 +209,11 @@
             android:id="@+id/action_segErrorFragment_to_photoInstructionsFragment"
             app:destination="@id/photoInstructionsFragment" />
     </fragment>
-    <action android:id="@+id/action_global_chooseDocMethodScreen" app:destination="@id/chooseDocMethodScreen"/><action android:id="@+id/action_global_photoInstructionsFragment" app:destination="@id/photoInstructionsFragment"/>
+    <action android:id="@+id/action_global_chooseDocMethodScreen" app:destination="@id/chooseDocMethodScreen"/>
     <fragment
         android:id="@+id/verifSentFragment"
         android:name="com.vcheck.sdk.core.presentation.screens.VerifSentFragment"
         android:label="fragment_verif_sent"
-        tools:layout="@layout/fragment_verif_sent" />
+        tools:layout="@layout/fragment_verif_sent" /><action android:id="@+id/action_global_photoUploadScreen" app:destination="@id/photoUploadScreen"/>
 
 </navigation>
