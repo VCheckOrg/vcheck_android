@@ -24,6 +24,7 @@ import com.vcheck.sdk.core.VCheckSDK.TAG
 import com.vcheck.sdk.core.databinding.PhotoUploadFragmentBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.DocType
+import com.vcheck.sdk.core.domain.DocTypeData
 import com.vcheck.sdk.core.domain.docCategoryIdxToType
 import com.vcheck.sdk.core.presentation.VCheckMainActivity
 import com.vcheck.sdk.core.presentation.transferrable_objects.CheckPhotoDataTO
@@ -95,7 +96,7 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
                 "Error: document type & data have not been initialized.", Toast.LENGTH_LONG).show()
         } else {
 
-        _docType = docCategoryIdxToType(docTypeWithData.category)
+            _docType = docCategoryIdxToType(docTypeWithData.category)
 
             _binding!!.apply {
 
@@ -110,67 +111,145 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
                 backArrow.setOnClickListener {
                     findNavController().popBackStack()
                 }
+            }
+            when (_docType) {
+                DocType.FOREIGN_PASSPORT -> setUIForForeignPassport(docTypeWithData)
+                DocType.INNER_PASSPORT_OR_COMMON -> setUIForInnerPassportOrCommon(docTypeWithData)
+                DocType.ID_CARD -> setUIForIDCard(docTypeWithData)
+            }
+        }
+    }
 
-                when (_docType) {
-                    DocType.FOREIGN_PASSPORT -> {
-                        methodCard1.isVisible = true
-                        methodCard2.isVisible = false
-                        verifMethodTitle1.text =
-                            getString(R.string.photo_upload_title_foreign)
+    private fun docHasOnePage(docTypeData: DocTypeData): Boolean {
+        return docTypeData.maxPagesCount == 1 && docTypeData.minPagesCount == 1
+    }
 
-                        if (docTypeWithData.country == "ua") {
-                            verifMethodIcon1.setImageResource(R.drawable.doc_ua_international_passport)
-                        } else {
-                            verifMethodIcon1.isVisible = false
-                        }
-                        makePhotoButton1.setOnClickListener {
-                            dispatchTakePictureIntent(1)
-                        }
-                    }
-                    DocType.INNER_PASSPORT_OR_COMMON -> {
-                        methodCard1.isVisible = true
-                        methodCard2.isVisible = true
-                        verifMethodIcon1.isVisible = false
-                        verifMethodIcon2.isVisible = false
+    private fun docHasOneRequiredPage(docTypeData: DocTypeData): Boolean {
+        return docTypeData.minPagesCount == 1 && docTypeData.maxPagesCount > 1
+    }
 
-                        verifMethodTitle1.text =
-                            getString(R.string.photo_upload_title_common_forward)
-                        verifMethodTitle2.text =
-                            getString(R.string.photo_upload_title_common_back)
+    private fun docHasTwoOrMorePagesRequired(docTypeData: DocTypeData): Boolean {
+        return docTypeData.maxPagesCount > 1 && docTypeData.minPagesCount > 1
+    }
 
-                        makePhotoButton1.setOnClickListener {
-                            dispatchTakePictureIntent(1)
-                        }
-                        makePhotoButton2.setOnClickListener {
-                            dispatchTakePictureIntent(2)
-                        }
-                    }
-                    DocType.ID_CARD -> {
-                        methodCard1.isVisible = true
-                        methodCard2.isVisible = true
+    private fun setUIForIDCard(docTypeWithData: DocTypeData) {
+        _binding!!.apply {
+            if (docHasOnePage(docTypeWithData)) {
+                methodCard1.isVisible = true
+                methodCard2.isVisible = false
 
-                        if (docTypeWithData.country == "ua") {
-                            verifMethodIcon1.isVisible = true
-                            verifMethodIcon2.isVisible = true
-                            verifMethodIcon1.setImageResource(R.drawable.doc_id_card_front)
-                            verifMethodIcon2.setImageResource(R.drawable.doc_id_card_back)
-                        } else {
-                            verifMethodIcon1.isVisible = false
-                            verifMethodIcon2.isVisible = false
-                        }
+                if (docTypeWithData.country == "ua") {
+                    verifMethodIcon1.isVisible = true
+                    verifMethodIcon1.setImageResource(R.drawable.doc_id_card_front)
+                } else {
+                    verifMethodIcon1.isVisible = false
+                }
+                verifMethodTitle1.text =
+                    getString(R.string.photo_upload_title_id_card_forward)
 
-                        verifMethodTitle1.text =
-                            getString(R.string.photo_upload_title_id_card_forward)
-                        verifMethodTitle2.text =
-                            getString(R.string.photo_upload_title_id_card_back)
+                makePhotoButton1.setOnClickListener {
+                    dispatchTakePictureIntent(1)
+                }
+            } else {
+                methodCard1.isVisible = true
+                methodCard2.isVisible = true
 
-                        makePhotoButton1.setOnClickListener {
-                            dispatchTakePictureIntent(1)
-                        }
-                        makePhotoButton2.setOnClickListener {
-                            dispatchTakePictureIntent(2)
-                        }
-                    }
+                if (docTypeWithData.country == "ua") {
+                    verifMethodIcon1.isVisible = true
+                    verifMethodIcon2.isVisible = true
+                    verifMethodIcon1.setImageResource(R.drawable.doc_id_card_front)
+                    verifMethodIcon2.setImageResource(R.drawable.doc_id_card_back)
+                } else {
+                    verifMethodIcon1.isVisible = false
+                    verifMethodIcon2.isVisible = false
+                }
+                verifMethodTitle1.text =
+                    getString(R.string.photo_upload_title_id_card_forward)
+                verifMethodTitle2.text =
+                    getString(R.string.photo_upload_title_id_card_back)
+                makePhotoButton1.setOnClickListener {
+                    dispatchTakePictureIntent(1)
+                }
+                makePhotoButton2.setOnClickListener {
+                    dispatchTakePictureIntent(2)
+                }
+            }
+        }
+    }
+
+    private fun setUIForInnerPassportOrCommon(docTypeWithData: DocTypeData) {
+        _binding!!.apply {
+            if (docHasOnePage(docTypeWithData)) {
+                methodCard1.isVisible = true
+                methodCard2.isVisible = false
+
+                verifMethodIcon1.isVisible = false
+
+                verifMethodTitle1.text =
+                    getString(R.string.photo_upload_title_common_forward)
+
+                makePhotoButton1.setOnClickListener {
+                    dispatchTakePictureIntent(1)
+                }
+            } else {
+                methodCard1.isVisible = true
+                methodCard2.isVisible = true
+                verifMethodIcon1.isVisible = false
+                verifMethodIcon2.isVisible = false
+
+                verifMethodTitle1.text =
+                    getString(R.string.photo_upload_title_common_forward)
+                verifMethodTitle2.text =
+                    getString(R.string.photo_upload_title_common_back)
+
+                makePhotoButton1.setOnClickListener {
+                    dispatchTakePictureIntent(1)
+                }
+                makePhotoButton2.setOnClickListener {
+                    dispatchTakePictureIntent(2)
+                }
+            }
+        }
+    }
+
+    private fun setUIForForeignPassport(docTypeWithData: DocTypeData) {
+        _binding!!.apply {
+            if (docHasOnePage(docTypeWithData)) {
+                methodCard1.isVisible = true
+                methodCard2.isVisible = false
+                verifMethodTitle1.text =
+                    getString(R.string.photo_upload_title_foreign)
+
+                if (docTypeWithData.country == "ua") {
+                    verifMethodIcon1.setImageResource(R.drawable.doc_ua_international_passport)
+                } else {
+                    verifMethodIcon1.isVisible = false
+                }
+                makePhotoButton1.setOnClickListener {
+                    dispatchTakePictureIntent(1)
+                }
+            } else {
+                methodCard1.isVisible = true
+                methodCard2.isVisible = true
+
+                verifMethodTitle1.text =
+                    getString(R.string.photo_upload_title_common_forward)
+
+                verifMethodTitle2.text =
+                    getString(R.string.photo_upload_title_common_back)
+
+                if (docTypeWithData.country == "ua") {
+                    verifMethodIcon1.setImageResource(R.drawable.doc_ua_international_passport)
+                    verifMethodIcon2.setImageResource(R.drawable.doc_ua_international_passport)
+                } else {
+                    verifMethodIcon1.isVisible = false
+                    verifMethodIcon2.isVisible = false
+                }
+                makePhotoButton1.setOnClickListener {
+                    dispatchTakePictureIntent(1)
+                }
+                makePhotoButton2.setOnClickListener {
+                    dispatchTakePictureIntent(2)
                 }
             }
         }
@@ -185,7 +264,7 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
 
                 _binding!!.apply {
                     if (requestCode == 1) {
-                        Log.i("PHOTO", "---------------- REQUEST CODE 1 | PHOTO 1 PATH: $_photo1Path")
+                        //Log.i("PHOTO", "DOC PHOTO REQUEST CODE 1 | PHOTO 1 PATH: $_photo1Path")
                         imgPhoto1.isVisible = true
                         verifMethodTitle1.isVisible = false
                         verifMethodIcon1.isVisible = false
@@ -206,7 +285,7 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
                         }
                     }
                     if (requestCode == 2) {
-                        Log.i("PHOTO", "---------------- REQUEST CODE 2 | PHOTO 2 PATH: $_photo2Path")
+                        //Log.i("PHOTO", "DOC PHOTO REQUEST CODE 2 | PHOTO 2 PATH: $_photo2Path")
                         imgPhoto2.isVisible = true
                         verifMethodTitle2.isVisible = false
                         verifMethodIcon2.isVisible = false
@@ -243,7 +322,8 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
     }
 
     private fun checkPhotoCompletenessAndSetProceedClickListener() {
-        if (_docType == DocType.FOREIGN_PASSPORT) {
+        val docTypeWithData = VCheckDIContainer.mainRepository.getSelectedDocTypeWithData()!!
+        if (docHasOnePage(docTypeWithData) || docHasOneRequiredPage(docTypeWithData)) {
             if (_photo1Path != null) {
                 prepareForNavigation(false)
             } else {
@@ -251,28 +331,16 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
                 _binding!!.photoUploadContinueButton.setOnClickListener {}
                 Toast.makeText(activity, R.string.error_make_at_least_one_photo, Toast.LENGTH_LONG).show()
             }
-        } else if (_docType == DocType.INNER_PASSPORT_OR_COMMON) {
-            if (_photo1Path != null) {
-                prepareForNavigation(false)
-            } else if (_photo2Path != null && _photo1Path != null) {
+        } else if (docHasTwoOrMorePagesRequired(docTypeWithData)) {
+            if (_photo2Path != null && _photo1Path != null) {
                 prepareForNavigation(true)
             } else {
-                _binding!!.photoUploadContinueButton.setBackgroundColor(Color.parseColor("#BFBFBF"))
-                _binding!!.photoUploadContinueButton.setOnClickListener {}
-                Toast.makeText(activity, R.string.error_make_at_least_one_photo, Toast.LENGTH_LONG).show()
-            }
-        } else {
-            if (_photo1Path != null && _photo2Path != null) {
-                prepareForNavigation(true)
-            } else {
-                _binding!!.photoUploadContinueButton.setBackgroundColor(Color.parseColor("#BFBFBF"))
-                _binding!!.photoUploadContinueButton.setOnClickListener {}
+                Toast.makeText(activity, R.string.error_make_two_photos, Toast.LENGTH_LONG).show()
             }
         }
     }
 
     private fun prepareForNavigation(resetSecondPhoto: Boolean) {
-
         if (VCheckSDK.buttonsColorHex != null) {
             _binding!!.photoUploadContinueButton.setBackgroundColor(Color.parseColor(VCheckSDK.buttonsColorHex))
         } else {

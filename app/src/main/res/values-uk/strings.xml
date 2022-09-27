@@ -171,4 +171,6 @@
     <string name="fatal_error_seg">Ми не змогли зробити повне сканування документа. Для продовження потрібно зробити фото вручну.</string>
 
     <string name="segmentation_stage_success_first_page">Передня сторона успішно просканована. Будь ласка, перегорніть документ/сторінку.</string>
+
+    <string name="error_make_two_photos">Будь ласка, зробіть усі необхідні фото документа</string>
 </resources>

@@ -128,12 +128,14 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
             }
 
             replacePhotoButton.setOnClickListener {
-                findNavController().popBackStack() //!
+                findNavController().navigate(R.id.action_global_photoUploadScreen) //!
             }
 
             confirmPhotoButton.setOnClickListener {
+                val docTypeWithData = VCheckDIContainer.mainRepository.getSelectedDocTypeWithData()!!
+
                 val body = DocumentUploadRequestBody(
-                    VCheckSDK.getSelectedCountryCode(),
+                    docTypeWithData.country,
                     args.checkPhotoDataTO.selectedDocType.toCategoryIdx(),
                     _viewModel.repository.isPhotoUploadManual())
 

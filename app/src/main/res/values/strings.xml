@@ -182,4 +182,6 @@
 
     <string name="segmentation_stage_success_first_page">Front side scanned successfully. Please turn over the document/page.</string>
 
+    <string name="error_make_two_photos">Please make all required photos of the document</string>
+
 </resources>

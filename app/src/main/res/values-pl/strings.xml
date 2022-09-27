@@ -171,4 +171,6 @@
     <string name="fatal_error_seg">Nie byliśmy w stanie wykonać pełnego skanu dokumentu. Aby kontynuować, musisz zrobić zdjęcie ręcznie.</string>
 
     <string name="segmentation_stage_success_first_page">Strona przednia zeskanowana pomyślnie. Proszę odwrócić dokument/stronę.</string>
+
+    <string name="error_make_two_photos">Proszę zrobić wszystkie niezbędne dokumenty fotograficzne</string>
 </resources>
