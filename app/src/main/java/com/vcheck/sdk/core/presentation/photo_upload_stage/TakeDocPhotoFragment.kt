@@ -335,6 +335,8 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
             if (_photo2Path != null && _photo1Path != null) {
                 prepareForNavigation(true)
             } else {
+                _binding!!.photoUploadContinueButton.setBackgroundColor(Color.parseColor("#BFBFBF"))
+                _binding!!.photoUploadContinueButton.setOnClickListener {}
                 Toast.makeText(activity, R.string.error_make_two_photos, Toast.LENGTH_LONG).show()
             }
         }
