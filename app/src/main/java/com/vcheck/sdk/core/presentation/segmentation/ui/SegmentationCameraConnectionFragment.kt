@@ -28,7 +28,6 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.presentation.liveness.ui.AutoFitTextureView
-import com.vcheck.sdk.core.presentation.liveness.ui.LivenessCameraConnectionFragment
 import com.vcheck.sdk.core.presentation.segmentation.VCheckSegmentationActivity
 import java.util.*
 import java.util.concurrent.Semaphore
@@ -316,7 +315,7 @@ class SegmentationCameraConnectionFragment() : Fragment() {
                             captureSession!!.setRepeatingRequest(
                                 previewRequest!!, captureCallback, backgroundHandler)
                         } catch (e: CameraAccessException) {
-                            LivenessCameraConnectionFragment.ErrorDialog.newInstance("Camera access exception occured from onConfigured()")
+                            ErrorDialog.newInstance("Camera access exception occured from onConfigured()")
                                 .show(childFragmentManager, FRAGMENT_DIALOG)
                         }
                     }

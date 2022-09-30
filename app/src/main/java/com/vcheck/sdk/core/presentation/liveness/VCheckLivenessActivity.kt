@@ -1,14 +1,11 @@
 package com.vcheck.sdk.core.presentation.liveness
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.*
 import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.ShapeDrawable
-import android.hardware.camera2.CameraCharacteristics
-import android.hardware.camera2.CameraManager
-import android.media.ImageReader
 import android.media.MediaFormat
 import android.os.*
 import android.util.Log
@@ -18,22 +15,21 @@ import android.view.animation.DecelerateInterpolator
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.camera.core.*
+import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.MutableLiveData
 import androidx.navigation.findNavController
+import com.google.common.util.concurrent.ListenableFuture
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
-import com.vcheck.sdk.core.data.Resource
 import com.vcheck.sdk.core.databinding.ActivityVcheckLivenessBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.LivenessGestureResponse
-import com.vcheck.sdk.core.domain.SegmentationGestureResponse
 import com.vcheck.sdk.core.presentation.VCheckStartupActivity
 import com.vcheck.sdk.core.presentation.liveness.flow_logic.*
-import com.vcheck.sdk.core.presentation.liveness.ui.LivenessCameraConnectionFragment
-import com.vcheck.sdk.core.presentation.segmentation.VCheckSegmentationActivity
 import com.vcheck.sdk.core.util.VCheckContextUtils
+import com.vcheck.sdk.core.util.images.BitmapUtils
 import com.vcheck.sdk.core.util.setMargins
 import com.vcheck.sdk.core.util.sizeInKb
 import com.vcheck.sdk.core.util.vibrateDevice
@@ -51,35 +47,38 @@ import java.io.File
 import java.io.IOException
 import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
-import kotlin.collections.ArrayList
+import java.util.concurrent.ExecutionException
+import java.util.concurrent.Executors
 import kotlin.concurrent.fixedRateTimer
 
+
 @OptIn(DelicateCoroutinesApi::class)
-class VCheckLivenessActivity : AppCompatActivity(),
-    ImageReader.OnImageAvailableListener {
+class VCheckLivenessActivity : AppCompatActivity() {
 
     companion object {
         const val TAG = "LivenessActivity"
         private const val LIVENESS_TIME_LIMIT_MILLIS: Long = 15000 //max is 15000
         private const val BLOCK_PIPELINE_TIME_MILLIS: Long = 800 //may reduce a bit
-        private const val GESTURE_REQUEST_DEBOUNCE_MILLIS: Long = 250
+        private const val GESTURE_REQUEST_DEBOUNCE_MILLIS: Long = 150
         private const val STAGE_VIBRATION_DURATION_MILLIS: Long = 100
+        private const val IMAGE_CAPTURE_DEBOUNCE_MILLIS: Long = 100 // 10 FPS
     }
 
     private val scope = CoroutineScope(newSingleThreadContext("liveness"))
 
-    private var timer: Timer? = null
+    private val imageCaptureExecutor = Executors.newSingleThreadExecutor()
+
+    private var apiRequestTimer: Timer? = null
+
+    private var takeImageTimer: Timer? = null
 
     private lateinit var binding: ActivityVcheckLivenessBinding
     private var mToast: Toast? = null
 
-    var streamSize: Size = Size(640, 480)
+    private var streamSize: Size = Size(640, 480)
     private var bitmapList: ArrayList<Bitmap>? = ArrayList()
     private var muxer: Muxer? = null
-    var videoPath: String? = null //make private!
-    var openLivenessCameraParams: LivenessCameraParams? = LivenessCameraParams()
-
-    private var camera2Fragment: LivenessCameraConnectionFragment? = null
+    var videoPath: String? = null
 
     private var livenessSessionLimitCheckTime: Long = 0
     private var isLivenessSessionFinished: Boolean = false
@@ -90,6 +89,9 @@ class VCheckLivenessActivity : AppCompatActivity(),
 
     private var milestoneFlow: StandardMilestoneFlow =
         StandardMilestoneFlow()
+
+    var imageCapture: ImageCapture? = null
+
 
     private fun changeColorsToCustomIfPresent() {
         val drawable = binding.cosmeticRoundedFrame.background as GradientDrawable
@@ -126,11 +128,61 @@ class VCheckLivenessActivity : AppCompatActivity(),
 
         setMilestones()
 
-        setCameraFragment()
+        setCameraProviderListener()
 
         initSetupUI()
 
         indicateNextMilestone(milestoneFlow.getFirstStage(), true)
+    }
+
+    private fun setCameraProviderListener() {
+        val cameraProviderFuture: ListenableFuture<ProcessCameraProvider> =
+            ProcessCameraProvider.getInstance(this@VCheckLivenessActivity)
+        cameraProviderFuture.addListener({
+            try {
+                buildImageCaptureUseCase()
+                bindPreview(cameraProviderFuture.get())
+                setTakeImageTimer()
+            } catch (e: ExecutionException) {
+                e.printStackTrace()
+            } catch (e: InterruptedException) {
+                e.printStackTrace()
+            }
+        }, ContextCompat.getMainExecutor(this@VCheckLivenessActivity))
+    }
+
+    private fun bindPreview(cameraProvider: ProcessCameraProvider) {
+        val cameraSelector =
+            CameraSelector.Builder().requireLensFacing(CameraSelector.LENS_FACING_FRONT).build()
+        val preview: Preview = Preview.Builder().build()
+        preview.setSurfaceProvider(binding.cameraPreviewView.surfaceProvider)
+        binding.cameraPreviewView.viewPort?.let {
+            val useCaseGroup = UseCaseGroup.Builder()
+                //.addUseCase(imageAnalyzer)
+                .addUseCase(preview)
+                .addUseCase(imageCapture!!)
+                .setViewPort(it)
+                .build()
+            cameraProvider.unbindAll()
+            cameraProvider.bindToLifecycle(this@VCheckLivenessActivity,
+                cameraSelector, useCaseGroup)
+            //optional:
+//            val camera: Camera = //(upper call returns camera)
+//            val cameraControl: CameraControl = camera.cameraControl
+//            cameraControl.setLinearZoom(0.3.toFloat())
+        }
+    }
+
+    @SuppressLint("RestrictedApi")
+    private fun buildImageCaptureUseCase() {
+        imageCapture = ImageCapture.Builder()
+            .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+            .setBufferFormat(ImageFormat.YUV_420_888)
+            //.setTargetRotation(rotation) //Surface.ROTATION_270 ?
+            //.setTargetResolution(resolution)
+            //.setFlashMode(flashMode)
+            //.setCaptureMode(captureMode)
+            .build()
     }
 
     private fun setMilestones() {
@@ -150,8 +202,29 @@ class VCheckLivenessActivity : AppCompatActivity(),
         setGestureRequestDebounceTimer()
     }
 
+
+    private fun setTakeImageTimer() {
+        takeImageTimer = fixedRateTimer("timer", false, 0L, IMAGE_CAPTURE_DEBOUNCE_MILLIS) {
+            imageCapture?.takePicture(imageCaptureExecutor, object: ImageCapture.OnImageCapturedCallback() {
+                @ExperimentalGetImage
+                override fun onCaptureSuccess(image: ImageProxy) {
+                    // Use the image, then make sure to close it.
+                    //Log.d(TAG, "GOT PICTURE: W - ${image.width} | H - ${image.height}")
+                    if (!isLivenessSessionFinished) {
+                        gestureCheckBitmap = BitmapUtils.getBitmap(image)
+                    }
+                    image.close()
+                }
+                override fun onError(exception: ImageCaptureException) {
+                    val errorType = exception.imageCaptureError
+                    Log.d(TAG, "TAKE PICTURE ERROR: $errorType")
+                }
+            })
+        }
+    }
+
     private fun setGestureRequestDebounceTimer() {
-        timer = fixedRateTimer("timer", false, 0L, GESTURE_REQUEST_DEBOUNCE_MILLIS) {
+        apiRequestTimer = fixedRateTimer("timer", false, 0L, GESTURE_REQUEST_DEBOUNCE_MILLIS) {
             scope.launch {
                 determineImageResult()
             }
@@ -165,45 +238,6 @@ class VCheckLivenessActivity : AppCompatActivity(),
 
     private fun enoughTimeForNextGesture(): Boolean {
         return SystemClock.elapsedRealtime() - livenessSessionLimitCheckTime <= LIVENESS_TIME_LIMIT_MILLIS
-    }
-
-    private fun setCameraFragment() {
-        val cameraManager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
-        var cameraId: String? = null
-        try {
-            for (cameraIdx in cameraManager.cameraIdList) {
-                val chars: CameraCharacteristics = cameraManager.getCameraCharacteristics(cameraIdx)
-                if (CameraCharacteristics.LENS_FACING_FRONT == chars.get(CameraCharacteristics.LENS_FACING)) {
-                    cameraId = cameraIdx
-                    break
-                }
-            }
-        } catch (e: Exception) {
-            Log.e(TAG, "FRONT CAMERA DETECTION ERROR: ${e.message}")
-            showSingleToast(e.message)
-        }
-
-        camera2Fragment = LivenessCameraConnectionFragment.newInstance(
-            object : LivenessCameraConnectionFragment.ConnectionCallback {
-                override fun onPreviewSizeChosen(size: Size?, cameraRotation: Int) {
-                    openLivenessCameraParams?.previewHeight = size!!.height
-                    openLivenessCameraParams?.previewWidth = size.width
-                    openLivenessCameraParams?.sensorOrientation = cameraRotation - getScreenOrientation()
-                }
-            },
-            this@VCheckLivenessActivity)
-
-        camera2Fragment!!.setCamera(cameraId)
-
-        val fragment: Fragment = camera2Fragment!!
-        supportFragmentManager.beginTransaction().replace(R.id.container, fragment).commit()
-    }
-
-    override fun onImageAvailable(reader: ImageReader?) {
-        //calling verbose extension function, which leads to processImage()
-        if (!isLivenessSessionFinished) {
-            onImageAvailableImpl(reader)
-        }
     }
 
     fun processVideoOnResult(videoProcessingListener: VideoProcessingListener) {
@@ -225,7 +259,7 @@ class VCheckLivenessActivity : AppCompatActivity(),
         Thread { muxer!!.mux(finalList) }.start()
     }
 
-    private fun setUpMuxer() {
+    private fun setUpMuxer() { //! TODO: adjust stream size!
         val framesPerImage = 1
         val framesPerSecond = 24F
         val bitrate = 2500000
@@ -235,35 +269,6 @@ class VCheckLivenessActivity : AppCompatActivity(),
             streamSize.height, streamSize.width, MediaFormat.MIMETYPE_VIDEO_AVC,
             framesPerImage, framesPerSecond, bitrate, iFrameInterval = 1) //3, 32F, 2500000, iFrameInterval = 50 (10))
         muxer = Muxer(this@VCheckLivenessActivity, muxerConfig)
-    }
-
-    fun processImage() {
-        try {
-            Handler(Looper.getMainLooper()).post {
-                openLivenessCameraParams?.apply {
-
-                    imageConverter!!.run()
-                    rgbFrameBitmap = Bitmap.createBitmap(previewWidth, previewHeight, Bitmap.Config.ARGB_8888)
-                    rgbFrameBitmap?.setPixels(rgbBytes, 0, previewWidth, 0, 0, previewWidth, previewHeight)
-
-                    val finalBitmap = rotateBitmap(rgbFrameBitmap!!)!!
-                    //caching bitmap to array/list:
-                    bitmapList?.add(finalBitmap)
-                    //recycling bitmap:
-                    rgbFrameBitmap!!.recycle()
-                    //running post-inference callback
-                    postInferenceCallback!!.run()
-                    //updating cached bitmap for gesture request
-                    gestureCheckBitmap = finalBitmap
-                }
-            }
-        } catch (e: Exception) {
-            showSingleToast(e.message)
-            showSingleToast("[TEST-processImage ex]: ${e.message}")
-        } catch (e: Error) {
-            showSingleToast(e.message)
-            showSingleToast("[TEST-processImage err]: ${e.message}")
-        }
     }
 
     private suspend fun determineImageResult() {
@@ -279,16 +284,17 @@ class VCheckLivenessActivity : AppCompatActivity(),
                 val image: MultipartBody.Part = try {
                     val compressedImageFile = Compressor.compress(this@VCheckLivenessActivity, file) {
                         destination(file)
-                        size(99_000) // ~96 KB
+                        size(95_000, stepSize = 150, maxIteration = 10) //TODO test with step >= 100
                     }
+                    Log.d(TAG, "SIZE : ${compressedImageFile.sizeInKb}")
                     MultipartBody.Part.createFormData(
                         "image.jpg", compressedImageFile.name, compressedImageFile.asRequestBody("image/jpeg".toMediaType()))
                 } catch (e: Exception) {
-                    Log.d(TAG, "Exception while compressing Liveness frame image. Attempting to send default frame. \n${e.printStackTrace()}")
+                    Log.w(TAG, "Exception while compressing Liveness frame image. Attempting to send default frame. \n${e.printStackTrace()}")
                     MultipartBody.Part.createFormData(
                         "image.jpg", file.name, file.asRequestBody("image/jpeg".toMediaType()))
                 } catch (e: Error) {
-                    Log.d(TAG, "Error while compressing Liveness frame image. Attempting to send default frame. \n${e.printStackTrace()}")
+                    Log.w(TAG, "Error while compressing Liveness frame image. Attempting to send default frame. \n${e.printStackTrace()}")
                     MultipartBody.Part.createFormData(
                         "image.jpg", file.name, file.asRequestBody("image/jpeg".toMediaType()))
                 }
@@ -300,11 +306,11 @@ class VCheckLivenessActivity : AppCompatActivity(),
                 if (response != null) {
                     processCheckResult(response)
                 } else {
-                    Log.d(VCheckSegmentationActivity.TAG, "========= --- RESPONSE FOR IDX IS NULL!")
+                    blockRequestByProcessing = false
+                    Log.d(TAG, "Liveness: response for current index not containing data!")
                 }
             }
         } else {
-            //if (!isLivenessSessionFinished && !blockProcessingByUI) { //obsolete logic (?)
             if (!enoughTimeForNextGesture()) {
                 runOnUiThread {
                     onFatalObstacleWorthRetry(R.id.action_dummyLivenessStartDestFragment_to_noTimeFragment)
@@ -314,6 +320,7 @@ class VCheckLivenessActivity : AppCompatActivity(),
     }
 
     private fun processCheckResult(it: LivenessGestureResponse) {
+        Log.d(TAG, "RESPONSE: ${it.success} | ${it.message} | ${it.errorCode}")
         blockRequestByProcessing = false
         runOnUiThread {
             if (!isLivenessSessionFinished) {
@@ -458,8 +465,8 @@ class VCheckLivenessActivity : AppCompatActivity(),
             binding.imgViewStaticStageIndication.isVisible = true
             binding.stageSuccessAnimBorder.isVisible = true
             binding.livenessCosmeticsHolder.isVisible = false
-            timer?.cancel()
-            camera2Fragment?.onPause() //!
+            apiRequestTimer?.cancel()
+            //camera2Fragment?.onPause() //!
             safeNavigateToResultDestination(R.id.action_dummyLivenessStartDestFragment_to_inProcessFragment)
         }
     }
@@ -479,7 +486,7 @@ class VCheckLivenessActivity : AppCompatActivity(),
     private fun onFatalObstacleWorthRetry(actionIdForNav: Int) {
         vibrateDevice(this@VCheckLivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
         finishLivenessSession()
-        timer?.cancel()
+        apiRequestTimer?.cancel()
         //livenessSessionLimitCheckTime = SystemClock.elapsedRealtime()
         binding.livenessCosmeticsHolder.isVisible = false
         safeNavigateToResultDestination(actionIdForNav)
@@ -521,10 +528,10 @@ class VCheckLivenessActivity : AppCompatActivity(),
 
     override fun onDestroy() {
         scope.cancel()
-        timer?.cancel()
+        apiRequestTimer?.cancel()
         bitmapList = null
         muxer = null
-        openLivenessCameraParams = null
+        //openLivenessCameraParams = null
 
         super.onDestroy()
     }
@@ -550,3 +557,4 @@ class VCheckLivenessActivity : AppCompatActivity(),
         startActivity(intents)
     }
 }
+
