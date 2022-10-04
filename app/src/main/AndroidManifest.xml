@@ -2,16 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.vcheck.sdk.core">
-    <!-- For loading images from gallery -->
+
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        tools:remove="android:maxSdkVersion" />
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
-    <!-- <uses-permission android:name="android.permission.CAMERA" android:required="true" /> -->
-    <uses-permission
         android:name="android.permission.CAMERA"
-        tools:remove="android:maxSdkVersion" /> <!-- For logging solution events -->
+        tools:remove="android:maxSdkVersion" />
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />

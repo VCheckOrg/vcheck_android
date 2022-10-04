@@ -265,7 +265,7 @@ class VCheckLivenessActivity : AppCompatActivity() {
         val bitrate = 2500000
         val muxerConfig = MuxerConfig(createVideoFile() ?: File.createTempFile(
             "faceVideo${System.currentTimeMillis()}", ".mp4",
-                this@VCheckLivenessActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES)),
+                this@VCheckLivenessActivity.cacheDir),
             streamSize.height, streamSize.width, MediaFormat.MIMETYPE_VIDEO_AVC,
             framesPerImage, framesPerSecond, bitrate, iFrameInterval = 1) //3, 32F, 2500000, iFrameInterval = 50 (10))
         muxer = Muxer(this@VCheckLivenessActivity, muxerConfig)
@@ -348,8 +348,8 @@ class VCheckLivenessActivity : AppCompatActivity() {
 
     private fun createVideoFile(): File? {
         return try {
-            val storageDir: File =
-                this@VCheckLivenessActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
+            val storageDir: File = this@VCheckLivenessActivity.cacheDir
+                //this@VCheckLivenessActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
             File.createTempFile(
                 "faceVideo${System.currentTimeMillis()}", ".mp4", storageDir).apply {
                 videoPath = this.path

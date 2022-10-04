@@ -73,8 +73,6 @@ fun VCheckSegmentationActivity.getScreenOrientation(): Int {
 
 
 fun VCheckSegmentationActivity.createTempFileForBitmapFrame(mBitmap: Bitmap): String {
-    val f3 = File(Environment.getExternalStorageDirectory().toString() + "/frames/")
-    if (!f3.exists()) f3.mkdirs()
     var outStream: OutputStream? = null
     val file = File.createTempFile("${System.currentTimeMillis()}", ".jpg", this.cacheDir)
     return try {
