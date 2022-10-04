@@ -14,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.FileProvider
+import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.squareup.picasso.MemoryPolicy
@@ -368,19 +369,14 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
             // Ensure that there's a camera activity to handle the intent
             takePictureIntent.resolveActivity((activity as VCheckMainActivity).packageManager)?.also {
                 // Create the File where the photo should go
-                val photoFile: File? = try {
-                    createImageFile(photoIdx)
-                } catch (ex: IOException) {
-                    // Error occurred while creating the File
-                    Log.d(TAG, ex.stackTraceToString())
-                    null
-                }
+                val photoFile = createImageFile(photoIdx)
                 // Continue only if the file was successfully created
-                photoFile?.also {
+                photoFile.also {
                     val photoURI: Uri = FileProvider.getUriForFile(
                         (activity as VCheckMainActivity),
                         "com.vcheck.sdk.core",
                         it)
+                    //val photoURI: Uri = photoFile.toUri()
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
                     startActivityForResult(takePictureIntent, photoIdx)
                 }
@@ -388,12 +384,9 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
         }
     }
 
-    @Throws(IOException::class)
     private fun createImageFile(photoIdx: Int): File {
-        val storageDir: File =
-            (activity as VCheckMainActivity).getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
-        return File.createTempFile(
-            "documentPhoto${photoIdx}", ".jpg", storageDir
+        val file = File.createTempFile("documentPhoto${photoIdx}", ".jpg",
+            (activity as VCheckMainActivity).cacheDir
         ).apply {
             if (photoIdx == 1) {
                 _photo1Path = this.path
@@ -401,5 +394,6 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
                 _photo2Path = this.path
             }
         }
+        return file
     }
 }

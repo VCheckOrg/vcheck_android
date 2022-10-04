@@ -79,9 +79,7 @@ internal class VCheckStartFragment : Fragment() {
         _binding!!.btnStartDemoFlow.isVisible = false
 
         requestPermissionsLauncher.launch(
-            arrayOf(
-                Manifest.permission.CAMERA,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE))
+            arrayOf(Manifest.permission.CAMERA))
     }
 
     private fun performStartupLogic() {

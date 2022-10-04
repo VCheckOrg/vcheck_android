@@ -1,12 +1,5 @@
 package com.vcheck.sdk.core.util
 
-
-import android.graphics.Bitmap
-import android.os.Environment
-import java.io.File
-import java.io.FileOutputStream
-
-
 /** Utility class for manipulating images.  */
 object ImageUtils {
     // This value is 2 ^ 18 - 1, and is used to clamp the RGB values before their ranges
@@ -25,39 +18,6 @@ object ImageUtils {
         // Each 2x2 block takes 2 bytes to encode, one each for U and V.
         val uvSize = (width + 1) / 2 * ((height + 1) / 2) * 2
         return ySize + uvSize
-    }
-    /**
-     * Saves a Bitmap object to disk for analysis.
-     *
-     * @param bitmap The bitmap to save.
-     * @param filename The location to save the bitmap to.
-     */
-    /**
-     * Saves a Bitmap object to disk for analysis.
-     *
-     * @param bitmap The bitmap to save.
-     */
-    @JvmOverloads
-    fun saveBitmap(bitmap: Bitmap, filename: String = "preview.png") {
-        val root = Environment.getExternalStorageDirectory()
-            .absolutePath + File.separator + "tensorflow"
-        //LOGGER.i("Saving %dx%d bitmap to %s.", bitmap.getWidth(), bitmap.getHeight(), root);
-        val myDir = File(root)
-        if (!myDir.mkdirs()) {
-            // LOGGER.i("Make dir failed");
-        }
-        val file = File(myDir, filename)
-        if (file.exists()) {
-            file.delete()
-        }
-        try {
-            val out = FileOutputStream(file)
-            bitmap.compress(Bitmap.CompressFormat.PNG, 99, out)
-            out.flush()
-            out.close()
-        } catch (e: Exception) {
-            //LOGGER.e(e, "Exception!");
-        }
     }
 
     fun convertYUV420SPToARGB8888(
