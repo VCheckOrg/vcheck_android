@@ -59,9 +59,9 @@ class VCheckLivenessActivity : AppCompatActivity() {
         const val TAG = "LivenessActivity"
         private const val LIVENESS_TIME_LIMIT_MILLIS: Long = 15000 //max is 15000
         private const val BLOCK_PIPELINE_TIME_MILLIS: Long = 800 //may reduce a bit
-        private const val GESTURE_REQUEST_DEBOUNCE_MILLIS: Long = 150
+        private const val GESTURE_REQUEST_DEBOUNCE_MILLIS: Long = 180
         private const val STAGE_VIBRATION_DURATION_MILLIS: Long = 100
-        private const val IMAGE_CAPTURE_DEBOUNCE_MILLIS: Long = 100 // 10 FPS
+        private const val IMAGE_CAPTURE_DEBOUNCE_MILLIS: Long = 120 // 10 FPS
     }
 
     private val scope = CoroutineScope(newSingleThreadContext("liveness"))
@@ -75,7 +75,7 @@ class VCheckLivenessActivity : AppCompatActivity() {
     private lateinit var binding: ActivityVcheckLivenessBinding
     private var mToast: Toast? = null
 
-    private var streamSize: Size = Size(640, 480)
+    private var streamSize: Size = Size(640, 480) //TODO increase to 960x540 or more
     private var bitmapList: ArrayList<Bitmap>? = ArrayList()
     private var muxer: Muxer? = null
     var videoPath: String? = null
@@ -176,10 +176,10 @@ class VCheckLivenessActivity : AppCompatActivity() {
     @SuppressLint("RestrictedApi")
     private fun buildImageCaptureUseCase() {
         imageCapture = ImageCapture.Builder()
-            .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+            //.setTargetAspectRatio(AspectRatio.RATIO_4_3)
             .setBufferFormat(ImageFormat.YUV_420_888)
             //.setTargetRotation(rotation) //Surface.ROTATION_270 ?
-            //.setTargetResolution(resolution)
+            .setTargetResolution(Size(960, 540))
             //.setFlashMode(flashMode)
             //.setCaptureMode(captureMode)
             .build()
@@ -282,9 +282,10 @@ class VCheckLivenessActivity : AppCompatActivity() {
                 val file = File(createTempFileForBitmapFrame(gestureCheckBitmap!!))
 
                 val image: MultipartBody.Part = try {
+                    //TODO determine the size of start file and make calculations from it!
                     val compressedImageFile = Compressor.compress(this@VCheckLivenessActivity, file) {
                         destination(file)
-                        size(95_000, stepSize = 150, maxIteration = 10) //TODO test with step >= 100
+                        size(95_000, stepSize = 200, maxIteration = 10) // test with step >= 100
                     }
                     Log.d(TAG, "SIZE : ${compressedImageFile.sizeInKb}")
                     MultipartBody.Part.createFormData(
