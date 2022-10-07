@@ -62,6 +62,9 @@ class VCheckLivenessActivity : AppCompatActivity() {
         private const val GESTURE_REQUEST_DEBOUNCE_MILLIS: Long = 180
         private const val STAGE_VIBRATION_DURATION_MILLIS: Long = 100
         private const val IMAGE_CAPTURE_DEBOUNCE_MILLIS: Long = 120 // 10 FPS
+
+        private const val VIDEO_STREAM_WIDTH_LIMIT = 1080
+        private const val VIDEO_STREAM_HEIGHT_LIMIT = 1200
     }
 
     private val scope = CoroutineScope(newSingleThreadContext("liveness"))
@@ -75,7 +78,8 @@ class VCheckLivenessActivity : AppCompatActivity() {
     private lateinit var binding: ActivityVcheckLivenessBinding
     private var mToast: Toast? = null
 
-    private var streamSize: Size = Size(640, 480) //TODO increase to 960x540 or more
+    private var streamSize: Size = Size(VIDEO_STREAM_WIDTH_LIMIT, VIDEO_STREAM_HEIGHT_LIMIT)
+
     private var bitmapList: ArrayList<Bitmap>? = ArrayList()
     private var muxer: Muxer? = null
     var videoPath: String? = null
@@ -135,6 +139,7 @@ class VCheckLivenessActivity : AppCompatActivity() {
         indicateNextMilestone(milestoneFlow.getFirstStage(), true)
     }
 
+    @SuppressLint("RestrictedApi")
     private fun setCameraProviderListener() {
         val cameraProviderFuture: ListenableFuture<ProcessCameraProvider> =
             ProcessCameraProvider.getInstance(this@VCheckLivenessActivity)
@@ -158,7 +163,6 @@ class VCheckLivenessActivity : AppCompatActivity() {
         preview.setSurfaceProvider(binding.cameraPreviewView.surfaceProvider)
         binding.cameraPreviewView.viewPort?.let {
             val useCaseGroup = UseCaseGroup.Builder()
-                //.addUseCase(imageAnalyzer)
                 .addUseCase(preview)
                 .addUseCase(imageCapture!!)
                 .setViewPort(it)
@@ -166,23 +170,31 @@ class VCheckLivenessActivity : AppCompatActivity() {
             cameraProvider.unbindAll()
             cameraProvider.bindToLifecycle(this@VCheckLivenessActivity,
                 cameraSelector, useCaseGroup)
-            //optional:
-//            val camera: Camera = //(upper call returns camera)
-//            val cameraControl: CameraControl = camera.cameraControl
-//            cameraControl.setLinearZoom(0.3.toFloat())
         }
     }
 
     @SuppressLint("RestrictedApi")
     private fun buildImageCaptureUseCase() {
         imageCapture = ImageCapture.Builder()
-            //.setTargetAspectRatio(AspectRatio.RATIO_4_3)
             .setBufferFormat(ImageFormat.YUV_420_888)
-            //.setTargetRotation(rotation) //Surface.ROTATION_270 ?
-            .setTargetResolution(Size(960, 540))
-            //.setFlashMode(flashMode)
-            //.setCaptureMode(captureMode)
             .build()
+        val captureSize = imageCapture!!.attachedSurfaceResolution ?: Size(0, 0)
+        if ((captureSize.width >= VIDEO_STREAM_WIDTH_LIMIT
+                    || captureSize.height >= VIDEO_STREAM_HEIGHT_LIMIT)
+            || captureSize.width == 0 || captureSize.height == 0) {
+            Log.d(TAG, "------- IMG WIDTH OR HEIGHT IS BIGGER THAN LIMITS!")
+            imageCapture = ImageCapture.Builder()
+                .setBufferFormat(ImageFormat.YUV_420_888)
+                .setTargetResolution(Size(VIDEO_STREAM_WIDTH_LIMIT, VIDEO_STREAM_HEIGHT_LIMIT))
+                .build()
+            streamSize = Size(VIDEO_STREAM_WIDTH_LIMIT, VIDEO_STREAM_HEIGHT_LIMIT)
+        } else {
+            imageCapture = ImageCapture.Builder()
+                .setBufferFormat(ImageFormat.YUV_420_888)
+                .setTargetResolution(Size(captureSize.width, captureSize.height))
+                .build()
+            streamSize = Size(captureSize.width, captureSize.height)
+        }
     }
 
     private fun setMilestones() {
@@ -209,9 +221,15 @@ class VCheckLivenessActivity : AppCompatActivity() {
                 @ExperimentalGetImage
                 override fun onCaptureSuccess(image: ImageProxy) {
                     // Use the image, then make sure to close it.
-                    //Log.d(TAG, "GOT PICTURE: W - ${image.width} | H - ${image.height}")
+                    Log.d(TAG, "GOT PICTURE: W - ${image.width} | H - ${image.height}")
+                    if (image.width != streamSize.width || image.height != streamSize.height) {
+                        streamSize = Size(image.width, image.height)
+                    }
                     if (!isLivenessSessionFinished) {
-                        gestureCheckBitmap = BitmapUtils.getBitmap(image)
+                        val bitmap = BitmapUtils.getBitmap(image)!!
+                        gestureCheckBitmap = bitmap
+                        bitmapList?.add(bitmap)
+                        //bitmap.recycle() //?
                     }
                     image.close()
                 }
@@ -250,7 +268,7 @@ class VCheckLivenessActivity : AppCompatActivity() {
                 }
             }
             override fun onVideoError(error: Throwable) {
-                Log.e(TAG, "There was an error muxing the video")
+                Log.e(TAG, "There was an error muxing the video: ${error.message}")
                 showSingleToast(error.message)
             }
         })
@@ -259,13 +277,13 @@ class VCheckLivenessActivity : AppCompatActivity() {
         Thread { muxer!!.mux(finalList) }.start()
     }
 
-    private fun setUpMuxer() { //! TODO: adjust stream size!
+    private fun setUpMuxer() {
         val framesPerImage = 1
         val framesPerSecond = 24F
         val bitrate = 2500000
         val muxerConfig = MuxerConfig(createVideoFile() ?: File.createTempFile(
             "faceVideo${System.currentTimeMillis()}", ".mp4",
-                this@VCheckLivenessActivity.cacheDir),
+            this@VCheckLivenessActivity.cacheDir),
             streamSize.height, streamSize.width, MediaFormat.MIMETYPE_VIDEO_AVC,
             framesPerImage, framesPerSecond, bitrate, iFrameInterval = 1) //3, 32F, 2500000, iFrameInterval = 50 (10))
         muxer = Muxer(this@VCheckLivenessActivity, muxerConfig)
@@ -281,34 +299,43 @@ class VCheckLivenessActivity : AppCompatActivity() {
 
                 val file = File(createTempFileForBitmapFrame(gestureCheckBitmap!!))
 
+
                 val image: MultipartBody.Part = try {
                     //TODO determine the size of start file and make calculations from it!
-                    val compressedImageFile = Compressor.compress(this@VCheckLivenessActivity, file) {
-                        destination(file)
-                        size(95_000, stepSize = 200, maxIteration = 10) // test with step >= 100
+
+                    val initSizeKb = file.sizeInKb
+                    if (initSizeKb < 99.0) {
+                        MultipartBody.Part.createFormData(
+                            "image.jpg", file.name, file.asRequestBody("image/jpeg".toMediaType()))
+                    } else {
+                        val stepSizeKb = (initSizeKb - 120).toInt()
+                        val compressedImageFile = Compressor.compress(this@VCheckLivenessActivity, file) {
+                            destination(file)
+                            size(95_000, stepSize = stepSizeKb, maxIteration = 1) // TODO TEST
+                        }
+                        Log.d(TAG, "SIZE : ${compressedImageFile.sizeInKb}")
+                        MultipartBody.Part.createFormData(
+                            "image.jpg", compressedImageFile.name, compressedImageFile.asRequestBody("image/jpeg".toMediaType()))
                     }
-                    Log.d(TAG, "SIZE : ${compressedImageFile.sizeInKb}")
-                    MultipartBody.Part.createFormData(
-                        "image.jpg", compressedImageFile.name, compressedImageFile.asRequestBody("image/jpeg".toMediaType()))
                 } catch (e: Exception) {
-                    Log.w(TAG, "Exception while compressing Liveness frame image. Attempting to send default frame. \n${e.printStackTrace()}")
+                    Log.w(TAG, "Exception while compressing Liveness frame image. Attempting to send default frame | \n${e.printStackTrace()}")
                     MultipartBody.Part.createFormData(
                         "image.jpg", file.name, file.asRequestBody("image/jpeg".toMediaType()))
                 } catch (e: Error) {
-                    Log.w(TAG, "Error while compressing Liveness frame image. Attempting to send default frame. \n${e.printStackTrace()}")
+                    Log.w(TAG, "Error while compressing Liveness frame image. Attempting to send default frame | \n${e.printStackTrace()}")
                     MultipartBody.Part.createFormData(
                         "image.jpg", file.name, file.asRequestBody("image/jpeg".toMediaType()))
                 }
 
                 val currentGesture = milestoneFlow.getGestureRequestFromCurrentStage()
                 val response = VCheckDIContainer.mainRepository.sendLivenessGestureAttempt(
-                        image, MultipartBody.Part.createFormData("gesture", currentGesture))
+                    image, MultipartBody.Part.createFormData("gesture", currentGesture))
 
                 if (response != null) {
                     processCheckResult(response)
                 } else {
                     blockRequestByProcessing = false
-                    Log.d(TAG, "Liveness: response for current index not containing data!")
+                    Log.d(TAG, "Liveness: response for current index not containing data! Max image size may be exceeded")
                 }
             }
         } else {
@@ -349,7 +376,6 @@ class VCheckLivenessActivity : AppCompatActivity() {
     private fun createVideoFile(): File? {
         return try {
             val storageDir: File = this@VCheckLivenessActivity.cacheDir
-                //this@VCheckLivenessActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
             File.createTempFile(
                 "faceVideo${System.currentTimeMillis()}", ".mp4", storageDir).apply {
                 videoPath = this.path
@@ -532,8 +558,6 @@ class VCheckLivenessActivity : AppCompatActivity() {
         apiRequestTimer?.cancel()
         bitmapList = null
         muxer = null
-        //openLivenessCameraParams = null
-
         super.onDestroy()
     }
 
@@ -559,3 +583,15 @@ class VCheckLivenessActivity : AppCompatActivity() {
     }
 }
 
+
+//optional:
+//            val camera: Camera = //(upper call returns camera)
+//            val cameraControl: CameraControl = camera.cameraControl
+//            cameraControl.setLinearZoom(0.3.toFloat())
+
+//optional:
+//.setTargetAspectRatio(AspectRatio.RATIO_4_3)
+//.setTargetRotation(rotation) //Surface.ROTATION_270 ?
+//.setTargetResolution(Size(960, 540))
+//.setFlashMode(flashMode)
+//.setCaptureMode(captureMode)
