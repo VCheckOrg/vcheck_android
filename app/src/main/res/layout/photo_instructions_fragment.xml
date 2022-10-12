@@ -18,7 +18,7 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/card"
             android:layout_width="match_parent"
-            android:layout_height="520dp"
+            android:layout_height="580dp"
             android:layout_marginStart="12dp"
             android:layout_marginTop="14dp"
             android:layout_marginEnd="12dp"
@@ -159,7 +159,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="28dp"
+                    android:layout_marginTop="20dp"
                     android:src="@drawable/no_foreign_objects_icon"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/valid_dispatch_icon"
@@ -185,7 +185,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="28dp"
+                    android:layout_marginTop="20dp"
                     android:src="@drawable/original_doc_icon"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/no_foreign_objects_icon"
@@ -206,6 +206,58 @@
                     app:layout_constraintStart_toEndOf="@+id/original_doc_icon"
                     app:layout_constraintTop_toTopOf="@+id/original_doc_icon" />
 
+                <ImageView
+                    android:id="@+id/good_camera_icon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="20dp"
+                    android:src="@drawable/make_photo_icon"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/original_doc_icon"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:id="@+id/good_camera_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="@string/good_camera_text"
+                    android:textColor="@color/vcheck_text"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/good_camera_icon"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/good_camera_icon"
+                    app:layout_constraintTop_toTopOf="@+id/good_camera_icon" />
+
+                <ImageView
+                    android:id="@+id/good_light_icon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="20dp"
+                    android:src="@drawable/good_light_icon"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/good_camera_icon"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:id="@+id/good_light_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="@string/good_doc_light_text"
+                    android:textColor="@color/vcheck_text"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/good_light_icon"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/good_light_icon"
+                    app:layout_constraintTop_toTopOf="@+id/good_light_icon" />
+
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/photo_instructions_button"
                     android:layout_width="match_parent"
@@ -221,7 +273,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/original_doc_text" />
+                    app:layout_constraintTop_toBottomOf="@+id/good_light_text" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -230,30 +282,3 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>
-
-    <!--                <ImageView-->
-    <!--                    android:id="@+id/image_color_icon"-->
-    <!--                    android:layout_width="24dp"-->
-    <!--                    android:layout_height="24dp"-->
-    <!--                    android:layout_marginStart="16dp"-->
-    <!--                    android:layout_marginTop="30dp"-->
-    <!--                    android:src="@drawable/image_color_icon"-->
-    <!--                    app:layout_constraintStart_toStartOf="parent"-->
-    <!--                    app:layout_constraintTop_toBottomOf="@+id/photo_instructions_description"-->
-    <!--                    tools:ignore="ContentDescription" />-->
-
-    <!--                <TextView-->
-    <!--                    android:id="@+id/image_color_text"-->
-    <!--                    android:layout_width="0dp"-->
-    <!--                    android:layout_height="wrap_content"-->
-    <!--                    android:layout_marginStart="12dp"-->
-    <!--                    android:layout_marginEnd="16dp"-->
-    <!--                    android:text="@string/image_color_text"-->
-    <!--                    android:textColor="@color/vcheck_text"-->
-    <!--                    android:textSize="15sp"-->
-    <!--                    android:textStyle="bold"-->
-    <!--                    app:layout_constraintBottom_toBottomOf="@+id/image_color_icon"-->
-    <!--                    app:layout_constraintEnd_toEndOf="parent"-->
-    <!--                    app:layout_constraintStart_toEndOf="@+id/image_color_icon"-->
-    <!--                    app:layout_constraintTop_toTopOf="@+id/image_color_icon" />-->
-

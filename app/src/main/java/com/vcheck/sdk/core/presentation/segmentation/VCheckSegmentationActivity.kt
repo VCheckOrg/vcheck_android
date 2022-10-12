@@ -2,15 +2,14 @@ package com.vcheck.sdk.core.presentation.segmentation
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.hardware.camera2.CameraCharacteristics
-import android.hardware.camera2.CameraManager
-import android.media.ImageReader
+import android.graphics.ImageFormat
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -24,9 +23,12 @@ import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.camera.core.*
+import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import com.google.common.util.concurrent.ListenableFuture
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.databinding.ActivityVcheckSegmentationBinding
@@ -35,12 +37,13 @@ import com.vcheck.sdk.core.domain.DocType
 import com.vcheck.sdk.core.domain.DocTypeData
 import com.vcheck.sdk.core.domain.SegmentationGestureResponse
 import com.vcheck.sdk.core.domain.docCategoryIdxToType
-import com.vcheck.sdk.core.presentation.liveness.flow_logic.LivenessCameraParams
+import com.vcheck.sdk.core.presentation.liveness.VCheckLivenessActivity
 import com.vcheck.sdk.core.presentation.segmentation.flow_logic.*
-import com.vcheck.sdk.core.presentation.segmentation.ui.SegmentationCameraConnectionFragment
 import com.vcheck.sdk.core.presentation.transferrable_objects.CheckPhotoDataTO
 import com.vcheck.sdk.core.util.VCheckContextUtils
+import com.vcheck.sdk.core.util.images.BitmapUtils
 import com.vcheck.sdk.core.util.setMargins
+import com.vcheck.sdk.core.util.sizeInKb
 import com.vcheck.sdk.core.util.vibrateDevice
 import id.zelory.compressor.Compressor
 import id.zelory.compressor.constraint.destination
@@ -50,37 +53,45 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
+import java.util.*
+import java.util.concurrent.ExecutionException
+import java.util.concurrent.Executors
 import kotlin.concurrent.fixedRateTimer
 
 @OptIn(DelicateCoroutinesApi::class)
-class VCheckSegmentationActivity : AppCompatActivity(),
-    ImageReader.OnImageAvailableListener {
+class VCheckSegmentationActivity : AppCompatActivity() {
 
     companion object {
         const val TAG = "SegmentationActivity"
         private const val LIVENESS_TIME_LIMIT_MILLIS: Long = 60000 //max is 60s
         private const val BLOCK_PIPELINE_TIME_MILLIS: Long = 3800 //may reduce a bit
         private const val GESTURE_REQUEST_DEBOUNCE_MILLIS: Long = 410
+        private const val IMAGE_CAPTURE_DEBOUNCE_MILLIS: Long = 150
         private const val STAGE_VIBRATION_DURATION_MILLIS: Long = 100
         private const val MASK_UI_MULTIPLY_FACTOR: Double = 1.1
+
+        private const val VIDEO_STREAM_WIDTH_LIMIT = 1080
+        private const val VIDEO_STREAM_HEIGHT_LIMIT = 1080
     }
 
-    val scope = CoroutineScope(newSingleThreadContext("segmentation"))
+    private val scope = CoroutineScope(newSingleThreadContext("segmentation"))
+
+    private val imageCaptureExecutor = Executors.newSingleThreadExecutor()
 
     private lateinit var binding: ActivityVcheckSegmentationBinding
     private var mToast: Toast? = null
 
-    var streamSize: Size = Size(640, 480)
+    private var streamSize: Size = Size(VIDEO_STREAM_WIDTH_LIMIT, VIDEO_STREAM_HEIGHT_LIMIT)
 
     private var frameSize: Size? = null
+
+    private var apiRequestTimer: Timer? = null
+
+    private var takeImageTimer: Timer? = null
 
     private lateinit var docData: DocTypeData
 
     private var checkedDocIdx = 0
-
-    var openLivenessCameraParams: LivenessCameraParams? = LivenessCameraParams()
-
-    private var camera2Fragment: SegmentationCameraConnectionFragment? = null
 
     private var livenessSessionLimitCheckTime: Long = 0
     private var isLivenessSessionFinished: Boolean = false
@@ -88,6 +99,8 @@ class VCheckSegmentationActivity : AppCompatActivity(),
     private var blockRequestByProcessing: Boolean = false
 
     private var currentCheckBitmap: Bitmap? = null
+
+    var imageCapture: ImageCapture? = null
 
     //currently using 1st(+2nd) photo caching instead of putting them to array/list
     private var photo1FullBitmap: Bitmap? = null
@@ -119,7 +132,9 @@ class VCheckSegmentationActivity : AppCompatActivity(),
         }
 
         setDocData()
-        setCameraFragment()
+
+        setCameraProviderListener()
+
         setupInstructionStageUI()
     }
 
@@ -150,8 +165,98 @@ class VCheckSegmentationActivity : AppCompatActivity(),
         return checkedDocIdx >= docData.maxPagesCount
     }
 
+    @SuppressLint("RestrictedApi")
+    private fun setCameraProviderListener() {
+        val cameraProviderFuture: ListenableFuture<ProcessCameraProvider> =
+            ProcessCameraProvider.getInstance(this@VCheckSegmentationActivity)
+        cameraProviderFuture.addListener({
+            try {
+                buildImageCaptureUseCase()
+                bindPreview(cameraProviderFuture.get())
+                setTakeImageTimer()
+            } catch (e: ExecutionException) {
+                e.printStackTrace()
+            } catch (e: InterruptedException) {
+                e.printStackTrace()
+            }
+        }, ContextCompat.getMainExecutor(this@VCheckSegmentationActivity))
+    }
+
+    private fun bindPreview(cameraProvider: ProcessCameraProvider) {
+        val cameraSelector =
+            CameraSelector.Builder().requireLensFacing(CameraSelector.LENS_FACING_FRONT).build()
+        val preview: Preview = Preview.Builder().build()
+        preview.setSurfaceProvider(binding.cameraPreviewView.surfaceProvider)
+        binding.cameraPreviewView.viewPort?.let {
+            val useCaseGroup = UseCaseGroup.Builder()
+                .addUseCase(preview)
+                .addUseCase(imageCapture!!)
+                .setViewPort(it)
+                .build()
+            cameraProvider.unbindAll()
+            cameraProvider.bindToLifecycle(this@VCheckSegmentationActivity,
+                cameraSelector, useCaseGroup)
+        }
+    }
+
+    @SuppressLint("RestrictedApi")
+    private fun buildImageCaptureUseCase() {
+        imageCapture = ImageCapture.Builder()
+            .setBufferFormat(ImageFormat.YUV_420_888)
+            .build()
+        val captureSize = imageCapture!!.attachedSurfaceResolution ?: Size(0, 0)
+        if ((captureSize.width >= VIDEO_STREAM_WIDTH_LIMIT
+                    || captureSize.height >= VIDEO_STREAM_HEIGHT_LIMIT)
+            || captureSize.width == 0 || captureSize.height == 0) {
+            //Log.d(TAG, "------- IMG WIDTH OR HEIGHT IS BIGGER THAN LIMITS!")
+            imageCapture = ImageCapture.Builder()
+                .setBufferFormat(ImageFormat.YUV_420_888)
+                .setTargetResolution(Size(
+                    VIDEO_STREAM_WIDTH_LIMIT,
+                    VIDEO_STREAM_HEIGHT_LIMIT
+                ))
+                .build()
+            streamSize = Size(
+                VIDEO_STREAM_WIDTH_LIMIT,
+                VIDEO_STREAM_HEIGHT_LIMIT
+            )
+        } else {
+            imageCapture = ImageCapture.Builder()
+                .setBufferFormat(ImageFormat.YUV_420_888)
+                .setTargetResolution(Size(captureSize.width, captureSize.height))
+                .build()
+            streamSize = Size(captureSize.width, captureSize.height)
+        }
+    }
+
+    private fun setTakeImageTimer() {
+        takeImageTimer = fixedRateTimer("timer", false, 0L,
+            IMAGE_CAPTURE_DEBOUNCE_MILLIS
+        ) {
+            imageCapture?.takePicture(imageCaptureExecutor, object: ImageCapture.OnImageCapturedCallback() {
+                @ExperimentalGetImage
+                override fun onCaptureSuccess(image: ImageProxy) {
+                    // Use the image, then make sure to close it.
+                    Log.d(TAG, "GOT PICTURE: W - ${image.width} | H - ${image.height}")
+                    if (image.width != streamSize.width || image.height != streamSize.height) {
+                        streamSize = Size(image.width, image.height)
+                    }
+                    if (!isLivenessSessionFinished) {
+                        val bitmap = BitmapUtils.getBitmap(image)!!
+                        currentCheckBitmap = bitmap
+                    }
+                    image.close()
+                }
+                override fun onError(exception: ImageCaptureException) {
+                    val errorType = exception.imageCaptureError
+                    Log.d(VCheckLivenessActivity.TAG, "IMG CAPTURE - TAKE PICTURE ERROR: $errorType")
+                }
+            })
+        }
+    }
+
     private fun setGestureRequestDebounceTimer() {
-        fixedRateTimer("timer", false, 0L, GESTURE_REQUEST_DEBOUNCE_MILLIS) {
+        apiRequestTimer = fixedRateTimer("timer", false, 0L, GESTURE_REQUEST_DEBOUNCE_MILLIS) {
             if (!isLivenessSessionFinished) {
                 if (areAllDocPagesChecked()) {
                     finishLivenessSession(true)
@@ -167,7 +272,7 @@ class VCheckSegmentationActivity : AppCompatActivity(),
                         blockProcessingByUI = true
                         blockRequestByProcessing = true
 
-                        scope.launch {  //!
+                        scope.launch {
                             determineImageResult()
                         }
                     }
@@ -209,47 +314,6 @@ class VCheckSegmentationActivity : AppCompatActivity(),
 
     private fun enoughTimeForNextCheck(): Boolean {
         return SystemClock.elapsedRealtime() - livenessSessionLimitCheckTime <= LIVENESS_TIME_LIMIT_MILLIS
-    }
-
-    private fun setCameraFragment() {
-        val cameraManager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
-        var cameraId: String? = null
-        try {
-            for (cameraIdx in cameraManager.cameraIdList) {
-                val chars: CameraCharacteristics = cameraManager.getCameraCharacteristics(cameraIdx)
-                if (CameraCharacteristics.LENS_FACING_BACK == chars.get(CameraCharacteristics.LENS_FACING)) {
-                    cameraId = cameraIdx
-                    break
-                }
-            }
-        } catch (e: Exception) {
-            Log.e(TAG, "BACK CAMERA DETECTION ERROR: ${e.message}")
-            showSingleToast(e.message)
-        }
-
-        camera2Fragment = SegmentationCameraConnectionFragment.newInstance(
-            object : SegmentationCameraConnectionFragment.ConnectionCallback {
-                override fun onPreviewSizeChosen(size: Size?, cameraRotation: Int) {
-                    openLivenessCameraParams?.previewHeight = size!!.height
-                    openLivenessCameraParams?.previewWidth = size.width
-                    openLivenessCameraParams?.sensorOrientation = cameraRotation - getScreenOrientation()
-                }
-            },
-            this@VCheckSegmentationActivity)
-
-        camera2Fragment!!.setCamera(cameraId)
-
-        val fragment: Fragment = camera2Fragment!!
-        supportFragmentManager.beginTransaction().replace(R.id.seg_container, fragment).commit()
-
-        setSegmentationFrameSize()
-    }
-
-    override fun onImageAvailable(reader: ImageReader?) {
-        //calling verbose extension function, which leads to processImage()
-        if (!isLivenessSessionFinished) {
-            onImageAvailableImpl(reader)
-        }
     }
 
     private fun setSegmentationFrameSize() {
@@ -295,32 +359,6 @@ class VCheckSegmentationActivity : AppCompatActivity(),
         }
     }
 
-    suspend fun processImage() {
-        try {
-            Handler(Looper.getMainLooper()).post {
-                openLivenessCameraParams?.apply {
-                    imageConverter!!.run()
-                    rgbFrameBitmap = Bitmap.createBitmap(previewWidth, previewHeight, Bitmap.Config.ARGB_8888)
-                    rgbFrameBitmap?.setPixels(rgbBytes, 0, previewWidth, 0, 0, previewWidth, previewHeight)
-                    val finalBitmap = rotateBitmap(rgbFrameBitmap!!)!!
-                    //caching full image bitmap
-                    currentCheckBitmap = finalBitmap
-                    //recycling bitmap:
-                    rgbFrameBitmap!!.recycle()
-                    //running post-inference callback
-                    postInferenceCallback!!.run()
-                    //updating cached bitmap for gesture request
-                }
-            }
-        } catch (e: Exception) {
-            showSingleToast(e.message)
-            showSingleToast("[TEST-processImage ex]: ${e.message}")
-        } catch (e: Error) {
-            showSingleToast(e.message)
-            showSingleToast("[TEST-processImage err]: ${e.message}")
-        }
-    }
-
     private suspend fun determineImageResult() {
 
         blockRequestByProcessing = true
@@ -331,18 +369,27 @@ class VCheckSegmentationActivity : AppCompatActivity(),
         val file = File(createTempFileForBitmapFrame(minimizedBitmap))
 
         val image: MultipartBody.Part = try {
-            val compressedImageFile = Compressor.compress(this@VCheckSegmentationActivity, file) {
-                destination(file)
-                size(99_000) // ~96 KB
+
+            val initSizeKb = file.sizeInKb
+            if (initSizeKb < 99.0) {
+                MultipartBody.Part.createFormData(
+                    "image.jpg", file.name, file.asRequestBody("image/jpeg".toMediaType()))
+            } else {
+                val stepSizeKb = (initSizeKb - 120).toInt()
+                val compressedImageFile = Compressor.compress(this@VCheckSegmentationActivity, file) {
+                    destination(file)
+                    size(95_000, stepSize = stepSizeKb, maxIteration = 1) // TODO TEST
+                }
+                Log.d(VCheckLivenessActivity.TAG, "COMPRESSED SIZE : ${compressedImageFile.sizeInKb}")
+                MultipartBody.Part.createFormData(
+                    "image.jpg", compressedImageFile.name, compressedImageFile.asRequestBody("image/jpeg".toMediaType()))
             }
-            MultipartBody.Part.createFormData(
-                "image.jpg", compressedImageFile.name, compressedImageFile.asRequestBody("image/jpeg".toMediaType()))
         } catch (e: Exception) {
-            Log.d(TAG, "Exception while compressing Liveness frame image. Attempting to send default frame. \n${e.printStackTrace()}")
+            Log.w(VCheckLivenessActivity.TAG, "Exception while compressing Liveness frame image. Attempting to send default frame | \n${e.printStackTrace()}")
             MultipartBody.Part.createFormData(
                 "image.jpg", file.name, file.asRequestBody("image/jpeg".toMediaType()))
         } catch (e: Error) {
-            Log.d(TAG, "Error while compressing Liveness frame image. Attempting to send default frame. \n${e.printStackTrace()}")
+            Log.w(VCheckLivenessActivity.TAG, "Error while compressing Liveness frame image. Attempting to send default frame | \n${e.printStackTrace()}")
             MultipartBody.Part.createFormData(
                 "image.jpg", file.name, file.asRequestBody("image/jpeg".toMediaType()))
         }
@@ -601,8 +648,58 @@ class VCheckSegmentationActivity : AppCompatActivity(),
 
     override fun onDestroy() {
         scope.cancel()
-        openLivenessCameraParams = null
-
         super.onDestroy()
     }
 }
+
+// override fun onImageAvailable(reader: ImageReader?) {
+//        //calling verbose extension function, which leads to processImage()
+//        if (!isLivenessSessionFinished) {
+//            onImageAvailableImpl(reader)
+//        }
+//    }
+
+//    suspend fun processImage() {
+//        try {
+//            Handler(Looper.getMainLooper()).post {
+//                openLivenessCameraParams?.apply {
+//                    imageConverter!!.run()
+//                    rgbFrameBitmap = Bitmap.createBitmap(previewWidth, previewHeight, Bitmap.Config.ARGB_8888)
+//                    rgbFrameBitmap?.setPixels(rgbBytes, 0, previewWidth, 0, 0, previewWidth, previewHeight)
+//                    val finalBitmap = rotateBitmap(rgbFrameBitmap!!)!!
+//                    //caching full image bitmap
+//                    currentCheckBitmap = finalBitmap
+//                    //recycling bitmap:
+//                    rgbFrameBitmap!!.recycle()
+//                    //running post-inference callback
+//                    postInferenceCallback!!.run()
+//                    //updating cached bitmap for gesture request
+//                }
+//            }
+//        } catch (e: Exception) {
+//            showSingleToast(e.message)
+//            showSingleToast("[TEST-processImage ex]: ${e.message}")
+//        } catch (e: Error) {
+//            showSingleToast(e.message)
+//            showSingleToast("[TEST-processImage err]: ${e.message}")
+//        }
+//    }
+
+//    private fun setCameraFragment() {
+//        val cameraManager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
+//        var cameraId: String? = null
+//        try {
+//            for (cameraIdx in cameraManager.cameraIdList) {
+//                val chars: CameraCharacteristics = cameraManager.getCameraCharacteristics(cameraIdx)
+//                if (CameraCharacteristics.LENS_FACING_BACK == chars.get(CameraCharacteristics.LENS_FACING)) {
+//                    cameraId = cameraIdx
+//                    break
+//                }
+//            }
+//        } catch (e: Exception) {
+//            Log.e(TAG, "BACK CAMERA DETECTION ERROR: ${e.message}")
+//            showSingleToast(e.message)
+//        }
+//
+//        setSegmentationFrameSize()
+//    }

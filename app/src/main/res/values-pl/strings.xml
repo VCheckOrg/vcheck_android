@@ -173,4 +173,8 @@
     <string name="segmentation_stage_success_first_page">Strona przednia zeskanowana pomyślnie. Proszę odwrócić dokument/stronę.</string>
 
     <string name="error_make_two_photos">Proszę zrobić wszystkie niezbędne dokumenty fotograficzne</string>
+
+    <string name="good_camera_text">nakręcony dobrym aparatem</string>
+    <string name="good_doc_light_text">dobrze oświetlony</string>
+
 </resources>

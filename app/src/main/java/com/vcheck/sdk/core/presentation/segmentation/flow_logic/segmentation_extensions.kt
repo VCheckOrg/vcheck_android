@@ -1,71 +1,12 @@
 package com.vcheck.sdk.core.presentation.segmentation.flow_logic
 
-import android.content.ContentValues
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Matrix
-import android.media.ImageReader
-import android.net.Uri
-import android.os.Environment
-import android.provider.MediaStore
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.presentation.segmentation.VCheckSegmentationActivity
-import com.vcheck.sdk.core.util.images.ImageUtils
-import com.vcheck.sdk.core.util.fillBytes
-import kotlinx.coroutines.launch
 import java.io.File
-import java.io.File.separator
 import java.io.FileOutputStream
 import java.io.OutputStream
-
-
-fun VCheckSegmentationActivity.onImageAvailableImpl(reader: ImageReader?) {
-    // We need wait until we have some size from onPreviewSizeChosen
-    openLivenessCameraParams?.apply {
-        if (previewWidth == 0 || previewHeight == 0) {
-            return
-        }
-        if (rgbBytes == null) {
-            rgbBytes = IntArray(previewWidth * previewHeight)
-        }
-        try {
-            val image = reader?.acquireLatestImage() ?: return
-            if (isProcessingFrame) {
-                image.close()
-                return
-            }
-            isProcessingFrame = true
-            val planes = image.planes
-            fillBytes(planes, yuvBytes)
-            yRowStride = planes[0].rowStride
-            val uvRowStride = planes[1].rowStride
-            val uvPixelStride = planes[1].pixelStride
-            imageConverter = Runnable {
-                ImageUtils.convertYUV420ToARGB8888(
-                    yuvBytes[0]!!,
-                    yuvBytes[1]!!,
-                    yuvBytes[2]!!,
-                    previewWidth,
-                    previewHeight,
-                    yRowStride,
-                    uvRowStride,
-                    uvPixelStride,
-                    rgbBytes!!
-                )
-            }
-            postInferenceCallback = Runnable {
-                image.close()
-                isProcessingFrame = false
-            }
-            scope.launch {  //!
-                processImage()
-            }
-        } catch (e: Exception) {
-            return
-        }
-    }
-}
-
 
 fun VCheckSegmentationActivity.getScreenOrientation(): Int {
     return 0

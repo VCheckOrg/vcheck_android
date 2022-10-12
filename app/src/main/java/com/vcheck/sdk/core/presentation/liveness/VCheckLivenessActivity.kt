@@ -60,11 +60,11 @@ class VCheckLivenessActivity : AppCompatActivity() {
         private const val LIVENESS_TIME_LIMIT_MILLIS: Long = 15000 //max is 15000
         private const val BLOCK_PIPELINE_TIME_MILLIS: Long = 800 //may reduce a bit
         private const val GESTURE_REQUEST_DEBOUNCE_MILLIS: Long = 180
+        private const val IMAGE_CAPTURE_DEBOUNCE_MILLIS: Long = 120 // 9 FPS
         private const val STAGE_VIBRATION_DURATION_MILLIS: Long = 100
-        private const val IMAGE_CAPTURE_DEBOUNCE_MILLIS: Long = 120 // 10 FPS
 
         private const val VIDEO_STREAM_WIDTH_LIMIT = 1080
-        private const val VIDEO_STREAM_HEIGHT_LIMIT = 1200
+        private const val VIDEO_STREAM_HEIGHT_LIMIT = 1080
     }
 
     private val scope = CoroutineScope(newSingleThreadContext("liveness"))
@@ -82,7 +82,7 @@ class VCheckLivenessActivity : AppCompatActivity() {
 
     private var bitmapList: ArrayList<Bitmap>? = ArrayList()
     private var muxer: Muxer? = null
-    var videoPath: String? = null
+    private var videoPath: String? = null
 
     private var livenessSessionLimitCheckTime: Long = 0
     private var isLivenessSessionFinished: Boolean = false
@@ -94,7 +94,7 @@ class VCheckLivenessActivity : AppCompatActivity() {
     private var milestoneFlow: StandardMilestoneFlow =
         StandardMilestoneFlow()
 
-    var imageCapture: ImageCapture? = null
+    private var imageCapture: ImageCapture? = null
 
 
     private fun changeColorsToCustomIfPresent() {
@@ -182,7 +182,7 @@ class VCheckLivenessActivity : AppCompatActivity() {
         if ((captureSize.width >= VIDEO_STREAM_WIDTH_LIMIT
                     || captureSize.height >= VIDEO_STREAM_HEIGHT_LIMIT)
             || captureSize.width == 0 || captureSize.height == 0) {
-            Log.d(TAG, "------- IMG WIDTH OR HEIGHT IS BIGGER THAN LIMITS!")
+            //Log.d(TAG, "------- IMG WIDTH OR HEIGHT IS BIGGER THAN LIMITS!")
             imageCapture = ImageCapture.Builder()
                 .setBufferFormat(ImageFormat.YUV_420_888)
                 .setTargetResolution(Size(VIDEO_STREAM_WIDTH_LIMIT, VIDEO_STREAM_HEIGHT_LIMIT))
@@ -221,7 +221,7 @@ class VCheckLivenessActivity : AppCompatActivity() {
                 @ExperimentalGetImage
                 override fun onCaptureSuccess(image: ImageProxy) {
                     // Use the image, then make sure to close it.
-                    Log.d(TAG, "GOT PICTURE: W - ${image.width} | H - ${image.height}")
+                    //Log.d(TAG, "GOT PICTURE: W - ${image.width} | H - ${image.height}")
                     if (image.width != streamSize.width || image.height != streamSize.height) {
                         streamSize = Size(image.width, image.height)
                     }
@@ -235,7 +235,7 @@ class VCheckLivenessActivity : AppCompatActivity() {
                 }
                 override fun onError(exception: ImageCaptureException) {
                     val errorType = exception.imageCaptureError
-                    Log.d(TAG, "TAKE PICTURE ERROR: $errorType")
+                    Log.d(TAG, "IMG CAPTURE - TAKE PICTURE ERROR: $errorType")
                 }
             })
         }
@@ -299,9 +299,7 @@ class VCheckLivenessActivity : AppCompatActivity() {
 
                 val file = File(createTempFileForBitmapFrame(gestureCheckBitmap!!))
 
-
                 val image: MultipartBody.Part = try {
-                    //TODO determine the size of start file and make calculations from it!
 
                     val initSizeKb = file.sizeInKb
                     if (initSizeKb < 99.0) {
@@ -313,7 +311,7 @@ class VCheckLivenessActivity : AppCompatActivity() {
                             destination(file)
                             size(95_000, stepSize = stepSizeKb, maxIteration = 1) // TODO TEST
                         }
-                        Log.d(TAG, "SIZE : ${compressedImageFile.sizeInKb}")
+                        Log.d(TAG, "COMPRESSED SIZE : ${compressedImageFile.sizeInKb}")
                         MultipartBody.Part.createFormData(
                             "image.jpg", compressedImageFile.name, compressedImageFile.asRequestBody("image/jpeg".toMediaType()))
                     }

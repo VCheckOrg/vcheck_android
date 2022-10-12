@@ -173,4 +173,8 @@
     <string name="segmentation_stage_success_first_page">Лицевая сторона успешно отсканирована. Пожалуйста, переверните документ/страницу.</string>
 
     <string name="error_make_two_photos">Пожалуйста, сделайте все необходимые фото документа</string>
+
+    <string name="good_camera_text">снято на хорошую камеру</string>
+    <string name="good_doc_light_text">хорошо освещенный</string>
+
 </resources>

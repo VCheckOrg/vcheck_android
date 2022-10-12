@@ -184,4 +184,7 @@
 
     <string name="error_make_two_photos">Please make all required photos of the document</string>
 
+    <string name="good_camera_text">filmed with a good camera</string>
+    <string name="good_doc_light_text">well lit</string>
+
 </resources>

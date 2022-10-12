@@ -73,6 +73,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <androidx.camera.view.PreviewView
+            android:id="@+id/camera_preview_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/vcheck_background_primary"
+            android:layout_gravity="center"
+            app:scaleType="fitCenter"/>
+
         <com.vcheck.sdk.core.util.RectOverlayView
             android:id="@+id/segmentation_mask_wrapper"
             android:layout_width="match_parent"

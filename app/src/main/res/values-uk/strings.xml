@@ -173,4 +173,8 @@
     <string name="segmentation_stage_success_first_page">Передня сторона успішно просканована. Будь ласка, перегорніть документ/сторінку.</string>
 
     <string name="error_make_two_photos">Будь ласка, зробіть усі необхідні фото документа</string>
+
+    <string name="good_camera_text">знятий на хорошу камеру</string>
+    <string name="good_doc_light_text">добре освітлений</string>
+
 </resources>
