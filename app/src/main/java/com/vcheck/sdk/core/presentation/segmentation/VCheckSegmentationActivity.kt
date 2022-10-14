@@ -231,7 +231,7 @@ class VCheckSegmentationActivity : AppCompatActivity() {
                 @ExperimentalGetImage
                 override fun onCaptureSuccess(image: ImageProxy) {
                     // Use the image, then make sure to close it.
-                    Log.d(TAG, "GOT PICTURE: W - ${image.width} | H - ${image.height}")
+                    //Log.d(TAG, "GOT PICTURE: W - ${image.width} | H - ${image.height}")
                     if (image.width != streamSize.width || image.height != streamSize.height) {
                         streamSize = Size(image.width, image.height)
                     }
@@ -366,7 +366,6 @@ class VCheckSegmentationActivity : AppCompatActivity() {
         val image: MultipartBody.Part = try {
 
             val initSizeKb = file.sizeInKb
-            Log.d(TAG, "UN_COMPRESSED SIZE : $initSizeKb")
             if (initSizeKb < 95.0) {
                 MultipartBody.Part.createFormData(
                     "image.jpg", file.name, file.asRequestBody("image/jpeg".toMediaType()))
@@ -375,7 +374,6 @@ class VCheckSegmentationActivity : AppCompatActivity() {
                     destination(file)
                     size(95_000, stepSize = 20, maxIteration = 10)
                 }
-                Log.d(TAG, "COMPRESSED SIZE : ${compressedImageFile.sizeInKb}")
                 MultipartBody.Part.createFormData("image.jpg", compressedImageFile.name,
                     compressedImageFile.asRequestBody("image/jpeg".toMediaType()))
             }
@@ -400,7 +398,8 @@ class VCheckSegmentationActivity : AppCompatActivity() {
         if (response != null) {
             processCheckResult(response, fullBitmap, checkedDocIdx)
         } else {
-            Log.d(TAG, "========= --- RESPONSE FOR IDX IS NULL!")
+            blockRequestByProcessing = false
+            Log.d(TAG, "Segmentation: response for current index not containing data! Max image size may be exceeded")
         }
     }
 
