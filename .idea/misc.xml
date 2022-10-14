@@ -47,7 +47,7 @@
         <entry key="app/src/main/res/layout/activity_splash.xml" value="0.3007246376811594" />
         <entry key="app/src/main/res/layout/activity_vcheck_liveness.xml" value="0.16967827236668137" />
         <entry key="app/src/main/res/layout/activity_vcheck_main.xml" value="0.55" />
-        <entry key="app/src/main/res/layout/activity_vcheck_segmentation.xml" value="0.55" />
+        <entry key="app/src/main/res/layout/activity_vcheck_segmentation.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_vcheck_splash.xml" value="0.16024017333984375" />
         <entry key="app/src/main/res/layout/camera_fragment.xml" value="0.2767210144927536" />
         <entry key="app/src/main/res/layout/check_doc_info_fragment.xml" value="0.625" />
@@ -82,7 +82,7 @@
         <entry key="app/src/main/res/layout/no_time_fragment.xml" value="0.1" />
         <entry key="app/src/main/res/layout/not_found_fragment.xml" value="0.3007246376811594" />
         <entry key="app/src/main/res/layout/os_not_support_fragment.xml" value="0.3007246376811594" />
-        <entry key="app/src/main/res/layout/photo_instructions_fragment.xml" value="0.625" />
+        <entry key="app/src/main/res/layout/photo_instructions_fragment.xml" value="0.7144104003906251" />
         <entry key="app/src/main/res/layout/photo_upload_fragment.xml" value="0.3007246376811594" />
         <entry key="app/src/main/res/layout/segmentation_camera_fragment.xml" value="0.3007246376811594" />
         <entry key="app/src/main/res/layout/success_fragment.xml" value="0.2767210144927536" />

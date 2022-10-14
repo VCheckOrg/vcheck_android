@@ -37,7 +37,6 @@ import com.vcheck.sdk.core.domain.DocType
 import com.vcheck.sdk.core.domain.DocTypeData
 import com.vcheck.sdk.core.domain.SegmentationGestureResponse
 import com.vcheck.sdk.core.domain.docCategoryIdxToType
-import com.vcheck.sdk.core.presentation.liveness.VCheckLivenessActivity
 import com.vcheck.sdk.core.presentation.segmentation.flow_logic.*
 import com.vcheck.sdk.core.presentation.transferrable_objects.CheckPhotoDataTO
 import com.vcheck.sdk.core.util.VCheckContextUtils
@@ -53,6 +52,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
+import java.lang.NullPointerException
 import java.util.*
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.Executors
@@ -66,17 +66,16 @@ class VCheckSegmentationActivity : AppCompatActivity() {
         private const val LIVENESS_TIME_LIMIT_MILLIS: Long = 60000 //max is 60s
         private const val BLOCK_PIPELINE_TIME_MILLIS: Long = 3800 //may reduce a bit
         private const val GESTURE_REQUEST_DEBOUNCE_MILLIS: Long = 410
-        private const val IMAGE_CAPTURE_DEBOUNCE_MILLIS: Long = 150
+        private const val IMAGE_CAPTURE_DEBOUNCE_MILLIS: Long = 200
         private const val STAGE_VIBRATION_DURATION_MILLIS: Long = 100
         private const val MASK_UI_MULTIPLY_FACTOR: Double = 1.1
-
-        private const val VIDEO_STREAM_WIDTH_LIMIT = 1080
-        private const val VIDEO_STREAM_HEIGHT_LIMIT = 1080
+        private const val VIDEO_STREAM_WIDTH_LIMIT = 800
+        private const val VIDEO_STREAM_HEIGHT_LIMIT = 800
     }
 
     private val scope = CoroutineScope(newSingleThreadContext("segmentation"))
 
-    private val imageCaptureExecutor = Executors.newSingleThreadExecutor()
+    private val imageCaptureExecutor = Executors.newCachedThreadPool()
 
     private lateinit var binding: ActivityVcheckSegmentationBinding
     private var mToast: Toast? = null
@@ -133,9 +132,11 @@ class VCheckSegmentationActivity : AppCompatActivity() {
 
         setDocData()
 
-        setCameraProviderListener()
+        setSegmentationFrameSize()
 
         setupInstructionStageUI()
+
+        setCameraProviderListener()
     }
 
     private fun setupDocCheckStage() {
@@ -151,6 +152,9 @@ class VCheckSegmentationActivity : AppCompatActivity() {
     }
 
     private fun resetFlowForNewSession() {
+        apiRequestTimer?.cancel()
+        takeImageTimer?.cancel()
+        imageCapture = null
         photo1FullBitmap = null
         photo2FullBitmap = null
         blockProcessingByUI = false
@@ -175,27 +179,37 @@ class VCheckSegmentationActivity : AppCompatActivity() {
                 bindPreview(cameraProviderFuture.get())
                 setTakeImageTimer()
             } catch (e: ExecutionException) {
+                showSingleToast("Error while setting camera provider: ${e.message}")
                 e.printStackTrace()
             } catch (e: InterruptedException) {
+                showSingleToast("Error while setting camera provider: ${e.message}")
                 e.printStackTrace()
+            } catch (e: Exception) {
+                showSingleToast("Unidentified Error while setting camera provider: ${e.message}")
             }
         }, ContextCompat.getMainExecutor(this@VCheckSegmentationActivity))
     }
 
     private fun bindPreview(cameraProvider: ProcessCameraProvider) {
         val cameraSelector =
-            CameraSelector.Builder().requireLensFacing(CameraSelector.LENS_FACING_FRONT).build()
+            CameraSelector.Builder().requireLensFacing(CameraSelector.LENS_FACING_BACK).build()
         val preview: Preview = Preview.Builder().build()
         preview.setSurfaceProvider(binding.cameraPreviewView.surfaceProvider)
-        binding.cameraPreviewView.viewPort?.let {
-            val useCaseGroup = UseCaseGroup.Builder()
-                .addUseCase(preview)
-                .addUseCase(imageCapture!!)
-                .setViewPort(it)
-                .build()
-            cameraProvider.unbindAll()
-            cameraProvider.bindToLifecycle(this@VCheckSegmentationActivity,
-                cameraSelector, useCaseGroup)
+        try {
+            binding.cameraPreviewView.viewPort?.let {
+                val useCaseGroup = UseCaseGroup.Builder()
+                    .addUseCase(preview)
+                    .addUseCase(imageCapture!!)
+                    .setViewPort(it)
+                    .build()
+                cameraProvider.unbindAll()
+                cameraProvider.bindToLifecycle(this@VCheckSegmentationActivity,
+                    cameraSelector, useCaseGroup)
+            }
+        } catch (e: NullPointerException) {
+            showSingleToast("Image Capture or View Port have not been initialized in time")
+        } catch (e: Exception) {
+            showSingleToast("Error while building preview: ${e.message}")
         }
     }
 
@@ -203,36 +217,16 @@ class VCheckSegmentationActivity : AppCompatActivity() {
     private fun buildImageCaptureUseCase() {
         imageCapture = ImageCapture.Builder()
             .setBufferFormat(ImageFormat.YUV_420_888)
+            .setMaxResolution(Size(VIDEO_STREAM_WIDTH_LIMIT, VIDEO_STREAM_HEIGHT_LIMIT))
+            .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
+            .setJpegQuality(70)
+            .setSessionProcessorEnabled(false)
             .build()
-        val captureSize = imageCapture!!.attachedSurfaceResolution ?: Size(0, 0)
-        if ((captureSize.width >= VIDEO_STREAM_WIDTH_LIMIT
-                    || captureSize.height >= VIDEO_STREAM_HEIGHT_LIMIT)
-            || captureSize.width == 0 || captureSize.height == 0) {
-            //Log.d(TAG, "------- IMG WIDTH OR HEIGHT IS BIGGER THAN LIMITS!")
-            imageCapture = ImageCapture.Builder()
-                .setBufferFormat(ImageFormat.YUV_420_888)
-                .setTargetResolution(Size(
-                    VIDEO_STREAM_WIDTH_LIMIT,
-                    VIDEO_STREAM_HEIGHT_LIMIT
-                ))
-                .build()
-            streamSize = Size(
-                VIDEO_STREAM_WIDTH_LIMIT,
-                VIDEO_STREAM_HEIGHT_LIMIT
-            )
-        } else {
-            imageCapture = ImageCapture.Builder()
-                .setBufferFormat(ImageFormat.YUV_420_888)
-                .setTargetResolution(Size(captureSize.width, captureSize.height))
-                .build()
-            streamSize = Size(captureSize.width, captureSize.height)
-        }
     }
 
     private fun setTakeImageTimer() {
-        takeImageTimer = fixedRateTimer("timer", false, 0L,
-            IMAGE_CAPTURE_DEBOUNCE_MILLIS
-        ) {
+        takeImageTimer = fixedRateTimer("seg_img_capture_timer", false, 500L,
+            IMAGE_CAPTURE_DEBOUNCE_MILLIS) {
             imageCapture?.takePicture(imageCaptureExecutor, object: ImageCapture.OnImageCapturedCallback() {
                 @ExperimentalGetImage
                 override fun onCaptureSuccess(image: ImageProxy) {
@@ -249,14 +243,15 @@ class VCheckSegmentationActivity : AppCompatActivity() {
                 }
                 override fun onError(exception: ImageCaptureException) {
                     val errorType = exception.imageCaptureError
-                    Log.d(VCheckLivenessActivity.TAG, "IMG CAPTURE - TAKE PICTURE ERROR: $errorType")
+                    Log.d(TAG, "IMG CAPTURE - TAKE PICTURE ERROR: $errorType")
                 }
             })
         }
     }
 
     private fun setGestureRequestDebounceTimer() {
-        apiRequestTimer = fixedRateTimer("timer", false, 0L, GESTURE_REQUEST_DEBOUNCE_MILLIS) {
+        apiRequestTimer = fixedRateTimer("seg_api_request_timer", false,
+            100L, GESTURE_REQUEST_DEBOUNCE_MILLIS) {
             if (!isLivenessSessionFinished) {
                 if (areAllDocPagesChecked()) {
                     finishLivenessSession(true)
@@ -371,25 +366,27 @@ class VCheckSegmentationActivity : AppCompatActivity() {
         val image: MultipartBody.Part = try {
 
             val initSizeKb = file.sizeInKb
-            if (initSizeKb < 99.0) {
+            Log.d(TAG, "UN_COMPRESSED SIZE : $initSizeKb")
+            if (initSizeKb < 95.0) {
                 MultipartBody.Part.createFormData(
                     "image.jpg", file.name, file.asRequestBody("image/jpeg".toMediaType()))
             } else {
-                val stepSizeKb = (initSizeKb - 120).toInt()
                 val compressedImageFile = Compressor.compress(this@VCheckSegmentationActivity, file) {
                     destination(file)
-                    size(95_000, stepSize = stepSizeKb, maxIteration = 1) // TODO TEST
+                    size(95_000, stepSize = 20, maxIteration = 10)
                 }
-                Log.d(VCheckLivenessActivity.TAG, "COMPRESSED SIZE : ${compressedImageFile.sizeInKb}")
-                MultipartBody.Part.createFormData(
-                    "image.jpg", compressedImageFile.name, compressedImageFile.asRequestBody("image/jpeg".toMediaType()))
+                Log.d(TAG, "COMPRESSED SIZE : ${compressedImageFile.sizeInKb}")
+                MultipartBody.Part.createFormData("image.jpg", compressedImageFile.name,
+                    compressedImageFile.asRequestBody("image/jpeg".toMediaType()))
             }
         } catch (e: Exception) {
-            Log.w(VCheckLivenessActivity.TAG, "Exception while compressing Liveness frame image. Attempting to send default frame | \n${e.printStackTrace()}")
+            Log.w(TAG, "Exception while compressing Liveness frame image. " +
+                    "Attempting to send default frame | \n${e.printStackTrace()}")
             MultipartBody.Part.createFormData(
                 "image.jpg", file.name, file.asRequestBody("image/jpeg".toMediaType()))
         } catch (e: Error) {
-            Log.w(VCheckLivenessActivity.TAG, "Error while compressing Liveness frame image. Attempting to send default frame | \n${e.printStackTrace()}")
+            Log.w(TAG, "Error while compressing Liveness frame image. " +
+                    "Attempting to send default frame | \n${e.printStackTrace()}")
             MultipartBody.Part.createFormData(
                 "image.jpg", file.name, file.asRequestBody("image/jpeg".toMediaType()))
         }
@@ -446,20 +443,25 @@ class VCheckSegmentationActivity : AppCompatActivity() {
         binding.docAnimationView.isVisible = false
         binding.scalableDocHandView.isVisible = true
 
-        when(docCategoryIdxToType(docData.category)) {
-            DocType.ID_CARD -> {
-                binding.scalableDocHandView.background = AppCompatResources.getDrawable(
-                    this@VCheckSegmentationActivity, R.drawable.img_hand_id_card)
-            }
-            DocType.FOREIGN_PASSPORT -> {
-                binding.scalableDocHandView.background = AppCompatResources.getDrawable(
-                    this@VCheckSegmentationActivity, R.drawable.img_hand_foreign_passport)
-            } else -> {
+        try {
+            when(docCategoryIdxToType(docData.category)) {
+                DocType.ID_CARD -> {
+                    binding.scalableDocHandView.background = AppCompatResources.getDrawable(
+                        this@VCheckSegmentationActivity, R.drawable.img_hand_id_card)
+                }
+                DocType.FOREIGN_PASSPORT -> {
+                    binding.scalableDocHandView.background = AppCompatResources.getDrawable(
+                        this@VCheckSegmentationActivity, R.drawable.img_hand_foreign_passport)
+                } else -> {
                 binding.scalableDocHandView.background = AppCompatResources.getDrawable(
                     this@VCheckSegmentationActivity, R.drawable.img_hand_inner_passport)
+                }
             }
+        } catch (e: Exception) {
+            Log.d(TAG, e.message ?: "Exception while setting hand & doc drawable")
+        } catch (e: Error) {
+            Log.d(TAG, e.message ?: "Error while setting hand & doc drawable")
         }
-
         animateInstructionStage()
 
         binding.readyButton.setOnClickListener {
@@ -548,30 +550,36 @@ class VCheckSegmentationActivity : AppCompatActivity() {
     private fun animateInstructionStage() {
 
         binding.scalableDocHandView.apply {
-            val scaleUpX = ObjectAnimator.ofFloat(this, "scaleX", 3f)
-            val scaleUpY = ObjectAnimator.ofFloat(this, "scaleY", 3f)
-            scaleUpX.duration = 1000
-            scaleUpY.duration = 1000
-            scaleUpX.repeatCount = ObjectAnimator.INFINITE
-            scaleUpY.repeatCount = ObjectAnimator.INFINITE
+            try {
+                val scaleUpX = ObjectAnimator.ofFloat(this, "scaleX", 3f)
+                val scaleUpY = ObjectAnimator.ofFloat(this, "scaleY", 3f)
+                scaleUpX.duration = 1000
+                scaleUpY.duration = 1000
+                scaleUpX.repeatCount = ObjectAnimator.INFINITE
+                scaleUpY.repeatCount = ObjectAnimator.INFINITE
 
-            val moveLeftX: ObjectAnimator = ObjectAnimator.ofFloat(this,
-            "translationX", -350F)
-            val moveUpY: ObjectAnimator = ObjectAnimator.ofFloat(this,
-                "translationY", -200F)
-            moveLeftX.duration = 1000
-            moveUpY.duration = 1000
-            moveLeftX.repeatCount = ObjectAnimator.INFINITE
-            moveUpY.repeatCount = ObjectAnimator.INFINITE
+                val moveLeftX: ObjectAnimator = ObjectAnimator.ofFloat(this,
+                    "translationX", -350F)
+                val moveUpY: ObjectAnimator = ObjectAnimator.ofFloat(this,
+                    "translationY", -200F)
+                moveLeftX.duration = 1000
+                moveUpY.duration = 1000
+                moveLeftX.repeatCount = ObjectAnimator.INFINITE
+                moveUpY.repeatCount = ObjectAnimator.INFINITE
 
-            val scaleUp = AnimatorSet()
-            val moveDiag = AnimatorSet()
+                val scaleUp = AnimatorSet()
+                val moveDiag = AnimatorSet()
 
-            scaleUp.play(scaleUpX).with(scaleUpY)
-            moveDiag.play(moveUpY).with(moveLeftX)
+                scaleUp.play(scaleUpX).with(scaleUpY)
+                moveDiag.play(moveUpY).with(moveLeftX)
 
-            scaleUp.start()
-            moveDiag.start()
+                scaleUp.start()
+                moveDiag.start()
+            } catch (e: Exception) {
+                Log.d(TAG, e.message ?: "Exception while trying to animate doc & hand")
+            } catch (e: Error) {
+                Log.d(TAG, e.message ?: "Error while setting hand & doc drawable")
+            }
         }
     }
 
@@ -648,58 +656,10 @@ class VCheckSegmentationActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         scope.cancel()
+        apiRequestTimer?.cancel()
+        takeImageTimer?.cancel()
+        imageCapture = null
+        imageCaptureExecutor.shutdown()
         super.onDestroy()
     }
 }
-
-// override fun onImageAvailable(reader: ImageReader?) {
-//        //calling verbose extension function, which leads to processImage()
-//        if (!isLivenessSessionFinished) {
-//            onImageAvailableImpl(reader)
-//        }
-//    }
-
-//    suspend fun processImage() {
-//        try {
-//            Handler(Looper.getMainLooper()).post {
-//                openLivenessCameraParams?.apply {
-//                    imageConverter!!.run()
-//                    rgbFrameBitmap = Bitmap.createBitmap(previewWidth, previewHeight, Bitmap.Config.ARGB_8888)
-//                    rgbFrameBitmap?.setPixels(rgbBytes, 0, previewWidth, 0, 0, previewWidth, previewHeight)
-//                    val finalBitmap = rotateBitmap(rgbFrameBitmap!!)!!
-//                    //caching full image bitmap
-//                    currentCheckBitmap = finalBitmap
-//                    //recycling bitmap:
-//                    rgbFrameBitmap!!.recycle()
-//                    //running post-inference callback
-//                    postInferenceCallback!!.run()
-//                    //updating cached bitmap for gesture request
-//                }
-//            }
-//        } catch (e: Exception) {
-//            showSingleToast(e.message)
-//            showSingleToast("[TEST-processImage ex]: ${e.message}")
-//        } catch (e: Error) {
-//            showSingleToast(e.message)
-//            showSingleToast("[TEST-processImage err]: ${e.message}")
-//        }
-//    }
-
-//    private fun setCameraFragment() {
-//        val cameraManager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
-//        var cameraId: String? = null
-//        try {
-//            for (cameraIdx in cameraManager.cameraIdList) {
-//                val chars: CameraCharacteristics = cameraManager.getCameraCharacteristics(cameraIdx)
-//                if (CameraCharacteristics.LENS_FACING_BACK == chars.get(CameraCharacteristics.LENS_FACING)) {
-//                    cameraId = cameraIdx
-//                    break
-//                }
-//            }
-//        } catch (e: Exception) {
-//            Log.e(TAG, "BACK CAMERA DETECTION ERROR: ${e.message}")
-//            showSingleToast(e.message)
-//        }
-//
-//        setSegmentationFrameSize()
-//    }
