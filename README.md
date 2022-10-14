@@ -13,7 +13,7 @@
 ## How to use
 #### Installing via JitPack
 
-You can check the most recent version of SDK via https://jitpack.io/#VCheckOrg/vcheck_android and import it via Gradle:
+You can check the most recent version of SDK via [![](https://jitpack.io/v/VCheckOrg/vcheck_android.svg)](https://jitpack.io/#VCheckOrg/vcheck_android) and import it with Gradle:
 ```
 implementation 'com.github.VCheckOrg:vcheck_android:1.0.x'
 ```
