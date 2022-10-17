@@ -5,8 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/liveness_activity_background"
-    tools:context=".presentation.liveness.VCheckLivenessActivity"
+    android:id="@+id/seg_activity_background"
+    tools:context=".presentation.segmentation.VCheckSegmentationActivity"
     android:theme="@style/Theme.VCheckAndroidSDKDemo"
     android:background="@color/vcheck_background_primary">
 
@@ -93,12 +93,13 @@
             app:layout_constraintEnd_toEndOf="@id/segmentation_frame"
             app:layout_constraintBottom_toBottomOf="@id/segmentation_frame"
             android:layout_marginBottom="-70dp"
-            android:layout_marginEnd="-60dp"/>
+            android:layout_marginEnd="-60dp"
+            android:visibility="gone"/>
 
         <View
             android:id="@+id/dark_frame_overlay"
-            android:layout_width="300dp"
-            android:layout_height="200dp"
+            android:layout_width="200dp"
+            android:layout_height="100dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -107,8 +108,8 @@
 
         <View
             android:id="@+id/segmentation_frame"
-            android:layout_width="300dp"
-            android:layout_height="200dp"
+            android:layout_width="200dp"
+            android:layout_height="100dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -117,8 +118,8 @@
 
         <View
             android:id="@+id/stage_success_frame"
-            android:layout_width="300dp"
-            android:layout_height="200dp"
+            android:layout_width="200dp"
+            android:layout_height="100dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

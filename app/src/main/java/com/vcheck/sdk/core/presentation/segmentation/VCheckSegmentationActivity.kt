@@ -107,7 +107,7 @@ class VCheckSegmentationActivity : AppCompatActivity() {
 
     private fun changeColorsToCustomIfPresent() {
         VCheckSDK.backgroundPrimaryColorHex?.let {
-            binding.livenessActivityBackground.setBackgroundColor(Color.parseColor(it))
+            binding.segActivityBackground.setBackgroundColor(Color.parseColor(it))
         }
         VCheckSDK.primaryTextColorHex?.let {
             binding.tvSegmentationInstruction.setTextColor(Color.parseColor(it))
@@ -126,17 +126,24 @@ class VCheckSegmentationActivity : AppCompatActivity() {
         onBackPressedDispatcher.addCallback {
             //Stub; no back press needed throughout liveness flow
         }
-        binding.closeIconBtn.setOnClickListener {
-            finishWithExtra(isTimeoutToManual = false, isBackPress = true)
-        }
 
         setDocData()
 
-        setSegmentationFrameSize()
+        Handler(Looper.getMainLooper()).postDelayed({
 
-        setupInstructionStageUI()
+            binding.closeIconBtn.post {
+                binding.closeIconBtn.setOnClickListener {
+                    onCustomBackPress()
+                }
+            }
 
-        setCameraProviderListener()
+            setupInstructionStageUI()
+
+            setSegmentationFrameSize()
+
+            setCameraProviderListener()
+
+        }, 200)
     }
 
     private fun setupDocCheckStage() {
@@ -225,7 +232,7 @@ class VCheckSegmentationActivity : AppCompatActivity() {
     }
 
     private fun setTakeImageTimer() {
-        takeImageTimer = fixedRateTimer("seg_img_capture_timer", false, 500L,
+        takeImageTimer = fixedRateTimer("seg_img_capture_timer", false, 0L,
             IMAGE_CAPTURE_DEBOUNCE_MILLIS) {
             imageCapture?.takePicture(imageCaptureExecutor, object: ImageCapture.OnImageCapturedCallback() {
                 @ExperimentalGetImage
@@ -251,7 +258,7 @@ class VCheckSegmentationActivity : AppCompatActivity() {
 
     private fun setGestureRequestDebounceTimer() {
         apiRequestTimer = fixedRateTimer("seg_api_request_timer", false,
-            100L, GESTURE_REQUEST_DEBOUNCE_MILLIS) {
+            0L, GESTURE_REQUEST_DEBOUNCE_MILLIS) {
             if (!isLivenessSessionFinished) {
                 if (areAllDocPagesChecked()) {
                     finishLivenessSession(true)
@@ -277,17 +284,25 @@ class VCheckSegmentationActivity : AppCompatActivity() {
     }
 
     fun finishWithExtra(isTimeoutToManual: Boolean, isBackPress: Boolean) {
-        val data = Intent()
-        data.putExtra("is_timeout_to_manual", isTimeoutToManual)
-        data.putExtra("is_back_press", isBackPress)
-        setResult(Activity.RESULT_OK, data)
-        finish()
+        try {
+            val data = Intent()
+            data.putExtra("is_timeout_to_manual", isTimeoutToManual)
+            data.putExtra("is_back_press", isBackPress)
+            setResult(Activity.RESULT_OK, data)
+            finish()
+        } catch (e: Exception) {
+            finish()
+        } catch (e: Error) {
+            finish()
+        }
     }
 
     private fun finishLivenessSession(withActivityFinish: Boolean) {
         isLivenessSessionFinished = true
         currentCheckBitmap = null
         scope.cancel()
+        takeImageTimer?.cancel()
+        apiRequestTimer?.cancel()
 
         if (withActivityFinish) {
             var photo1Path: String? = null
@@ -307,51 +322,70 @@ class VCheckSegmentationActivity : AppCompatActivity() {
         }
     }
 
+    private fun onCustomBackPress() {
+        isLivenessSessionFinished = true
+        currentCheckBitmap = null
+        scope.cancel()
+        takeImageTimer?.cancel()
+        apiRequestTimer?.cancel()
+        finishWithExtra(isTimeoutToManual = false, isBackPress = true)
+    }
+
     private fun enoughTimeForNextCheck(): Boolean {
         return SystemClock.elapsedRealtime() - livenessSessionLimitCheckTime <= LIVENESS_TIME_LIMIT_MILLIS
     }
 
     private fun setSegmentationFrameSize() {
 
-        val maskDimens = VCheckDIContainer.mainRepository.getSelectedDocTypeWithData()?.maskDimensions
+        try {
+            val maskDimens = docData.maskDimensions
 
-        if (maskDimens != null) {
-            if (frameSize == null) {
-                val displayMetrics: DisplayMetrics = resources.displayMetrics
-                val densityFactor: Float = displayMetrics.density
-                val dpWidth = displayMetrics.widthPixels / densityFactor
+            if (maskDimens != null) {
+                if (frameSize == null) {
+                    val displayMetrics: DisplayMetrics = resources.displayMetrics
+                    val densityFactor: Float = displayMetrics.density
+                    val dpWidth = displayMetrics.widthPixels / densityFactor
 
-                val frameWidth = (((dpWidth * (maskDimens.widthPercent / 100)) * densityFactor)
-                        * MASK_UI_MULTIPLY_FACTOR).toInt()
-                val frameHeight = (frameWidth * maskDimens.ratio).toInt()
+                    val frameWidth = (((dpWidth * (maskDimens.widthPercent / 100)) * densityFactor)
+                            * MASK_UI_MULTIPLY_FACTOR).toInt()
+                    val frameHeight = (frameWidth * maskDimens.ratio).toInt()
 
 //            Log.d("SEG", "VIEW WIDTH: $dpWidth")
 //            Log.d("SEG", "FRAME WIDTH: $frameWidth | FRAME HEIGHT: $frameHeight")
 
-                frameSize = Size(frameWidth, frameHeight)
+                    frameSize = Size(frameWidth, frameHeight)
 
-                binding.segmentationFrame.layoutParams.width = frameSize!!.width
-                binding.segmentationFrame.layoutParams.height = frameSize!!.height
-
-                binding.darkFrameOverlay.layoutParams.width = frameSize!!.width - 8
-                binding.darkFrameOverlay.layoutParams.height = frameSize!!.height - 8
-
-                binding.stageSuccessFrame.layoutParams.width = frameSize!!.width
-                binding.stageSuccessFrame.layoutParams.height = frameSize!!.height
-
-                binding.segmentationMaskWrapper.post {
-                    binding.segmentationMaskWrapper.setRectHoleSize(
-                        frameSize!!.width - 8, frameSize!!.height - 8)
+                    binding.segmentationFrame.post {
+                        binding.segmentationFrame.layoutParams.width = frameSize!!.width
+                        binding.segmentationFrame.layoutParams.height = frameSize!!.height
+                    }
+                    binding.darkFrameOverlay.post {
+                        binding.darkFrameOverlay.layoutParams.width = frameSize!!.width - 8
+                        binding.darkFrameOverlay.layoutParams.height = frameSize!!.height - 8
+                    }
+                    binding.stageSuccessFrame.post {
+                        binding.stageSuccessFrame.layoutParams.width = frameSize!!.width
+                        binding.stageSuccessFrame.layoutParams.height = frameSize!!.height
+                    }
+                    binding.segmentationMaskWrapper.post {
+                        binding.segmentationMaskWrapper.setRectHoleSize(
+                            frameSize!!.width - 8, frameSize!!.height - 8)
+                    }
+                    binding.docAnimationView.post {
+                        binding.docAnimationView.layoutParams.width = frameSize!!.width
+                        binding.docAnimationView.layoutParams.height = frameSize!!.height
+                    }
                 }
-                binding.docAnimationView.post {
-                    binding.docAnimationView.layoutParams.width = frameSize!!.width
-                    binding.docAnimationView.layoutParams.height = frameSize!!.height
-                }
+            } else {
+                showSingleToast("Error: cannot retrieve mask dimensions from document type info")
+                return
             }
-        } else {
-            showSingleToast("Error: cannot retrieve mask dimensions from document type info")
-            return
+        } catch (e: Error) {
+            showSingleToast(e.message)
+        } catch (e: Exception) {
+            showSingleToast(e.message)
         }
+
     }
 
     private suspend fun determineImageResult() {
@@ -436,11 +470,19 @@ class VCheckSegmentationActivity : AppCompatActivity() {
         blockProcessingByUI = true
         blockRequestByProcessing = true
 
-        binding.darkFrameOverlay.isVisible = false
-        binding.stageSuccessFrame.isVisible = false
+        binding.darkFrameOverlay.post {
+            binding.darkFrameOverlay.isVisible = false
+        }
+        binding.stageSuccessFrame.post {
+            binding.stageSuccessFrame.isVisible = false
+        }
 
-        binding.docAnimationView.isVisible = false
-        binding.scalableDocHandView.isVisible = true
+        binding.docAnimationView.post {
+            binding.docAnimationView.isVisible = false
+        }
+        binding.scalableDocHandView.post {
+            binding.scalableDocHandView.isVisible = true
+        }
 
         try {
             when(docCategoryIdxToType(docData.category)) {
@@ -452,8 +494,8 @@ class VCheckSegmentationActivity : AppCompatActivity() {
                     binding.scalableDocHandView.background = AppCompatResources.getDrawable(
                         this@VCheckSegmentationActivity, R.drawable.img_hand_foreign_passport)
                 } else -> {
-                binding.scalableDocHandView.background = AppCompatResources.getDrawable(
-                    this@VCheckSegmentationActivity, R.drawable.img_hand_inner_passport)
+                    binding.scalableDocHandView.background = AppCompatResources.getDrawable(
+                        this@VCheckSegmentationActivity, R.drawable.img_hand_inner_passport)
                 }
             }
         } catch (e: Exception) {
@@ -461,9 +503,15 @@ class VCheckSegmentationActivity : AppCompatActivity() {
         } catch (e: Error) {
             Log.d(TAG, e.message ?: "Error while setting hand & doc drawable")
         }
-        animateInstructionStage()
+
+        val scaleUp = AnimatorSet()
+        val moveDiag = AnimatorSet()
+        animateInstructionStage(scaleUp, moveDiag)
 
         binding.readyButton.setOnClickListener {
+            scaleUp.cancel()
+            moveDiag.cancel()
+
             setupDocCheckStage()
         }
     }
@@ -513,71 +561,79 @@ class VCheckSegmentationActivity : AppCompatActivity() {
 
     private fun setUIForNextStage() {
 
-        binding.segmentationFrame.isVisible = true
-        binding.docAnimationView.isVisible = false
-        binding.darkFrameOverlay.isVisible = false
-        binding.stageSuccessFrame.isVisible = false
-
-        binding.tvSegmentationInstruction.setMargins(
-            20, 45, 20, 20)
-
-        when(docCategoryIdxToType(docData.category)) {
-            DocType.FOREIGN_PASSPORT -> {
-                binding.tvSegmentationInstruction.setText(R.string.segmentation_single_page_hint)
-            }
-            DocType.ID_CARD -> {
-                if (checkedDocIdx == 0) {
-                    binding.tvSegmentationInstruction.setText(R.string.segmentation_front_side_hint)
-                }
-                if (checkedDocIdx == 1) {
-                    binding.tvSegmentationInstruction.setText(R.string.segmentation_back_side_hint)
-                }
-            }
-            else -> {
-                if (checkedDocIdx == 0) {
-                    binding.tvSegmentationInstruction.setText(R.string.segmentation_front_side_hint)
-                }
-                if (checkedDocIdx == 1) {
-                    binding.tvSegmentationInstruction.setText(R.string.segmentation_back_side_hint)
-                }
-            }
+        binding.segmentationFrame.post {
+            binding.segmentationFrame.isVisible = true
         }
+        binding.docAnimationView.post {
+            binding.docAnimationView.isVisible = false
+        }
+        binding.darkFrameOverlay.post {
+            binding.darkFrameOverlay.isVisible = false
+        }
+        binding.stageSuccessFrame.post {
+            binding.stageSuccessFrame.isVisible = false
+        }
+        binding.tvSegmentationInstruction.post {
+            binding.tvSegmentationInstruction.setMargins(
+                20, 45, 20, 20)
 
-        blockProcessingByUI = false
+            when(docCategoryIdxToType(docData.category)) {
+                DocType.FOREIGN_PASSPORT -> {
+                    binding.tvSegmentationInstruction.setText(R.string.segmentation_single_page_hint)
+                }
+                DocType.ID_CARD -> {
+                    if (checkedDocIdx == 0) {
+                        binding.tvSegmentationInstruction.setText(R.string.segmentation_front_side_hint)
+                    }
+                    if (checkedDocIdx == 1) {
+                        binding.tvSegmentationInstruction.setText(R.string.segmentation_back_side_hint)
+                    }
+                }
+                else -> {
+                    if (checkedDocIdx == 0) {
+                        binding.tvSegmentationInstruction.setText(R.string.segmentation_front_side_hint)
+                    }
+                    if (checkedDocIdx == 1) {
+                        binding.tvSegmentationInstruction.setText(R.string.segmentation_back_side_hint)
+                    }
+                }
+            }
+
+            blockProcessingByUI = false
+        }
     }
 
-    private fun animateInstructionStage() {
+    private fun animateInstructionStage(scaleUp: AnimatorSet, moveDiag: AnimatorSet) {
 
-        binding.scalableDocHandView.apply {
-            try {
-                val scaleUpX = ObjectAnimator.ofFloat(this, "scaleX", 3f)
-                val scaleUpY = ObjectAnimator.ofFloat(this, "scaleY", 3f)
-                scaleUpX.duration = 1000
-                scaleUpY.duration = 1000
-                scaleUpX.repeatCount = ObjectAnimator.INFINITE
-                scaleUpY.repeatCount = ObjectAnimator.INFINITE
+        binding.scalableDocHandView.post {
+            binding.scalableDocHandView.apply {
+                try {
+                    val scaleUpX = ObjectAnimator.ofFloat(this, "scaleX", 2.6f)
+                    val scaleUpY = ObjectAnimator.ofFloat(this, "scaleY", 2.6f)
+                    scaleUpX.duration = 1000
+                    scaleUpY.duration = 1000
+                    scaleUpX.repeatCount = ObjectAnimator.INFINITE
+                    scaleUpY.repeatCount = ObjectAnimator.INFINITE
 
-                val moveLeftX: ObjectAnimator = ObjectAnimator.ofFloat(this,
-                    "translationX", -350F)
-                val moveUpY: ObjectAnimator = ObjectAnimator.ofFloat(this,
-                    "translationY", -200F)
-                moveLeftX.duration = 1000
-                moveUpY.duration = 1000
-                moveLeftX.repeatCount = ObjectAnimator.INFINITE
-                moveUpY.repeatCount = ObjectAnimator.INFINITE
+                    val moveLeftX: ObjectAnimator = ObjectAnimator.ofFloat(this,
+                        "translationX", -280F)
+                    val moveUpY: ObjectAnimator = ObjectAnimator.ofFloat(this,
+                        "translationY", -160F)
+                    moveLeftX.duration = 1000
+                    moveUpY.duration = 1000
+                    moveLeftX.repeatCount = ObjectAnimator.INFINITE
+                    moveUpY.repeatCount = ObjectAnimator.INFINITE
 
-                val scaleUp = AnimatorSet()
-                val moveDiag = AnimatorSet()
+                    scaleUp.play(scaleUpX).with(scaleUpY)
+                    moveDiag.play(moveUpY).with(moveLeftX)
 
-                scaleUp.play(scaleUpX).with(scaleUpY)
-                moveDiag.play(moveUpY).with(moveLeftX)
-
-                scaleUp.start()
-                moveDiag.start()
-            } catch (e: Exception) {
-                Log.d(TAG, e.message ?: "Exception while trying to animate doc & hand")
-            } catch (e: Error) {
-                Log.d(TAG, e.message ?: "Error while setting hand & doc drawable")
+                    scaleUp.start()
+                    moveDiag.start()
+                } catch (e: Exception) {
+                    Log.d(TAG, e.message ?: "Exception while trying to animate doc & hand")
+                } catch (e: Error) {
+                    Log.d(TAG, e.message ?: "Error while setting hand & doc drawable")
+                }
             }
         }
     }
