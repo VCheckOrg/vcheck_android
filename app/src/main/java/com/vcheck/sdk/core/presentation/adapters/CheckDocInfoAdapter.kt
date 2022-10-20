@@ -70,7 +70,9 @@ class CheckDocInfoAdapter(
                 binding.infoFieldBorder.setCardBackgroundColor(Color.parseColor(it))
             }
 
-            if ((documentInfo.name == "date_of_birth" || documentInfo.name == "date_of_expiry")) {
+            if ((documentInfo.name == "date_of_birth"
+                        || documentInfo.name == "expiration_date"
+                        || documentInfo.name == "date_of_expiry")) {
 
                 val hint = when (localeCode) {
                     "uk" -> "РРРР-ММ-ДД"

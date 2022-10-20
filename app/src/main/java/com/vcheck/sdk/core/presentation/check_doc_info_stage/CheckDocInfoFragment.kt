@@ -214,6 +214,9 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
             if (docField.name == "number") {
                 data.number = docField.autoParsedValue
             }
+            if (docField.name == "expiration_date") {
+                data.expirationDate = docField.autoParsedValue
+            }
         }
         return DocUserDataRequestBody(data, args.checkDocInfoDataTO?.isForced ?: false)
     }
@@ -235,6 +238,9 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
             }
             if (docField.name == "number" && parsedDocFieldsData.number != null) {
                 optParsedData = parsedDocFieldsData.number!!
+            }
+            if (docField.name == "expiration_date" && parsedDocFieldsData.number != null) {
+                optParsedData = parsedDocFieldsData.expirationDate!!
             }
             return DocFieldWitOptPreFilledData(
                 docField.name, docField.title, docField.type, docField.regex, optParsedData

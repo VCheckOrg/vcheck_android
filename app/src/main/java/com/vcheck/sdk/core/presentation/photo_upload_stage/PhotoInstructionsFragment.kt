@@ -31,14 +31,16 @@ class PhotoInstructionsFragment : ThemeWrapperFragment() {
         }
         VCheckSDK.primaryTextColorHex?.let {
             _binding!!.photoInstructionsTitle.setTextColor(Color.parseColor(it))
-            //_binding!!.imageColorText.setTextColor(Color.parseColor(it))
             _binding!!.seenAllText.setTextColor(Color.parseColor(it))
             _binding!!.seenFourCornersText.setTextColor(Color.parseColor(it))
             _binding!!.validDispatchText.setTextColor(Color.parseColor(it))
             _binding!!.noForeignObjectsText.setTextColor(Color.parseColor(it))
             _binding!!.originalDocText.setTextColor(Color.parseColor(it))
             _binding!!.backArrow.setColorFilter(Color.parseColor(it))
+            _binding!!.goodCameraText.setTextColor(Color.parseColor(it))
+            _binding!!.goodLightText.setTextColor(Color.parseColor(it))
             //_binding!!.photoInstructionsButton.setTextColor(Color.parseColor(it))
+            //_binding!!.imageColorText.setTextColor(Color.parseColor(it))
         }
         VCheckSDK.secondaryTextColorHex?.let {
             _binding!!.photoInstructionsDescription.setTextColor(Color.parseColor(it))
@@ -50,6 +52,8 @@ class PhotoInstructionsFragment : ThemeWrapperFragment() {
             _binding!!.validDispatchIcon.setColorFilter(Color.parseColor(it))
             _binding!!.noForeignObjectsIcon.setColorFilter(Color.parseColor(it))
             _binding!!.originalDocIcon.setColorFilter(Color.parseColor(it))
+            _binding!!.goodCameraIcon.setColorFilter(Color.parseColor(it))
+            _binding!!.goodLightIcon.setColorFilter(Color.parseColor(it))
         }
     }
 

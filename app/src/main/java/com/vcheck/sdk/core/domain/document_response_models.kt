@@ -117,7 +117,9 @@ data class ParsedDocFieldsData(
     @SerializedName("number")
     var number: String? = null,
     @SerializedName("surname")
-    var surname: String? = null
+    var surname: String? = null,
+    @SerializedName("expiration_date")
+    var expirationDate: String? = null
 )
 
 data class SegmentationGestureResponse(
