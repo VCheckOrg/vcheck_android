@@ -177,4 +177,6 @@
     <string name="good_camera_text">снято на хорошую камеру</string>
     <string name="good_doc_light_text">хорошо освещенный</string>
 
+    <string name="enter_valid_exp_date">Введите валидный срок действия документа</string>
+
 </resources>

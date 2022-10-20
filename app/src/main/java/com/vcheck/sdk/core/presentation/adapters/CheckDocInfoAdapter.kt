@@ -5,6 +5,7 @@ import android.graphics.drawable.ColorDrawable
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -46,16 +47,16 @@ class CheckDocInfoAdapter(
     ) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(documentInfo: DocFieldWitOptPreFilledData) {
+        fun bind(fieldInfo: DocFieldWitOptPreFilledData) {
 
             val title = when (localeCode) {
-                "uk" -> documentInfo.title.ua ?: documentInfo.title.ua
-                "ru" -> documentInfo.title.ru ?: documentInfo.title.ru
-                "pl" -> documentInfo.title.pl ?: documentInfo.title.pl
-                else -> documentInfo.title.en
+                "uk" -> fieldInfo.title.ua ?: fieldInfo.title.ua
+                "ru" -> fieldInfo.title.ru ?: fieldInfo.title.ru
+                "pl" -> fieldInfo.title.pl ?: fieldInfo.title.pl
+                else -> fieldInfo.title.en
             }
             binding.docFieldTitle.text = title
-            binding.infoField.setText(documentInfo.autoParsedValue)
+            binding.infoField.setText(fieldInfo.autoParsedValue)
 
             VCheckSDK.backgroundSecondaryColorHex?.let {
                 binding.docInfoRowBackground.background = ColorDrawable(Color.parseColor(it))
@@ -70,9 +71,9 @@ class CheckDocInfoAdapter(
                 binding.infoFieldBorder.setCardBackgroundColor(Color.parseColor(it))
             }
 
-            if ((documentInfo.name == "date_of_birth"
-                        || documentInfo.name == "expiration_date"
-                        || documentInfo.name == "date_of_expiry")) {
+            if ((fieldInfo.name == "date_of_birth"
+                        || fieldInfo.name == "expiration_date"
+                        || fieldInfo.name == "date_of_expiry")) {
 
                 val hint = when (localeCode) {
                     "uk" -> "РРРР-ММ-ДД"
@@ -102,12 +103,10 @@ class CheckDocInfoAdapter(
                     text: CharSequence,
                     start: Int,
                     before: Int,
-                    count: Int
-                ) {
+                    count: Int) {
 
-                    if (documentInfo.name == "date_of_birth" || documentInfo.name == "date_of_expiry") {
+                    if (fieldInfo.name == "date_of_birth" || fieldInfo.name == "date_of_expiry") {
                         try {
-
                             if (text.toString() != current) {
                                 var cleanString =
                                     text.toString().replace("[^\\d.]|\\.".toRegex(), "")
@@ -128,15 +127,12 @@ class CheckDocInfoAdapter(
                                 if (cleanString.length >= 8) {
                                     selection += 2
                                 }
-
                                 if (cleanString == cleanCurrent) {
                                     selection--
                                 }
-
                                 if (cleanString.length < 8) {
                                     cleanString += yyyymmdd.substring(cleanString.length)
                                 } else {
-
                                     var day = cleanString.substring(6, 8).toInt()
                                     var mon = cleanString.substring(4, 6).toInt()
                                     var year = cleanString.substring(0, 4).toInt()
@@ -165,38 +161,27 @@ class CheckDocInfoAdapter(
                             }
 
                         } catch (e: Exception) {
-
+                            Log.d(VCheckSDK.TAG, e.message ?: "caught onTextChanged error")
                         }
                     }
 
                     if (text.isNotEmpty()) {
-                        if (documentInfo.regex != null
-                            && !text.matches(Regex(documentInfo.regex))
-                        ) {
+                        if (fieldInfo.regex != null
+                            && !text.matches(Regex(fieldInfo.regex))) {
                             binding.infoField.error =
                                 (docInfoEditCallback as CheckDocInfoFragment).getString(
                                     R.string.number_of_document_validation_error
                                 )
                         } else {
-                            if (documentInfo.name == "date_of_birth" && !isValidDocRelatedDate(
-                                    current
-                                )
-                            ) {
-                                binding.infoField.error =
-                                    (docInfoEditCallback as CheckDocInfoFragment).getString(
-                                        R.string.date_of_birth_validation_error
-                                    )
-                            } else if (documentInfo.name == "date_of_expiry" && !isValidDocRelatedDate(
-                                    current
-                                )
-                            ) {
-                                binding.infoField.error =
-                                    (docInfoEditCallback as CheckDocInfoFragment).getString(
-                                        R.string.date_of_expiry_validation_error
-                                    )
+                            if (fieldInfo.name == "date_of_birth" && !isValidDocRelatedDate(current)) {
+                                binding.infoField.error = (docInfoEditCallback as CheckDocInfoFragment).getString(
+                                        R.string.date_of_birth_validation_error)
+                            } else if (fieldInfo.name == "expiration_date" && !isValidDocRelatedDate(current)) {
+                                binding.infoField.error = (docInfoEditCallback as CheckDocInfoFragment).getString(
+                                        R.string.enter_valid_exp_date)
                             } else {
                                 if (text.length < 3) {
-                                    when (documentInfo.title.en) {
+                                    when (fieldInfo.name) {
                                         "Surname (cyrillic)" -> {
                                             binding.infoField.error =
                                                 (docInfoEditCallback as CheckDocInfoFragment).getString(
@@ -227,15 +212,17 @@ class CheckDocInfoAdapter(
                         }
                     }
 
-                    if (documentInfo.name == "date_of_birth" || documentInfo.name == "date_of_expiry") {
-                        docInfoEditCallback.onFieldInfoEdited(documentInfo.name, current)
+                    if (fieldInfo.name == "date_of_birth" || fieldInfo.name == "expiration_date") {
+                        docInfoEditCallback.onFieldInfoEdited(fieldInfo.name, current)
                     } else {
-                        docInfoEditCallback.onFieldInfoEdited(documentInfo.name, text.toString())
+                        docInfoEditCallback.onFieldInfoEdited(fieldInfo.name, text.toString())
                     }
 
                 }
 
-                override fun afterTextChanged(p0: Editable?) {}
+                override fun afterTextChanged(p0: Editable?) {
+                    //Stub
+                }
             })
         }
     }
