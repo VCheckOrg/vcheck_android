@@ -71,9 +71,7 @@ class CheckDocInfoAdapter(
                 binding.infoFieldBorder.setCardBackgroundColor(Color.parseColor(it))
             }
 
-            if ((fieldInfo.name == "date_of_birth"
-                        || fieldInfo.name == "expiration_date"
-                        || fieldInfo.name == "date_of_expiry")) {
+            if ((fieldInfo.name == "date_of_birth" || fieldInfo.name == "expiration_date")) {
 
                 val hint = when (localeCode) {
                     "uk" -> "РРРР-ММ-ДД"
@@ -91,7 +89,7 @@ class CheckDocInfoAdapter(
 
             binding.infoField.addTextChangedListener(object : TextWatcher {
 
-                private var current = ""
+                private var processedText = ""
                 private val yyyymmdd = (docInfoEditCallback as CheckDocInfoFragment).getString(
                     R.string.yyyymmdd
                 )
@@ -105,64 +103,9 @@ class CheckDocInfoAdapter(
                     before: Int,
                     count: Int) {
 
-                    if (fieldInfo.name == "date_of_birth" || fieldInfo.name == "date_of_expiry") {
-                        try {
-                            if (text.toString() != current) {
-                                var cleanString =
-                                    text.toString().replace("[^\\d.]|\\.".toRegex(), "")
-                                val cleanCurrent = current.replace("[^\\d.]|\\.".toRegex(), "")
-                                var selection = cleanString.length
-                                if (cleanString.length == 4) {
-                                    selection++
-                                }
-                                if (cleanString.length == 5) {
-                                    selection++
-                                }
-                                if (cleanString.length == 6) {
-                                    selection += 2
-                                }
-                                if (cleanString.length == 7) {
-                                    selection += 2
-                                }
-                                if (cleanString.length >= 8) {
-                                    selection += 2
-                                }
-                                if (cleanString == cleanCurrent) {
-                                    selection--
-                                }
-                                if (cleanString.length < 8) {
-                                    cleanString += yyyymmdd.substring(cleanString.length)
-                                } else {
-                                    var day = cleanString.substring(6, 8).toInt()
-                                    var mon = cleanString.substring(4, 6).toInt()
-                                    var year = cleanString.substring(0, 4).toInt()
-                                    mon = if (mon < 1) 1 else if (mon > 12) 12 else mon
-                                    cal[Calendar.MONTH] = mon - 1
-                                    year =
-                                        if (year < 1900) 1900 else if (year > 2100) 2100 else year
-                                    cal[Calendar.YEAR] = year
-
-                                    day =
-                                        if (day > cal.getActualMaximum(Calendar.DATE)) cal.getActualMaximum(
-                                            Calendar.DATE
-                                        ) else day
-                                    cleanString = String.format("%02d%02d%02d", year, mon, day)
-                                }
-                                cleanString = String.format(
-                                    "%s-%s-%s",
-                                    cleanString.substring(0, 4),
-                                    cleanString.substring(4, 6),
-                                    cleanString.substring(6, 8)
-                                )
-                                selection = if (selection < 0) 0 else selection
-                                current = cleanString
-                                binding.infoField.setText(current)
-                                binding.infoField.setSelection(if (selection >= 10) 10 else selection)
-                            }
-
-                        } catch (e: Exception) {
-                            Log.d(VCheckSDK.TAG, e.message ?: "caught onTextChanged error")
-                        }
+                    if (fieldInfo.name == "date_of_birth"
+                        || fieldInfo.name == "expiration_date") {
+                        processDateInput(text)
                     }
 
                     if (text.isNotEmpty()) {
@@ -170,13 +113,12 @@ class CheckDocInfoAdapter(
                             && !text.matches(Regex(fieldInfo.regex))) {
                             binding.infoField.error =
                                 (docInfoEditCallback as CheckDocInfoFragment).getString(
-                                    R.string.number_of_document_validation_error
-                                )
+                                    R.string.number_of_document_validation_error)
                         } else {
-                            if (fieldInfo.name == "date_of_birth" && !isValidDocRelatedDate(current)) {
+                            if (fieldInfo.name == "date_of_birth" && !isValidDocRelatedDate(processedText)) {
                                 binding.infoField.error = (docInfoEditCallback as CheckDocInfoFragment).getString(
                                         R.string.date_of_birth_validation_error)
-                            } else if (fieldInfo.name == "expiration_date" && !isValidDocRelatedDate(current)) {
+                            } else if (fieldInfo.name == "expiration_date" && !isValidDocRelatedDate(processedText)) {
                                 binding.infoField.error = (docInfoEditCallback as CheckDocInfoFragment).getString(
                                         R.string.enter_valid_exp_date)
                             } else {
@@ -213,11 +155,71 @@ class CheckDocInfoAdapter(
                     }
 
                     if (fieldInfo.name == "date_of_birth" || fieldInfo.name == "expiration_date") {
-                        docInfoEditCallback.onFieldInfoEdited(fieldInfo.name, current)
+                        docInfoEditCallback.onFieldInfoEdited(fieldInfo.name, processedText)
                     } else {
                         docInfoEditCallback.onFieldInfoEdited(fieldInfo.name, text.toString())
                     }
 
+                }
+
+                private fun processDateInput(text: CharSequence) {
+                    try {
+                        if (text.toString() != processedText) {
+                            var cleanString =
+                                text.toString().replace("[^\\d.]|\\.".toRegex(), "")
+                            val cleanCurrent = processedText.replace("[^\\d.]|\\.".toRegex(), "")
+                            var selection = cleanString.length
+                            if (cleanString.length == 4) {
+                                selection++
+                            }
+                            if (cleanString.length == 5) {
+                                selection++
+                            }
+                            if (cleanString.length == 6) {
+                                selection += 2
+                            }
+                            if (cleanString.length == 7) {
+                                selection += 2
+                            }
+                            if (cleanString.length >= 8) {
+                                selection += 2
+                            }
+                            if (cleanString == cleanCurrent) {
+                                selection--
+                            }
+                            if (cleanString.length < 8) {
+                                cleanString += yyyymmdd.substring(cleanString.length)
+                            } else {
+                                var day = cleanString.substring(6, 8).toInt()
+                                var mon = cleanString.substring(4, 6).toInt()
+                                var year = cleanString.substring(0, 4).toInt()
+                                mon = if (mon < 1) 1 else if (mon > 12) 12 else mon
+                                cal[Calendar.MONTH] = mon - 1
+                                year =
+                                    if (year < 1900) 1900 else if (year > 2100) 2100 else year
+                                cal[Calendar.YEAR] = year
+
+                                day =
+                                    if (day > cal.getActualMaximum(Calendar.DATE)) cal.getActualMaximum(
+                                        Calendar.DATE
+                                    ) else day
+                                cleanString = String.format("%02d%02d%02d", year, mon, day)
+                            }
+                            cleanString = String.format(
+                                "%s-%s-%s",
+                                cleanString.substring(0, 4),
+                                cleanString.substring(4, 6),
+                                cleanString.substring(6, 8)
+                            )
+                            selection = if (selection < 0) 0 else selection
+                            processedText = cleanString
+                            binding.infoField.setText(processedText)
+                            binding.infoField.setSelection(if (selection >= 10) 10 else selection)
+                        }
+
+                    } catch (e: Exception) {
+                        Log.d(VCheckSDK.TAG, e.message ?: "caught onTextChanged error")
+                    }
                 }
 
                 override fun afterTextChanged(p0: Editable?) {
