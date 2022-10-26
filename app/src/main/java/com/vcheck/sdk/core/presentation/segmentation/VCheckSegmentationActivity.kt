@@ -600,6 +600,9 @@ class VCheckSegmentationActivity : AppCompatActivity() {
             }
 
             blockProcessingByUI = false
+            takeImageTimer?.cancel()
+            takeImageTimer = null
+            setCameraProviderListener()
         }
     }
 
