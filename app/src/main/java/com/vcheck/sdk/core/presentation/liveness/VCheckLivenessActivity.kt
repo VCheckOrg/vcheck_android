@@ -191,7 +191,6 @@ class VCheckLivenessActivity : AppCompatActivity() {
             .setMaxResolution(Size(VIDEO_STREAM_WIDTH_LIMIT, VIDEO_STREAM_HEIGHT_LIMIT))
             .setCaptureMode(CAPTURE_MODE_MINIMIZE_LATENCY)
             .setJpegQuality(70)
-            .setSessionProcessorEnabled(false)
             .build()
     }
 

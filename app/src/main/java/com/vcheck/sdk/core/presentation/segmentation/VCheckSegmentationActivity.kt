@@ -227,7 +227,6 @@ class VCheckSegmentationActivity : AppCompatActivity() {
             .setMaxResolution(Size(VIDEO_STREAM_WIDTH_LIMIT, VIDEO_STREAM_HEIGHT_LIMIT))
             .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
             .setJpegQuality(70)
-            .setSessionProcessorEnabled(false)
             .build()
     }
 
@@ -537,17 +536,28 @@ class VCheckSegmentationActivity : AppCompatActivity() {
 
         fadeDarkOverlayIn()
 
+        val isInnerUaPassport = docCategoryIdxToType(docData.category) == DocType.INNER_PASSPORT_OR_COMMON && docData.country == "ua"
+
         binding.docAnimationView.isVisible = docCategoryIdxToType(docData.category) == DocType.ID_CARD
+                || isInnerUaPassport
 
         animateStageSuccessFrame()
 
-        if (binding.docAnimationView.isVisible && checkedDocIdx == 1) {
-            Handler(Looper.getMainLooper()).postDelayed({
-                if (docCategoryIdxToType(docData.category) == DocType.ID_CARD) {
-                    binding.docAnimationView.setAnimation(R.raw.id_card_turn_side)
-                    binding.docAnimationView.playAnimation()
+        if (binding.docAnimationView.isVisible) {
+            if (checkedDocIdx == 1) {
+                if (isInnerUaPassport) {
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        binding.docAnimationView.setAnimation(R.raw.passport_flip)
+                        binding.docAnimationView.playAnimation()
+                    }, 900)
+                } else {
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        binding.docAnimationView.setAnimation(R.raw.id_card_turn_side)
+                        binding.docAnimationView.playAnimation()
+                    }, 900)
                 }
-            }, 900)
+
+            }
         }
 
         Handler(Looper.getMainLooper()).postDelayed ({
