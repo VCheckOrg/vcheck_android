@@ -536,7 +536,8 @@ class VCheckSegmentationActivity : AppCompatActivity() {
 
         fadeDarkOverlayIn()
 
-        val isInnerUaPassport = docCategoryIdxToType(docData.category) == DocType.INNER_PASSPORT_OR_COMMON && docData.country == "ua"
+        val isInnerUaPassport = docCategoryIdxToType(docData.category) ==
+                DocType.INNER_PASSPORT_OR_COMMON && docData.country == "ua"
 
         binding.docAnimationView.isVisible = docCategoryIdxToType(docData.category) == DocType.ID_CARD
                 || isInnerUaPassport
@@ -544,6 +545,7 @@ class VCheckSegmentationActivity : AppCompatActivity() {
         animateStageSuccessFrame()
 
         if (binding.docAnimationView.isVisible) {
+            binding.docAnimationView.cancelAnimation()
             if (checkedDocIdx == 1) {
                 if (isInnerUaPassport) {
                     Handler(Looper.getMainLooper()).postDelayed({
