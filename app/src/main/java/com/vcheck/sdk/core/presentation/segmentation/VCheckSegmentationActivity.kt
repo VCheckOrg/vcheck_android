@@ -528,7 +528,11 @@ class VCheckSegmentationActivity : AppCompatActivity() {
         binding.tvSegmentationInstruction.setMargins(
             20, 45, 20, 20)
 
-        if (docCategoryIdxToType(docData.category) == DocType.ID_CARD && checkedDocIdx == 1) {
+        val isInnerUaPassport = docCategoryIdxToType(docData.category) ==
+                DocType.INNER_PASSPORT_OR_COMMON && docData.country == "ua"
+
+        if ((docCategoryIdxToType(docData.category) == DocType.ID_CARD
+                    || isInnerUaPassport) && checkedDocIdx == 1) {
             binding.tvSegmentationInstruction.setText(R.string.segmentation_stage_success_first_page)
         } else {
             binding.tvSegmentationInstruction.setText(R.string.segmentation_stage_success)
@@ -536,11 +540,8 @@ class VCheckSegmentationActivity : AppCompatActivity() {
 
         fadeDarkOverlayIn()
 
-        val isInnerUaPassport = docCategoryIdxToType(docData.category) ==
-                DocType.INNER_PASSPORT_OR_COMMON && docData.country == "ua"
-
-        binding.docAnimationView.isVisible = docCategoryIdxToType(docData.category) == DocType.ID_CARD
-                || isInnerUaPassport
+        binding.docAnimationView.isVisible = (docCategoryIdxToType(docData.category) == DocType.ID_CARD
+                || isInnerUaPassport) && checkedDocIdx == 1
 
         animateStageSuccessFrame()
 
@@ -549,16 +550,19 @@ class VCheckSegmentationActivity : AppCompatActivity() {
             if (checkedDocIdx == 1) {
                 if (isInnerUaPassport) {
                     Handler(Looper.getMainLooper()).postDelayed({
+                        binding.docAnimationView.scaleX = 2F
+                        binding.docAnimationView.scaleY = 2F
                         binding.docAnimationView.setAnimation(R.raw.passport_flip)
                         binding.docAnimationView.playAnimation()
                     }, 900)
                 } else {
                     Handler(Looper.getMainLooper()).postDelayed({
+                        binding.docAnimationView.scaleX = 1F
+                        binding.docAnimationView.scaleY = 1F
                         binding.docAnimationView.setAnimation(R.raw.id_card_turn_side)
                         binding.docAnimationView.playAnimation()
                     }, 900)
                 }
-
             }
         }
 
