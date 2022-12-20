@@ -283,13 +283,13 @@ class VCheckLivenessActivity : AppCompatActivity() {
 
     private fun setUpMuxer() {
         val framesPerImage = 1
-        val framesPerSecond = 6F
+        val framesPerSecond = 8F //was 6F
         val bitrate = 2500000
         val muxerConfig = MuxerConfig(createVideoFile() ?: File.createTempFile(
             "faceVideo${System.currentTimeMillis()}", ".mp4",
             this@VCheckLivenessActivity.cacheDir),
             streamSize.height, streamSize.width, MediaFormat.MIMETYPE_VIDEO_AVC,
-            framesPerImage, framesPerSecond, bitrate, iFrameInterval = 1)
+            framesPerImage, framesPerSecond, bitrate, iFrameInterval = 4) //was 1
         muxer = Muxer(this@VCheckLivenessActivity, muxerConfig)
     }
 
