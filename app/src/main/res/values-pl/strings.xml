@@ -152,7 +152,7 @@
     <string name="segmentation_instr_foreign_passport_title">Zrób zdjęcie paszportu</string>
     <string name="segmentation_instr_id_card_title">Zrób zdjęcie dowodu osobistego</string>
 
-    <string name="segmentation_instr_inner_passport_descr">Postępuj zgodnie z instrukcjami wyświetlanymi na ekranie, aby zrobić zdjęcie całostronicowej rozkładówki paszportu obywatela (widoczne obie strony)</string>
+    <string name="segmentation_instr_inner_passport_descr">Postępując zgodnie z instrukcjami na ekranie, zrób zdjęcie całej rozkładówki paszportu (obie strony są widoczne)</string>
     <string name="segmentation_instr_foreign_passport_descr">Postępuj zgodnie z instrukcjami wyświetlanymi na ekranie, aby zrobić zdjęcie całostronicowej rozkładówki paszportu (widoczne obie strony)</string>
     <string name="segmentation_instr_id_card_descr">Postępuj zgodnie z instrukcjami wyświetlanymi na ekranie, aby zrobić zdjęcie przedniej i tylnej strony dowodu osobistego</string>
 

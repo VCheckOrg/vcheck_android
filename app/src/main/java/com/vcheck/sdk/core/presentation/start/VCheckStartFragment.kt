@@ -73,6 +73,8 @@ internal class VCheckStartFragment : Fragment() {
 
         _binding = FragmentDemoStartBinding.bind(view)
 
+        changeColorsToCustomIfPresent()
+
         _binding!!.startCallChainLoadingIndicator.isVisible = true
 
         _binding!!.startCallChainLoadingIndicator.isVisible = false

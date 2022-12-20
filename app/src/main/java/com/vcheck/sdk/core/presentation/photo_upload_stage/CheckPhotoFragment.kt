@@ -1,14 +1,19 @@
 package com.vcheck.sdk.core.presentation.photo_upload_stage
 
+import android.app.Activity
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -19,7 +24,10 @@ import com.vcheck.sdk.core.data.Resource
 import com.vcheck.sdk.core.databinding.CheckPhotoFragmentBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.*
+import com.vcheck.sdk.core.presentation.VCheckMainActivity
+import com.vcheck.sdk.core.presentation.segmentation.VCheckSegmentationActivity
 import com.vcheck.sdk.core.presentation.transferrable_objects.CheckDocInfoDataTO
+import com.vcheck.sdk.core.presentation.transferrable_objects.PhotoUploadType
 import com.vcheck.sdk.core.presentation.transferrable_objects.ZoomPhotoTO
 import com.vcheck.sdk.core.util.ThemeWrapperFragment
 import okhttp3.MediaType.Companion.toMediaType
@@ -34,6 +42,28 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
     private lateinit var _viewModel: CheckPhotoViewModel
     private var _binding: CheckPhotoFragmentBinding? = null
     private val args: CheckPhotoFragmentArgs by navArgs()
+
+    private val mStartForResult: ActivityResultLauncher<Intent> = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            if (!it.data!!.getBooleanExtra("is_back_press", false)) {
+                if (!it.data!!.getBooleanExtra("is_timeout_to_manual", false)) {
+                    if (VCheckDIContainer.mainRepository.getCheckDocPhotosTO() != null) {
+                        val action = CheckPhotoFragmentDirections.actionGlobalCheckPhotoFragment(
+                            VCheckDIContainer.mainRepository.getCheckDocPhotosTO()!!,
+                            PhotoUploadType.AUTO)
+                        findNavController().navigate(action)
+                    } else {
+                        Log.d(VCheckSDK.TAG, "Photo transferrable object was not set")
+                    }
+                } else {
+                    findNavController().navigate(R.id.action_global_photoUploadScreen)
+                }
+            } else {
+                //Log.d(TAG, "Back press from SegmentationActivity")
+            }
+        }
+    }
 
     override fun changeColorsToCustomIfPresent() {
         VCheckSDK.buttonsColorHex?.let {
@@ -128,7 +158,12 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
             }
 
             replacePhotoButton.setOnClickListener {
-                findNavController().navigate(R.id.action_global_photoUploadScreen) //!
+                if (args.photoUploadType == PhotoUploadType.MANUAL) {
+                    findNavController().navigate(R.id.action_global_photoUploadScreen)
+                } else {
+                    val intent = Intent((activity as VCheckMainActivity), VCheckSegmentationActivity::class.java)
+                    mStartForResult.launch(intent)
+                }
             }
 
             confirmPhotoButton.setOnClickListener {

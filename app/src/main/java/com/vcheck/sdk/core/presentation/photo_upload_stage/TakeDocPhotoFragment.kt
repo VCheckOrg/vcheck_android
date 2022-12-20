@@ -29,6 +29,7 @@ import com.vcheck.sdk.core.domain.DocTypeData
 import com.vcheck.sdk.core.domain.docCategoryIdxToType
 import com.vcheck.sdk.core.presentation.VCheckMainActivity
 import com.vcheck.sdk.core.presentation.transferrable_objects.CheckPhotoDataTO
+import com.vcheck.sdk.core.presentation.transferrable_objects.PhotoUploadType
 import com.vcheck.sdk.core.util.ThemeWrapperFragment
 import java.io.File
 import java.io.IOException
@@ -354,7 +355,7 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
         _binding!!.photoUploadContinueButton.setOnClickListener {
             val action = TakeDocPhotoFragmentDirections
                 .actionPhotoUploadScreenToCheckPhotoFragment(
-                    CheckPhotoDataTO(_docType, _photo1Path!!, _photo2Path))
+                    CheckPhotoDataTO(_docType, _photo1Path!!, _photo2Path), PhotoUploadType.MANUAL)
             findNavController().navigate(action)
 
             _photo1Path = null

@@ -22,6 +22,7 @@ import com.vcheck.sdk.core.domain.DocType
 import com.vcheck.sdk.core.domain.docCategoryIdxToType
 import com.vcheck.sdk.core.presentation.VCheckMainActivity
 import com.vcheck.sdk.core.presentation.segmentation.VCheckSegmentationActivity
+import com.vcheck.sdk.core.presentation.transferrable_objects.PhotoUploadType
 import com.vcheck.sdk.core.util.ThemeWrapperFragment
 
 class SegmentationStartFragment : ThemeWrapperFragment() {
@@ -36,7 +37,7 @@ class SegmentationStartFragment : ThemeWrapperFragment() {
                     if (VCheckDIContainer.mainRepository.getCheckDocPhotosTO() != null) {
                         val action = SegmentationStartFragmentDirections
                             .actionSegmentationStartFragmentToCheckPhotoFragment(
-                                VCheckDIContainer.mainRepository.getCheckDocPhotosTO()!!)
+                                VCheckDIContainer.mainRepository.getCheckDocPhotosTO()!!, PhotoUploadType.AUTO)
                         findNavController().navigate(action)
                     } else {
                         Log.d(TAG, "Photo transferrable object was not set")

@@ -3,8 +3,10 @@ package com.vcheck.sdk.core.presentation
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.di.VCheckDIContainer
@@ -17,6 +19,11 @@ internal class VCheckStartupActivity : AppCompatActivity() {
         setContentView(R.layout.activity_vcheck_splash)
 
         val repository = VCheckDIContainer.mainRepository
+
+        VCheckSDK.backgroundPrimaryColorHex?.let {
+            val back = findViewById<ConstraintLayout>(R.id.vcheck_splash_background)
+            back.setBackgroundColor(Color.parseColor(it))
+        }
 
         if (repository.shouldFinishStartupActivity()) {
             repository.setFinishStartupActivity(false)

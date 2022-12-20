@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     style="@style/Theme.Transparent"
+    android:id="@+id/vcheck_splash_background"
     tools:context=".presentation.VCheckStartupActivity"
     android:theme="@style/Theme.VCheckAndroidSDKDemo">
 

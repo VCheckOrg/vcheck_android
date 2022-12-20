@@ -109,6 +109,9 @@
         <action
             android:id="@+id/action_checkPhotoFragment_to_segErrorFragment"
             app:destination="@id/segErrorFragment" />
+        <argument
+            android:name="photoUploadType"
+            app:argType="com.vcheck.sdk.core.presentation.transferrable_objects.PhotoUploadType" />
     </fragment>
 
     <fragment
@@ -214,10 +217,6 @@
         android:id="@+id/verifSentFragment"
         android:name="com.vcheck.sdk.core.presentation.screens.VerifSentFragment"
         android:label="fragment_verif_sent"
-        tools:layout="@layout/fragment_verif_sent" />
-    <action
-        android:id="@+id/action_global_photoUploadScreen"
-        app:destination="@id/photoUploadScreen"
-        app:launchSingleTop="false" />
+        tools:layout="@layout/fragment_verif_sent" /><action android:id="@+id/action_global_photoUploadScreen" app:destination="@id/photoUploadScreen"/><action android:id="@+id/action_global_checkPhotoFragment" app:destination="@id/checkPhotoFragment"/>
 
 </navigation>
