@@ -134,7 +134,7 @@
     <string name="retry">Spróbuj ponownie</string>
     <string name="liveness_stage_face_up">Podnieś głowę do góry</string>
     <string name="liveness_stage_face_down">Opuść głowę</string>
-    <string name="liveness_stage_check_face_pos">Trzymaj głowę prosto</string>
+    <string name="liveness_stage_check_face_pos">Trzymaj telefon na wysokości wzroku</string>
     <string name="liveness_stage_face_left">Odwróć głowę w lewo</string>
     <string name="liveness_stage_face_right">Odwróć głowę w prawo</string>
     <string name="liveness_stage_open_mouth">Otwórz usta</string>

@@ -409,11 +409,9 @@ class VCheckLivenessActivity : AppCompatActivity() {
             binding.imgViewStaticStageIndication.isVisible = true
             binding.stageSuccessAnimBorder.isVisible = true
             animateStageSuccessFrame()
-
             Handler(Looper.getMainLooper()).postDelayed ({
                 updateUIOnMilestoneSuccess(nextMilestoneType)
             }, BLOCK_PIPELINE_TIME_MILLIS)
-
         } else {
             updateUIOnMilestoneSuccess(nextMilestoneType)
         }
@@ -429,17 +427,11 @@ class VCheckLivenessActivity : AppCompatActivity() {
             GestureMilestoneType.OuterRightHeadYawMilestone -> R.raw.right
             GestureMilestoneType.OuterLeftHeadYawMilestone -> R.raw.left
             GestureMilestoneType.MouthOpenMilestone -> R.raw.mouth
-            else -> null
+            else -> R.raw.face_plus_phone
         }
-        if (faceAnimeRes != null) {
-            binding.faceAnimationView.isVisible = true
-            binding.faceAnimationView.setAnimation(faceAnimeRes)
-            binding.faceAnimationView.playAnimation()
-        } else {
-            binding.faceAnimationView.isVisible = true
-            binding.faceAnimationView.setAnimation(R.raw.mouth)
-            binding.faceAnimationView.pauseAnimation()
-        }
+        binding.faceAnimationView.isVisible = true
+        binding.faceAnimationView.setAnimation(faceAnimeRes)
+        binding.faceAnimationView.playAnimation()
 
         when (nextMilestoneType) {
             GestureMilestoneType.OuterLeftHeadYawMilestone -> {
@@ -516,7 +508,6 @@ class VCheckLivenessActivity : AppCompatActivity() {
         vibrateDevice(this@VCheckLivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
         finishLivenessSession()
         apiRequestTimer?.cancel()
-        //livenessSessionLimitCheckTime = SystemClock.elapsedRealtime()
         binding.livenessCosmeticsHolder.isVisible = false
         safeNavigateToResultDestination(actionIdForNav)
     }

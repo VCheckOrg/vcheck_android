@@ -144,7 +144,7 @@
     <string name="retry">Retry</string>
     <string name="liveness_stage_face_up">Lift your head up</string>
     <string name="liveness_stage_face_down">Put your head down</string>
-    <string name="liveness_stage_check_face_pos">Keep your head straight</string>
+    <string name="liveness_stage_check_face_pos">Hold phone at eye level</string>
     <string name="liveness_stage_face_left">Turn your head to the left</string>
     <string name="liveness_stage_face_right">Turn your head to the right</string>
     <string name="liveness_stage_open_mouth">Open your mouth</string>

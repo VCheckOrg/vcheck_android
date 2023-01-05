@@ -134,7 +134,7 @@
     <string name="retry">Попробовать снова</string>
     <string name="liveness_stage_face_up">Поднимите голову вверх</string>
     <string name="liveness_stage_face_down">Опустите голову вниз</string>
-    <string name="liveness_stage_check_face_pos">Держите голову прямо</string>
+    <string name="liveness_stage_check_face_pos">Держите телефон на уровне глаз</string>
     <string name="liveness_stage_face_left">Поверните голову влево</string>
     <string name="liveness_stage_face_right">Поверните голову вправо</string>
     <string name="liveness_stage_open_mouth">Откройте рот</string>
