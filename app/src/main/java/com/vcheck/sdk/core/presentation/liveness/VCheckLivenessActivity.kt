@@ -430,6 +430,13 @@ class VCheckLivenessActivity : AppCompatActivity() {
             else -> R.raw.face_plus_phone
         }
         binding.faceAnimationView.isVisible = true
+        if (nextMilestoneType == GestureMilestoneType.StraightHeadCheckMilestone) {
+            binding.faceAnimationView.scaleX = 1F
+            binding.faceAnimationView.scaleY = 1F
+        } else {
+            binding.faceAnimationView.scaleX = 2F
+            binding.faceAnimationView.scaleY = 2F
+        }
         binding.faceAnimationView.setAnimation(faceAnimeRes)
         binding.faceAnimationView.playAnimation()
 
@@ -487,7 +494,6 @@ class VCheckLivenessActivity : AppCompatActivity() {
             binding.stageSuccessAnimBorder.isVisible = true
             binding.livenessCosmeticsHolder.isVisible = false
             apiRequestTimer?.cancel()
-            //camera2Fragment?.onPause() //!
             safeNavigateToResultDestination(R.id.action_dummyLivenessStartDestFragment_to_inProcessFragment)
         }
     }
@@ -581,10 +587,9 @@ class VCheckLivenessActivity : AppCompatActivity() {
 
 
 //optional:
-//            val camera: Camera = //(upper call returns camera)
-//            val cameraControl: CameraControl = camera.cameraControl
-//            cameraControl.setLinearZoom(0.3.toFloat())
-
+//val camera: Camera = //(upper call returns camera)
+//val cameraControl: CameraControl = camera.cameraControl
+//cameraControl.setLinearZoom(0.3.toFloat())
 //optional:
 //.setTargetAspectRatio(AspectRatio.RATIO_4_3)
 //.setTargetRotation(rotation) //Surface.ROTATION_270 ?
