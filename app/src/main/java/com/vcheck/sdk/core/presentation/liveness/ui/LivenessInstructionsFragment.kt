@@ -21,16 +21,20 @@ import com.vcheck.sdk.core.presentation.VCheckMainActivity
 import com.vcheck.sdk.core.presentation.liveness.VCheckLivenessActivity
 import com.vcheck.sdk.core.util.ThemeWrapperFragment
 import com.vcheck.sdk.core.util.setMargins
+import java.util.*
 
 class LivenessInstructionsFragment : ThemeWrapperFragment() {
 
     companion object {
         private const val HALF_BALL_ANIM_TIME: Long = 1000
+        private const val PHONE_TO_FACE_CYCLE_INTERVAL: Long = 2000
     }
 
     private var binding: LivenessInstructionsFragmentBinding? = null
 
-    private var isLeftCycle: Boolean = true
+    private var isPhoneGlobalCycle: Boolean = true
+
+    private var isLeftTurnSubCycle: Boolean = true
 
     override fun changeColorsToCustomIfPresent() {
         val drawable = binding!!.cosmeticRoundedFrame.background as GradientDrawable
@@ -86,10 +90,37 @@ class LivenessInstructionsFragment : ThemeWrapperFragment() {
             startActivity(Intent(activity as VCheckMainActivity, VCheckLivenessActivity::class.java))
         }
 
+        Timer().scheduleAtFixedRate(object : TimerTask() {
+            override fun run() {
+                if (isPhoneGlobalCycle) {
+                    startPhoneAnimCycle()
+                    isPhoneGlobalCycle = !isPhoneGlobalCycle
+                } else {
+                    startFaceSidesAnimation()
+                }
+            }
+        }, 0, PHONE_TO_FACE_CYCLE_INTERVAL)
+    }
+
+    fun startPhoneAnimCycle() {
+        binding!!.staticFaceAnimationView.isVisible = false
+
+        binding!!.rightAnimBall.isVisible = false
+        binding!!.leftAnimBall.isVisible = false
+
+        binding!!.arrowAnimationView.isVisible = false
+
+        binding!!.faceAnimationView.setAnimation(R.raw.face_plus_phone)
+        binding!!.faceAnimationView.repeatCount = 2
+        binding!!.faceAnimationView.playAnimation()
+    }
+
+    fun startFaceSidesAnimation() {
         binding!!.staticFaceAnimationView.repeatCount = 0
         binding!!.staticFaceAnimationView.pauseAnimation()
         binding!!.staticFaceAnimationView.isVisible = false
 
+        binding!!.arrowAnimationView.isVisible = true
         binding!!.arrowAnimationView.rotation = 0F
         binding!!.arrowAnimationView.setMargins(-120, 60,
             null, null)
@@ -117,7 +148,7 @@ class LivenessInstructionsFragment : ThemeWrapperFragment() {
         binding!!.faceAnimationView.addAnimatorListener(object : Animator.AnimatorListener {
 
             override fun onAnimationEnd(animation: Animator) {
-                isLeftCycle = !isLeftCycle
+                isLeftTurnSubCycle = !isLeftTurnSubCycle
                 makeAnotherAnimationCycle()
             }
 
@@ -129,7 +160,7 @@ class LivenessInstructionsFragment : ThemeWrapperFragment() {
     }
 
     fun makeAnotherAnimationCycle() {
-        if (isLeftCycle) {
+        if (isLeftTurnSubCycle) {
             binding!!.staticFaceAnimationView.isVisible = true
             binding!!.faceAnimationView.setAnimation(R.raw.left)
             binding!!.faceAnimationView.repeatCount = 0
@@ -176,7 +207,7 @@ class LivenessInstructionsFragment : ThemeWrapperFragment() {
         }
     }
 
-    private fun getHalfDurationFaceAnim(): Long {
-        return binding!!.faceAnimationView.duration / 2
-    }
+//    private fun getHalfDurationFaceAnim(): Long {
+//        return binding!!.faceAnimationView.duration / 2
+//    }
 }
