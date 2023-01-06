@@ -32,7 +32,7 @@ class LivenessInstructionsFragment : ThemeWrapperFragment() {
 
     private var binding: LivenessInstructionsFragmentBinding? = null
 
-    private var isPhoneGlobalCycle: Boolean = true
+    private var currentCycleIdx = 1
 
     private var isLeftTurnSubCycle: Boolean = true
 
@@ -92,17 +92,26 @@ class LivenessInstructionsFragment : ThemeWrapperFragment() {
 
         Timer().scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
-                if (isPhoneGlobalCycle) {
-                    startPhoneAnimCycle()
-                    isPhoneGlobalCycle = !isPhoneGlobalCycle
-                } else {
-                    startFaceSidesAnimation()
+                when (currentCycleIdx) {
+                    1 -> {
+                        startPhoneAnimCycle()
+                    }
+                    2 -> {
+                        isLeftTurnSubCycle = true
+                        startFaceSidesAnimation()
+                    }
+                    else -> {
+                        isLeftTurnSubCycle = false
+                        startFaceSidesAnimation()
+                    }
                 }
             }
         }, 0, PHONE_TO_FACE_CYCLE_INTERVAL)
     }
 
     fun startPhoneAnimCycle() {
+        binding!!.faceAnimationView.cancelAnimation()
+
         binding!!.staticFaceAnimationView.isVisible = false
 
         binding!!.rightAnimBall.isVisible = false
@@ -111,55 +120,15 @@ class LivenessInstructionsFragment : ThemeWrapperFragment() {
         binding!!.arrowAnimationView.isVisible = false
 
         binding!!.faceAnimationView.setAnimation(R.raw.face_plus_phone)
-        binding!!.faceAnimationView.repeatCount = 2
+        binding!!.faceAnimationView.repeatCount = 1
         binding!!.faceAnimationView.playAnimation()
+
+        currentCycleIdx += 1
     }
 
     fun startFaceSidesAnimation() {
-        binding!!.staticFaceAnimationView.repeatCount = 0
-        binding!!.staticFaceAnimationView.pauseAnimation()
-        binding!!.staticFaceAnimationView.isVisible = false
+        binding!!.faceAnimationView.cancelAnimation()
 
-        binding!!.arrowAnimationView.isVisible = true
-        binding!!.arrowAnimationView.rotation = 0F
-        binding!!.arrowAnimationView.setMargins(-120, 60,
-            null, null)
-
-        binding!!.faceAnimationView.setAnimation(R.raw.left)
-        binding!!.faceAnimationView.repeatCount = 0
-        binding!!.faceAnimationView.playAnimation()
-
-        binding!!.rightAnimBall.isVisible = false
-        binding!!.leftAnimBall.isVisible = true
-
-        binding!!.leftAnimBall.animate().alpha(1F).setDuration(HALF_BALL_ANIM_TIME).setInterpolator(
-            DecelerateInterpolator()
-        ).withEndAction {
-            binding!!.leftAnimBall.animate().alpha(0F).setDuration(HALF_BALL_ANIM_TIME)
-                .setInterpolator(AccelerateInterpolator()).start()
-        }.start()
-
-        binding!!.faceAnimationView.addAnimatorUpdateListener {
-            if (it.currentPlayTime >= it.duration - 600) {
-                binding!!.staticFaceAnimationView.isVisible = true
-            }
-        }
-
-        binding!!.faceAnimationView.addAnimatorListener(object : Animator.AnimatorListener {
-
-            override fun onAnimationEnd(animation: Animator) {
-                isLeftTurnSubCycle = !isLeftTurnSubCycle
-                makeAnotherAnimationCycle()
-            }
-
-            override fun onAnimationStart(animation: Animator) {}
-            override fun onAnimationCancel(animation: Animator) {}
-            override fun onAnimationRepeat(animation: Animator) {}
-
-        })
-    }
-
-    fun makeAnotherAnimationCycle() {
         if (isLeftTurnSubCycle) {
             binding!!.staticFaceAnimationView.isVisible = true
             binding!!.faceAnimationView.setAnimation(R.raw.left)
@@ -205,9 +174,61 @@ class LivenessInstructionsFragment : ThemeWrapperFragment() {
                 binding!!.staticFaceAnimationView.isVisible = false
             }, 300)
         }
+        if (currentCycleIdx >= 3) {
+            currentCycleIdx = 1
+        } else {
+            currentCycleIdx += 1
+        }
     }
 
 //    private fun getHalfDurationFaceAnim(): Long {
 //        return binding!!.faceAnimationView.duration / 2
+//    }
+
+//    fun startFaceSidesAnimation() {
+//        binding!!.staticFaceAnimationView.repeatCount = 0
+//        binding!!.staticFaceAnimationView.pauseAnimation()
+//        binding!!.staticFaceAnimationView.isVisible = false
+//
+//        binding!!.arrowAnimationView.isVisible = true
+//        binding!!.arrowAnimationView.rotation = 0F
+//        binding!!.arrowAnimationView.setMargins(-120, 60,
+//            null, null)
+//
+//        binding!!.faceAnimationView.setAnimation(R.raw.left)
+//        binding!!.faceAnimationView.repeatCount = 0
+//        binding!!.faceAnimationView.playAnimation()
+//
+//        binding!!.rightAnimBall.isVisible = false
+//        binding!!.leftAnimBall.isVisible = true
+//
+//        binding!!.leftAnimBall.animate().alpha(1F).setDuration(HALF_BALL_ANIM_TIME).setInterpolator(
+//            DecelerateInterpolator()
+//        ).withEndAction {
+//            binding!!.leftAnimBall.animate().alpha(0F).setDuration(HALF_BALL_ANIM_TIME)
+//                .setInterpolator(AccelerateInterpolator()).start()
+//        }.start()
+//
+//        binding!!.faceAnimationView.addAnimatorUpdateListener {
+//            if (it.currentPlayTime >= it.duration - 600) {
+//                binding!!.staticFaceAnimationView.isVisible = true
+//            }
+//        }
+//
+//        binding!!.faceAnimationView.addAnimatorListener(object : Animator.AnimatorListener {
+//
+//            override fun onAnimationEnd(animation: Animator) {
+//                isLeftTurnSubCycle = !isLeftTurnSubCycle
+//                currentCycleIdx += 1
+//                if (currentCycleIdx == 3) {
+//                    currentCycleIdx = 1
+//                }
+//                makeAnotherAnimationCycle()
+//            }
+//
+//            override fun onAnimationStart(animation: Animator) {}
+//            override fun onAnimationCancel(animation: Animator) {}
+//            override fun onAnimationRepeat(animation: Animator) {}
+//        })
 //    }
 }
