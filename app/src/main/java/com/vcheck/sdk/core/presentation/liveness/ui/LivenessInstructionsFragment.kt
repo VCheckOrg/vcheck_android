@@ -1,6 +1,5 @@
 package com.vcheck.sdk.core.presentation.liveness.ui
 
-import android.animation.Animator
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -92,17 +91,19 @@ class LivenessInstructionsFragment : ThemeWrapperFragment() {
 
         Timer().scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
-                when (currentCycleIdx) {
-                    1 -> {
-                        startPhoneAnimCycle()
-                    }
-                    2 -> {
-                        isLeftTurnSubCycle = true
-                        startFaceSidesAnimation()
-                    }
-                    else -> {
-                        isLeftTurnSubCycle = false
-                        startFaceSidesAnimation()
+                Handler(Looper.getMainLooper()).post {
+                    when (currentCycleIdx) {
+                        1 -> {
+                            startPhoneAnimCycle()
+                        }
+                        2 -> {
+                            isLeftTurnSubCycle = true
+                            startFaceSidesAnimation()
+                        }
+                        else -> {
+                            isLeftTurnSubCycle = false
+                            startFaceSidesAnimation()
+                        }
                     }
                 }
             }
@@ -121,6 +122,10 @@ class LivenessInstructionsFragment : ThemeWrapperFragment() {
 
         binding!!.faceAnimationView.setAnimation(R.raw.face_plus_phone)
         binding!!.faceAnimationView.repeatCount = 1
+
+        binding!!.faceAnimationView.scaleX = 1F
+        binding!!.faceAnimationView.scaleY = 1F
+
         binding!!.faceAnimationView.playAnimation()
 
         currentCycleIdx += 1
@@ -132,8 +137,13 @@ class LivenessInstructionsFragment : ThemeWrapperFragment() {
         if (isLeftTurnSubCycle) {
             binding!!.staticFaceAnimationView.isVisible = true
             binding!!.faceAnimationView.setAnimation(R.raw.left)
+
             binding!!.faceAnimationView.repeatCount = 0
             binding!!.arrowAnimationView.rotation = 0F
+
+            binding!!.faceAnimationView.scaleX = 2F
+            binding!!.faceAnimationView.scaleY = 2F
+
             binding!!.arrowAnimationView.setMargins(-120, 60,
                 null, null)
             binding!!.faceAnimationView.playAnimation()
@@ -154,8 +164,13 @@ class LivenessInstructionsFragment : ThemeWrapperFragment() {
         } else {
             binding!!.staticFaceAnimationView.isVisible = true
             binding!!.faceAnimationView.setAnimation(R.raw.right)
+
             binding!!.faceAnimationView.repeatCount = 0
             binding!!.arrowAnimationView.rotation = 180F
+
+            binding!!.faceAnimationView.scaleX = 2F
+            binding!!.faceAnimationView.scaleY = 2F
+
             binding!!.arrowAnimationView.setMargins(120, 100,
                 null, null)
             binding!!.faceAnimationView.playAnimation()
@@ -181,54 +196,4 @@ class LivenessInstructionsFragment : ThemeWrapperFragment() {
         }
     }
 
-//    private fun getHalfDurationFaceAnim(): Long {
-//        return binding!!.faceAnimationView.duration / 2
-//    }
-
-//    fun startFaceSidesAnimation() {
-//        binding!!.staticFaceAnimationView.repeatCount = 0
-//        binding!!.staticFaceAnimationView.pauseAnimation()
-//        binding!!.staticFaceAnimationView.isVisible = false
-//
-//        binding!!.arrowAnimationView.isVisible = true
-//        binding!!.arrowAnimationView.rotation = 0F
-//        binding!!.arrowAnimationView.setMargins(-120, 60,
-//            null, null)
-//
-//        binding!!.faceAnimationView.setAnimation(R.raw.left)
-//        binding!!.faceAnimationView.repeatCount = 0
-//        binding!!.faceAnimationView.playAnimation()
-//
-//        binding!!.rightAnimBall.isVisible = false
-//        binding!!.leftAnimBall.isVisible = true
-//
-//        binding!!.leftAnimBall.animate().alpha(1F).setDuration(HALF_BALL_ANIM_TIME).setInterpolator(
-//            DecelerateInterpolator()
-//        ).withEndAction {
-//            binding!!.leftAnimBall.animate().alpha(0F).setDuration(HALF_BALL_ANIM_TIME)
-//                .setInterpolator(AccelerateInterpolator()).start()
-//        }.start()
-//
-//        binding!!.faceAnimationView.addAnimatorUpdateListener {
-//            if (it.currentPlayTime >= it.duration - 600) {
-//                binding!!.staticFaceAnimationView.isVisible = true
-//            }
-//        }
-//
-//        binding!!.faceAnimationView.addAnimatorListener(object : Animator.AnimatorListener {
-//
-//            override fun onAnimationEnd(animation: Animator) {
-//                isLeftTurnSubCycle = !isLeftTurnSubCycle
-//                currentCycleIdx += 1
-//                if (currentCycleIdx == 3) {
-//                    currentCycleIdx = 1
-//                }
-//                makeAnotherAnimationCycle()
-//            }
-//
-//            override fun onAnimationStart(animation: Animator) {}
-//            override fun onAnimationCancel(animation: Animator) {}
-//            override fun onAnimationRepeat(animation: Animator) {}
-//        })
-//    }
 }
