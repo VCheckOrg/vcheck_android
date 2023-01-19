@@ -95,7 +95,7 @@ class VCheckLivenessActivity : AppCompatActivity() {
     var limitedHCFMuxer: Muxer? = null
 
     var videoPath: String? = null
-    var hardwareCapabilityFlow: HardwareCapabilityFlow = HardwareCapabilityFlow.LIMITED
+    var hardwareCapabilityFlow: HardwareCapabilityFlow = HardwareCapabilityFlow.FULL
 
     var isLivenessSessionFinished: Boolean = false
     private var livenessSessionLimitCheckTime: Long = 0
@@ -156,7 +156,6 @@ class VCheckLivenessActivity : AppCompatActivity() {
         cameraProviderFuture.addListener({
             try {
                 val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
-                setHCF(cameraProvider)
 
                 buildImageCaptureUseCase()
 
@@ -164,8 +163,7 @@ class VCheckLivenessActivity : AppCompatActivity() {
                     buildVideoCaptureUseCase()
                     setupVideoRecording()
                 }
-                bindPreview(cameraProvider)
-                setTakeImageTimer()
+                bindCamera(cameraProvider)
 
             } catch (e: ExecutionException) {
                 showSingleToast("Error while setting camera provider: ${e.message}")
@@ -179,20 +177,15 @@ class VCheckLivenessActivity : AppCompatActivity() {
         }, ContextCompat.getMainExecutor(this@VCheckLivenessActivity))
     }
 
-    private fun bindPreview(cameraProvider: ProcessCameraProvider) {
-        val cameraSelector =
-            CameraSelector.Builder().requireLensFacing(CameraSelector.LENS_FACING_FRONT).build()
-        val preview: Preview = Preview.Builder().build()
-        preview.setSurfaceProvider(binding.cameraPreviewView.surfaceProvider)
+    private fun bindCamera(cameraProvider: ProcessCameraProvider) {
         try {
+            val cameraSelector =
+                CameraSelector.Builder().requireLensFacing(CameraSelector.LENS_FACING_FRONT).build()
+            val preview: Preview = Preview.Builder().build()
+            preview.setSurfaceProvider(binding.cameraPreviewView.surfaceProvider)
             binding.cameraPreviewView.viewPort?.let {
-                val useCaseGroup = if (isLimitedHardwareFlow())
-                    UseCaseGroup.Builder()
-                        .addUseCase(preview)
-                        .addUseCase(imageCapture!!)
-                        .setViewPort(it)
-                        .build()
-                 else UseCaseGroup.Builder()
+                val useCaseGroup =
+                     UseCaseGroup.Builder()
                     .addUseCase(preview)
                     .addUseCase(imageCapture!!)
                     .addUseCase(fullHCFVideoCapture!!)
@@ -201,30 +194,45 @@ class VCheckLivenessActivity : AppCompatActivity() {
                 cameraProvider.unbindAll()
                 cameraProvider.bindToLifecycle(this@VCheckLivenessActivity,
                     cameraSelector, useCaseGroup)
+
+                hardwareCapabilityFlow = HardwareCapabilityFlow.FULL
+
+                setTakeImageTimer()
             }
         } catch (e: NullPointerException) {
             showSingleToast("Image Capture or View Port have not been initialized in time")
         } catch (e: Exception) {
-            showSingleToast("Error while building preview: ${e.message}")
-        }
-    }
+            // ::: IllegalArgumentException should be the most common case due to
+            // too many camera use cases for LEGACY or LIMITED device/hardware
+            try {
+                cameraProvider.unbindAll()
 
-    @androidx.annotation.OptIn(ExperimentalCamera2Interop::class)
-    fun setHCF(cameraProvider: ProcessCameraProvider) {
-        hardwareCapabilityFlow = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            val level = CameraSelector.DEFAULT_BACK_CAMERA
-                .filter(cameraProvider.availableCameraInfos)
-                .firstOrNull()
-                ?.let { Camera2CameraInfo.from(it) }
-                ?.getCameraCharacteristic(CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL)
-            Log.d(TAG, "DEVICE CAMERA LEVEL: $level")
-            if (level == CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_LIMITED) {
-                HardwareCapabilityFlow.LIMITED
-            } else {
-                HardwareCapabilityFlow.FULL
+                fullHCFVideoCapture = null
+                fullHCFRecording?.close()
+                fullHCFRecording = null
+
+                hardwareCapabilityFlow = HardwareCapabilityFlow.LIMITED
+
+                val cameraSelector =
+                    CameraSelector.Builder().requireLensFacing(CameraSelector.LENS_FACING_FRONT).build()
+                val preview: Preview = Preview.Builder().build()
+                preview.setSurfaceProvider(binding.cameraPreviewView.surfaceProvider)
+                binding.cameraPreviewView.viewPort?.let {
+                    val useCaseGroup =
+                        UseCaseGroup.Builder()
+                            .addUseCase(preview)
+                            .addUseCase(imageCapture!!)
+                            .setViewPort(it)
+                            .build()
+                    cameraProvider.unbindAll()
+                    cameraProvider.bindToLifecycle(this@VCheckLivenessActivity,
+                        cameraSelector, useCaseGroup)
+
+                    setTakeImageTimer()
+                }
+            } catch (e: Exception) {
+                showSingleToast("${e.javaClass.name} ::: ${e.message}")
             }
-        } else {
-            HardwareCapabilityFlow.LIMITED
         }
     }
 
