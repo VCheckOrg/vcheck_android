@@ -1,10 +1,11 @@
 package com.vcheck.sdk.core.presentation.liveness.flow_logic
 
 import android.graphics.Bitmap
-import android.os.Environment
+import android.widget.Toast
 import com.vcheck.sdk.core.presentation.liveness.VCheckLivenessActivity
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 import java.io.OutputStream
 
 
@@ -23,11 +24,23 @@ fun VCheckLivenessActivity.createTempFileForBitmapFrame(mBitmap: Bitmap): String
     }
 }
 
+fun VCheckLivenessActivity.createVideoFile(): File? {
+    return try {
+        val storageDir: File = this.cacheDir
+        File.createTempFile(
+            "faceVideo${System.currentTimeMillis()}", ".mp4", storageDir).apply {
+            videoPath = this.path
+        }
+    } catch (e: IOException) {
+        showSingleToast(e.message)
+        null
+    }
+}
 
-////TODO rotate image if image captured on samsung devices (?)
-////Most phone cameras are landscape, meaning if you take the photo in portrait, the resulting photos will be rotated 90 degrees.
-//fun VCheckLivenessActivity.rotateBitmap(input: Bitmap): Bitmap? {
-//    val rotationMatrix = Matrix()
-//    rotationMatrix.setRotate(openLivenessCameraParams!!.sensorOrientation.toFloat())
-//    return Bitmap.createBitmap(input, 0, 0, input.width, input.height, rotationMatrix, true)
-//}
+fun VCheckLivenessActivity.showSingleToast(message: String?) {
+    if (mToast != null) {
+        mToast?.cancel()
+    }
+    mToast = Toast.makeText(this, message, Toast.LENGTH_LONG)
+    mToast?.show()
+}

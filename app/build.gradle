@@ -14,8 +14,8 @@ android {
     defaultConfig {
         minSdk 21
         targetSdk 33
-        versionCode 67
-        versionName "1.0.67"
+        versionCode 68
+        versionName "1.0.68"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.debug
@@ -56,6 +56,7 @@ dependencies {
     implementation 'androidx.camera:camera-camera2:1.2.0'
     implementation 'androidx.camera:camera-view:1.2.0'
     implementation 'androidx.camera:camera-lifecycle:1.2.0'
+    implementation 'androidx.camera:camera-video:1.2.0'
 
     //Retrofit (HTTP client)
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
@@ -68,8 +69,11 @@ dependencies {
     //Lottie animation handling
     implementation 'com.airbnb.android:lottie:5.0.3'
 
-    //Effectively compress bitmaps before sending to API
+    //Compress bitmaps before sending to API
     implementation 'id.zelory:compressor:3.0.1'
+
+    //Compress video before sending to API
+    implementation 'com.github.AbedElazizShe:LightCompressor:1.2.3'
 }
 
 afterEvaluate {
@@ -79,7 +83,7 @@ afterEvaluate {
                 from components.release
                 groupId "com.vcheck"
                 artifactId "sdk"
-                version "1.0.67"
+                version "1.0.68"
             }
         }
     }

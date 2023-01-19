@@ -9,9 +9,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
+import com.abedelazizshe.lightcompressorlibrary.CompressionListener
+import com.abedelazizshe.lightcompressorlibrary.VideoCompressor
+import com.abedelazizshe.lightcompressorlibrary.VideoQuality
+import com.abedelazizshe.lightcompressorlibrary.config.AppSpecificStorageConfiguration
+import com.abedelazizshe.lightcompressorlibrary.config.Configuration
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.data.Resource
@@ -19,18 +24,19 @@ import com.vcheck.sdk.core.databinding.InProcessFragmentBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.*
 import com.vcheck.sdk.core.presentation.liveness.VCheckLivenessActivity
-import com.vcheck.sdk.core.presentation.liveness.flow_logic.VideoProcessingListener
 import com.vcheck.sdk.core.util.ThemeWrapperFragment
 import com.vcheck.sdk.core.util.getFolderSizeLabel
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
+import java.util.*
+import kotlin.time.Duration.Companion.milliseconds
 
 
-class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
+class InProcessFragment : ThemeWrapperFragment() {
 
-    private val args: InProcessFragmentArgs by navArgs()
+    //private val args: InProcessFragmentArgs by navArgs()
     private var _binding: InProcessFragmentBinding? = null
     private lateinit var _viewModel: InProcessViewModel
 
@@ -80,12 +86,7 @@ class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
         _binding!!.inProcessSubtitle.isVisible = false
         _binding!!.uploadVideoLoadingIndicator.isVisible = true
 
-        if (args.retry) {
-            onVideoProcessed((activity as VCheckLivenessActivity).videoPath!!)
-        } else {
-            (activity as VCheckLivenessActivity).finishLivenessSession()
-            (activity as VCheckLivenessActivity).processVideoOnResult(this@InProcessFragment)
-        }
+        onVideoProcessed((activity as VCheckLivenessActivity).videoPath!!)
 
         val token = VCheckSDK.getVerificationToken()
 
@@ -185,18 +186,69 @@ class InProcessFragment : ThemeWrapperFragment(), VideoProcessingListener {
         }
     }
 
-    override fun onVideoProcessed(videoPath: String) {
+    private fun onVideoProcessed(videoPath: String) {
 
         val videoFile = File(videoPath)
 
-        Log.d("mux", getFolderSizeLabel(videoFile))
+        Log.d(VCheckLivenessActivity.TAG, "MUXED VIDEO SIZE: " + getFolderSizeLabel(videoFile))
 
+        if ((activity as VCheckLivenessActivity).isLimitedHardwareFlow()) {
+            uploadLivenessVideo(videoFile)
+        } else {
+            //Compressing video for full HCF (expected to be much more heavier comparing to limited case):
+            compressVideoFileForResult(videoFile)
+        }
+    }
+
+    private fun compressVideoFileForResult(videoFile: File) {
+        VideoCompressor.start(
+            context = requireContext(),
+            uris = listOf(videoFile.toUri()),
+            isStreamable = false,
+            appSpecificStorageConfiguration = AppSpecificStorageConfiguration(
+                videoName = "liveness${Date().time.milliseconds}"),
+            configureWith = Configuration(
+                quality = VideoQuality.HIGH,
+                isMinBitrateCheckEnabled = true,
+                videoBitrateInMbps = 2,
+                disableAudio = true,
+                keepOriginalResolution = true,
+            ),
+            listener = object : CompressionListener {
+
+                override fun onSuccess(index: Int, size: Long, path: String?) {
+                    val compressedVideoFile = File(path!!)
+
+                    Log.d(VCheckLivenessActivity.TAG, "COMPRESSED VIDEO SIZE: "
+                            + getFolderSizeLabel(compressedVideoFile))
+
+                    uploadLivenessVideo(compressedVideoFile)
+                }
+                override fun onFailure(index: Int, failureMessage: String) {
+                    Log.e(VCheckLivenessActivity.TAG,
+                        "VIDEO COMPRESSING FAILED: $failureMessage")
+                }
+                override fun onProgress(index: Int, percent: Float) {
+                    // Stub
+                }
+                override fun onStart(index: Int) {
+                    // Stub
+                }
+                override fun onCancelled(index: Int) {
+                    // Stub
+                }
+            }
+        )
+    }
+
+    private fun uploadLivenessVideo(videoFile: File) {
         val token = VCheckSDK.getVerificationToken()
 
         (activity as VCheckLivenessActivity).runOnUiThread {
             if (token.isNotEmpty()) {
-                val partVideo: MultipartBody.Part = MultipartBody.Part.createFormData(
-                    "video.mp4", videoFile.name, videoFile.asRequestBody("video/mp4".toMediaType()))
+                val partVideo: MultipartBody.Part =
+                    MultipartBody.Part.createFormData("video.mp4", videoFile.name,
+                        videoFile.asRequestBody("video/mp4".toMediaType()))
                 _viewModel.uploadLivenessVideo(partVideo)
             } else {
                 findNavController().navigate(R.id.action_inProcessFragment_to_livenessResultVideoViewFragment)

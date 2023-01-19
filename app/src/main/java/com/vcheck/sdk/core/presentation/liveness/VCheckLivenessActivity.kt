@@ -6,7 +6,7 @@ import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.*
 import android.graphics.drawable.GradientDrawable
-import android.media.MediaFormat
+import android.hardware.camera2.CameraCharacteristics
 import android.os.*
 import android.util.Log
 import android.util.Size
@@ -15,9 +15,13 @@ import android.view.animation.DecelerateInterpolator
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.camera.camera2.interop.Camera2CameraInfo
+import androidx.camera.camera2.interop.ExperimentalCamera2Interop
 import androidx.camera.core.*
 import androidx.camera.core.ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY
 import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.camera.video.*
+import androidx.camera.video.VideoCapture
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.navigation.findNavController
@@ -35,8 +39,6 @@ import com.vcheck.sdk.core.util.setMargins
 import com.vcheck.sdk.core.util.sizeInKb
 import com.vcheck.sdk.core.util.vibrateDevice
 import com.vcheck.sdk.core.util.video.Muxer
-import com.vcheck.sdk.core.util.video.MuxerConfig
-import com.vcheck.sdk.core.util.video.MuxingCompletionListener
 import id.zelory.compressor.Compressor
 import id.zelory.compressor.constraint.destination
 import id.zelory.compressor.constraint.size
@@ -45,12 +47,10 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
-import java.io.IOException
-import java.lang.NullPointerException
 import java.util.*
-import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.Executors
+import kotlin.collections.ArrayList
 import kotlin.concurrent.fixedRateTimer
 
 
@@ -61,32 +61,44 @@ class VCheckLivenessActivity : AppCompatActivity() {
         const val TAG = "LivenessActivity"
         private const val LIVENESS_TIME_LIMIT_MILLIS: Long = 15000 //max is 15000
         private const val BLOCK_PIPELINE_TIME_MILLIS: Long = 800 //may reduce a bit
-        private const val GESTURE_REQUEST_DEBOUNCE_MILLIS: Long = 200
-        private const val IMAGE_CAPTURE_DEBOUNCE_MILLIS: Long = 150
+        private const val GESTURE_REQUEST_DEBOUNCE_MILLIS: Long = 150 //may reduce a bit
+        private const val IMAGE_CAPTURE_DEBOUNCE_MILLIS: Long = 50 //may increase a bit
         private const val STAGE_VIBRATION_DURATION_MILLIS: Long = 100
-        private const val VIDEO_STREAM_WIDTH_LIMIT = 800
-        private const val VIDEO_STREAM_HEIGHT_LIMIT = 800
+        private const val FULL_HCF_VIDEO_STREAM_WIDTH_LIMIT = 800
+        private const val FULL_HCF_VIDEO_STREAM_HEIGHT_LIMIT = 800
+        private const val LIMITED_HCF_VIDEO_STREAM_WIDTH_LIMIT = 640
+        private const val LIMITED_HCF_VIDEO_STREAM_HEIGHT_LIMIT = 640
     }
+
+    private lateinit var binding: ActivityVcheckLivenessBinding
 
     private val scope = CoroutineScope(newSingleThreadContext("liveness"))
 
     private val imageCaptureExecutor = Executors.newCachedThreadPool()
 
-    private var apiRequestTimer: Timer? = null
+    var apiRequestTimer: Timer? = null
 
-    private var takeImageTimer: Timer? = null
+    var takeImageTimer: Timer? = null
 
-    private lateinit var binding: ActivityVcheckLivenessBinding
-    private var mToast: Toast? = null
+    var mToast: Toast? = null
 
-    private var streamSize: Size = Size(VIDEO_STREAM_WIDTH_LIMIT, VIDEO_STREAM_HEIGHT_LIMIT)
+    var streamSize: Size? = null
 
-    private var bitmapList: ArrayList<Bitmap>? = ArrayList()
-    private var muxer: Muxer? = null
+    var imageCapture: ImageCapture? = null
+
+    // -- For HardwareCapabilityFlow.FULL:
+    var fullHCFVideoCapture: VideoCapture<VideoOutput>? = null
+    var fullHCFRecording: Recording? = null
+
+    // -- For HardwareCapabilityFlow.LIMITED:
+    var limitedHCFBitmapList: ArrayList<Bitmap>? = ArrayList()
+    var limitedHCFMuxer: Muxer? = null
+
     var videoPath: String? = null
+    var hardwareCapabilityFlow: HardwareCapabilityFlow = HardwareCapabilityFlow.LIMITED
 
+    var isLivenessSessionFinished: Boolean = false
     private var livenessSessionLimitCheckTime: Long = 0
-    private var isLivenessSessionFinished: Boolean = false
     private var blockProcessingByUI: Boolean = false
     private var blockRequestByProcessing: Boolean = false
 
@@ -94,9 +106,6 @@ class VCheckLivenessActivity : AppCompatActivity() {
 
     private var milestoneFlow: StandardMilestoneFlow =
         StandardMilestoneFlow()
-
-    private var imageCapture: ImageCapture? = null
-
 
     private fun changeColorsToCustomIfPresent() {
         val drawable = binding.cosmeticRoundedFrame.background as GradientDrawable
@@ -129,7 +138,7 @@ class VCheckLivenessActivity : AppCompatActivity() {
 
         setHeader()
 
-        resetFlowForNewLivenessSession()
+        setupFlowForNewLivenessSession()
 
         setMilestones()
 
@@ -146,9 +155,18 @@ class VCheckLivenessActivity : AppCompatActivity() {
             ProcessCameraProvider.getInstance(this@VCheckLivenessActivity)
         cameraProviderFuture.addListener({
             try {
+                val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
+                setHCF(cameraProvider)
+
                 buildImageCaptureUseCase()
-                bindPreview(cameraProviderFuture.get())
+
+                if (!isLimitedHardwareFlow()) {
+                    buildVideoCaptureUseCase()
+                    setupVideoRecording()
+                }
+                bindPreview(cameraProvider)
                 setTakeImageTimer()
+
             } catch (e: ExecutionException) {
                 showSingleToast("Error while setting camera provider: ${e.message}")
                 e.printStackTrace()
@@ -168,9 +186,16 @@ class VCheckLivenessActivity : AppCompatActivity() {
         preview.setSurfaceProvider(binding.cameraPreviewView.surfaceProvider)
         try {
             binding.cameraPreviewView.viewPort?.let {
-                val useCaseGroup = UseCaseGroup.Builder()
+                val useCaseGroup = if (isLimitedHardwareFlow())
+                    UseCaseGroup.Builder()
+                        .addUseCase(preview)
+                        .addUseCase(imageCapture!!)
+                        .setViewPort(it)
+                        .build()
+                 else UseCaseGroup.Builder()
                     .addUseCase(preview)
                     .addUseCase(imageCapture!!)
+                    .addUseCase(fullHCFVideoCapture!!)
                     .setViewPort(it)
                     .build()
                 cameraProvider.unbindAll()
@@ -184,13 +209,40 @@ class VCheckLivenessActivity : AppCompatActivity() {
         }
     }
 
+    @androidx.annotation.OptIn(ExperimentalCamera2Interop::class)
+    fun setHCF(cameraProvider: ProcessCameraProvider) {
+        hardwareCapabilityFlow = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            val level = CameraSelector.DEFAULT_BACK_CAMERA
+                .filter(cameraProvider.availableCameraInfos)
+                .firstOrNull()
+                ?.let { Camera2CameraInfo.from(it) }
+                ?.getCameraCharacteristic(CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL)
+            Log.d(TAG, "DEVICE CAMERA LEVEL: $level")
+            if (level == CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_LIMITED) {
+                HardwareCapabilityFlow.LIMITED
+            } else {
+                HardwareCapabilityFlow.FULL
+            }
+        } else {
+            HardwareCapabilityFlow.LIMITED
+        }
+    }
+
     @SuppressLint("RestrictedApi")
     private fun buildImageCaptureUseCase() {
+        val resMaxSize = if (isLimitedHardwareFlow()) {
+            Size(LIMITED_HCF_VIDEO_STREAM_WIDTH_LIMIT,
+                LIMITED_HCF_VIDEO_STREAM_HEIGHT_LIMIT)
+        } else {
+            Size(FULL_HCF_VIDEO_STREAM_WIDTH_LIMIT,
+                FULL_HCF_VIDEO_STREAM_HEIGHT_LIMIT)
+        }
         imageCapture = ImageCapture.Builder()
             .setBufferFormat(ImageFormat.YUV_420_888)
-            .setMaxResolution(Size(VIDEO_STREAM_WIDTH_LIMIT, VIDEO_STREAM_HEIGHT_LIMIT))
+            .setMaxResolution(resMaxSize)
             .setCaptureMode(CAPTURE_MODE_MINIMIZE_LATENCY)
             .setJpegQuality(70)
+            .setIoExecutor(imageCaptureExecutor)
             .build()
     }
 
@@ -204,16 +256,18 @@ class VCheckLivenessActivity : AppCompatActivity() {
         }
     }
 
-    private fun resetFlowForNewLivenessSession() {
+    private fun setupFlowForNewLivenessSession() {
         apiRequestTimer?.cancel()
         takeImageTimer?.cancel()
+        fullHCFRecording?.close()
+        fullHCFRecording = null
         imageCapture = null
+        fullHCFVideoCapture = null
         milestoneFlow.resetStages()
         livenessSessionLimitCheckTime = SystemClock.elapsedRealtime()
         isLivenessSessionFinished = false
         setGestureRequestDebounceTimer()
     }
-
 
     private fun setTakeImageTimer() {
         takeImageTimer = fixedRateTimer("liveness_image_capture_timer", false,
@@ -223,13 +277,15 @@ class VCheckLivenessActivity : AppCompatActivity() {
                 override fun onCaptureSuccess(image: ImageProxy) {
                     // Use the image, then make sure to close it.
                     //Log.d(TAG, "GOT PICTURE: W - ${image.width} | H - ${image.height}")
-                    if (image.width != streamSize.width || image.height != streamSize.height) {
+                    if (image.width != streamSize?.width || image.height != streamSize?.height) {
                         streamSize = Size(image.width, image.height)
                     }
                     if (!isLivenessSessionFinished) {
                         val bitmap = BitmapUtils.getBitmap(image)!!
                         gestureCheckBitmap = bitmap
-                        bitmapList?.add(bitmap)
+                        if (isLimitedHardwareFlow()) {
+                            limitedHCFBitmapList?.add(bitmap)
+                        }
                     }
                     image.close()
                 }
@@ -239,6 +295,10 @@ class VCheckLivenessActivity : AppCompatActivity() {
                 }
             })
         }
+    }
+
+    fun isLimitedHardwareFlow(): Boolean {
+        return hardwareCapabilityFlow == HardwareCapabilityFlow.LIMITED
     }
 
     private fun setGestureRequestDebounceTimer() {
@@ -253,44 +313,18 @@ class VCheckLivenessActivity : AppCompatActivity() {
     fun finishLivenessSession() {
         apiRequestTimer?.cancel()
         takeImageTimer?.cancel()
+        fullHCFRecording?.close()
+        fullHCFRecording = null
         imageCapture = null
+        fullHCFVideoCapture = null
+        limitedHCFBitmapList = ArrayList()
+        limitedHCFMuxer = null
         isLivenessSessionFinished = true
         gestureCheckBitmap = null
     }
 
     private fun enoughTimeForNextGesture(): Boolean {
         return SystemClock.elapsedRealtime() - livenessSessionLimitCheckTime <= LIVENESS_TIME_LIMIT_MILLIS
-    }
-
-    fun processVideoOnResult(videoProcessingListener: VideoProcessingListener) {
-        setUpMuxer()
-
-        muxer!!.setOnMuxingCompletedListener(object : MuxingCompletionListener {
-            override fun onVideoSuccessful(file: File) {
-                runOnUiThread {
-                    videoProcessingListener.onVideoProcessed(file.path)
-                }
-            }
-            override fun onVideoError(error: Throwable) {
-                Log.e(TAG, "There was an error muxing the video: ${error.message}")
-                showSingleToast(error.message)
-            }
-        })
-
-        val finalList = CopyOnWriteArrayList(bitmapList!!)
-        Thread { muxer!!.mux(finalList) }.start()
-    }
-
-    private fun setUpMuxer() {
-        val framesPerImage = 1
-        val framesPerSecond = 8F //was 6F
-        val bitrate = 2500000
-        val muxerConfig = MuxerConfig(createVideoFile() ?: File.createTempFile(
-            "faceVideo${System.currentTimeMillis()}", ".mp4",
-            this@VCheckLivenessActivity.cacheDir),
-            streamSize.height, streamSize.width, MediaFormat.MIMETYPE_VIDEO_AVC,
-            framesPerImage, framesPerSecond, bitrate, iFrameInterval = 4) //was 1
-        muxer = Muxer(this@VCheckLivenessActivity, muxerConfig)
     }
 
     private suspend fun determineImageResult() {
@@ -355,8 +389,11 @@ class VCheckLivenessActivity : AppCompatActivity() {
         runOnUiThread {
             if (!isLivenessSessionFinished) {
                 if (milestoneFlow.areAllStagesPassed()) {
-                    finishLivenessSession()
-                    navigateOnLivenessSessionEnd()
+                    if (!isLimitedHardwareFlow()) {
+                        processFullHCFVideoOnResult()
+                    } else {
+                        processLimitedHCFVideoOnResult()
+                    }
                 } else {
                     val currentStage = milestoneFlow.getCurrentStage()
                     if (it.success && currentStage != null) {
@@ -372,19 +409,6 @@ class VCheckLivenessActivity : AppCompatActivity() {
                     }
                 }
             }
-        }
-    }
-
-    private fun createVideoFile(): File? {
-        return try {
-            val storageDir: File = this@VCheckLivenessActivity.cacheDir
-            File.createTempFile(
-                "faceVideo${System.currentTimeMillis()}", ".mp4", storageDir).apply {
-                videoPath = this.path
-            }
-        } catch (e: IOException) {
-            showSingleToast(e.message)
-            null
         }
     }
 
@@ -484,7 +508,7 @@ class VCheckLivenessActivity : AppCompatActivity() {
         blockProcessingByUI = false
     }
 
-    private fun navigateOnLivenessSessionEnd() {
+    fun navigateOnLivenessSessionEnd() {
         runOnUiThread {
             binding.arrowAnimationView.isVisible = false
             binding.faceAnimationView.isVisible = false
@@ -529,13 +553,7 @@ class VCheckLivenessActivity : AppCompatActivity() {
             }.start()
     }
 
-    private fun showSingleToast(message: String?) {
-        if (mToast != null) {
-            mToast?.cancel()
-        }
-        mToast = Toast.makeText(this, message, Toast.LENGTH_LONG)
-        mToast?.show()
-    }
+    // -------------------------------------------- Lifecycle functions
 
     override fun attachBaseContext(newBase: Context) {
         val localeToSwitchTo: String = VCheckSDK.getSDKLangCode()
@@ -558,8 +576,8 @@ class VCheckLivenessActivity : AppCompatActivity() {
         takeImageTimer?.cancel()
         imageCapture = null
         imageCaptureExecutor.shutdown()
-        bitmapList = null
-        muxer = null
+        limitedHCFBitmapList = null
+        limitedHCFMuxer = null
         super.onDestroy()
     }
 
@@ -584,15 +602,3 @@ class VCheckLivenessActivity : AppCompatActivity() {
         startActivity(intents)
     }
 }
-
-
-//optional:
-//val camera: Camera = //(upper call returns camera)
-//val cameraControl: CameraControl = camera.cameraControl
-//cameraControl.setLinearZoom(0.3.toFloat())
-//optional:
-//.setTargetAspectRatio(AspectRatio.RATIO_4_3)
-//.setTargetRotation(rotation) //Surface.ROTATION_270 ?
-//.setTargetResolution(Size(960, 540))
-//.setFlashMode(flashMode)
-//.setCaptureMode(captureMode)
