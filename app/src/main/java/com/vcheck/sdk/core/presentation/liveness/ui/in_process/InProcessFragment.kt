@@ -1,8 +1,12 @@
 package com.vcheck.sdk.core.presentation.liveness.ui.in_process
 
+import android.content.ContentValues
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -26,10 +30,13 @@ import com.vcheck.sdk.core.domain.*
 import com.vcheck.sdk.core.presentation.liveness.VCheckLivenessActivity
 import com.vcheck.sdk.core.util.ThemeWrapperFragment
 import com.vcheck.sdk.core.util.getFolderSizeLabel
+import com.vcheck.sdk.core.util.sizeInKb
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
 import java.util.*
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -190,13 +197,12 @@ class InProcessFragment : ThemeWrapperFragment() {
 
         val videoFile = File(videoPath)
 
-        Log.d(VCheckLivenessActivity.TAG, "MUXED VIDEO SIZE: " + getFolderSizeLabel(videoFile))
+        Log.d(VCheckLivenessActivity.TAG, "MUXED VIDEO SIZE in kb: " + videoFile.sizeInKb)
 
-        if ((activity as VCheckLivenessActivity).isLimitedHardwareFlow()) {
-            uploadLivenessVideo(videoFile)
-        } else {
-            //Compressing video for full HCF (expected to be much more heavier comparing to limited case):
+        if (videoFile.sizeInKb > 4700) {
             compressVideoFileForResult(videoFile)
+        } else {
+            uploadLivenessVideo(videoFile)
         }
     }
 
@@ -209,7 +215,7 @@ class InProcessFragment : ThemeWrapperFragment() {
                 videoName = "liveness${Date().time.milliseconds}"),
             configureWith = Configuration(
                 quality = VideoQuality.HIGH,
-                isMinBitrateCheckEnabled = true,
+                isMinBitrateCheckEnabled = false,
                 videoBitrateInMbps = 2,
                 disableAudio = true,
                 keepOriginalResolution = true,

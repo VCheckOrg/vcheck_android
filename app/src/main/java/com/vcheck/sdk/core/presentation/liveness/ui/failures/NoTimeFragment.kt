@@ -53,8 +53,6 @@ class NoTimeFragment : ThemeWrapperFragment() {
             //Stub; no back press needed here
         }
 
-        (activity as VCheckLivenessActivity).finishLivenessSession()
-
         _binding!!.tryAgainButton.setOnClickListener {
             findNavController().popBackStack()
             (activity as VCheckLivenessActivity).recreate()

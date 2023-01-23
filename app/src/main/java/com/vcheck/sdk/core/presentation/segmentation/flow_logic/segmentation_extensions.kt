@@ -44,12 +44,3 @@ fun Bitmap.cropWithMask(): Bitmap {
         desiredWidth,
         desiredHeight)
 }
-
-
-fun VCheckSegmentationActivity.rotateBitmap(input: Bitmap): Bitmap? {
-    val rotationMatrix = Matrix()
-    //rotationMatrix.setRotate(openLivenessCameraParams!!.sensorOrientation.toFloat())
-    //Log.d("SEG", "SENSOR ORIENTATION: ${openLivenessCameraParams!!.sensorOrientation.toFloat()}")
-    rotationMatrix.setRotate(90F)
-    return Bitmap.createBitmap(input, 0, 0, input.width, input.height, rotationMatrix, true)
-}

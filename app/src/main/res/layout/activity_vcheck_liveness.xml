@@ -21,15 +21,15 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/closeSDKBtnHolder"
-            android:clickable="true"
-            android:focusable="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
+            app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:id="@+id/back_arrow"
@@ -37,9 +37,9 @@
                 android:layout_height="36dp"
                 android:padding="10dp"
                 android:src="@drawable/back_arrow"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
                 tools:ignore="ContentDescription" />
 
             <TextView
@@ -51,9 +51,9 @@
                 android:textColor="@color/vcheck_text"
                 android:textSize="16sp"
                 android:textStyle="normal"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@id/back_arrow" />
+                app:layout_constraintStart_toEndOf="@id/back_arrow"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -94,14 +94,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.camera.view.PreviewView
-                android:id="@+id/camera_preview_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="120dp"
-                android:background="@color/vcheck_background_primary"
-                android:layout_gravity="center"
-                app:scaleType="fitCenter"/>
+        <com.vcheck.sdk.core.presentation.liveness.ui.AutoFitTextureView
+            android:id="@+id/camera_texture_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="120dp"/>
 
             <View
                 android:id="@+id/stageSuccessAnimBorder"
