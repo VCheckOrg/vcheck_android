@@ -7,12 +7,16 @@ import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
 import android.media.MediaRecorder
 import android.util.Log
+import android.util.Size
 import android.widget.Toast
 import com.vcheck.sdk.core.presentation.liveness.VCheckLivenessActivity
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
+import java.util.*
+import kotlin.Comparator
+import kotlin.collections.ArrayList
 
 
 fun getFrontFacingCameraId(cManager: CameraManager): String? {
@@ -41,7 +45,6 @@ fun VCheckLivenessActivity.createTempFileForBitmapFrame(mBitmap: Bitmap): String
         outStream = FileOutputStream(file)
         mBitmap.compress(Bitmap.CompressFormat.JPEG, 90, outStream)
         outStream.close()
-        //Log.d("Liveness","----------- SAVED IMAGE: PATH: ${file.path}")
         file.path
     } catch (e: Exception) {
         e.printStackTrace()
@@ -70,7 +73,7 @@ fun VCheckLivenessActivity.showSingleToast(message: String?) {
     mToast?.show()
 }
 
-fun VCheckLivenessActivity.unMirrorBitmap(input: Bitmap): Bitmap? {
+fun unMirrorBitmap(input: Bitmap): Bitmap? {
     val rotationMatrix = Matrix()
     rotationMatrix.setScale( -1F , 1F)
 
@@ -83,7 +86,7 @@ fun VCheckLivenessActivity.setUpMediaRecorder() {
         setVideoSource(MediaRecorder.VideoSource.SURFACE)
         setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
         setOutputFile(videoFile!!.path)
-        setVideoEncodingBitRate(800000)
+        setVideoEncodingBitRate(900000)
         setVideoFrameRate(30)
         setVideoSize(previewSize.width, previewSize.height)
         setVideoEncoder(MediaRecorder.VideoEncoder.H264)
@@ -96,4 +99,33 @@ fun VCheckLivenessActivity.setUpMediaRecorder() {
         e.printStackTrace()
         return
     }
+}
+
+fun chooseOptimalSize(sizes: Array<Size>, width: Int, height: Int): Size {
+    val bigEnough = ArrayList<Size>()
+    val notBigEnough = ArrayList<Size>()
+
+    val w = width.toLong()
+    val h = height.toLong()
+
+    for (option in sizes) {
+        if (option.width <= width && option.height <= height) {
+            notBigEnough.add(option)
+        } else if (option.width >= w && option.height >= h) {
+            bigEnough.add(option)
+        }
+    }
+    return when {
+        bigEnough.size > 0 -> Collections.min(bigEnough, CompareSizesByArea())
+        notBigEnough.size > 0 -> Collections.max(notBigEnough, CompareSizesByArea())
+        else -> {
+            Log.e(VCheckLivenessActivity.TAG, "Couldn't find any suitable preview size -- returning default")
+            sizes[0]
+        }
+    }
+}
+
+private class CompareSizesByArea : Comparator<Size> {
+    override fun compare(lhs: Size, rhs: Size) =
+        java.lang.Long.signum(lhs.width.toLong() * lhs.height - rhs.width.toLong() * rhs.height)
 }

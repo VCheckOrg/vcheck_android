@@ -14,8 +14,8 @@ android {
     defaultConfig {
         minSdk 21
         targetSdk 33
-        versionCode 69
-        versionName "1.0.69"
+        versionCode 70
+        versionName "1.0.70"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.debug
@@ -53,6 +53,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+
     implementation 'androidx.camera:camera-camera2:1.2.0'
     implementation 'androidx.camera:camera-view:1.2.0'
     implementation 'androidx.camera:camera-lifecycle:1.2.0'
@@ -72,7 +73,7 @@ dependencies {
     //Compress bitmaps before sending to API
     implementation 'id.zelory:compressor:3.0.1'
 
-    //Compress video before sending to API
+    //Compress video before sending to API (for large videos / fallback strategy only)
     implementation 'com.github.AbedElazizShe:LightCompressor:1.2.3'
 }
 
@@ -83,7 +84,7 @@ afterEvaluate {
                 from components.release
                 groupId "com.vcheck"
                 artifactId "sdk"
-                version "1.0.69"
+                version "1.0.70"
             }
         }
     }

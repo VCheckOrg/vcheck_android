@@ -49,38 +49,36 @@ class VCheckLivenessActivity : AppCompatActivity() {
 
     companion object {
         const val TAG = "LivenessActivity"
-        private const val LIVENESS_TIME_LIMIT_MILLIS: Long = 15200 //max is 15000 + tech delays
+        private const val LIVENESS_TIME_LIMIT_MILLIS: Long = 15100 //max is 15000 + tech delays
         private const val BLOCK_PIPELINE_TIME_MILLIS: Long = 800 //may reduce a bit
-        private const val GESTURE_REQUEST_DEBOUNCE_MILLIS: Long = 130 //may reduce a bit
+        private const val GESTURE_REQUEST_DEBOUNCE_MILLIS: Long = 120 //may reduce a bit
         private const val STAGE_VIBRATION_DURATION_MILLIS: Long = 100
-        private const val VIDEO_STREAM_WIDTH_LIMIT = 720
-        private const val VIDEO_STREAM_HEIGHT_LIMIT = 480
+        private const val VIDEO_STREAM_WIDTH_LIMIT = 960
+        private const val VIDEO_STREAM_HEIGHT_LIMIT = 720
     }
 
     lateinit var binding: ActivityVcheckLivenessBinding
 
-    private val scope = CoroutineScope(newSingleThreadContext("liveness"))
-
-    var apiRequestTimer: Timer? = null
-
     var mToast: Toast? = null
 
+    private val scope = CoroutineScope(newSingleThreadContext("liveness"))
+
     private var milestoneFlow: StandardMilestoneFlow = StandardMilestoneFlow()
+    var apiRequestTimer: Timer? = null
+    var isLivenessSessionFinished: Boolean = false
+    private var livenessSessionLimitCheckTime: Long = 0
+    private var blockProcessingByUI: Boolean = false
+    private var blockRequestByProcessing: Boolean = false
 
     private lateinit var cameraDevice: CameraDevice
     lateinit var mediaRecorder: MediaRecorder
-    var previewSize: Size = Size(VIDEO_STREAM_WIDTH_LIMIT, VIDEO_STREAM_HEIGHT_LIMIT)
+    lateinit var previewSize: Size
     private var backgroundThread: HandlerThread? = null
     private var backgroundHandler: Handler? = null
     private var isRecording = false
 
     private var gestureCheckBitmap: Bitmap? = null
     var videoPath: String? = null
-
-    var isLivenessSessionFinished: Boolean = false
-    private var livenessSessionLimitCheckTime: Long = 0
-    private var blockProcessingByUI: Boolean = false
-    private var blockRequestByProcessing: Boolean = false
 
     private fun changeColorsToCustomIfPresent() {
         val drawable = binding.cosmeticRoundedFrame.background as GradientDrawable
@@ -129,7 +127,17 @@ class VCheckLivenessActivity : AppCompatActivity() {
     private fun setSurfaceTextureListener() {
         val textureListener = object : TextureView.SurfaceTextureListener {
             override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
+
+                val cameraManager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
+                val cameraId = getFrontFacingCameraId(cameraManager)
+                val characteristics = cameraManager.getCameraCharacteristics(cameraId!!)
+                val map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
+                val outputSizes = map!!.getOutputSizes(SurfaceTexture::class.java)
+
+                previewSize = chooseOptimalSize(outputSizes, VIDEO_STREAM_WIDTH_LIMIT, VIDEO_STREAM_HEIGHT_LIMIT)
+                Log.d(TAG, "STREAM OPTIMAL SIZE: ${previewSize.width}x${previewSize.height}")
                 binding.cameraTextureView.setAspectRatio(previewSize.height, previewSize.width)
+
                 openCamera()
             }
             override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {
@@ -155,13 +163,10 @@ class VCheckLivenessActivity : AppCompatActivity() {
                 startRecording()
             }
             override fun onDisconnected(camera: CameraDevice) {
-                stopRecording()
                 camera.close()
             }
             override fun onError(camera: CameraDevice, error: Int) {
-                stopRecording()
                 onDisconnected(camera)
-                finish()
                 Log.e(TAG, "openCamera onError() : code [$error]")
             }
         }
@@ -182,6 +187,7 @@ class VCheckLivenessActivity : AppCompatActivity() {
         try {
             setUpMediaRecorder()
             val texture = binding.cameraTextureView.surfaceTexture?.apply {
+
                 setDefaultBufferSize(previewSize.width, previewSize.height)
             }
             val surface = Surface(texture)
@@ -190,7 +196,7 @@ class VCheckLivenessActivity : AppCompatActivity() {
                     addTarget(surface)
                     addTarget(mediaRecorder.surface)
             }
-            recordingRequestBuilder.set(CaptureRequest.JPEG_ORIENTATION, 90) //!
+            recordingRequestBuilder.set(CaptureRequest.JPEG_ORIENTATION, 90)
 
             Handler().postDelayed({
                 cameraDevice.createCaptureSession(listOf(surface, mediaRecorder.surface),
@@ -217,9 +223,18 @@ class VCheckLivenessActivity : AppCompatActivity() {
     }
 
     private fun stopRecording() {
-        mediaRecorder.stop()
-        mediaRecorder.reset()
-        isRecording = false
+        try {
+            if (isRecording) {
+                Log.d(TAG, "Stopping video recording..")
+                mediaRecorder.stop()
+                mediaRecorder.reset()
+                mediaRecorder.release()
+                isRecording = false
+            }
+        } catch (e: IllegalStateException) {
+            Log.d(TAG, "mediaRecorder.stop() has thrown IllegalStateException; " +
+                    "it's possible it was already been stopped.")
+        }
     }
 
     private fun setMilestones() {
@@ -252,10 +267,9 @@ class VCheckLivenessActivity : AppCompatActivity() {
     private fun finishLivenessSession() {
         apiRequestTimer?.cancel()
         isLivenessSessionFinished = true
+        gestureCheckBitmap?.recycle()
         gestureCheckBitmap = null
         scope.cancel()
-        apiRequestTimer?.cancel()
-        gestureCheckBitmap?.recycle()
     }
 
     private fun enoughTimeForNextGesture(): Boolean {
@@ -327,8 +341,8 @@ class VCheckLivenessActivity : AppCompatActivity() {
         runOnUiThread {
             if (!isLivenessSessionFinished) {
                 if (milestoneFlow.areAllStagesPassed()) {
-                    stopRecording()
                     finishLivenessSession()
+                    stopRecording()
                     navigateOnLivenessSessionEnd()
                 } else {
                     val currentStage = milestoneFlow.getCurrentStage()
@@ -489,8 +503,8 @@ class VCheckLivenessActivity : AppCompatActivity() {
     private fun onFatalObstacleWorthRetry(actionIdForNav: Int) {
         vibrateDevice(this@VCheckLivenessActivity, STAGE_VIBRATION_DURATION_MILLIS)
         finishLivenessSession()
-        apiRequestTimer?.cancel()
         binding.livenessCosmeticsHolder.isVisible = false
+        stopRecording()
         safeNavigateToResultDestination(actionIdForNav)
     }
 
@@ -528,9 +542,7 @@ class VCheckLivenessActivity : AppCompatActivity() {
     }
 
     override fun onStop() {
-        if (isRecording) {
-            stopRecording()
-        }
+        stopRecording()
         super.onStop()
     }
 

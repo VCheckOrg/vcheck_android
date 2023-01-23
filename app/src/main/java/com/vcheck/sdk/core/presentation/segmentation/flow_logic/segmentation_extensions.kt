@@ -1,17 +1,11 @@
 package com.vcheck.sdk.core.presentation.segmentation.flow_logic
 
 import android.graphics.Bitmap
-import android.graphics.Matrix
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.presentation.segmentation.VCheckSegmentationActivity
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
-
-fun VCheckSegmentationActivity.getScreenOrientation(): Int {
-    return 0
-}
-
 
 fun VCheckSegmentationActivity.createTempFileForBitmapFrame(mBitmap: Bitmap): String {
     var outStream: OutputStream? = null
