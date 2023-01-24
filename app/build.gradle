@@ -14,8 +14,8 @@ android {
     defaultConfig {
         minSdk 21
         targetSdk 33
-        versionCode 70
-        versionName "1.0.70"
+        versionCode 71
+        versionName "1.0.71"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.debug
@@ -84,7 +84,7 @@ afterEvaluate {
                 from components.release
                 groupId "com.vcheck"
                 artifactId "sdk"
-                version "1.0.70"
+                version "1.0.71"
             }
         }
     }

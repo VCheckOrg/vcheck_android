@@ -107,7 +107,7 @@
     <string name="doc_verification_error_description">Не пройдено перевірку відповідності даних документа. Завантажте, будь ласка, коректний документ</string>
     <string name="doc_verif_continue_anyway"><u>Я впевнений (-а) в своєму документі, продовжити процес верифікації</u></string>
     <string name="reload_photo">Спробувати ще раз</string>
-    <string name="check_doc_fields_validation_error">Перевірте правильність заповнення усіх полей документа</string>
+    <string name="check_doc_fields_validation_error">Перевірте правильність заповнення усіх полів документа</string>
     <string name="field_validation_error">Невірний формат заповнення поля</string>
     <string name="wait_for_liveness_start">Будь ласка, зачекайте</string>
     <string name="unavailable_country">На даний момент недоступно</string>

@@ -49,9 +49,10 @@ class VCheckLivenessActivity : AppCompatActivity() {
 
     companion object {
         const val TAG = "LivenessActivity"
-        private const val LIVENESS_TIME_LIMIT_MILLIS: Long = 15100 //max is 15000 + tech delays
+        private const val LIVENESS_TIME_LIMIT_MILLIS: Long = 15000 //max is 15000 + tech delays
         private const val BLOCK_PIPELINE_TIME_MILLIS: Long = 800 //may reduce a bit
         private const val GESTURE_REQUEST_DEBOUNCE_MILLIS: Long = 120 //may reduce a bit
+        private const val DELAY_BEFORE_RECORDING_START_MILLIS: Long = 950
         private const val STAGE_VIBRATION_DURATION_MILLIS: Long = 100
         private const val VIDEO_STREAM_WIDTH_LIMIT = 960
         private const val VIDEO_STREAM_HEIGHT_LIMIT = 720
@@ -160,7 +161,7 @@ class VCheckLivenessActivity : AppCompatActivity() {
         val stateCallback = object : CameraDevice.StateCallback() {
             override fun onOpened(camera: CameraDevice) {
                 cameraDevice = camera
-                startRecording()
+                startRecordingWhenReady()
             }
             override fun onDisconnected(camera: CameraDevice) {
                 camera.close()
@@ -183,7 +184,7 @@ class VCheckLivenessActivity : AppCompatActivity() {
         }
     }
 
-    private fun startRecording() {
+    private fun startRecordingWhenReady() {
         try {
             setUpMediaRecorder()
             val texture = binding.cameraTextureView.surfaceTexture?.apply {
@@ -198,23 +199,27 @@ class VCheckLivenessActivity : AppCompatActivity() {
             }
             recordingRequestBuilder.set(CaptureRequest.JPEG_ORIENTATION, 90)
 
-            Handler().postDelayed({
-                cameraDevice.createCaptureSession(listOf(surface, mediaRecorder.surface),
-                    object : CameraCaptureSession.StateCallback() {
-                        override fun onConfigured(session: CameraCaptureSession) {
-                            session.setRepeatingRequest(recordingRequestBuilder.build(), null,
-                                backgroundHandler)
+            cameraDevice.createCaptureSession(listOf(surface, mediaRecorder.surface),
+                object : CameraCaptureSession.StateCallback() {
+                    override fun onConfigured(session: CameraCaptureSession) {
+
+                        session.setRepeatingRequest(recordingRequestBuilder.build(), null,
+                            backgroundHandler)
+
+                        Handler().postDelayed({
+                            livenessSessionLimitCheckTime = SystemClock.elapsedRealtime()
+                            setGestureRequestDebounceTimer()
+
                             isRecording = true
                             mediaRecorder.start()
-                        }
-                        override fun onConfigureFailed(session: CameraCaptureSession) {
-                            Toast.makeText(this@VCheckLivenessActivity,
-                                "Failed to start recording",
-                                Toast.LENGTH_SHORT).show()
-                        }
-                    }, null
-                )
-            }, 100)
+                        }, DELAY_BEFORE_RECORDING_START_MILLIS)
+                    }
+                    override fun onConfigureFailed(session: CameraCaptureSession) {
+                        Toast.makeText(this@VCheckLivenessActivity,
+                            "Failed to start recording",
+                            Toast.LENGTH_SHORT).show()
+                    }
+                }, null)
         } catch (e: CameraAccessException) {
             e.printStackTrace()
         } catch (e: IOException) {
@@ -250,9 +255,7 @@ class VCheckLivenessActivity : AppCompatActivity() {
     private fun setupFlowForNewLivenessSession() {
         apiRequestTimer?.cancel()
         milestoneFlow.resetStages()
-        livenessSessionLimitCheckTime = SystemClock.elapsedRealtime()
         isLivenessSessionFinished = false
-        setGestureRequestDebounceTimer()
     }
 
     private fun setGestureRequestDebounceTimer() {
