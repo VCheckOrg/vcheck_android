@@ -1,12 +1,8 @@
 package com.vcheck.sdk.core.presentation.liveness.ui.in_process
 
-import android.content.ContentValues
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -35,15 +31,12 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
 import java.util.*
 import kotlin.time.Duration.Companion.milliseconds
 
 
 class InProcessFragment : ThemeWrapperFragment() {
 
-    //private val args: InProcessFragmentArgs by navArgs()
     private var _binding: InProcessFragmentBinding? = null
     private lateinit var _viewModel: InProcessViewModel
 
@@ -113,7 +106,7 @@ class InProcessFragment : ThemeWrapperFragment() {
             }
         } else {
             Toast.makeText((activity as VCheckLivenessActivity),
-                "Local(test) Liveness demo is running; skipping video upload request!", Toast.LENGTH_LONG).show()
+                "Token is not present!", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -257,7 +250,8 @@ class InProcessFragment : ThemeWrapperFragment() {
                         videoFile.asRequestBody("video/mp4".toMediaType()))
                 _viewModel.uploadLivenessVideo(partVideo)
             } else {
-                findNavController().navigate(R.id.action_inProcessFragment_to_livenessResultVideoViewFragment)
+                Toast.makeText((activity as VCheckLivenessActivity),
+                    "Token is not present!", Toast.LENGTH_LONG).show()
             }
         }
     }

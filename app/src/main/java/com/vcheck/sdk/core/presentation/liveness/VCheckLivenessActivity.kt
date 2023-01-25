@@ -272,6 +272,8 @@ class VCheckLivenessActivity : AppCompatActivity() {
         isLivenessSessionFinished = true
         gestureCheckBitmap?.recycle()
         gestureCheckBitmap = null
+        cameraDevice.close()
+        stopBackgroundThread()
         scope.cancel()
     }
 
@@ -553,6 +555,7 @@ class VCheckLivenessActivity : AppCompatActivity() {
         scope.cancel()
         apiRequestTimer?.cancel()
         gestureCheckBitmap?.recycle()
+        cameraDevice.close()
         super.onDestroy()
     }
 
@@ -570,6 +573,8 @@ class VCheckLivenessActivity : AppCompatActivity() {
     }
 
     fun closeSDKFlow(shouldExecuteEndCallback: Boolean) {
+        stopRecording()
+        finishLivenessSession()
         (VCheckDIContainer).mainRepository.setFirePartnerCallback(shouldExecuteEndCallback)
         (VCheckDIContainer).mainRepository.setFinishStartupActivity(true)
         val intents = Intent(this@VCheckLivenessActivity, VCheckStartupActivity::class.java)
