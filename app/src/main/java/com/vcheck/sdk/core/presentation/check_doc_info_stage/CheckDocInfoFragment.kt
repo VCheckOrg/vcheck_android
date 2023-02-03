@@ -24,6 +24,7 @@ import com.vcheck.sdk.core.presentation.VCheckMainActivity
 import com.vcheck.sdk.core.presentation.adapters.CheckDocInfoAdapter
 import com.vcheck.sdk.core.presentation.adapters.DocInfoEditCallback
 import com.vcheck.sdk.core.util.ThemeWrapperFragment
+import com.vcheck.sdk.core.util.isValidDocRelatedDate
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 
@@ -153,21 +154,18 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
         else VCheckSDKConstantsProvider.PARTNER_VERIFICATIONS_SERVICE_URL
 
         if (data.images.isNotEmpty()) {
+            binding.photoCard1.isVisible = true
 
-            if (data.images.isNotEmpty()) {
-                binding.photoCard1.isVisible = true
+            apiPicasso.load(baseURL + data.images[0]).fit().centerInside()
+                .error(R.drawable.ic_baseline_error_24)
+                .into(binding.passportImage1)
 
-                apiPicasso.load(baseURL + data.images[0]).fit().centerInside()
+            if (data.images.size > 1) {
+                binding.photoCard2.isVisible = true
+
+                apiPicasso.load(baseURL + data.images[1]).fit().centerInside()
                     .error(R.drawable.ic_baseline_error_24)
-                    .into(binding.passportImage1)
-
-                if (data.images.size > 1) {
-                    binding.photoCard2.isVisible = true
-
-                    apiPicasso.load(baseURL + data.images[1]).fit().centerInside()
-                        .error(R.drawable.ic_baseline_error_24)
-                        .into(binding.passportImage2)
-                }
+                    .into(binding.passportImage2)
             }
         }
     }
@@ -189,6 +187,9 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
         var hasValidationErrors: Boolean = false
         dataList.forEach {
             if (it.autoParsedValue.length < 2) {
+                hasValidationErrors = true
+            }
+            if (!isFieldValid(it)) {
                 hasValidationErrors = true
             }
         }
@@ -262,4 +263,20 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
             .build()
     }
 
+    private fun isFieldValid(fieldInfo: DocFieldWitOptPreFilledData): Boolean {
+        if (fieldInfo.regex != null
+            && !fieldInfo.autoParsedValue.matches(Regex(fieldInfo.regex))) {
+            return false
+        } else {
+            if ((fieldInfo.name == "date_of_birth" || fieldInfo.name == "expiration_date")
+                && !isValidDocRelatedDate(fieldInfo.autoParsedValue)) {
+                return false
+            } else {
+                if (fieldInfo.autoParsedValue.length < 3) {
+                    return false
+                }
+            }
+        }
+        return true
+    }
 }

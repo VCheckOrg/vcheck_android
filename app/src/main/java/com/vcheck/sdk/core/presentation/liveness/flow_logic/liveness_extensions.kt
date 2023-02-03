@@ -74,10 +74,14 @@ fun VCheckLivenessActivity.showSingleToast(message: String?) {
 }
 
 fun unMirrorBitmap(input: Bitmap): Bitmap? {
-    val rotationMatrix = Matrix()
-    rotationMatrix.setScale( -1F , 1F)
+    return try {
+        val rotationMatrix = Matrix()
+        rotationMatrix.setScale( -1F , 1F)
 
-    return Bitmap.createBitmap(input, 0, 0, input.width, input.height, rotationMatrix, true)
+        Bitmap.createBitmap(input, 0, 0, input.width, input.height, rotationMatrix, true)
+    } catch (e: Exception) {
+        null
+    }
 }
 
 fun VCheckLivenessActivity.setUpMediaRecorder() {

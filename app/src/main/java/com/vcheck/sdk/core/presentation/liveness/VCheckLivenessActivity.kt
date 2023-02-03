@@ -142,7 +142,9 @@ class VCheckLivenessActivity : AppCompatActivity() {
                 openCamera()
             }
             override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {
-                gestureCheckBitmap = binding.cameraTextureView.bitmap
+                if (!isLivenessSessionFinished) {
+                    gestureCheckBitmap = binding.cameraTextureView.bitmap
+                }
             }
             override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture, width: Int, height: Int) {
                 Log.d(TAG, "onSurfaceTextureSizeChanged !")
@@ -268,10 +270,10 @@ class VCheckLivenessActivity : AppCompatActivity() {
     }
 
     private fun finishLivenessSession() {
+        //gestureCheckBitmap?.recycle()
+        gestureCheckBitmap = null
         apiRequestTimer?.cancel()
         isLivenessSessionFinished = true
-        gestureCheckBitmap?.recycle()
-        gestureCheckBitmap = null
         cameraDevice.close()
         stopBackgroundThread()
         scope.cancel()
@@ -291,44 +293,46 @@ class VCheckLivenessActivity : AppCompatActivity() {
 
                 val rotatedBitmap = unMirrorBitmap(gestureCheckBitmap!!)
 
-                val file = File(createTempFileForBitmapFrame(rotatedBitmap!!))
+                rotatedBitmap?.let {
+                    val file = File(createTempFileForBitmapFrame(rotatedBitmap))
 
-                val image: MultipartBody.Part = try {
+                    val image: MultipartBody.Part = try {
 
-                    val initSizeKb = file.sizeInKb
+                        val initSizeKb = file.sizeInKb
 
-                    if (initSizeKb < 95.0) {
+                        if (initSizeKb < 95.0) {
+                            MultipartBody.Part.createFormData(
+                                "image.jpg", file.name, file.asRequestBody("image/jpeg".toMediaType()))
+                        } else {
+                            val compressedImageFile = Compressor.compress(this@VCheckLivenessActivity, file) {
+                                destination(file)
+                                size(95_000, stepSize = 30, maxIteration = 10)
+                            }
+                            MultipartBody.Part.createFormData("image.jpg", compressedImageFile.name,
+                                compressedImageFile.asRequestBody("image/jpeg".toMediaType()))
+                        }
+                    } catch (e: Exception) {
+                        Log.w(TAG, "Exception while compressing Liveness frame image. " +
+                                "Attempting to send default frame | \n${e.printStackTrace()}")
                         MultipartBody.Part.createFormData(
                             "image.jpg", file.name, file.asRequestBody("image/jpeg".toMediaType()))
-                    } else {
-                        val compressedImageFile = Compressor.compress(this@VCheckLivenessActivity, file) {
-                            destination(file)
-                            size(95_000, stepSize = 30, maxIteration = 10)
-                        }
-                        MultipartBody.Part.createFormData("image.jpg", compressedImageFile.name,
-                            compressedImageFile.asRequestBody("image/jpeg".toMediaType()))
+                    } catch (e: Error) {
+                        Log.w(TAG, "Error while compressing Liveness frame image. " +
+                                "Attempting to send default frame | \n${e.printStackTrace()}")
+                        MultipartBody.Part.createFormData(
+                            "image.jpg", file.name, file.asRequestBody("image/jpeg".toMediaType()))
                     }
-                } catch (e: Exception) {
-                    Log.w(TAG, "Exception while compressing Liveness frame image. " +
-                            "Attempting to send default frame | \n${e.printStackTrace()}")
-                    MultipartBody.Part.createFormData(
-                        "image.jpg", file.name, file.asRequestBody("image/jpeg".toMediaType()))
-                } catch (e: Error) {
-                    Log.w(TAG, "Error while compressing Liveness frame image. " +
-                            "Attempting to send default frame | \n${e.printStackTrace()}")
-                    MultipartBody.Part.createFormData(
-                        "image.jpg", file.name, file.asRequestBody("image/jpeg".toMediaType()))
-                }
 
-                val currentGesture = milestoneFlow.getGestureRequestFromCurrentStage()
-                val response = VCheckDIContainer.mainRepository.sendLivenessGestureAttempt(
-                    image, MultipartBody.Part.createFormData("gesture", currentGesture))
+                    val currentGesture = milestoneFlow.getGestureRequestFromCurrentStage()
+                    val response = VCheckDIContainer.mainRepository.sendLivenessGestureAttempt(
+                        image, MultipartBody.Part.createFormData("gesture", currentGesture))
 
-                if (response != null) {
-                    processCheckResult(response)
-                } else {
-                    blockRequestByProcessing = false
-                    Log.d(TAG, "Liveness: response for current index not containing data! Max image size may be exceeded")
+                    if (response != null) {
+                        processCheckResult(response)
+                    } else {
+                        blockRequestByProcessing = false
+                        Log.d(TAG, "Liveness: response for current index not containing data! Max image size may be exceeded")
+                    }
                 }
             }
         } else {
@@ -552,9 +556,10 @@ class VCheckLivenessActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        //gestureCheckBitmap?.recycle()
+        gestureCheckBitmap = null
         scope.cancel()
         apiRequestTimer?.cancel()
-        gestureCheckBitmap?.recycle()
         cameraDevice.close()
         super.onDestroy()
     }

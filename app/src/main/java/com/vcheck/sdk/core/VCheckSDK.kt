@@ -193,6 +193,7 @@ object VCheckSDK {
         this.primaryTextColorHex = null
         this.secondaryTextColorHex = null
         this.borderColorHex = null
+        this.iconsColorHex = null
     }
 
     fun getVerificationToken(): String {

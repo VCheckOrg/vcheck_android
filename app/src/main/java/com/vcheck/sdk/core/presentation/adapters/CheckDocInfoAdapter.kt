@@ -91,8 +91,7 @@ class CheckDocInfoAdapter(
 
                 private var processedText = ""
                 private val yyyymmdd = (docInfoEditCallback as CheckDocInfoFragment).getString(
-                    R.string.yyyymmdd
-                )
+                    R.string.yyyymmdd)
                 private val cal = Calendar.getInstance()
 
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -118,35 +117,33 @@ class CheckDocInfoAdapter(
                             if (fieldInfo.name == "date_of_birth" && !isValidDocRelatedDate(processedText)) {
                                 binding.infoField.error = (docInfoEditCallback as CheckDocInfoFragment).getString(
                                         R.string.date_of_birth_validation_error)
-                            } else if (fieldInfo.name == "expiration_date" && !isValidDocRelatedDate(processedText)) {
+                            }
+                            if (fieldInfo.name == "expiration_date" && !isValidDocRelatedDate(processedText)) {
                                 binding.infoField.error = (docInfoEditCallback as CheckDocInfoFragment).getString(
                                         R.string.enter_valid_exp_date)
-                            } else {
+                            }
+                            if (fieldInfo.name != "date_of_birth" && fieldInfo.name != "expiration_date") {
                                 if (text.length < 3) {
                                     when (fieldInfo.name) {
                                         "Surname (cyrillic)" -> {
                                             binding.infoField.error =
                                                 (docInfoEditCallback as CheckDocInfoFragment).getString(
-                                                    R.string.surname_cyrillic_validation_error
-                                                )
+                                                    R.string.surname_cyrillic_validation_error)
                                         }
                                         "Surname (latin)" -> {
                                             binding.infoField.error =
                                                 (docInfoEditCallback as CheckDocInfoFragment).getString(
-                                                    R.string.surname_latin_validation_error
-                                                )
+                                                    R.string.surname_latin_validation_error)
                                         }
                                         "Name (cyrillic)" -> {
                                             binding.infoField.error =
                                                 (docInfoEditCallback as CheckDocInfoFragment).getString(
-                                                    R.string.name_cyrillic_validation_error
-                                                )
+                                                    R.string.name_cyrillic_validation_error)
                                         }
                                         "Name (latin)" -> {
                                             binding.infoField.error =
                                                 (docInfoEditCallback as CheckDocInfoFragment).getString(
-                                                    R.string.name_latin_validation_error
-                                                )
+                                                    R.string.name_latin_validation_error)
                                         }
                                     }
                                 }
