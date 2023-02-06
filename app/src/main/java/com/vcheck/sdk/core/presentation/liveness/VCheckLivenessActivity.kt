@@ -270,7 +270,6 @@ class VCheckLivenessActivity : AppCompatActivity() {
     }
 
     private fun finishLivenessSession() {
-        //gestureCheckBitmap?.recycle()
         gestureCheckBitmap = null
         apiRequestTimer?.cancel()
         isLivenessSessionFinished = true
@@ -556,7 +555,6 @@ class VCheckLivenessActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        //gestureCheckBitmap?.recycle()
         gestureCheckBitmap = null
         scope.cancel()
         apiRequestTimer?.cancel()
