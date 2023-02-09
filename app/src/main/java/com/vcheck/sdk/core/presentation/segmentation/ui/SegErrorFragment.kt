@@ -87,8 +87,5 @@ class SegErrorFragment : ThemeWrapperFragment() {
         VCheckSDK.backgroundSecondaryColorHex?.let {
             _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
         }
-//        VCheckSDK.primaryTextColorHex?.let {
-//            _binding!!.tryAgainButton.setTextColor(Color.parseColor(it))
-//        }
     }
 }

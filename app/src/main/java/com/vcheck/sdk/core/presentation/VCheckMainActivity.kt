@@ -11,7 +11,7 @@ import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.databinding.ActivityVcheckMainBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.util.VCheckContextUtils
-
+import com.vcheck.sdk.core.util.changeStatusBarColor
 
 internal class VCheckMainActivity : AppCompatActivity() {
 
@@ -20,6 +20,7 @@ internal class VCheckMainActivity : AppCompatActivity() {
     private fun changeColorsToCustomIfPresent() {
         VCheckSDK.backgroundPrimaryColorHex?.let {
             binding.activityMainBackground.setBackgroundColor(Color.parseColor(it))
+            changeStatusBarColor(Color.parseColor(it))
         }
         VCheckSDK.primaryTextColorHex?.let {
             binding.backArrow.setColorFilter(Color.parseColor(it))

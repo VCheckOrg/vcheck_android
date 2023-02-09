@@ -86,6 +86,7 @@ class VCheckLivenessActivity : AppCompatActivity() {
         VCheckSDK.backgroundPrimaryColorHex?.let {
             binding.livenessActivityBackground.setBackgroundColor(Color.parseColor(it))
             drawable.setColor(Color.parseColor(it))
+            changeStatusBarColor(Color.parseColor(it))
         }
         VCheckSDK.primaryTextColorHex?.let {
             binding.backArrow.setColorFilter(Color.parseColor(it))

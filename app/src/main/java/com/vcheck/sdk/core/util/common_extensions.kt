@@ -1,11 +1,24 @@
 package com.vcheck.sdk.core.util
 
+import android.app.Activity
 import android.content.Context
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import androidx.core.graphics.ColorUtils
+import androidx.core.view.WindowInsetsControllerCompat
 import java.util.*
 
+fun Activity.changeStatusBarColor(color: Int) {
+    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+    window.statusBarColor = color
+    WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = isDark(color)
+}
+
+fun isDark(color: Int): Boolean {
+    return ColorUtils.calculateLuminance(color) < 0.5
+}
 
 fun View.setMargins(
     leftMarginDp: Int? = null,
@@ -28,19 +41,8 @@ fun Int.dpToPx(context: Context): Int {
     return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this.toFloat(), metrics).toInt()
 }
 
-
-/**
- * This method is to change the country code like "us" into flag emoji.
- * Stolen from https://stackoverflow.com/a/35849652/75579
- * 1. It first checks if the string consists of only 2 characters:
- * ISO 3166-1 alpha-2 two-letter country codes (https://en.wikipedia.org/wiki/Regional_Indicator_Symbol).
- * 2. It then checks if both characters are alphabet
- * do nothing if it doesn't fulfil the 2 checks
- * caveat: if you enter an invalid 2 letter country code, say "XX",
- * it will pass the 2 checks, and it will return unknown result
- */
 fun String.toFlagEmoji(): String {
-    // 1. It first checks if the string consists of only 2 characters: ISO 3166-1
+    // 1. First check if the string consists of only 2 characters: ISO 3166-1
     // alpha-2 two-letter country codes (https://en.wikipedia.org/wiki/Regional_Indicator_Symbol).
     if (this.length != 2) {
         return this
@@ -50,7 +52,7 @@ fun String.toFlagEmoji(): String {
     val firstLetter = Character.codePointAt(countryCodeCaps, 0) - 0x41 + 0x1F1E6
     val secondLetter = Character.codePointAt(countryCodeCaps, 1) - 0x41 + 0x1F1E6
 
-    // 2. It then checks if both characters are alphabet
+    // 2. Then check if both characters are alphabet
     if (!countryCodeCaps[0].isLetter() || !countryCodeCaps[1].isLetter()) {
         return this
     }

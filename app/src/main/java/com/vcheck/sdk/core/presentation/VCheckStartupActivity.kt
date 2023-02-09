@@ -11,6 +11,7 @@ import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.util.VCheckContextUtils
+import com.vcheck.sdk.core.util.changeStatusBarColor
 
 internal class VCheckStartupActivity : AppCompatActivity() {
 
@@ -23,6 +24,7 @@ internal class VCheckStartupActivity : AppCompatActivity() {
         VCheckSDK.backgroundPrimaryColorHex?.let {
             val back = findViewById<ConstraintLayout>(R.id.vcheck_splash_background)
             back.setBackgroundColor(Color.parseColor(it))
+            changeStatusBarColor(Color.parseColor(it))
         }
 
         if (repository.shouldFinishStartupActivity()) {

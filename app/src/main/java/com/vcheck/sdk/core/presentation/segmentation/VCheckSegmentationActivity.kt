@@ -39,11 +39,8 @@ import com.vcheck.sdk.core.domain.SegmentationGestureResponse
 import com.vcheck.sdk.core.domain.docCategoryIdxToType
 import com.vcheck.sdk.core.presentation.segmentation.flow_logic.*
 import com.vcheck.sdk.core.presentation.transferrable_objects.CheckPhotoDataTO
-import com.vcheck.sdk.core.util.VCheckContextUtils
+import com.vcheck.sdk.core.util.*
 import com.vcheck.sdk.core.util.images.BitmapUtils
-import com.vcheck.sdk.core.util.setMargins
-import com.vcheck.sdk.core.util.sizeInKb
-import com.vcheck.sdk.core.util.vibrateDevice
 import id.zelory.compressor.Compressor
 import id.zelory.compressor.constraint.destination
 import id.zelory.compressor.constraint.size
@@ -108,9 +105,13 @@ class VCheckSegmentationActivity : AppCompatActivity() {
     private fun changeColorsToCustomIfPresent() {
         VCheckSDK.backgroundPrimaryColorHex?.let {
             binding.segActivityBackground.setBackgroundColor(Color.parseColor(it))
+            changeStatusBarColor(Color.parseColor(it))
         }
         VCheckSDK.primaryTextColorHex?.let {
             binding.tvSegmentationInstruction.setTextColor(Color.parseColor(it))
+        }
+        VCheckSDK.buttonsColorHex?.let {
+            binding.readyButton.setBackgroundColor(Color.parseColor(it))
         }
     }
 
