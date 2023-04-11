@@ -23,6 +23,11 @@ import com.vcheck.sdk.core.databinding.FragmentDemoStartBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.*
 import com.vcheck.sdk.core.presentation.VCheckMainActivity
+import com.vcheck.sdk.core.presentation.country_stage.ChooseCountryFragmentDirections
+import com.vcheck.sdk.core.presentation.transferrable_objects.ChooseProviderLogicTO
+import com.vcheck.sdk.core.presentation.transferrable_objects.CountriesListTO
+import com.vcheck.sdk.core.presentation.transferrable_objects.ProviderLogicCase
+import com.vcheck.sdk.core.util.toFlagEmoji
 import java.util.*
 
 internal class VCheckStartFragment : Fragment() {
@@ -128,27 +133,59 @@ internal class VCheckStartFragment : Fragment() {
     private fun processProvidersData(response: Resource<ProvidersResponse>) {
         if (response.data?.data != null) {
             val providersList = response.data.data
-            if (providersList.isNotEmpty() && providersList.size == 1) {
+            VCheckSDK.setAllAvailableProviders(providersList)
+
+            if (providersList.isNotEmpty() && providersList.size == 1) { // 1 provider
                 if (providersList.first().countries.isEmpty()) {
-                    VCheckSDK.setSelectedProvider(providersList.first())
-                    //TODO continue initialization
+                    VCheckSDK.setProviderLogicCase(ProviderLogicCase.ONE_PROVIDER_NO_COUNTRIES)
+                    navigateToProviderSelection(providersList)
                 } else if (providersList.first().countries.size == 1) {
-                    VCheckSDK.setSelectedProvider(providersList.first())
-                    VCheckSDK.setOptSelectedCountryCode(providersList.first().countries.first().code)
-                    //TODO continue initialization
+                    VCheckSDK.setProviderLogicCase(ProviderLogicCase.ONE_PROVIDER_ONE_COUNTRY)
+                    navigateToProviderSelection(providersList)
                 } else {
-                    findNavController().navigate(R.id.action_demoStartFragment_to_chooseCountryFragment)
-                    //TODO send provider
-                    //выводится страница выбора страны, пользователь выбирает страну
-                    //выбирается провайдер с указанием этой страны
-                    //TODO then continue initialization
+                    VCheckSDK.setProviderLogicCase(ProviderLogicCase.ONE_PROVIDER_MULTIPLE_COUNTRIES)
+                    navigateToCountrySelection(providersList.first().countries)
                 }
-            } else if (providersList.isNotEmpty()) {
-                findNavController().navigate()
+            } else if (providersList.isNotEmpty()) { // more than 1 provider
+                if (providersList.any { it.countries.isNotEmpty() }) {
+                    VCheckSDK.setProviderLogicCase(ProviderLogicCase.MULTIPLE_PROVIDERS_PRESENT_COUNTRIES)
+                    val joinedCountriesSet = HashSet<Country>()
+                    for (provider in providersList) {
+                        joinedCountriesSet.addAll(provider.countries)
+                    }
+                    navigateToCountrySelection(joinedCountriesSet.toList())
+                } else {
+                    VCheckSDK.setProviderLogicCase(ProviderLogicCase.MULTIPLE_PROVIDERS_NO_COUNTRIES)
+                    navigateToProviderSelection(providersList)
+                }
             } else {
                 Toast.makeText(activity, "Could not one or more retrieve valid providers", Toast.LENGTH_LONG).show()
             }
         }
+    }
+
+    private fun navigateToProviderSelection(providersList: List<Provider>) {
+        val action = VCheckStartFragmentDirections
+            .actionDemoStartFragmentToChooseProviderFragment(
+                ChooseProviderLogicTO(providersList)
+            )
+        findNavController().navigate(action)
+    }
+
+    private fun navigateToCountrySelection(data: List<Country>) {
+        val countryList = data.map { country ->
+            val locale = Locale("", country.code)
+            val flag = locale.country.toFlagEmoji()
+            CountryTO(
+                locale.displayCountry,
+                country.code,
+                flag,
+                country.isBlocked)
+        }.toList() as ArrayList<CountryTO>
+        val action =
+            VCheckStartFragmentDirections.actionDemoStartFragmentToChooseCountryFragment(
+                CountriesListTO(countryList))
+        findNavController().navigate(action)
     }
 
     /** Shows an error message dialog.  */
@@ -161,7 +198,7 @@ internal class VCheckStartFragment : Fragment() {
                 .setPositiveButton(
                     android.R.string.ok
                 ) { _, _ ->
-                    //activity.finish() //!
+                    //activity.finish()
                     dismiss()
                 }
                 .create()
@@ -179,6 +216,8 @@ internal class VCheckStartFragment : Fragment() {
         }
     }
 }
+
+
 
 // TODO: move to countries list fragment (?)
 //

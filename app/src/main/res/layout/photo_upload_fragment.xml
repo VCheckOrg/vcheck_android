@@ -76,7 +76,7 @@
 <!--                    app:layout_constraintTop_toBottomOf="@+id/make_document_photo_title" />-->
 
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/method_card_vcheck"
+                    android:id="@+id/method_card_1"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
                     android:layout_marginStart="16dp"
@@ -218,7 +218,7 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/method_card_bank_id"
+                    android:id="@+id/method_card_2"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
                     android:layout_marginStart="16dp"
@@ -229,7 +229,7 @@
                     app:contentPadding="1dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/method_card_vcheck">
+                    app:layout_constraintTop_toBottomOf="@+id/method_card_1">
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/method_card_2_background"

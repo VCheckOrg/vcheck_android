@@ -7,6 +7,7 @@ import com.vcheck.sdk.core.data.VCheckSDKConstantsProvider
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.*
 import com.vcheck.sdk.core.presentation.VCheckStartupActivity
+import com.vcheck.sdk.core.presentation.transferrable_objects.ProviderLogicCase
 import com.vcheck.sdk.core.util.isValidHexColor
 import java.lang.IllegalArgumentException
 
@@ -19,6 +20,8 @@ object VCheckSDK {
     private var verificationToken: String? = null
 
     private var selectedProvider: Provider? = null
+    private var providerLogicCase: ProviderLogicCase? = null
+    private var allAvailableProviders: List<Provider>? = null
 
     // optional; only when provider allows document check stage!
     private var optSelectedCountryCode: String? = null
@@ -219,6 +222,28 @@ object VCheckSDK {
 
     internal fun setSelectedProvider(provider: Provider) {
         this.selectedProvider = provider
+    }
+
+    internal fun setAllAvailableProviders(providers: List<Provider>) {
+        allAvailableProviders = providers
+    }
+
+    internal fun getAllAvailableProviders(): List<Provider> {
+        if (allAvailableProviders == null) {
+            throw RuntimeException("VCheckSDK - error: no providers were cached properly!")
+        }
+        return allAvailableProviders!!
+    }
+
+    internal fun setProviderLogicCase(providerLC: ProviderLogicCase) {
+        providerLogicCase = providerLC
+    }
+
+    internal fun getProviderLogicCase(): ProviderLogicCase {
+        if (providerLogicCase == null) {
+            throw RuntimeException("VCheckSDK - error: no providers were cached properly!")
+        }
+        return providerLogicCase!!
     }
 
     internal fun getOptSelectedCountryCode(): String {

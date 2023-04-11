@@ -28,8 +28,8 @@
                 app:argType="com.vcheck.sdk.core.presentation.transferrable_objects.CountriesListTO" />
         </action>
         <action
-            android:id="@+id/action_chooseCountryFragment_to_chooseDocMethodScreen"
-            app:destination="@id/chooseDocMethodScreen" />
+            android:id="@+id/action_chooseCountryFragment_to_chooseProviderFragment"
+            app:destination="@id/chooseProviderFragment" />
     </fragment>
 
     <fragment
@@ -154,12 +154,6 @@
                 app:argType="com.vcheck.sdk.core.presentation.transferrable_objects.CountriesListTO" />
         </action>
         <action
-            android:id="@+id/action_demoStartFragment_to_livenessInstructionsFragment"
-            app:destination="@id/livenessInstructionsFragment" />
-        <action
-            android:id="@+id/action_demoStartFragment_to_checkDocInfoFragment"
-            app:destination="@id/checkDocInfoFragment" />
-        <action
             android:id="@+id/action_demoStartFragment_to_verifSentFragment"
             app:destination="@id/verifSentFragment" />
         <action
@@ -236,6 +230,16 @@
         android:id="@+id/providerChosenFragment"
         android:name="com.vcheck.sdk.core.presentation.provider.InitProviderFragment"
         android:label="fragment_provider_chosen"
-        tools:layout="@layout/fragment_init_provider" />
+        tools:layout="@layout/fragment_init_provider" >
+        <action
+            android:id="@+id/action_providerChosenFragment_to_chooseDocMethodScreen"
+            app:destination="@id/chooseDocMethodScreen" />
+        <action
+            android:id="@+id/action_providerChosenFragment_to_livenessInstructionsFragment"
+            app:destination="@id/livenessInstructionsFragment" />
+        <action
+            android:id="@+id/action_providerChosenFragment_to_checkDocInfoFragment"
+            app:destination="@id/checkDocInfoFragment" />
+    </fragment>
 
 </navigation>

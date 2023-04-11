@@ -6,13 +6,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.databinding.ChooseCountryFragmentBinding
+import com.vcheck.sdk.core.presentation.transferrable_objects.ChooseProviderLogicTO
 import com.vcheck.sdk.core.presentation.transferrable_objects.CountriesListTO
+import com.vcheck.sdk.core.presentation.transferrable_objects.ProviderLogicCase
 import com.vcheck.sdk.core.util.ThemeWrapperFragment
 import com.vcheck.sdk.core.util.toFlagEmoji
 import java.util.*
@@ -75,7 +78,34 @@ class ChooseCountryFragment : ThemeWrapperFragment() {
         }
 
         binding.chooseCountryContinueButton.setOnClickListener {
-            findNavController().navigate(R.id.action_chooseCountryFragment_to_chooseDocMethodScreen)
+            chooseCountryOnProviderLogic()
+        }
+    }
+
+    private fun chooseCountryOnProviderLogic() {
+
+        when(VCheckSDK.getProviderLogicCase()) {
+            ProviderLogicCase.ONE_PROVIDER_MULTIPLE_COUNTRIES -> {
+                val singleProviderList = VCheckSDK.getAllAvailableProviders()
+                val action = ChooseCountryFragmentDirections
+                    .actionChooseCountryFragmentToChooseProviderFragment(
+                        ChooseProviderLogicTO(singleProviderList))
+                findNavController().navigate(action)
+            }
+            ProviderLogicCase.MULTIPLE_PROVIDERS_PRESENT_COUNTRIES -> {
+                val countryCode = VCheckSDK.getOptSelectedCountryCode()
+                //TODO optimize inner loops
+                val distinctProvidersList = VCheckSDK.getAllAvailableProviders().filter {
+                    it.countries.map { c -> c.code }.toList().contains(countryCode) }
+                val action = ChooseCountryFragmentDirections
+                        .actionChooseCountryFragmentToChooseProviderFragment(
+                            ChooseProviderLogicTO(distinctProvidersList))
+                findNavController().navigate(action)
+            }
+            else -> {
+                Toast.makeText(requireContext(), "Error: country options should not be available for that provider",
+                    Toast.LENGTH_LONG).show()
+            }
         }
     }
 
