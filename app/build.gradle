@@ -75,6 +75,7 @@ dependencies {
 
     //Compress video before sending to API (for large videos / fallback strategy only)
     implementation 'com.github.AbedElazizShe:LightCompressor:1.2.3'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
 }
 
 afterEvaluate {

@@ -47,10 +47,6 @@ class ChooseCountryFragment : ThemeWrapperFragment() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?, savedInstanceState: Bundle?
@@ -85,7 +81,7 @@ class ChooseCountryFragment : ThemeWrapperFragment() {
 
     override fun onResume() {
         super.onResume()
-        country = VCheckSDK.getSelectedCountryCode()
+        country = VCheckSDK.getOptSelectedCountryCode()
 
         when (country) {
             "us" -> {

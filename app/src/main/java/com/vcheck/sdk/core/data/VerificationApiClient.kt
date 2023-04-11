@@ -8,6 +8,13 @@ import retrofit2.http.*
 
 interface VerificationApiClient {
 
+    @GET("providers")
+    fun getProviders(@Header("Authorization") verifToken: String): Call<ProvidersResponse>
+
+    @PUT("providers/init")
+    fun initProvider(@Header("Authorization") verifToken: String,
+                     @Body initProviderRequestBody: InitProviderRequestBody): Call<Response<Void>>
+
     @PUT("verifications/init")
     fun initVerification(@Header("Authorization") verifToken: String): Call<VerificationInitResponse>
 

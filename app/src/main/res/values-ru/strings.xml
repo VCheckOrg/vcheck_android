@@ -95,7 +95,7 @@
     <string name="fixed_camera_text">зафиксированная камера (старайтесь не двигать камерой)</string>
     <string name="liveness_start_button">Начать проверку</string>
     <string name="choose_method_title">Выберите метод верфикации</string>
-    <string name="choose_method_description">С другой стороны рамки и место обучения кадров позволяет выполнять важные задания по разработке направлений прогрессивного развития.</string>
+    <string name="choose_method_description">Для продолжения верификации выберите провайдера из списка доступных для вашей страны.</string>
     <string name="doc_field_title">Название поля</string>
     <string name="verif_method_subtitle_1">Верификация с подгрузкой документов</string>
     <string name="verif_method_subtitle_2">Верификация через украинские банки</string>

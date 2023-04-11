@@ -102,7 +102,7 @@
     <string name="fixed_camera_text">fixed camera (try not to move the camera)</string>
     <string name="liveness_start_button">Start</string>
     <string name="choose_method_title">Choose a verification method</string>
-    <string name="choose_method_description">On the other hand, the framework and place of personnel training allows you to perform important tasks in developing directions for progressive development.</string>
+    <string name="choose_method_description">To proceed with verification, choose the provider from the list of available for your country.</string>
     <string name="verif_method_title_1" translatable="false">VCHECK</string>
     <string name="verif_method_title_2" translatable="false">Bank ID</string>
     <string name="verif_method_title_3" translatable="false">Дiя</string>
@@ -188,5 +188,7 @@
     <string name="good_doc_light_text">well lit</string>
 
     <string name="enter_valid_exp_date">Enter a valid expiration date of your document</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

@@ -4,6 +4,7 @@ import androidx.lifecycle.*
 import com.vcheck.sdk.core.data.MainRepository
 import com.vcheck.sdk.core.data.Resource
 import com.vcheck.sdk.core.domain.*
+import retrofit2.Response
 
 internal class VCheckStartViewModel (val repository: MainRepository) : ViewModel() {
 
@@ -11,8 +12,8 @@ internal class VCheckStartViewModel (val repository: MainRepository) : ViewModel
 
     var timestampResponse: MutableLiveData<Resource<String>> = MutableLiveData()
     var initResponse: MutableLiveData<Resource<VerificationInitResponse>> = MutableLiveData()
-    var countriesResponse: MutableLiveData<Resource<CountriesResponse>> = MutableLiveData()
-    var stageResponse: MutableLiveData<Resource<StageResponse>> = MutableLiveData()
+
+    var providersResponse: MutableLiveData<Resource<ProvidersResponse>> = MutableLiveData()
 
     fun serviceTimestampRequest() {
         repository.getActualServiceTimestamp().observeForever { ts ->
@@ -26,15 +27,9 @@ internal class VCheckStartViewModel (val repository: MainRepository) : ViewModel
         }
     }
 
-    fun getCurrentStage() {
-        repository.getCurrentStage().observeForever {
-            processStageResponse(it)
-        }
-    }
-
-    fun getCountriesList() {
-        repository.getCountries().observeForever {
-            processGetCountriesResponse(it)
+    fun getProviders() {
+        repository.getProviders().observeForever {
+            processGetProvidersResponse(it)
         }
     }
 
@@ -66,12 +61,12 @@ internal class VCheckStartViewModel (val repository: MainRepository) : ViewModel
         }
     }
 
-    private fun processStageResponse(response: Resource<StageResponse>) {
+    private fun processGetProvidersResponse(response: Resource<ProvidersResponse>) {
         when (response.status) {
             Resource.Status.LOADING -> {
             }
             Resource.Status.SUCCESS -> {
-                stageResponse.value = response
+                providersResponse.value = response
             }
             Resource.Status.ERROR -> {
                 clientError.value = response.apiError!!.errorText
@@ -79,16 +74,27 @@ internal class VCheckStartViewModel (val repository: MainRepository) : ViewModel
         }
     }
 
-    private fun processGetCountriesResponse(response: Resource<CountriesResponse>){
-        when (response.status) {
-            Resource.Status.LOADING -> {
-            }
-            Resource.Status.SUCCESS -> {
-                countriesResponse.value = response
-            }
-            Resource.Status.ERROR -> {
-                clientError.value = response.apiError!!.errorText
-            }
-        }
-    }
+//Obsolete:
+
+//    var countriesResponse: MutableLiveData<Resource<CountriesResponse>> = MutableLiveData()
+
+//    fun getCountriesList() {
+//        repository.getCountries().observeForever {
+//            processGetCountriesResponse(it)
+//        }
+//    }
+
+//    private fun processGetCountriesResponse(response: Resource<CountriesResponse>){
+//        when (response.status) {
+//            Resource.Status.LOADING -> {
+//            }
+//            Resource.Status.SUCCESS -> {
+//                countriesResponse.value = response
+//            }
+//            Resource.Status.ERROR -> {
+//                clientError.value = response.apiError!!.errorText
+//            }
+//        }
+//    }
+
 }

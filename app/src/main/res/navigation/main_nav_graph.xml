@@ -162,6 +162,9 @@
         <action
             android:id="@+id/action_demoStartFragment_to_verifSentFragment"
             app:destination="@id/verifSentFragment" />
+        <action
+            android:id="@+id/action_demoStartFragment_to_chooseProviderFragment"
+            app:destination="@id/chooseProviderFragment" />
     </fragment>
 
 
@@ -218,5 +221,21 @@
         android:name="com.vcheck.sdk.core.presentation.screens.VerifSentFragment"
         android:label="fragment_verif_sent"
         tools:layout="@layout/fragment_verif_sent" /><action android:id="@+id/action_global_photoUploadScreen" app:destination="@id/photoUploadScreen"/><action android:id="@+id/action_global_checkPhotoFragment" app:destination="@id/checkPhotoFragment"/>
+    <fragment
+        android:id="@+id/chooseProviderFragment"
+        android:name="com.vcheck.sdk.core.presentation.provider.ChooseProviderFragment"
+        android:label="ChooseProviderFragment" >
+        <argument
+            android:name="chooseProviderLogicTO"
+            app:argType="com.vcheck.sdk.core.presentation.transferrable_objects.ChooseProviderLogicTO" />
+        <action
+            android:id="@+id/action_chooseProviderFragment_to_providerChosenFragment"
+            app:destination="@id/providerChosenFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/providerChosenFragment"
+        android:name="com.vcheck.sdk.core.presentation.provider.InitProviderFragment"
+        android:label="fragment_provider_chosen"
+        tools:layout="@layout/fragment_init_provider" />
 
 </navigation>

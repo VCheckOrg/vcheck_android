@@ -95,7 +95,7 @@
     <string name="photo_upload_title_common_back">Zdjęcie ostatniej strony z Twoim zdjęciem (jeśli masz wiele zdjęć w dokumencie).</string>
     <string name="success_description">Wszystkie niezbędne dane do wniosku o weryfikację zostały przesłane do naszych służb i są w końcowej fazie przetwarzania. Możesz wrócić do serwisu partnerskiego.</string>
     <string name="choose_method_title">Wybierz metodę weryfikacji</string>
-    <string name="choose_method_description">Z drugiej strony ramy i miejsce szkolenia personelu pozwala na wykonywanie ważnych zadań związanych z opracowywaniem postępowych kierunków rozwoju.</string>
+    <string name="choose_method_description">Aby kontynuować weryfikację, wybierz dostawcę z listy dostępnej dla Twojego kraju.</string>
     <string name="doc_field_title">Nazwa pola</string>
     <string name="verif_method_subtitle_1">Weryfikacja z wgrywaniem dokumentów</string>
     <string name="verif_method_subtitle_2">Weryfikacja przez banki ukraińskie</string>

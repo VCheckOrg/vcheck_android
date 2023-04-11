@@ -18,12 +18,11 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
+import com.vcheck.sdk.core.data.Resource
 import com.vcheck.sdk.core.databinding.FragmentDemoStartBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.*
 import com.vcheck.sdk.core.presentation.VCheckMainActivity
-import com.vcheck.sdk.core.presentation.transferrable_objects.CountriesListTO
-import com.vcheck.sdk.core.util.toFlagEmoji
 import java.util.*
 
 internal class VCheckStartFragment : Fragment() {
@@ -105,56 +104,13 @@ internal class VCheckStartFragment : Fragment() {
                 if (it.data.data.status > VerificationStatuses.WAITING_USER_INTERACTION) {
                     findNavController().navigate(R.id.action_demoStartFragment_to_verifSentFragment)
                 } else {
-                    _viewModel.getCurrentStage()
+                    _viewModel.getProviders() //!
                 }
             }
         }
 
-        _viewModel.stageResponse.observe(viewLifecycleOwner) {
-            if (it.data?.errorCode != null
-                        && it.data.errorCode == StageObstacleErrorType.USER_INTERACTED_COMPLETED.toTypeIdx()) {
-                findNavController().navigate(R.id.action_demoStartFragment_to_livenessInstructionsFragment)
-            } else {
-                if (it.data?.data != null) {
-                    if (it.data.data.uploadedDocId != null) {
-                        val action = VCheckStartFragmentDirections.actionDemoStartFragmentToCheckDocInfoFragment(
-                            null, it.data.data.uploadedDocId)
-                        findNavController().navigate(action)
-                    } else if (it.data.data.primaryDocId != null) {
-                        val action = VCheckStartFragmentDirections.actionDemoStartFragmentToCheckDocInfoFragment(
-                            null, it.data.data.primaryDocId)
-                        findNavController().navigate(action)
-                    }
-                    else if (it.data.data.type == StageType.DOCUMENT_UPLOAD.toTypeIdx()) {
-                        _viewModel.getCountriesList()
-                    } else {
-                        if (it.data.data.config != null) {
-                            _viewModel.repository.setLivenessMilestonesList((it.data.data.config.gestures))
-                        }
-                        findNavController().navigate(R.id.action_demoStartFragment_to_livenessInstructionsFragment)
-                    }
-                }
-            }
-        }
-
-        _viewModel.countriesResponse.observe(viewLifecycleOwner) {
-            if (it.data?.data != null) {
-                _binding!!.startCallChainLoadingIndicator.isVisible = false
-
-                val countryList = it.data.data.map { country ->
-                    val locale = Locale("", country.code)
-                    val flag = locale.country.toFlagEmoji()
-                    CountryTO(
-                        locale.displayCountry,
-                        country.code,
-                        flag,
-                        country.isBlocked)
-                }.toList() as ArrayList<CountryTO>
-                val action =
-                    VCheckStartFragmentDirections.actionDemoStartFragmentToChooseCountryFragment(
-                        CountriesListTO(countryList))
-                findNavController().navigate(action)
-            }
+        _viewModel.providersResponse.observe(viewLifecycleOwner) {
+            processProvidersData(it)
         }
 
         _viewModel.clientError.observe(viewLifecycleOwner) {
@@ -165,6 +121,32 @@ internal class VCheckStartFragment : Fragment() {
                     performStartupLogic()
                 }
                 Toast.makeText(activity, it, Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun processProvidersData(response: Resource<ProvidersResponse>) {
+        if (response.data?.data != null) {
+            val providersList = response.data.data
+            if (providersList.isNotEmpty() && providersList.size == 1) {
+                if (providersList.first().countries.isEmpty()) {
+                    VCheckSDK.setSelectedProvider(providersList.first())
+                    //TODO continue initialization
+                } else if (providersList.first().countries.size == 1) {
+                    VCheckSDK.setSelectedProvider(providersList.first())
+                    VCheckSDK.setOptSelectedCountryCode(providersList.first().countries.first().code)
+                    //TODO continue initialization
+                } else {
+                    findNavController().navigate(R.id.action_demoStartFragment_to_chooseCountryFragment)
+                    //TODO send provider
+                    //выводится страница выбора страны, пользователь выбирает страну
+                    //выбирается провайдер с указанием этой страны
+                    //TODO then continue initialization
+                }
+            } else if (providersList.isNotEmpty()) {
+                findNavController().navigate()
+            } else {
+                Toast.makeText(activity, "Could not one or more retrieve valid providers", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -197,3 +179,25 @@ internal class VCheckStartFragment : Fragment() {
         }
     }
 }
+
+// TODO: move to countries list fragment (?)
+//
+//        _viewModel.countriesResponse.observe(viewLifecycleOwner) {
+//            if (it.data?.data != null) {
+//                _binding!!.startCallChainLoadingIndicator.isVisible = false
+//
+//                val countryList = it.data.data.map { country ->
+//                    val locale = Locale("", country.code)
+//                    val flag = locale.country.toFlagEmoji()
+//                    CountryTO(
+//                        locale.displayCountry,
+//                        country.code,
+//                        flag,
+//                        country.isBlocked)
+//                }.toList() as ArrayList<CountryTO>
+//                val action =
+//                    VCheckStartFragmentDirections.actionDemoStartFragmentToChooseCountryFragment(
+//                        CountriesListTO(countryList))
+//                findNavController().navigate(action)
+//            }
+//        }

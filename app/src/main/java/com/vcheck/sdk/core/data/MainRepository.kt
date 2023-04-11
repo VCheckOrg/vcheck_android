@@ -15,6 +15,17 @@ class MainRepository(
         return VCheckSDK.getVerificationToken().isNotEmpty()
     }
 
+    fun getProviders(): MutableLiveData<Resource<ProvidersResponse>> {
+        return if (isTokenPresent()) remoteDatasource.getProviders()
+        else MutableLiveData(Resource.error(ApiError(null, BaseClientErrors.NO_TOKEN_AVAILABLE)))
+    }
+
+    fun initProvider(initProviderRequestBody: InitProviderRequestBody)
+            : MutableLiveData<Resource<Response<Void>>> {
+        return if (isTokenPresent()) remoteDatasource.initProvider(initProviderRequestBody)
+        else MutableLiveData(Resource.error(ApiError(null, BaseClientErrors.NO_TOKEN_AVAILABLE)))
+    }
+
     fun initVerification(): MutableLiveData<Resource<VerificationInitResponse>> {
         return if (isTokenPresent()) remoteDatasource.initVerification()
         else MutableLiveData(Resource.error(ApiError(null, BaseClientErrors.NO_TOKEN_AVAILABLE)))

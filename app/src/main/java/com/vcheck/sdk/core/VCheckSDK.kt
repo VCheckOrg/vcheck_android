@@ -18,7 +18,10 @@ object VCheckSDK {
 
     private var verificationToken: String? = null
 
-    private var selectedCountryCode: String? = null
+    private var selectedProvider: Provider? = null
+
+    // optional; only when provider allows document check stage!
+    private var optSelectedCountryCode: String? = null
 
     private var verificationType: VerificationSchemeType? = null
 
@@ -58,7 +61,7 @@ object VCheckSDK {
 
     private fun resetVerification() {
         VCheckDIContainer.mainRepository.resetCache()
-        this.selectedCountryCode = null
+        this.optSelectedCountryCode = null
     }
 
     private fun performPreStartChecks() {
@@ -207,12 +210,23 @@ object VCheckSDK {
         return sdkLanguageCode ?: "en"
     }
 
-    internal fun getSelectedCountryCode(): String {
-        return selectedCountryCode ?: "ua"
+    internal fun getSelectedProvider(): Provider {
+        if (selectedProvider == null) {
+            throw RuntimeException("VCheckSDK - error: provider is not set!")
+        }
+        return selectedProvider!!
     }
 
-    internal fun setSelectedCountryCode(code: String) {
-        this.selectedCountryCode = code
+    internal fun setSelectedProvider(provider: Provider) {
+        this.selectedProvider = provider
+    }
+
+    internal fun getOptSelectedCountryCode(): String {
+        return optSelectedCountryCode ?: "ua"
+    }
+
+    internal fun setOptSelectedCountryCode(code: String) {
+        this.optSelectedCountryCode = code
     }
 
     fun showPartnerLogo(show: Boolean): VCheckSDK {

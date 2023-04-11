@@ -1,6 +1,7 @@
 package com.vcheck.sdk.core.data
 
 import com.vcheck.sdk.core.domain.DocTypeData
+import com.vcheck.sdk.core.domain.Provider
 import com.vcheck.sdk.core.presentation.transferrable_objects.CheckPhotoDataTO
 
 class LocalDatasource {

@@ -2,7 +2,6 @@ package com.vcheck.sdk.core.presentation.country_stage
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -28,37 +27,36 @@ class CountryListFragment : ThemeWrapperFragment(),
     CountryListAdapter.OnCountryItemClick, SearchCountryCallback {
 
     private lateinit var countriesList: List<CountryTO>
-    private lateinit var binding: CountryListFragmentBinding
+
+    private var _binding: CountryListFragmentBinding? = null
     private val args: CountryListFragmentArgs by navArgs()
 
     override fun changeColorsToCustomIfPresent() {
-        val searchText = binding.searchCountry
+        val searchText = _binding!!.searchCountry
             .findViewById(androidx.appcompat.R.id.search_src_text) as TextView
         VCheckSDK.backgroundPrimaryColorHex?.let {
-            binding.backgroundCountryList.background = ColorDrawable(Color.parseColor(it))
-            binding.searchCountry.background = ColorDrawable(Color.parseColor(it))
+            _binding!!.backgroundCountryList.background = ColorDrawable(Color.parseColor(it))
+            _binding!!.searchCountry.background = ColorDrawable(Color.parseColor(it))
         }
         VCheckSDK.primaryTextColorHex?.let {
-            binding.countryListBackArrow.setColorFilter(Color.parseColor(it))
-            binding.tvNoCountriesFoundPlaceholder.setTextColor(Color.parseColor(it))
+            _binding!!.countryListBackArrow.setColorFilter(Color.parseColor(it))
+            _binding!!.tvNoCountriesFoundPlaceholder.setTextColor(Color.parseColor(it))
             searchText.setTextColor(Color.parseColor(it))
         }
         VCheckSDK.secondaryTextColorHex?.let {
             searchText.setHintTextColor(Color.parseColor(it))
-            //--
-            val icon: ImageView = binding.searchCountry
+            val icon: ImageView = _binding!!.searchCountry
                 .findViewById(androidx.appcompat.R.id.search_mag_icon)
             icon.setColorFilter(Color.parseColor(it))
 //            val whiteIcon: Drawable = icon.drawable
 //            whiteIcon.setTint(Color.parseColor(it))
 //            icon.setImageDrawable(whiteIcon)
-            //--
-            val clearBtn: ImageView = binding.searchCountry
+            val clearBtn: ImageView = _binding!!.searchCountry
                 .findViewById(androidx.appcompat.R.id.search_close_btn)
             clearBtn.setColorFilter(Color.parseColor(it))
         }
         VCheckSDK.borderColorHex?.let {
-            binding.searchCountryBorder.setCardBackgroundColor(Color.parseColor(it))
+            _binding!!.searchCountryBorder.setCardBackgroundColor(Color.parseColor(it))
         }
     }
 
@@ -72,6 +70,54 @@ class CountryListFragment : ThemeWrapperFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setCountriesList()
+
+        _binding = CountryListFragmentBinding.bind(view)
+
+        changeColorsToCustomIfPresent()
+
+        _binding!!.tvNoCountriesFoundPlaceholder.isVisible = false
+
+        val countryListAdapter = CountryListAdapter(
+            countriesList,
+            this@CountryListFragment, this@CountryListFragment
+        )
+
+        _binding!!.countriesList.adapter = countryListAdapter
+
+        _binding!!.searchCountry.setOnQueryTextListener(object :
+            SearchView.OnQueryTextListener {
+
+            override fun onQueryTextSubmit(p0: String?): Boolean {
+                _binding!!.countriesList.isVisible = true
+                _binding!!.tvNoCountriesFoundPlaceholder.isVisible = false
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                _binding!!.countriesList.isVisible = true
+                _binding!!.tvNoCountriesFoundPlaceholder.isVisible = false
+                countryListAdapter.filter.filter(newText)
+                return false
+            }
+        })
+
+        _binding!!.countryListBackArrow.setOnClickListener {
+            findNavController().popBackStack()
+        }
+    }
+
+    override fun onClick(country: String) {
+        VCheckSDK.setOptSelectedCountryCode(country)
+        findNavController().popBackStack()
+    }
+
+    override fun onEmptySearchResult() {
+        _binding!!.countriesList.isVisible = false
+        _binding!!.tvNoCountriesFoundPlaceholder.isVisible = true
+    }
+
+    private fun setCountriesList() {
         countriesList = args.countriesListTO.countriesList.map {
 
             when (it.code) {
@@ -104,49 +150,5 @@ class CountryListFragment : ThemeWrapperFragment(),
         }.sortedWith { s1, s2 ->
             Collator.getInstance(Locale("")).compare(s1.name, s2.name)
         }.toList()
-
-        binding = CountryListFragmentBinding.bind(view)
-
-        changeColorsToCustomIfPresent()
-
-        binding.tvNoCountriesFoundPlaceholder.isVisible = false
-
-        val countryListAdapter = CountryListAdapter(
-            countriesList,
-            this@CountryListFragment, this@CountryListFragment
-        )
-
-        binding.countriesList.adapter = countryListAdapter
-
-        binding.searchCountry.setOnQueryTextListener(object :
-            SearchView.OnQueryTextListener {
-
-            override fun onQueryTextSubmit(p0: String?): Boolean {
-                binding.countriesList.isVisible = true
-                binding.tvNoCountriesFoundPlaceholder.isVisible = false
-                return false
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                binding.countriesList.isVisible = true
-                binding.tvNoCountriesFoundPlaceholder.isVisible = false
-                countryListAdapter.filter.filter(newText)
-                return false
-            }
-        })
-
-        binding.countryListBackArrow.setOnClickListener {
-            findNavController().popBackStack()
-        }
-    }
-
-    override fun onClick(country: String) {
-        VCheckSDK.setSelectedCountryCode(country)
-        findNavController().popBackStack()
-    }
-
-    override fun onEmptySearchResult() {
-        binding.countriesList.isVisible = false
-        binding.tvNoCountriesFoundPlaceholder.isVisible = true
     }
 }

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/vcheck_background_primary"
-    tools:context=".presentation.screens.ChooseMethodFragment"
+    tools:context=".presentation.provider.ChooseProviderFragment"
     android:theme="@style/Theme.VCheckAndroidSDKDemo">
 
     <androidx.cardview.widget.CardView
@@ -290,5 +290,3 @@
     </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-
-
