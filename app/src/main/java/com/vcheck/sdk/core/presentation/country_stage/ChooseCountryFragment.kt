@@ -22,7 +22,6 @@ import java.util.*
 
 class ChooseCountryFragment : ThemeWrapperFragment() {
 
-    lateinit var country: String
     private lateinit var binding: ChooseCountryFragmentBinding
     private val args: ChooseCountryFragmentArgs by navArgs()
 
@@ -91,7 +90,7 @@ class ChooseCountryFragment : ThemeWrapperFragment() {
                 findNavController().navigate(action)
             }
             ProviderLogicCase.MULTIPLE_PROVIDERS_PRESENT_COUNTRIES -> {
-                val countryCode = VCheckSDK.getOptSelectedCountryCode()
+                val countryCode = VCheckSDK.getOptSelectedCountryCode()!!
                 //TODO optimize inner loops
                 val distinctProvidersList = VCheckSDK.getAllAvailableProviders().filter {
                     it.countries!!.contains(countryCode) }
@@ -109,11 +108,23 @@ class ChooseCountryFragment : ThemeWrapperFragment() {
 
     override fun onResume() {
         super.onResume()
-        country = VCheckSDK.getOptSelectedCountryCode()!!
 
-        when (country) {
+        val countries = args.countriesListTO.countriesList
+
+        //TODO test
+        val selectedCountryCode : String = if (VCheckSDK.getOptSelectedCountryCode() != null) {
+            countries.first { it.code == VCheckSDK.getOptSelectedCountryCode() }.code
+        } else if (countries.map { it.code }.contains("ua")) {
+            "ua"
+        } else {
+            countries.first().code
+        }
+
+        VCheckSDK.setOptSelectedCountryCode(selectedCountryCode)
+
+        when (selectedCountryCode) {
             "us" -> {
-                val locale = Locale("", country)
+                val locale = Locale("", selectedCountryCode)
 
                 val flag = locale.country.toFlagEmoji()
 
@@ -121,7 +132,7 @@ class ChooseCountryFragment : ThemeWrapperFragment() {
                 binding.flagEmoji.text = flag
             }
             "bm" -> {
-                val locale = Locale("", country)
+                val locale = Locale("", selectedCountryCode)
 
                 val flag = locale.country.toFlagEmoji()
 
@@ -129,7 +140,7 @@ class ChooseCountryFragment : ThemeWrapperFragment() {
                 binding.flagEmoji.text = flag
             }
             "tl" -> {
-                val locale = Locale("", country)
+                val locale = Locale("", selectedCountryCode)
 
                 val flag = locale.country.toFlagEmoji()
 
@@ -137,7 +148,7 @@ class ChooseCountryFragment : ThemeWrapperFragment() {
                 binding.flagEmoji.text = flag
             }
             else -> {
-                val locale = Locale("", country)
+                val locale = Locale("", selectedCountryCode)
 
                 val flag = locale.country.toFlagEmoji()
 

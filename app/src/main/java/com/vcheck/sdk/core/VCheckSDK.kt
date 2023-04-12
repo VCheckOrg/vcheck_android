@@ -254,7 +254,6 @@ object VCheckSDK {
         return providerLogicCase!!
     }
 
-    //TODO test with optional country!
     internal fun getOptSelectedCountryCode(): String? {
         return optSelectedCountryCode
     }
