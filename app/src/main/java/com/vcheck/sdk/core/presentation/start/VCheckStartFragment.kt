@@ -109,7 +109,7 @@ internal class VCheckStartFragment : Fragment() {
                 if (it.data.data.status > VerificationStatuses.WAITING_USER_INTERACTION) {
                     findNavController().navigate(R.id.action_demoStartFragment_to_verifSentFragment)
                 } else {
-                    _viewModel.getProviders() //!
+                    _viewModel.getProviders()
                 }
             }
         }
@@ -136,26 +136,32 @@ internal class VCheckStartFragment : Fragment() {
             VCheckSDK.setAllAvailableProviders(providersList)
 
             if (providersList.isNotEmpty() && providersList.size == 1) { // 1 provider
-                if (providersList.first().countries.isEmpty()) {
+                if (providersList.first().countries == null) {
                     VCheckSDK.setProviderLogicCase(ProviderLogicCase.ONE_PROVIDER_NO_COUNTRIES)
                     VCheckSDK.setSelectedProvider(providersList.first())
                     navigateToInitProvider()
-                } else if (providersList.first().countries.size == 1) {
+                } else if (providersList.first().countries!!.isEmpty()) {
+                    VCheckSDK.setProviderLogicCase(ProviderLogicCase.ONE_PROVIDER_NO_COUNTRIES)
+                    VCheckSDK.setSelectedProvider(providersList.first())
+                    navigateToInitProvider()
+                } else if (providersList.first().countries!!.size == 1) {
                     VCheckSDK.setProviderLogicCase(ProviderLogicCase.ONE_PROVIDER_ONE_COUNTRY)
                     VCheckSDK.setSelectedProvider(providersList.first())
-                    VCheckSDK.setOptSelectedCountryCode(providersList.first().countries.first())
+                    VCheckSDK.setOptSelectedCountryCode(providersList.first().countries!!.first())
                     navigateToInitProvider()
                 } else {
                     VCheckSDK.setProviderLogicCase(ProviderLogicCase.ONE_PROVIDER_MULTIPLE_COUNTRIES)
                     VCheckSDK.setSelectedProvider(providersList.first())
-                    navigateToCountrySelection(providersList.first().countries)
+                    navigateToCountrySelection(providersList.first().countries!!)
                 }
             } else if (providersList.isNotEmpty()) { // more than 1 provider
-                if (providersList.any { it.countries.isNotEmpty() }) {
+                if (providersList.any { it.countries != null && it.countries.isNotEmpty() }) {
                     VCheckSDK.setProviderLogicCase(ProviderLogicCase.MULTIPLE_PROVIDERS_PRESENT_COUNTRIES)
                     val joinedCountriesSet = HashSet<String>()
                     for (provider in providersList) {
-                        joinedCountriesSet.addAll(provider.countries)
+                        if (provider.countries != null && provider.countries.isNotEmpty()) {
+                            joinedCountriesSet.addAll(provider.countries)
+                        }
                     }
                     navigateToCountrySelection(joinedCountriesSet.toList())
                 } else {

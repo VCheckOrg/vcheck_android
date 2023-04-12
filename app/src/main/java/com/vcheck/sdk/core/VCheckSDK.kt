@@ -151,6 +151,19 @@ object VCheckSDK {
         return this
     }
 
+    fun getVerificationToken(): String {
+        if (verificationToken == null) {
+            throw RuntimeException("VCheckSDK - error: verification token is not set!")
+        }
+        return "Bearer " + verificationToken!!
+    }
+
+    fun getSDKLangCode(): String {
+        return sdkLanguageCode ?: "en"
+    }
+
+    /// Color customization methods
+
     fun colorActionButtons(colorHex: String): VCheckSDK {
         this.buttonsColorHex = colorHex
         return this
@@ -202,15 +215,10 @@ object VCheckSDK {
         this.iconsColorHex = null
     }
 
-    fun getVerificationToken(): String {
-        if (verificationToken == null) {
-            throw RuntimeException("VCheckSDK - error: verification token is not set!")
-        }
-        return "Bearer " + verificationToken!!
-    }
+    /// Internal caching functions
 
-    fun getSDKLangCode(): String {
-        return sdkLanguageCode ?: "en"
+    internal fun getEnvironment(): VCheckEnvironment {
+        return this.environment ?: VCheckEnvironment.DEV
     }
 
     internal fun getSelectedProvider(): Provider {
@@ -225,7 +233,7 @@ object VCheckSDK {
     }
 
     internal fun setAllAvailableProviders(providers: List<Provider>) {
-        allAvailableProviders = providers
+        this.allAvailableProviders = providers
     }
 
     internal fun getAllAvailableProviders(): List<Provider> {
@@ -236,12 +244,12 @@ object VCheckSDK {
     }
 
     internal fun setProviderLogicCase(providerLC: ProviderLogicCase) {
-        providerLogicCase = providerLC
+        this.providerLogicCase = providerLC
     }
 
     internal fun getProviderLogicCase(): ProviderLogicCase {
         if (providerLogicCase == null) {
-            throw RuntimeException("VCheckSDK - error: no providers were cached properly!")
+            throw RuntimeException("VCheckSDK - error: no provider logic case was set!")
         }
         return providerLogicCase!!
     }
@@ -253,6 +261,8 @@ object VCheckSDK {
     internal fun setOptSelectedCountryCode(code: String) {
         this.optSelectedCountryCode = code
     }
+
+    /// Other public methods for customization
 
     fun showPartnerLogo(show: Boolean): VCheckSDK {
         this.showPartnerLogo = show
@@ -267,9 +277,5 @@ object VCheckSDK {
     fun environment(env: VCheckEnvironment): VCheckSDK {
         this.environment = env
         return this
-    }
-
-    internal fun getEnvironment(): VCheckEnvironment {
-        return this.environment ?: VCheckEnvironment.DEV
     }
 }

@@ -78,6 +78,7 @@ class ChooseDocMethodFragment : ThemeWrapperFragment() {
 
         _binding!!.backArrow.setOnClickListener {
             findNavController().popBackStack()
+            findNavController().popBackStack()
         }
 
         _binding!!.docMethodInnerPassport.isVisible = false

@@ -4,7 +4,6 @@ import androidx.lifecycle.*
 import com.vcheck.sdk.core.data.MainRepository
 import com.vcheck.sdk.core.data.Resource
 import com.vcheck.sdk.core.domain.*
-import retrofit2.Response
 
 internal class VCheckStartViewModel (val repository: MainRepository) : ViewModel() {
 
@@ -73,28 +72,5 @@ internal class VCheckStartViewModel (val repository: MainRepository) : ViewModel
             }
         }
     }
-
-//Obsolete:
-
-//    var countriesResponse: MutableLiveData<Resource<CountriesResponse>> = MutableLiveData()
-
-//    fun getCountriesList() {
-//        repository.getCountries().observeForever {
-//            processGetCountriesResponse(it)
-//        }
-//    }
-
-//    private fun processGetCountriesResponse(response: Resource<CountriesResponse>){
-//        when (response.status) {
-//            Resource.Status.LOADING -> {
-//            }
-//            Resource.Status.SUCCESS -> {
-//                countriesResponse.value = response
-//            }
-//            Resource.Status.ERROR -> {
-//                clientError.value = response.apiError!!.errorText
-//            }
-//        }
-//    }
 
 }

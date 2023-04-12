@@ -94,7 +94,7 @@ class ChooseCountryFragment : ThemeWrapperFragment() {
                 val countryCode = VCheckSDK.getOptSelectedCountryCode()
                 //TODO optimize inner loops
                 val distinctProvidersList = VCheckSDK.getAllAvailableProviders().filter {
-                    it.countries.contains(countryCode) }
+                    it.countries!!.contains(countryCode) }
                 val action = ChooseCountryFragmentDirections
                         .actionChooseCountryFragmentToChooseProviderFragment(
                             ChooseProviderLogicTO(distinctProvidersList))
