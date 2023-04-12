@@ -80,8 +80,7 @@ class CountryListFragment : ThemeWrapperFragment(),
 
         val countryListAdapter = CountryListAdapter(
             countriesList,
-            this@CountryListFragment, this@CountryListFragment
-        )
+            this@CountryListFragment, this@CountryListFragment)
 
         _binding!!.countriesList.adapter = countryListAdapter
 

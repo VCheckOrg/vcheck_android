@@ -30,6 +30,9 @@
         <action
             android:id="@+id/action_chooseCountryFragment_to_chooseProviderFragment"
             app:destination="@id/chooseProviderFragment" />
+        <action
+            android:id="@+id/action_chooseCountryFragment_to_providerChosenFragment"
+            app:destination="@id/providerChosenFragment" />
     </fragment>
 
     <fragment
@@ -156,6 +159,9 @@
         <action
             android:id="@+id/action_demoStartFragment_to_verifSentFragment"
             app:destination="@id/verifSentFragment" />
+        <action
+            android:id="@+id/action_demoStartFragment_to_providerChosenFragment"
+            app:destination="@id/providerChosenFragment" />
         <action
             android:id="@+id/action_demoStartFragment_to_chooseProviderFragment"
             app:destination="@id/chooseProviderFragment" />

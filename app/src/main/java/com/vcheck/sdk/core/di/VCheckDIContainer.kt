@@ -27,10 +27,10 @@ object VCheckDIContainer {
         httpClient.addInterceptor { chain ->
             val original: Request = chain.request()
             val request: Request = original.newBuilder().build()
-            logging.setLevel(HttpLoggingInterceptor.Level.NONE)
-            //val hasMultipart: Boolean = request.headers.names().contains("multipart")
-            //logging.setLevel(if (hasMultipart) HttpLoggingInterceptor.Level.HEADERS else HttpLoggingInterceptor.Level.BODY)
-            //logging.setLevel(HttpLoggingInterceptor.Level.BODY)
+            //logging.setLevel(HttpLoggingInterceptor.Level.NONE)
+            val hasMultipart: Boolean = request.headers.names().contains("multipart")
+            logging.setLevel(if (hasMultipart) HttpLoggingInterceptor.Level.HEADERS else HttpLoggingInterceptor.Level.BODY)
+            logging.setLevel(HttpLoggingInterceptor.Level.BODY)
             chain.proceed(request)
         }.build()
 

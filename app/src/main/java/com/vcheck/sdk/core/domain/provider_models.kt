@@ -21,7 +21,7 @@ data class Provider(
     @SerializedName("protocol")
     val protocol: String, //протокол работы: Vcheck,  Дия и так далее. Сейчас может быть только vcheck
     @SerializedName("countries")
-    val countries: List<Country> = emptyList() //список стран для которых доступен провайдер. Может быть null, это значит что для данного провайдера страна не важна.
+    val countries: List<String> = emptyList() //список стран для которых доступен провайдер. Может быть null, это значит что для данного провайдера страна не важна.
 ): Parcelable
 
 data class InitProviderRequestBody(

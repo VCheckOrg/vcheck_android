@@ -1,7 +1,8 @@
 package com.vcheck.sdk.core.presentation.provider
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -12,18 +13,34 @@ import androidx.navigation.fragment.navArgs
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.databinding.FragmentChooseProviderBinding
+import com.vcheck.sdk.core.domain.Provider
+import com.vcheck.sdk.core.presentation.adapters.ProvidersListAdapter
+import com.vcheck.sdk.core.presentation.transferrable_objects.ProviderLogicCase
 
-class ChooseProviderFragment : Fragment() {
+class ChooseProviderFragment : Fragment(), ProvidersListAdapter.OnProviderItemClick {
 
     private var _binding: FragmentChooseProviderBinding? = null
 
     private val args: ChooseProviderFragmentArgs by navArgs()
 
+    fun changeColorsToCustomIfPresent() {
+        VCheckSDK.backgroundPrimaryColorHex?.let {
+            _binding!!.chooseProviderBackground.background = ColorDrawable(Color.parseColor(it))
+        }
+        VCheckSDK.backgroundSecondaryColorHex?.let {
+            _binding!!.holderCard.background = ColorDrawable(Color.parseColor(it))
+        }
+        VCheckSDK.primaryTextColorHex?.let {
+            _binding!!.chooseMethodTitle.setTextColor(Color.parseColor(it))
+            _binding!!.backArrow.setColorFilter(Color.parseColor(it))
+        }
+        VCheckSDK.secondaryTextColorHex?.let {
+            _binding!!.chooseMethodDescription.setTextColor(Color.parseColor(it))
+        }
+    }
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_choose_provider, container, false)
     }
 
@@ -32,36 +49,25 @@ class ChooseProviderFragment : Fragment() {
 
         _binding = FragmentChooseProviderBinding.bind(view)
 
-        val protocolsList = args.chooseProviderLogicTO.providers.map { it.protocol }
+        changeColorsToCustomIfPresent()
 
-        Log.d("PROVIDERS", "-------------- PROTOCOLS LIST: $protocolsList")
+        val providerListAdapter = ProvidersListAdapter(
+            args.chooseProviderLogicTO.providers, this@ChooseProviderFragment)
 
-        if (protocolsList.contains("vcheck")) {
-            _binding!!.methodCardVcheck.isVisible = true
-            _binding!!.methodCardVcheck.setOnClickListener {
-                VCheckSDK.setSelectedProvider(args.chooseProviderLogicTO.providers.first { it.protocol == "vcheck" })
-                findNavController().navigate(R.id.action_chooseProviderFragment_to_providerChosenFragment)
+        _binding!!.providersList.adapter = providerListAdapter
+
+        if (VCheckSDK.getProviderLogicCase() == ProviderLogicCase.ONE_PROVIDER_MULTIPLE_COUNTRIES ||
+            VCheckSDK.getProviderLogicCase() == ProviderLogicCase.MULTIPLE_PROVIDERS_PRESENT_COUNTRIES) {
+            _binding!!.backArrow.setOnClickListener {
+                findNavController().popBackStack()
             }
         } else {
-            _binding!!.methodCardVcheck.isVisible = false
+            _binding!!.backArrow.isVisible = false
         }
-        if (protocolsList.contains("bank_id")) {
-            _binding!!.methodCardBankId.isVisible = true
-            _binding!!.methodCardBankId.setOnClickListener {
-                VCheckSDK.setSelectedProvider(args.chooseProviderLogicTO.providers.first { it.protocol == "bank_id" })
-                findNavController().navigate(R.id.action_chooseProviderFragment_to_providerChosenFragment)
-            }
-        } else {
-            _binding!!.methodCardBankId.isVisible = false
-        }
-        if (protocolsList.contains("diia")) {
-            _binding!!.methodCardDiia.isVisible = true
-            _binding!!.methodCardDiia.setOnClickListener {
-                VCheckSDK.setSelectedProvider(args.chooseProviderLogicTO.providers.first { it.protocol == "diia" })
-                findNavController().navigate(R.id.action_chooseProviderFragment_to_providerChosenFragment)
-            }
-        } else {
-            _binding!!.methodCardDiia.isVisible = false
-        }
+    }
+
+    override fun onClick(provider: Provider) {
+        VCheckSDK.setSelectedProvider(provider)
+        findNavController().navigate(R.id.action_chooseProviderFragment_to_providerChosenFragment)
     }
 }

@@ -26,12 +26,6 @@ class RemoteDatasource(private val verificationApiClient: VerificationApiClient)
                 VCheckSDK.getVerificationToken(), initProviderRequestBody))
     }
 
-    fun getCountries(): MutableLiveData<Resource<CountriesResponse>> {
-        return NetworkCall<CountriesResponse>().makeCall(
-            verificationApiClient.getCountries(VCheckSDK.getVerificationToken())
-        )
-    }
-
     fun getCountryAvailableDocTypeInfo(countryCode: String)
             : MutableLiveData<Resource<DocumentTypesForCountryResponse>> {
         return NetworkCall<DocumentTypesForCountryResponse>().makeCall(

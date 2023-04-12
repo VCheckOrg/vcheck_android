@@ -138,18 +138,22 @@ internal class VCheckStartFragment : Fragment() {
             if (providersList.isNotEmpty() && providersList.size == 1) { // 1 provider
                 if (providersList.first().countries.isEmpty()) {
                     VCheckSDK.setProviderLogicCase(ProviderLogicCase.ONE_PROVIDER_NO_COUNTRIES)
-                    navigateToProviderSelection(providersList)
+                    VCheckSDK.setSelectedProvider(providersList.first())
+                    navigateToInitProvider()
                 } else if (providersList.first().countries.size == 1) {
                     VCheckSDK.setProviderLogicCase(ProviderLogicCase.ONE_PROVIDER_ONE_COUNTRY)
-                    navigateToProviderSelection(providersList)
+                    VCheckSDK.setSelectedProvider(providersList.first())
+                    VCheckSDK.setOptSelectedCountryCode(providersList.first().countries.first())
+                    navigateToInitProvider()
                 } else {
                     VCheckSDK.setProviderLogicCase(ProviderLogicCase.ONE_PROVIDER_MULTIPLE_COUNTRIES)
+                    VCheckSDK.setSelectedProvider(providersList.first())
                     navigateToCountrySelection(providersList.first().countries)
                 }
             } else if (providersList.isNotEmpty()) { // more than 1 provider
                 if (providersList.any { it.countries.isNotEmpty() }) {
                     VCheckSDK.setProviderLogicCase(ProviderLogicCase.MULTIPLE_PROVIDERS_PRESENT_COUNTRIES)
-                    val joinedCountriesSet = HashSet<Country>()
+                    val joinedCountriesSet = HashSet<String>()
                     for (provider in providersList) {
                         joinedCountriesSet.addAll(provider.countries)
                     }
@@ -164,23 +168,26 @@ internal class VCheckStartFragment : Fragment() {
         }
     }
 
+    private fun navigateToInitProvider() {
+        findNavController().navigate(R.id.action_demoStartFragment_to_providerChosenFragment)
+    }
+
     private fun navigateToProviderSelection(providersList: List<Provider>) {
         val action = VCheckStartFragmentDirections
             .actionDemoStartFragmentToChooseProviderFragment(
-                ChooseProviderLogicTO(providersList)
-            )
+                ChooseProviderLogicTO(providersList))
         findNavController().navigate(action)
     }
 
-    private fun navigateToCountrySelection(data: List<Country>) {
-        val countryList = data.map { country ->
-            val locale = Locale("", country.code)
+    private fun navigateToCountrySelection(data: List<String>) {
+        val countryList = data.map { code ->
+            val locale = Locale("", code)
             val flag = locale.country.toFlagEmoji()
             CountryTO(
                 locale.displayCountry,
-                country.code,
+                code,
                 flag,
-                country.isBlocked)
+                false)
         }.toList() as ArrayList<CountryTO>
         val action =
             VCheckStartFragmentDirections.actionDemoStartFragmentToChooseCountryFragment(
@@ -216,27 +223,3 @@ internal class VCheckStartFragment : Fragment() {
         }
     }
 }
-
-
-
-// TODO: move to countries list fragment (?)
-//
-//        _viewModel.countriesResponse.observe(viewLifecycleOwner) {
-//            if (it.data?.data != null) {
-//                _binding!!.startCallChainLoadingIndicator.isVisible = false
-//
-//                val countryList = it.data.data.map { country ->
-//                    val locale = Locale("", country.code)
-//                    val flag = locale.country.toFlagEmoji()
-//                    CountryTO(
-//                        locale.displayCountry,
-//                        country.code,
-//                        flag,
-//                        country.isBlocked)
-//                }.toList() as ArrayList<CountryTO>
-//                val action =
-//                    VCheckStartFragmentDirections.actionDemoStartFragmentToChooseCountryFragment(
-//                        CountriesListTO(countryList))
-//                findNavController().navigate(action)
-//            }
-//        }

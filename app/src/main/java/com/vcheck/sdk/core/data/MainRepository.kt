@@ -31,11 +31,6 @@ class MainRepository(
         else MutableLiveData(Resource.error(ApiError(null, BaseClientErrors.NO_TOKEN_AVAILABLE)))
     }
 
-    fun getCountries(): MutableLiveData<Resource<CountriesResponse>> {
-        return if (isTokenPresent()) remoteDatasource.getCountries()
-        else MutableLiveData(Resource.error(ApiError(null, BaseClientErrors.NO_TOKEN_AVAILABLE)))
-    }
-
     fun getCountryAvailableDocTypeInfo(countryCode: String)
             : MutableLiveData<Resource<DocumentTypesForCountryResponse>> {
         return if (isTokenPresent()) remoteDatasource.getCountryAvailableDocTypeInfo(countryCode)
@@ -148,3 +143,9 @@ class MainRepository(
         return localDatasource.isPhotoUploadManual()
     }
 }
+
+//    obsolete
+//    fun getCountries(): MutableLiveData<Resource<CountriesResponse>> {
+//        return if (isTokenPresent()) remoteDatasource.getCountries()
+//        else MutableLiveData(Resource.error(ApiError(null, BaseClientErrors.NO_TOKEN_AVAILABLE)))
+//    }

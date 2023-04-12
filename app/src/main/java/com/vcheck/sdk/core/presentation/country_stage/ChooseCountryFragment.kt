@@ -86,17 +86,15 @@ class ChooseCountryFragment : ThemeWrapperFragment() {
 
         when(VCheckSDK.getProviderLogicCase()) {
             ProviderLogicCase.ONE_PROVIDER_MULTIPLE_COUNTRIES -> {
-                val singleProviderList = VCheckSDK.getAllAvailableProviders()
                 val action = ChooseCountryFragmentDirections
-                    .actionChooseCountryFragmentToChooseProviderFragment(
-                        ChooseProviderLogicTO(singleProviderList))
+                    .actionChooseCountryFragmentToProviderChosenFragment()
                 findNavController().navigate(action)
             }
             ProviderLogicCase.MULTIPLE_PROVIDERS_PRESENT_COUNTRIES -> {
                 val countryCode = VCheckSDK.getOptSelectedCountryCode()
                 //TODO optimize inner loops
                 val distinctProvidersList = VCheckSDK.getAllAvailableProviders().filter {
-                    it.countries.map { c -> c.code }.toList().contains(countryCode) }
+                    it.countries.contains(countryCode) }
                 val action = ChooseCountryFragmentDirections
                         .actionChooseCountryFragmentToChooseProviderFragment(
                             ChooseProviderLogicTO(distinctProvidersList))

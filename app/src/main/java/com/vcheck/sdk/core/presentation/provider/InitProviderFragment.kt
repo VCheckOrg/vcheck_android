@@ -1,5 +1,7 @@
 package com.vcheck.sdk.core.presentation.provider
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -12,6 +14,7 @@ import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.data.Resource
 import com.vcheck.sdk.core.databinding.FragmentInitProviderBinding
+import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.*
 
 class InitProviderFragment : Fragment() {
@@ -20,19 +23,34 @@ class InitProviderFragment : Fragment() {
 
     private lateinit var _viewModel: InitProviderViewModel
 
+    fun changeColorsToCustomIfPresent() {
+        VCheckSDK.backgroundPrimaryColorHex?.let {
+            _binding!!.fragmentDemoBackground.background = ColorDrawable(Color.parseColor(it))
+        }
+        VCheckSDK.primaryTextColorHex?.let {
+            _binding!!.startCallChainLoadingIndicator.setIndicatorColor(Color.parseColor(it))
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        _viewModel = InitProviderViewModel(VCheckDIContainer.mainRepository)
+    }
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_init_provider, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        _binding = FragmentInitProviderBinding.bind(view)
+
+        changeColorsToCustomIfPresent()
+
         val initProviderRequestBody = InitProviderRequestBody(VCheckSDK.getSelectedProvider().id,
-            VCheckSDK.getOptSelectedCountryCode()) // country is optional here
+            VCheckSDK.getOptSelectedCountryCode()) // country is optional here, may be nullable
 
         _viewModel.initProviderResponse.observe(viewLifecycleOwner) {
             if (it != null) {
@@ -75,14 +93,15 @@ class InitProviderFragment : Fragment() {
     }
 
     private fun checkDocStageDataForNavigation(stageData: StageResponseData) {
-        if (stageData.uploadedDocId != null) {
-            val action = InitProviderFragmentDirections.actionProviderChosenFragmentToCheckDocInfoFragment(
+        val action = if (stageData.uploadedDocId != null) {
+            InitProviderFragmentDirections.actionProviderChosenFragmentToCheckDocInfoFragment(
                 null, stageData.uploadedDocId)
-            findNavController().navigate(action)
         } else if (stageData.primaryDocId != null) {
-            val action = InitProviderFragmentDirections.actionProviderChosenFragmentToCheckDocInfoFragment(
+            InitProviderFragmentDirections.actionProviderChosenFragmentToCheckDocInfoFragment(
                 null, stageData.primaryDocId)
-            findNavController().navigate(action)
+        } else {
+            InitProviderFragmentDirections.actionProviderChosenFragmentToChooseDocMethodScreen()
         }
+        findNavController().navigate(action)
     }
 }

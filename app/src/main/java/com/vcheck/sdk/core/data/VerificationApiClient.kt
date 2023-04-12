@@ -21,9 +21,6 @@ interface VerificationApiClient {
     @GET("stages/current")
     fun getCurrentStage(@Header("Authorization") verifToken: String) : Call<StageResponse>
 
-    @GET("documents/countries")
-    fun getCountries(@Header("Authorization") verifToken: String): Call<CountriesResponse>
-
     @GET("documents/types")
     fun getCountryAvailableDocTypeInfo(
         @Header("Authorization") verifToken: String,
