@@ -94,8 +94,8 @@
     <string name="photo_upload_wait_disclaimer">Будь ласка, зачекайте. Йде завантаження та обробка фото вашого документа. Це може тривати від кількох секунд до хвилини.</string>
     <string name="photo_upload_title_common_back">Фотографія останньої сторінки/сторони з вашою фотографією (якщо у вас є кілька фотографій у документі).</string>
     <string name="success_description">Усі необхідні дані по заявці на верифікацію надіслані на наші сервіси та знаходяться на фінальній стадії обробки. Ви можете повернутись до партнерського сервісу.</string>
-    <string name="choose_method_title">Виберіть метод верифікації</string>
-    <string name="choose_method_description">Для продовження верифікації виберіть провайдера зі списку доступних для вашої країни.</string>
+    <string name="choose_method_title">Оберіть метод верифікації</string>
+    <string name="choose_method_description">Для продовження верифікації оберіть провайдера зі списку доступних для вашої країни.</string>
     <string name="doc_field_title">Назва поля</string>
     <string name="verif_method_subtitle_1">Верифікація із підвантаженням документів</string>
     <string name="verif_method_subtitle_2">Верифікація через українські банки</string>

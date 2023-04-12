@@ -109,7 +109,7 @@ class ChooseCountryFragment : ThemeWrapperFragment() {
 
     override fun onResume() {
         super.onResume()
-        country = VCheckSDK.getOptSelectedCountryCode()
+        country = VCheckSDK.getOptSelectedCountryCode()!!
 
         when (country) {
             "us" -> {

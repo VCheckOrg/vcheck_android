@@ -85,7 +85,8 @@ class ChooseDocMethodFragment : ThemeWrapperFragment() {
         _binding!!.docMethodForeignPassport.isVisible = false
         _binding!!.docMethodIdCard.isVisible = false
 
-        val selectedCountryCode = VCheckSDK.getOptSelectedCountryCode()
+        val selectedCountryCode = VCheckSDK.getOptSelectedCountryCode()!!
+        //assuming that provider should have country in the scenario of country choosing
 
         _viewModel.docTypesResponse.observe(viewLifecycleOwner) {
             if (it.data?.data != null) {

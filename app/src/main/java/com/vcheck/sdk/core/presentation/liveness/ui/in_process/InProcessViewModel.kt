@@ -30,16 +30,16 @@ class InProcessViewModel(val repository: MainRepository) : ViewModel() {
     }
 
     private fun processResponse(response: Resource<LivenessUploadResponse>) {
-            when (response.status) {
-                Resource.Status.LOADING -> {
-                }
-                Resource.Status.SUCCESS -> {
-                    uploadResponse.value = response
-                }
-                Resource.Status.ERROR -> {
-                    clientError.value = response.apiError!!
-                }
+        when (response.status) {
+            Resource.Status.LOADING -> {
             }
+            Resource.Status.SUCCESS -> {
+                uploadResponse.value = response
+            }
+            Resource.Status.ERROR -> {
+                clientError.value = response.apiError!!
+            }
+        }
     }
 
     private fun processStageResponse(response: Resource<StageResponse>) {
@@ -52,8 +52,6 @@ class InProcessViewModel(val repository: MainRepository) : ViewModel() {
             Resource.Status.ERROR -> {
                 if (response.apiError != null) {
                     stageResponse.value = response
-                } else {
-                    clientError.value = response.apiError!!
                 }
             }
         }

@@ -76,7 +76,7 @@ class InitProviderFragment : Fragment() {
     private fun processStageData(response: Resource<StageResponse>) {
         if (response.data?.errorCode != null
             && response.data.errorCode == StageObstacleErrorType.USER_INTERACTED_COMPLETED.toTypeIdx()) {
-            findNavController().navigate(R.id.action_providerChosenFragment_to_livenessInstructionsFragment)
+            findNavController().navigate(R.id.action_providerChosenFragment_to_livenessInstructionsFragment) //?
         } else {
             if (response.data?.data != null) {
                 val stageData = response.data.data
