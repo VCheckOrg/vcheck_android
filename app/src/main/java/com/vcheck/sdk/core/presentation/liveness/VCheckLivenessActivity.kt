@@ -41,6 +41,7 @@ import java.io.File
 import java.io.IOException
 import java.util.*
 import kotlin.concurrent.fixedRateTimer
+import kotlin.math.min
 
 
 @Suppress("DEPRECATION")
@@ -390,6 +391,22 @@ class VCheckLivenessActivity : AppCompatActivity() {
     /// -------------------------------------------- UI functions
 
     private fun initSetupUI() {
+        binding.utilMeasureLayout.post {
+            val parentHeight = binding.utilMeasureLayout.height
+            val parentWidth = binding.utilMeasureLayout.width
+            val radius = (min(parentWidth, parentHeight) / 2) - 40
+
+            binding.livenessCircleFrame.post {
+                binding.livenessCircleFrame.isVisible = true
+                binding.livenessCircleFrame.layoutParams.width = parentWidth - 80
+                binding.livenessCircleFrame.layoutParams.height = parentWidth - 80
+            }
+            binding.livenessMaskWrapper.post {
+                binding.livenessMaskWrapper.setCircleHoleSize(
+                    parentWidth, parentHeight, radius)
+            }
+        }
+
         binding.arrowAnimationView.isVisible = false
         binding.faceAnimationView.isVisible = false
         binding.stageSuccessAnimBorder.isVisible = false

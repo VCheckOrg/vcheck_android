@@ -10,8 +10,9 @@ class CircleOverlayView : LinearLayout {
 
     private var bitmap: Bitmap? = null
 
-    private var holeWidth: Int = 2
-    private var holeHeight: Int = 2
+    private var parentWidth: Int = 4
+    private var parentHeight: Int = 4
+    private var radius: Int = 2
 
     constructor(context: Context?) : super(context) {}
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {}
@@ -33,13 +34,16 @@ class CircleOverlayView : LinearLayout {
 
         val paint = Paint(Paint.ANTI_ALIAS_FLAG)
 
-        paint.color = resources.getColor(R.color.vcheck_stream_ui_mask)
-        paint.alpha = 99
+        paint.color = resources.getColor(R.color.vcheck_background_secondary)
+
+        //paint.alpha = 99 // no need alpha setting here
 
         osCanvas.drawRect(outerRectangle, paint)
+
+        //osCanvas.drawRoundRect(outerRectangle, 10F, 10F, paint) - rounded corners option
     }
 
-    private fun drawTransparentRect() {
+    private fun drawTransparentCircle() {
 
         val osCanvas = Canvas(bitmap!!)
 
@@ -48,10 +52,10 @@ class CircleOverlayView : LinearLayout {
         paint.color = Color.TRANSPARENT
         paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_OUT)
 
-        val centerX = (width / 2).toFloat()
-        val centerY = (height / 2).toFloat()
+        val centerX = (parentWidth / 2).toFloat()
+        val centerY = (parentHeight / 2).toFloat()
 
-        val radius = (width - (width / 6)).toFloat()
+        val radius = radius.toFloat() //?
 
         osCanvas.drawCircle(centerX, centerY, radius, paint)
     }
@@ -65,11 +69,12 @@ class CircleOverlayView : LinearLayout {
         bitmap = null
     }
 
-    fun setRectHoleSize(width: Int, height: Int) {
-        this.holeWidth = width
-        this.holeHeight = height
+    fun setCircleHoleSize(parentWidth: Int, parentHeight: Int, radius: Int) {
+        this.parentWidth = parentWidth
+        this.parentHeight = parentHeight
+        this.radius = radius
         //createWindowFrame()
-        drawTransparentRect()
+        drawTransparentCircle()
     }
 }
 
