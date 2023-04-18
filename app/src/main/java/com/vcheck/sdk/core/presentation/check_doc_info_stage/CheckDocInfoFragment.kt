@@ -134,7 +134,7 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
 
 
         binding.checkInfoConfirmButton.setOnClickListener {
-            if (checkIfAnyFieldEmpty()) {
+            if (checkIfAnyFieldIsNotValid()) {
                 Toast.makeText((activity as VCheckMainActivity),
                     R.string.check_doc_fields_validation_error, Toast.LENGTH_LONG).show()
             } else {
@@ -183,7 +183,7 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
         }
     }
 
-    private fun checkIfAnyFieldEmpty(): Boolean {
+    private fun checkIfAnyFieldIsNotValid(): Boolean {
         var hasValidationErrors: Boolean = false
         dataList.forEach {
             if (it.autoParsedValue.length < 2) {

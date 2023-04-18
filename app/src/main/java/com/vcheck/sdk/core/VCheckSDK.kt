@@ -43,6 +43,7 @@ object VCheckSDK {
     internal var secondaryTextColorHex: String? = null
     internal var borderColorHex: String? = null
     internal var iconsColorHex: String? = null
+    internal var colorButtonsText: String? = null
 
     private const val wrongColorFormatPickDescr: String = "VCheckSDK - error: if provided, " +
             "custom color should be a valid HEX string (RGB or ARGB). Ex.: '#2A2A2A' or '#abdbe3'"
@@ -204,8 +205,14 @@ object VCheckSDK {
         return this
     }
 
+    fun colorButtonsText(colorHex: String): VCheckSDK {
+        this.colorButtonsText = colorHex
+        return this
+    }
+
     fun resetCustomColors() {
         this.buttonsColorHex = null
+        this.colorButtonsText = null
         this.backgroundPrimaryColorHex = null
         this.backgroundSecondaryColorHex = null
         this.backgroundTertiaryColorHex = null
