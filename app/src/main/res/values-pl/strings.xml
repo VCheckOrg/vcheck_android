@@ -179,4 +179,6 @@
 
     <string name="enter_valid_exp_date">Proszę wpisać prawidłowy termin ważności dokumentu</string>
 
+    <string name="verification_expired">Sesja weryfikacyjna wygasła. Proszę spróbuj ponownie.</string>
+
 </resources>

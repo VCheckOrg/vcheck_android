@@ -188,7 +188,7 @@
     <string name="good_doc_light_text">well lit</string>
 
     <string name="enter_valid_exp_date">Enter a valid expiration date of your document</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="verification_expired">Verification session expired. Please, try again.</string>
 
 </resources>

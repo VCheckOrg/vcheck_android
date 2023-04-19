@@ -1,5 +1,6 @@
 package com.vcheck.sdk.core.presentation.liveness.ui.in_process
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -23,6 +24,7 @@ import com.vcheck.sdk.core.data.Resource
 import com.vcheck.sdk.core.databinding.InProcessFragmentBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.*
+import com.vcheck.sdk.core.presentation.VCheckStartupActivity
 import com.vcheck.sdk.core.presentation.liveness.VCheckLivenessActivity
 import com.vcheck.sdk.core.util.ThemeWrapperFragment
 import com.vcheck.sdk.core.util.getFolderSizeLabel
@@ -170,6 +172,10 @@ class InProcessFragment : ThemeWrapperFragment() {
         _viewModel.stageResponse.observe(viewLifecycleOwner) {
             if (it.data?.errorCode == null || it.data.errorCode == StageObstacleErrorType.USER_INTERACTED_COMPLETED.toTypeIdx()) {
                 (activity as VCheckLivenessActivity).closeSDKFlow(true)
+            } else if (it.data.errorCode != null
+                && it.data.errorCode == StageObstacleErrorType.VERIFICATION_EXPIRED.toTypeIdx()) {
+                Toast.makeText(requireContext(), R.string.verification_expired, Toast.LENGTH_LONG).show()
+                closeSDKFlow(shouldExecuteEndCallback = false)
             } else {
                 Toast.makeText(activity, "Stage Error", Toast.LENGTH_LONG).show()
             }
@@ -254,5 +260,13 @@ class InProcessFragment : ThemeWrapperFragment() {
                     "Token is not present!", Toast.LENGTH_LONG).show()
             }
         }
+    }
+
+    private fun closeSDKFlow(shouldExecuteEndCallback: Boolean) {
+        (VCheckDIContainer).mainRepository.setFirePartnerCallback(shouldExecuteEndCallback)
+        (VCheckDIContainer).mainRepository.setFinishStartupActivity(true)
+        val intents = Intent(requireActivity(), VCheckStartupActivity::class.java)
+        intents.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        startActivity(intents)
     }
 }

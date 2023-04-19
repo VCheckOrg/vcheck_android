@@ -31,13 +31,15 @@ data class LivenessStageConfig(
 
 enum class StageObstacleErrorType {
     VERIFICATION_NOT_INITIALIZED,
-    USER_INTERACTED_COMPLETED
+    USER_INTERACTED_COMPLETED,
+    VERIFICATION_EXPIRED
 }
 
 fun StageObstacleErrorType.toTypeIdx(): Int {
     return when(this) {
         StageObstacleErrorType.VERIFICATION_NOT_INITIALIZED -> 0
         StageObstacleErrorType.USER_INTERACTED_COMPLETED -> 1
+        StageObstacleErrorType.VERIFICATION_EXPIRED -> 2
     }
 }
 
@@ -45,7 +47,8 @@ fun stageObstacleTypeIdxToError(stageObstacleTypeIdx: Int): StageObstacleErrorTy
     return when(stageObstacleTypeIdx) {
         0 -> StageObstacleErrorType.VERIFICATION_NOT_INITIALIZED
         1 -> StageObstacleErrorType.USER_INTERACTED_COMPLETED
-        else -> StageObstacleErrorType.USER_INTERACTED_COMPLETED //!
+        2 -> StageObstacleErrorType.VERIFICATION_EXPIRED
+        else -> StageObstacleErrorType.USER_INTERACTED_COMPLETED
     }
 }
 

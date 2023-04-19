@@ -72,8 +72,9 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/providers_list"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginTop="22dp"
+                android:layout_height="match_parent"
+                android:layout_marginTop="190dp"
+                android:layout_marginBottom="12dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

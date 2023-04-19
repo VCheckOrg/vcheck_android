@@ -179,4 +179,6 @@
 
     <string name="enter_valid_exp_date">Введите валидный срок действия документа</string>
 
+    <string name="verification_expired">Сеанс верификации истек. Пожалуйста, попробуйте еще раз.</string>
+
 </resources>
