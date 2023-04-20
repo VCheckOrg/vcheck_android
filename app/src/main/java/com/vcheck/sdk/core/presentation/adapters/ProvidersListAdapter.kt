@@ -51,6 +51,9 @@ class ProvidersListAdapter(private val providersList: List<Provider>,
             VCheckSDK.secondaryTextColorHex?.let {
                 binding.verifMethodSubtitleVcheck.setTextColor(Color.parseColor(it))
             }
+            VCheckSDK.borderColorHex?.let {
+                binding.methodCardVcheck.setCardBackgroundColor(Color.parseColor(it))
+            }
 
             binding.cardVcheckBackground.setOnClickListener {
                 onProviderItemClick.onClick(provider)

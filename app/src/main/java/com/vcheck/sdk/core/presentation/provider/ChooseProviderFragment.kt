@@ -28,7 +28,7 @@ class ChooseProviderFragment : Fragment(), ProvidersListAdapter.OnProviderItemCl
             _binding!!.chooseProviderBackground.background = ColorDrawable(Color.parseColor(it))
         }
         VCheckSDK.backgroundSecondaryColorHex?.let {
-            _binding!!.holderCard.background = ColorDrawable(Color.parseColor(it))
+            _binding!!.holderCard.setCardBackgroundColor(Color.parseColor(it))
         }
         VCheckSDK.primaryTextColorHex?.let {
             _binding!!.chooseMethodTitle.setTextColor(Color.parseColor(it))
