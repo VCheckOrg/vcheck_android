@@ -43,7 +43,7 @@ class ProvidersListAdapter(private val providersList: List<Provider>,
             }
 
             VCheckSDK.backgroundTertiaryColorHex?.let {
-                binding.cardVcheckBackground.background = ColorDrawable(Color.parseColor(it))
+                binding.cardVcheckBackground.setCardBackgroundColor(Color.parseColor(it))
             }
             VCheckSDK.primaryTextColorHex?.let {
                 binding.verifMethodTitleVcheck.setTextColor(Color.parseColor(it))

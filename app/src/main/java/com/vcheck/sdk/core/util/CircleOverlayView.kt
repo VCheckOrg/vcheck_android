@@ -5,6 +5,7 @@ import android.graphics.*
 import android.util.AttributeSet
 import android.widget.LinearLayout
 import com.vcheck.sdk.core.R
+import com.vcheck.sdk.core.VCheckSDK
 
 class CircleOverlayView : LinearLayout {
 
@@ -36,9 +37,13 @@ class CircleOverlayView : LinearLayout {
 
         paint.color = resources.getColor(R.color.vcheck_background_secondary)
 
-        //paint.alpha = 99 // no need alpha setting here
+        VCheckSDK.backgroundSecondaryColorHex?.let {
+            paint.color = Color.parseColor(it)
+        }
 
         osCanvas.drawRect(outerRectangle, paint)
+
+        //paint.alpha = 99 // no need alpha setting here
 
         //osCanvas.drawRoundRect(outerRectangle, 10F, 10F, paint) - rounded corners option
     }

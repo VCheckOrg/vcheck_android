@@ -83,10 +83,11 @@ class VCheckLivenessActivity : AppCompatActivity() {
     var videoPath: String? = null
 
     private fun changeColorsToCustomIfPresent() {
-        val drawable = binding.cosmeticRoundedFrame.background as GradientDrawable
+        val animFrameDrawable = binding.cosmeticRoundedFrame.background as GradientDrawable
+        val faceFrameDrawable = binding.livenessCircleFrame.background as GradientDrawable
         VCheckSDK.backgroundPrimaryColorHex?.let {
             binding.livenessActivityBackground.setBackgroundColor(Color.parseColor(it))
-            drawable.setColor(Color.parseColor(it))
+            animFrameDrawable.setColor(Color.parseColor(it))
             changeStatusBarColor(Color.parseColor(it))
         }
         VCheckSDK.primaryTextColorHex?.let {
@@ -95,7 +96,8 @@ class VCheckLivenessActivity : AppCompatActivity() {
             binding.checkFaceTitle.setTextColor(Color.parseColor(it))
         }
         VCheckSDK.borderColorHex?.let {
-            drawable.setStroke(7, Color.parseColor(it))
+            animFrameDrawable.setStroke(7, Color.parseColor(it))
+            faceFrameDrawable.setStroke(7, Color.parseColor(it))
         }
     }
 
