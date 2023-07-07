@@ -13,17 +13,23 @@ import androidx.navigation.fragment.navArgs
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.databinding.ChooseCountryFragmentBinding
+import com.vcheck.sdk.core.di.VCheckDIContainer
+import com.vcheck.sdk.core.domain.CountryTO
 import com.vcheck.sdk.core.presentation.transferrable_objects.ChooseProviderLogicTO
 import com.vcheck.sdk.core.presentation.transferrable_objects.CountriesListTO
 import com.vcheck.sdk.core.presentation.transferrable_objects.ProviderLogicCase
 import com.vcheck.sdk.core.util.ThemeWrapperFragment
 import com.vcheck.sdk.core.util.toFlagEmoji
+import java.text.Collator
 import java.util.*
+import kotlin.collections.ArrayList
 
 class ChooseCountryFragment : ThemeWrapperFragment() {
 
     private lateinit var binding: ChooseCountryFragmentBinding
     private val args: ChooseCountryFragmentArgs by navArgs()
+
+    private lateinit var _viewModel: ChooseCountryViewModel
 
     override fun changeColorsToCustomIfPresent() {
         VCheckSDK.buttonsColorHex?.let {
@@ -56,10 +62,13 @@ class ChooseCountryFragment : ThemeWrapperFragment() {
         return inflater.inflate(R.layout.choose_country_fragment, container, false)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        _viewModel = ChooseCountryViewModel(VCheckDIContainer.mainRepository)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val countryList = args.countriesListTO.countriesList
 
         binding = ChooseCountryFragmentBinding.bind(view)
 
@@ -69,10 +78,39 @@ class ChooseCountryFragment : ThemeWrapperFragment() {
             //Stub; no back press needed here
         }
 
+        _viewModel.priorityCountriesResponse.observe(viewLifecycleOwner) {
+            if (it.data != null) {
+                setContent(it.data.data ?: emptyList())
+            }
+        }
+    }
+
+    private fun setContent(priorityCountries: List<String>) {
+        val initialCountryList = args.countriesListTO.countriesList
+
+        val providerCountries = initialCountryList.sortedWith { s1, s2 ->
+            Collator.getInstance(Locale("")).compare(s1.name, s2.name)
+        }.toList()
+
+        val bottomCountries = emptyList<CountryTO>().toMutableList()
+        val topCountryItems = emptyList<CountryTO>().toMutableList()
+
+        providerCountries.forEach { countryTO ->
+            if (priorityCountries.contains(countryTO.code)) {
+                topCountryItems += countryTO
+            } else {
+                bottomCountries += countryTO
+            }
+        }
+
+        topCountryItems.addAll(bottomCountries)
+
+        val finalList: ArrayList<CountryTO> = ArrayList(topCountryItems)
+
         binding.chooseCountryCard.setOnClickListener {
             val action =
                 ChooseCountryFragmentDirections.actionChooseCountryFragmentToCountryListFragment(
-                    CountriesListTO(countryList))
+                    CountriesListTO(finalList))
             findNavController().navigate(action)
         }
 

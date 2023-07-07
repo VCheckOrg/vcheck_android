@@ -11,6 +11,9 @@ interface VerificationApiClient {
     @GET("providers")
     fun getProviders(@Header("Authorization") verifToken: String): Call<ProvidersResponse>
 
+    @GET("providers/priority_countries")
+    fun getPriorityCountries(@Header("Authorization") verifToken: String): Call<PriorityCountries>
+
     @PUT("providers/init")
     fun initProvider(@Header("Authorization") verifToken: String,
                      @Body initProviderRequestBody: InitProviderRequestBody): Call<Response<Void>>

@@ -177,3 +177,16 @@ fun saveImageToStream(bitmap: Bitmap, outputStream: OutputStream?) {
         }
     }
 }
+
+
+inline fun <T> List<T>.moveItemToFirstPosition(predicate: (T) -> Boolean): List<T> {
+    for (element in this.withIndex()) {
+        if (predicate(element.value)) {
+            return this.toMutableList().apply {
+                removeAt(element.index)
+                add(0, element.value)
+            }.toList()
+        }
+    }
+    return this
+}

@@ -19,7 +19,6 @@ import com.vcheck.sdk.core.domain.CountryTO
 import com.vcheck.sdk.core.presentation.adapters.CountryListAdapter
 import com.vcheck.sdk.core.presentation.adapters.SearchCountryCallback
 import com.vcheck.sdk.core.util.ThemeWrapperFragment
-import java.text.Collator
 import java.util.*
 
 
@@ -70,16 +69,30 @@ class CountryListFragment : ThemeWrapperFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setCountriesList()
-
         _binding = CountryListFragmentBinding.bind(view)
 
         changeColorsToCustomIfPresent()
 
+        setContent()
+    }
+
+    override fun onClick(country: String) {
+        VCheckSDK.setOptSelectedCountryCode(country)
+        findNavController().popBackStack()
+    }
+
+    override fun onEmptySearchResult() {
+        _binding!!.countriesList.isVisible = false
+        _binding!!.tvNoCountriesFoundPlaceholder.isVisible = true
+    }
+
+    private fun setContent() {
+
+        setCountriesList(args.countriesListTO.countriesList)
+
         _binding!!.tvNoCountriesFoundPlaceholder.isVisible = false
 
-        val countryListAdapter = CountryListAdapter(
-            countriesList,
+        val countryListAdapter = CountryListAdapter(countriesList,
             this@CountryListFragment, this@CountryListFragment)
 
         _binding!!.countriesList.adapter = countryListAdapter
@@ -106,18 +119,8 @@ class CountryListFragment : ThemeWrapperFragment(),
         }
     }
 
-    override fun onClick(country: String) {
-        VCheckSDK.setOptSelectedCountryCode(country)
-        findNavController().popBackStack()
-    }
-
-    override fun onEmptySearchResult() {
-        _binding!!.countriesList.isVisible = false
-        _binding!!.tvNoCountriesFoundPlaceholder.isVisible = true
-    }
-
-    private fun setCountriesList() {
-        countriesList = args.countriesListTO.countriesList.map {
+    private fun setCountriesList(finalList: List<CountryTO>) {
+        countriesList = finalList.map {
 
             when (it.code) {
                 "us" -> CountryTO(
@@ -146,8 +149,6 @@ class CountryListFragment : ThemeWrapperFragment(),
                 )
             }
 
-        }.sortedWith { s1, s2 ->
-            Collator.getInstance(Locale("")).compare(s1.name, s2.name)
         }.toList()
     }
 }

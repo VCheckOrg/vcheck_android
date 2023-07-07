@@ -31,3 +31,11 @@ data class InitProviderRequestBody(
     val country: String?
 )
 
+data class PriorityCountries (
+    @SerializedName("data")
+    val data: List<String>?, // simple list of country codes
+    @SerializedName("error_code")
+    var errorCode: Int = 0,
+    @SerializedName("message")
+    var message: String = "")
+

@@ -20,6 +20,11 @@ class MainRepository(
         else MutableLiveData(Resource.error(ApiError(null, BaseClientErrors.NO_TOKEN_AVAILABLE)))
     }
 
+    fun getPriorityCountries(): MutableLiveData<Resource<PriorityCountries>> {
+        return if (isTokenPresent()) remoteDatasource.getPriorityCountries()
+        else MutableLiveData(Resource.error(ApiError(null, BaseClientErrors.NO_TOKEN_AVAILABLE)))
+    }
+
     fun initProvider(initProviderRequestBody: InitProviderRequestBody)
             : MutableLiveData<Resource<Response<Void>>> {
         return if (isTokenPresent()) remoteDatasource.initProvider(initProviderRequestBody)
@@ -143,9 +148,3 @@ class MainRepository(
         return localDatasource.isPhotoUploadManual()
     }
 }
-
-//    obsolete
-//    fun getCountries(): MutableLiveData<Resource<CountriesResponse>> {
-//        return if (isTokenPresent()) remoteDatasource.getCountries()
-//        else MutableLiveData(Resource.error(ApiError(null, BaseClientErrors.NO_TOKEN_AVAILABLE)))
-//    }
