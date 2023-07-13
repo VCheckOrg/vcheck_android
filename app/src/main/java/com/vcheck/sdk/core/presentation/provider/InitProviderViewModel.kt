@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.vcheck.sdk.core.data.MainRepository
 import com.vcheck.sdk.core.data.Resource
+import com.vcheck.sdk.core.domain.ApiError
 import com.vcheck.sdk.core.domain.InitProviderRequestBody
 import com.vcheck.sdk.core.domain.StageResponse
 import retrofit2.Response
@@ -14,7 +15,7 @@ class InitProviderViewModel (val repository: MainRepository) : ViewModel() {
 
     var stageResponse: MutableLiveData<Resource<StageResponse>> = MutableLiveData()
 
-    val clientError: MutableLiveData<String?> = MutableLiveData(null)
+    val clientError: MutableLiveData<ApiError?> = MutableLiveData(null)
 
     fun initProvider(initProviderRequestBody: InitProviderRequestBody) {
         repository.initProvider(initProviderRequestBody).observeForever {
@@ -36,7 +37,7 @@ class InitProviderViewModel (val repository: MainRepository) : ViewModel() {
                 initProviderResponse.value = response
             }
             Resource.Status.ERROR -> {
-                clientError.value = response.apiError!!.errorText
+                clientError.value = response.apiError
             }
         }
     }
@@ -49,7 +50,7 @@ class InitProviderViewModel (val repository: MainRepository) : ViewModel() {
                 stageResponse.value = response
             }
             Resource.Status.ERROR -> {
-                clientError.value = response.apiError!!.errorText
+                clientError.value = response.apiError
             }
         }
     }

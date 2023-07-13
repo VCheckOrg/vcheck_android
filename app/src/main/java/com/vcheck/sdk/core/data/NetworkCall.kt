@@ -40,6 +40,7 @@ open class NetworkCall<T> {
                         Log.w("OkHttpClient", "Error parsing JSON on non-0 code")
                         BaseClientResponseModel(null, response.code(), "${response.code()}")
                     }
+                //TODO make check on 400 code (?)! only in 1 place!
                 result.value = Resource.error(
                     ApiError(errorResponse, "Error: [${response.code()}] | ${errorResponse.message}"))
             }

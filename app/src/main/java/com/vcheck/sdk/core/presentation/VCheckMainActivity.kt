@@ -2,16 +2,15 @@ package com.vcheck.sdk.core.presentation
 
 import android.content.Context
 import android.content.ContextWrapper
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.databinding.ActivityVcheckMainBinding
-import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.util.VCheckContextUtils
 import com.vcheck.sdk.core.util.changeStatusBarColor
+import com.vcheck.sdk.core.util.closeSDKFlow
 
 internal class VCheckMainActivity : AppCompatActivity() {
 
@@ -70,11 +69,5 @@ internal class VCheckMainActivity : AppCompatActivity() {
         }
     }
 
-    fun closeSDKFlow(shouldExecuteEndCallback: Boolean) {
-        (VCheckDIContainer).mainRepository.setFirePartnerCallback(shouldExecuteEndCallback)
-        (VCheckDIContainer).mainRepository.setFinishStartupActivity(true)
-        val intents = Intent(this@VCheckMainActivity, VCheckStartupActivity::class.java)
-        intents.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        startActivity(intents)
-    }
+
 }

@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -24,6 +25,8 @@ import com.vcheck.sdk.core.presentation.VCheckMainActivity
 import com.vcheck.sdk.core.presentation.adapters.CheckDocInfoAdapter
 import com.vcheck.sdk.core.presentation.adapters.DocInfoEditCallback
 import com.vcheck.sdk.core.util.ThemeWrapperFragment
+import com.vcheck.sdk.core.util.checkUserInteractionCompletedForResult
+import com.vcheck.sdk.core.util.closeSDKFlow
 import com.vcheck.sdk.core.util.isValidDocRelatedDate
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -107,10 +110,11 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
         binding.docInfoList.adapter = adapter
 
         viewModel.documentInfoResponse.observe(viewLifecycleOwner) {
+            (requireActivity() as AppCompatActivity)
+                .checkUserInteractionCompletedForResult(it.data?.errorCode)
+
             if (it.data?.data != null) {
-
                 populateDocImages(it.data.data)
-
                 populateDocFields(it.data.data, currentLocaleCode)
             }
         }
@@ -122,6 +126,9 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
         }
 
         viewModel.stageResponse.observe(viewLifecycleOwner) {
+            (requireActivity() as AppCompatActivity)
+                .checkUserInteractionCompletedForResult(it.data?.errorCode)
+
             if (it.data?.data?.config != null) {
                 viewModel.repository.setLivenessMilestonesList((it.data.data.config.gestures))
                 findNavController().navigate(R.id.action_checkDocInfoFragment_to_livenessInstructionsFragment)
@@ -130,8 +137,12 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
             }
         }
 
-        viewModel.getDocumentInfo(uploadedDocID!!)
+        viewModel.clientError.observe(viewLifecycleOwner) {
+            (requireActivity() as AppCompatActivity)
+                .checkUserInteractionCompletedForResult(it?.errorData?.errorCode)
 
+            if (it != null) Toast.makeText(activity, it.errorText, Toast.LENGTH_LONG).show()
+        }
 
         binding.checkInfoConfirmButton.setOnClickListener {
             if (checkIfAnyFieldIsNotValid()) {
@@ -142,9 +153,7 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
             }
         }
 
-        viewModel.clientError.observe(viewLifecycleOwner) {
-            if (it != null) Toast.makeText(activity, it, Toast.LENGTH_LONG).show()
-        }
+        viewModel.getDocumentInfo(uploadedDocID!!)
     }
 
     private fun populateDocImages(data: PreProcessedDocData) {

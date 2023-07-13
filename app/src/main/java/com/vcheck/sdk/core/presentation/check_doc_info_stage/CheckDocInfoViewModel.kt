@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.vcheck.sdk.core.data.MainRepository
 import com.vcheck.sdk.core.data.Resource
+import com.vcheck.sdk.core.domain.ApiError
 import com.vcheck.sdk.core.domain.DocUserDataRequestBody
 import com.vcheck.sdk.core.domain.PreProcessedDocumentResponse
 import com.vcheck.sdk.core.domain.StageResponse
@@ -12,7 +13,7 @@ import retrofit2.Response
 
 class CheckDocInfoViewModel(val repository: MainRepository) : ViewModel() {
 
-    val clientError: MutableLiveData<String?> = MutableLiveData(null)
+    val clientError: MutableLiveData<ApiError?> = MutableLiveData(null)
 
     var confirmedDocResponse: MutableLiveData<Resource<Response<Void>>?> = MutableLiveData(null)
 
@@ -49,7 +50,7 @@ class CheckDocInfoViewModel(val repository: MainRepository) : ViewModel() {
                 confirmedDocResponse.value = response
             }
             Resource.Status.ERROR -> {
-                clientError.value = response.apiError!!.errorText
+                clientError.value = response.apiError
             }
         }
     }

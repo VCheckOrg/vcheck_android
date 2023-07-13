@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.vcheck.sdk.core.R
@@ -18,6 +19,7 @@ import com.vcheck.sdk.core.databinding.FragmentInitProviderBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.*
 import com.vcheck.sdk.core.presentation.VCheckStartupActivity
+import com.vcheck.sdk.core.util.checkUserInteractionCompletedForResult
 
 class InitProviderFragment : Fragment() {
 
@@ -55,19 +57,30 @@ class InitProviderFragment : Fragment() {
             VCheckSDK.getOptSelectedCountryCode()) // country is optional here, may be nullable
 
         _viewModel.initProviderResponse.observe(viewLifecycleOwner) {
+
+            //TODO ! 400 code check?
+
             if (it != null) {
                 _viewModel.getCurrentStage()
             }
         }
 
         _viewModel.stageResponse.observe(viewLifecycleOwner) {
+
+            (requireActivity() as AppCompatActivity)
+                .checkUserInteractionCompletedForResult(it.data?.errorCode)
+
             processStageData(it)
         }
 
         _viewModel.clientError.observe(viewLifecycleOwner) {
+
+            (requireActivity() as AppCompatActivity)
+                .checkUserInteractionCompletedForResult(it?.errorData?.errorCode)
+
             if (it != null) {
                 _binding!!.startCallChainLoadingIndicator.isVisible = false
-                Toast.makeText(activity, it, Toast.LENGTH_LONG).show()
+                Toast.makeText(activity, it.errorText, Toast.LENGTH_LONG).show()
             }
         }
 

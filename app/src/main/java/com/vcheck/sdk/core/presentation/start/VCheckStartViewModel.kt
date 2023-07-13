@@ -7,7 +7,7 @@ import com.vcheck.sdk.core.domain.*
 
 internal class VCheckStartViewModel (val repository: MainRepository) : ViewModel() {
 
-    val clientError: MutableLiveData<String?> = MutableLiveData(null)
+    val clientError: MutableLiveData<ApiError?> = MutableLiveData(null)
 
     var timestampResponse: MutableLiveData<Resource<String>> = MutableLiveData()
     var initResponse: MutableLiveData<Resource<VerificationInitResponse>> = MutableLiveData()
@@ -42,7 +42,7 @@ internal class VCheckStartViewModel (val repository: MainRepository) : ViewModel
                 }
             }
             Resource.Status.ERROR -> {
-                clientError.value = response.apiError!!.errorText
+                clientError.value = response.apiError
             }
         }
     }
@@ -55,7 +55,7 @@ internal class VCheckStartViewModel (val repository: MainRepository) : ViewModel
                 initResponse.value = response
             }
             Resource.Status.ERROR -> {
-                clientError.value = response.apiError!!.errorText
+                clientError.value = response.apiError
             }
         }
     }
@@ -68,7 +68,7 @@ internal class VCheckStartViewModel (val repository: MainRepository) : ViewModel
                 providersResponse.value = response
             }
             Resource.Status.ERROR -> {
-                clientError.value = response.apiError!!.errorText
+                clientError.value = response.apiError
             }
         }
     }

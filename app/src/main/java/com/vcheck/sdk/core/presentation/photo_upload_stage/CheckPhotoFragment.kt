@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -30,6 +31,7 @@ import com.vcheck.sdk.core.presentation.transferrable_objects.CheckDocInfoDataTO
 import com.vcheck.sdk.core.presentation.transferrable_objects.PhotoUploadType
 import com.vcheck.sdk.core.presentation.transferrable_objects.ZoomPhotoTO
 import com.vcheck.sdk.core.util.ThemeWrapperFragment
+import com.vcheck.sdk.core.util.checkUserInteractionCompletedForResult
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.MultipartBody.Part.Companion.createFormData
@@ -42,6 +44,10 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
     private lateinit var _viewModel: CheckPhotoViewModel
     private var _binding: CheckPhotoFragmentBinding? = null
     private val args: CheckPhotoFragmentArgs by navArgs()
+
+    private val firstMultipartFileName = "0.jpg"
+    private val secondMultipartFileName = "1.jpg"
+    private val fileMediaType = "image/jpeg"
 
     private val mStartForResult: ActivityResultLauncher<Intent> = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()) {
@@ -176,14 +182,17 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
 
                 val multipartList: ArrayList<MultipartBody.Part> = ArrayList()
                 val photoFile1 = File(args.checkPhotoDataTO.photo1Path)
+
                 val filePartPhoto1: MultipartBody.Part = createFormData(
-                    "0.jpg", photoFile1.name, photoFile1.asRequestBody("image/jpeg".toMediaType())) // image/*
+                    firstMultipartFileName, photoFile1.name,
+                    photoFile1.asRequestBody(fileMediaType.toMediaType())) // image/*
                 multipartList.add(filePartPhoto1)
 
                 if (args.checkPhotoDataTO.photo2Path != null) {
                     val photoFile2 = File(args.checkPhotoDataTO.photo2Path!!)
                     val filePartPhoto2: MultipartBody.Part = createFormData(
-                        "1.jpg", photoFile2.name, photoFile2.asRequestBody("image/jpeg".toMediaType())) // image/*
+                        secondMultipartFileName, photoFile2.name,
+                        photoFile2.asRequestBody(fileMediaType.toMediaType())) // image/*
                     multipartList.add(filePartPhoto2)
                 }
 
@@ -196,10 +205,16 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
             }
 
             _viewModel.uploadErrorResponse.observe(viewLifecycleOwner) {
+                (requireActivity() as AppCompatActivity)
+                    .checkUserInteractionCompletedForResult(it?.errorCode)
+
                 handleDocErrorResponse(it)
             }
 
             _viewModel.uploadResponse.observe(viewLifecycleOwner) {
+                (requireActivity() as AppCompatActivity)
+                    .checkUserInteractionCompletedForResult(it.data?.errorCode)
+
                 handleDocUploadResponse(it)
             }
         }

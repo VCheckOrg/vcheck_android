@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.vcheck.sdk.core.R
@@ -16,6 +17,7 @@ import com.vcheck.sdk.core.domain.DocType
 import com.vcheck.sdk.core.domain.DocTypeData
 import com.vcheck.sdk.core.domain.docCategoryIdxToType
 import com.vcheck.sdk.core.util.ThemeWrapperFragment
+import com.vcheck.sdk.core.util.checkUserInteractionCompletedForResult
 
 
 class ChooseDocMethodFragment : ThemeWrapperFragment() {
@@ -89,6 +91,10 @@ class ChooseDocMethodFragment : ThemeWrapperFragment() {
         //assuming that provider should have country in the scenario of country choosing
 
         _viewModel.docTypesResponse.observe(viewLifecycleOwner) {
+
+            (requireActivity() as AppCompatActivity)
+                .checkUserInteractionCompletedForResult(it.data?.errorCode)
+
             if (it.data?.data != null) {
                 it.data.data.forEach { docTypeData ->
                     when (docCategoryIdxToType(docTypeData.category)) {

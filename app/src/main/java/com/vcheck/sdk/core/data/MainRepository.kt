@@ -17,29 +17,29 @@ class MainRepository(
 
     fun getProviders(): MutableLiveData<Resource<ProvidersResponse>> {
         return if (isTokenPresent()) remoteDatasource.getProviders()
-        else MutableLiveData(Resource.error(ApiError(null, BaseClientErrors.NO_TOKEN_AVAILABLE)))
+        else MutableLiveData(Resource.error(ApiError(null, BaseClientErrors.NO_TOKEN_AVAILABLE_STR)))
     }
 
     fun getPriorityCountries(): MutableLiveData<Resource<PriorityCountries>> {
         return if (isTokenPresent()) remoteDatasource.getPriorityCountries()
-        else MutableLiveData(Resource.error(ApiError(null, BaseClientErrors.NO_TOKEN_AVAILABLE)))
+        else MutableLiveData(Resource.error(ApiError(null, BaseClientErrors.NO_TOKEN_AVAILABLE_STR)))
     }
 
     fun initProvider(initProviderRequestBody: InitProviderRequestBody)
             : MutableLiveData<Resource<Response<Void>>> {
         return if (isTokenPresent()) remoteDatasource.initProvider(initProviderRequestBody)
-        else MutableLiveData(Resource.error(ApiError(null, BaseClientErrors.NO_TOKEN_AVAILABLE)))
+        else MutableLiveData(Resource.error(ApiError(null, BaseClientErrors.NO_TOKEN_AVAILABLE_STR)))
     }
 
     fun initVerification(): MutableLiveData<Resource<VerificationInitResponse>> {
         return if (isTokenPresent()) remoteDatasource.initVerification()
-        else MutableLiveData(Resource.error(ApiError(null, BaseClientErrors.NO_TOKEN_AVAILABLE)))
+        else MutableLiveData(Resource.error(ApiError(null, BaseClientErrors.NO_TOKEN_AVAILABLE_STR)))
     }
 
     fun getCountryAvailableDocTypeInfo(countryCode: String)
             : MutableLiveData<Resource<DocumentTypesForCountryResponse>> {
         return if (isTokenPresent()) remoteDatasource.getCountryAvailableDocTypeInfo(countryCode)
-        else MutableLiveData(Resource.error(ApiError(null, BaseClientErrors.NO_TOKEN_AVAILABLE)))
+        else MutableLiveData(Resource.error(ApiError(null, BaseClientErrors.NO_TOKEN_AVAILABLE_STR)))
     }
 
     fun uploadVerificationDocuments(
@@ -47,12 +47,12 @@ class MainRepository(
         images: List<MultipartBody.Part>
     ): MutableLiveData<Resource<DocumentUploadResponse>> {
         return if (isTokenPresent()) remoteDatasource.uploadVerificationDocuments(documentUploadRequestBody, images)
-        else MutableLiveData(Resource.error(ApiError(null, BaseClientErrors.NO_TOKEN_AVAILABLE)))
+        else MutableLiveData(Resource.error(ApiError(null, BaseClientErrors.NO_TOKEN_AVAILABLE_STR)))
     }
 
     fun getDocumentInfo(docId: Int): MutableLiveData<Resource<PreProcessedDocumentResponse>> {
         return if (isTokenPresent()) remoteDatasource.getDocumentInfo(docId)
-        else MutableLiveData(Resource.error(ApiError(null, BaseClientErrors.NO_TOKEN_AVAILABLE)))
+        else MutableLiveData(Resource.error(ApiError(null, BaseClientErrors.NO_TOKEN_AVAILABLE_STR)))
     }
 
     fun updateAndConfirmDocInfo(
@@ -60,13 +60,13 @@ class MainRepository(
         docData: DocUserDataRequestBody,
     ): MutableLiveData<Resource<Response<Void>>> {
         return if (isTokenPresent()) remoteDatasource.updateAndConfirmDocInfo(docId, docData)
-        else MutableLiveData(Resource.error(ApiError(null, BaseClientErrors.NO_TOKEN_AVAILABLE)))
+        else MutableLiveData(Resource.error(ApiError(null, BaseClientErrors.NO_TOKEN_AVAILABLE_STR)))
     }
 
     fun uploadLivenessVideo(video: MultipartBody.Part)
         : MutableLiveData<Resource<LivenessUploadResponse>> {
         return if (isTokenPresent()) remoteDatasource.uploadLivenessVideo(video)
-        else MutableLiveData(Resource.error(ApiError(null,BaseClientErrors.NO_TOKEN_AVAILABLE)))
+        else MutableLiveData(Resource.error(ApiError(null,BaseClientErrors.NO_TOKEN_AVAILABLE_STR)))
     }
 
     fun getActualServiceTimestamp() : MutableLiveData<Resource<String>> {
@@ -75,7 +75,7 @@ class MainRepository(
 
     fun getCurrentStage(): MutableLiveData<Resource<StageResponse>> {
         return if (isTokenPresent()) remoteDatasource.getCurrentStage()
-        else MutableLiveData(Resource.error(ApiError(null,BaseClientErrors.NO_TOKEN_AVAILABLE)))
+        else MutableLiveData(Resource.error(ApiError(null,BaseClientErrors.NO_TOKEN_AVAILABLE_STR)))
     }
 
     fun sendLivenessGestureAttempt(

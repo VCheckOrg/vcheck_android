@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -23,10 +24,10 @@ import com.vcheck.sdk.core.databinding.FragmentDemoStartBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.*
 import com.vcheck.sdk.core.presentation.VCheckMainActivity
-import com.vcheck.sdk.core.presentation.country_stage.ChooseCountryFragmentDirections
 import com.vcheck.sdk.core.presentation.transferrable_objects.ChooseProviderLogicTO
 import com.vcheck.sdk.core.presentation.transferrable_objects.CountriesListTO
 import com.vcheck.sdk.core.presentation.transferrable_objects.ProviderLogicCase
+import com.vcheck.sdk.core.util.checkUserInteractionCompletedForResult
 import com.vcheck.sdk.core.util.toFlagEmoji
 import java.util.*
 
@@ -103,6 +104,8 @@ internal class VCheckStartFragment : Fragment() {
 
         _viewModel.initResponse.observe(viewLifecycleOwner) {
             if (it.data?.data != null && !verificationInitialized) {
+                (requireActivity() as AppCompatActivity)
+                    .checkUserInteractionCompletedForResult(it.data.errorCode)
 
                 verificationInitialized = true
 
@@ -115,17 +118,22 @@ internal class VCheckStartFragment : Fragment() {
         }
 
         _viewModel.providersResponse.observe(viewLifecycleOwner) {
+            (requireActivity() as AppCompatActivity)
+                .checkUserInteractionCompletedForResult(it.data?.errorCode)
+
             processProvidersData(it)
         }
 
         _viewModel.clientError.observe(viewLifecycleOwner) {
+            (requireActivity() as AppCompatActivity)
+                .checkUserInteractionCompletedForResult(it?.errorData?.errorCode)
             if (it != null) {
                 _binding!!.startCallChainLoadingIndicator.isVisible = false
                 _binding!!.btnStartDemoFlow.isVisible = true
                 _binding!!.btnStartDemoFlow.setOnClickListener {
                     performStartupLogic()
                 }
-                Toast.makeText(activity, it, Toast.LENGTH_LONG).show()
+                Toast.makeText(activity, it.errorText, Toast.LENGTH_LONG).show()
             }
         }
     }

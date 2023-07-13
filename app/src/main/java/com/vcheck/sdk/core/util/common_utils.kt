@@ -3,6 +3,7 @@ package com.vcheck.sdk.core.util
 import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.media.Image
 import android.net.Uri
@@ -13,7 +14,11 @@ import android.os.Vibrator
 import android.provider.MediaStore
 import android.util.Patterns
 import android.webkit.URLUtil
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.getSystemService
+import com.vcheck.sdk.core.di.VCheckDIContainer
+import com.vcheck.sdk.core.domain.BaseClientErrors
+import com.vcheck.sdk.core.presentation.VCheckStartupActivity
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
@@ -189,4 +194,23 @@ inline fun <T> List<T>.moveItemToFirstPosition(predicate: (T) -> Boolean): List<
         }
     }
     return this
+}
+
+
+fun AppCompatActivity.closeSDKFlow(shouldExecuteEndCallback: Boolean) {
+    (VCheckDIContainer).mainRepository.setFirePartnerCallback(shouldExecuteEndCallback)
+    (VCheckDIContainer).mainRepository.setFinishStartupActivity(true)
+    val intents = Intent(this, VCheckStartupActivity::class.java)
+    intents.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+    startActivity(intents)
+}
+
+fun AppCompatActivity.checkUserInteractionCompletedForResult(errorCode: Int?) {
+    if (errorCode == BaseClientErrors.USER_INTERACTED_COMPLETED) {
+        (VCheckDIContainer).mainRepository.setFirePartnerCallback(true)
+        (VCheckDIContainer).mainRepository.setFinishStartupActivity(true)
+        val intents = Intent(this, VCheckStartupActivity::class.java)
+        intents.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        startActivity(intents)
+    }
 }

@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.vcheck.sdk.core.R
@@ -19,6 +20,7 @@ import com.vcheck.sdk.core.presentation.transferrable_objects.ChooseProviderLogi
 import com.vcheck.sdk.core.presentation.transferrable_objects.CountriesListTO
 import com.vcheck.sdk.core.presentation.transferrable_objects.ProviderLogicCase
 import com.vcheck.sdk.core.util.ThemeWrapperFragment
+import com.vcheck.sdk.core.util.checkUserInteractionCompletedForResult
 import com.vcheck.sdk.core.util.toFlagEmoji
 import java.text.Collator
 import java.util.*
@@ -30,6 +32,8 @@ class ChooseCountryFragment : ThemeWrapperFragment() {
     private val args: ChooseCountryFragmentArgs by navArgs()
 
     private lateinit var _viewModel: ChooseCountryViewModel
+
+    private var finalCountries: List<CountryTO> = emptyList()
 
     override fun changeColorsToCustomIfPresent() {
         VCheckSDK.buttonsColorHex?.let {
@@ -67,6 +71,12 @@ class ChooseCountryFragment : ThemeWrapperFragment() {
         _viewModel = ChooseCountryViewModel(VCheckDIContainer.mainRepository)
     }
 
+    //TODO test!
+    override fun onResume() {
+        super.onResume()
+        reloadData()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -79,10 +89,16 @@ class ChooseCountryFragment : ThemeWrapperFragment() {
         }
 
         _viewModel.priorityCountriesResponse.observe(viewLifecycleOwner) {
+
+            (requireActivity() as AppCompatActivity)
+                .checkUserInteractionCompletedForResult(it.data?.errorCode)
+
             if (it.data != null) {
                 setContent(it.data.data ?: emptyList())
             }
         }
+
+        _viewModel.getPriorityCountries()
     }
 
     private fun setContent(priorityCountries: List<String>) {
@@ -105,12 +121,14 @@ class ChooseCountryFragment : ThemeWrapperFragment() {
 
         topCountryItems.addAll(bottomCountries)
 
-        val finalList: ArrayList<CountryTO> = ArrayList(topCountryItems)
+        finalCountries = ArrayList(topCountryItems)
+
+        reloadData()
 
         binding.chooseCountryCard.setOnClickListener {
             val action =
                 ChooseCountryFragmentDirections.actionChooseCountryFragmentToCountryListFragment(
-                    CountriesListTO(finalList))
+                    CountriesListTO(finalCountries as ArrayList<CountryTO>))
             findNavController().navigate(action)
         }
 
@@ -144,18 +162,17 @@ class ChooseCountryFragment : ThemeWrapperFragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
+    private fun reloadData() {
 
-        val countries = args.countriesListTO.countriesList
+        //override fun onResume() {
+        //super.onResume()
 
-        //TODO test
         val selectedCountryCode : String = if (VCheckSDK.getOptSelectedCountryCode() != null) {
-            countries.first { it.code == VCheckSDK.getOptSelectedCountryCode() }.code
-        } else if (countries.map { it.code }.contains("ua")) {
+            finalCountries.first { it.code == VCheckSDK.getOptSelectedCountryCode() }.code
+        } else if (finalCountries.map { it.code }.contains("ua")) {
             "ua"
         } else {
-            countries.first().code
+            finalCountries.first().code
         }
 
         VCheckSDK.setOptSelectedCountryCode(selectedCountryCode)

@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
@@ -27,6 +28,7 @@ import com.vcheck.sdk.core.domain.*
 import com.vcheck.sdk.core.presentation.VCheckStartupActivity
 import com.vcheck.sdk.core.presentation.liveness.VCheckLivenessActivity
 import com.vcheck.sdk.core.util.ThemeWrapperFragment
+import com.vcheck.sdk.core.util.checkUserInteractionCompletedForResult
 import com.vcheck.sdk.core.util.getFolderSizeLabel
 import com.vcheck.sdk.core.util.sizeInKb
 import okhttp3.MediaType.Companion.toMediaType
@@ -170,6 +172,9 @@ class InProcessFragment : ThemeWrapperFragment() {
 
     private fun onVideoUploadResponseSuccess() {
         _viewModel.stageResponse.observe(viewLifecycleOwner) {
+            (requireActivity() as AppCompatActivity)
+                .checkUserInteractionCompletedForResult(it.data?.errorCode)
+
             if (it.data?.errorCode == null || it.data.errorCode == StageObstacleErrorType.USER_INTERACTED_COMPLETED.toTypeIdx()) {
                 (activity as VCheckLivenessActivity).closeSDKFlow(true)
             } else if (it.data.errorCode != null
