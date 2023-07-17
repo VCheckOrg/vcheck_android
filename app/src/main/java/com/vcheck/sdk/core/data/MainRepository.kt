@@ -82,7 +82,7 @@ class MainRepository(
         image: MultipartBody.Part,
         gesture: MultipartBody.Part): LivenessGestureResponse? {
         return if (isTokenPresent()) remoteDatasource.sendLivenessGestureAttempt(image, gesture)
-        else null
+        else null //USER_INTERACTED_COMPLETED is not handled for this request
     }
 
     fun sendSegmentationDocAttempt(
@@ -91,7 +91,7 @@ class MainRepository(
         category: String,
         index: String): SegmentationGestureResponse? {
         return if (isTokenPresent()) remoteDatasource.sendSegmentationDocAttempt(image, country, category, index)
-        else null
+        else null //USER_INTERACTED_COMPLETED is not handled for this request
     }
 
     //---- LOCAL SOURCE DATA OPS:

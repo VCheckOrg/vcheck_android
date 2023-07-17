@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.vcheck.sdk.core.domain.ApiError
+import com.vcheck.sdk.core.domain.BaseClientErrors
 import com.vcheck.sdk.core.domain.BaseClientResponseModel
 import retrofit2.Call
 import retrofit2.Callback
@@ -40,9 +41,15 @@ open class NetworkCall<T> {
                         Log.w("OkHttpClient", "Error parsing JSON on non-0 code")
                         BaseClientResponseModel(null, response.code(), "${response.code()}")
                     }
-                //TODO make check on 400 code (?)! only in 1 place!
-                result.value = Resource.error(
-                    ApiError(errorResponse, "Error: [${response.code()}] | ${errorResponse.message}"))
+                //exceptional logic for providers init check:
+                if (!call.request().url.toString().contains("providers/init")) {
+                    result.value = Resource.error(
+                        ApiError(errorResponse, "Error: [${response.code()}] | ${errorResponse.message}"))
+                } else {
+                    if (errorResponse.errorCode == BaseClientErrors.INVALID_STAGE_TYPE) {
+                        result.value = Resource.success(response.body()) //TODO test!
+                    }
+                }
             }
         }
     }

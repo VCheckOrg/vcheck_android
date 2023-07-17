@@ -6,11 +6,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.databinding.FragmentVerifSentBinding
 import com.vcheck.sdk.core.presentation.VCheckMainActivity
 import com.vcheck.sdk.core.util.ThemeWrapperFragment
+import com.vcheck.sdk.core.util.closeSDKFlow
 
 class VerifSentFragment : ThemeWrapperFragment() {
 
@@ -49,7 +51,7 @@ class VerifSentFragment : ThemeWrapperFragment() {
         changeColorsToCustomIfPresent()
 
         _binding!!.successButton.setOnClickListener {
-            (activity as VCheckMainActivity).closeSDKFlow(false)
+            (activity as AppCompatActivity).closeSDKFlow(false)
         }
     }
 }

@@ -96,6 +96,9 @@ class InProcessFragment : ThemeWrapperFragment() {
 
         if (token.isNotEmpty()) {
             _viewModel.uploadResponse.observe(viewLifecycleOwner) {
+                (requireActivity() as AppCompatActivity)
+                    .checkUserInteractionCompletedForResult(it.data?.errorCode)
+
                 if (it != null) {
                     if (it.data != null) {
                         handleVideoUploadResponse(it)
@@ -104,6 +107,9 @@ class InProcessFragment : ThemeWrapperFragment() {
             }
 
             _viewModel.clientError.observe(viewLifecycleOwner) {
+                (requireActivity() as AppCompatActivity)
+                    .checkUserInteractionCompletedForResult(it?.errorData?.errorCode)
+
                 if (it != null) {
                     safeNavToFailFragment(R.id.action_inProcessFragment_to_failVideoUploadFragment)
                 }

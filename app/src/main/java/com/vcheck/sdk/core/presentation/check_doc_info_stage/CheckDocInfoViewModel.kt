@@ -29,7 +29,6 @@ class CheckDocInfoViewModel(val repository: MainRepository) : ViewModel() {
 
     fun updateAndConfirmDocument(docId: Int,
                                  userData: DocUserDataRequestBody) {
-        //Log.i("DOCUMENT", "UPDATING/CONFIRMING DOC: $userData")
         repository.updateAndConfirmDocInfo(docId, userData)
             .observeForever {
                 processConfirmResponse(it)
