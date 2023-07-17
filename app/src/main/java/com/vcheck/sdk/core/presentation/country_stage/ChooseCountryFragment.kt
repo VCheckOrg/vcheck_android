@@ -71,12 +71,6 @@ class ChooseCountryFragment : ThemeWrapperFragment() {
         _viewModel = ChooseCountryViewModel(VCheckDIContainer.mainRepository)
     }
 
-    //TODO test!
-    override fun onResume() {
-        super.onResume()
-        reloadData()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -163,9 +157,6 @@ class ChooseCountryFragment : ThemeWrapperFragment() {
     }
 
     private fun reloadData() {
-
-        //override fun onResume() {
-        //super.onResume()
 
         val selectedCountryCode : String = if (VCheckSDK.getOptSelectedCountryCode() != null) {
             finalCountries.first { it.code == VCheckSDK.getOptSelectedCountryCode() }.code
