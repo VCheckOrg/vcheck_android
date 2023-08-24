@@ -2,6 +2,7 @@ package com.vcheck.sdk.core.domain
 
 
 enum class DocumentVerificationCode {
+    //TODO: add code 12 (?)
     VERIFICATION_NOT_INITIALIZED,// = 0
     USER_INTERACTED_COMPLETED,// = 1
     STAGE_NOT_FOUND,// = 2
@@ -13,7 +14,8 @@ enum class DocumentVerificationCode {
     INVALID_FILES,// = 8
     PHOTO_TOO_LARGE,// = 9
     PARSING_ERROR,// = 10
-    INVALID_PAGE // = 11
+    INVALID_PAGE, // = 11
+    BLUR // = 13
 }
 
 fun DocumentVerificationCode.toCodeIdx(): Int {
@@ -30,6 +32,7 @@ fun DocumentVerificationCode.toCodeIdx(): Int {
         DocumentVerificationCode.PHOTO_TOO_LARGE -> 9
         DocumentVerificationCode.PARSING_ERROR -> 10
         DocumentVerificationCode.INVALID_PAGE -> 11
+        DocumentVerificationCode.BLUR -> 13
     }
 }
 
@@ -47,6 +50,7 @@ fun codeIdxToVerificationCode(codeIdx: Int)
         8 -> DocumentVerificationCode.INVALID_FILES
         9 -> DocumentVerificationCode.PHOTO_TOO_LARGE
         10 -> DocumentVerificationCode.PARSING_ERROR
-        else -> DocumentVerificationCode.INVALID_PAGE
+        11 -> DocumentVerificationCode.INVALID_PAGE
+        else -> DocumentVerificationCode.BLUR
     }
 }

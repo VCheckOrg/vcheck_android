@@ -98,14 +98,10 @@ class ChooseCountryFragment : ThemeWrapperFragment() {
     private fun setContent(priorityCountries: List<String>) {
         val initialCountryList = args.countriesListTO.countriesList
 
-        val providerCountries = initialCountryList.sortedWith { s1, s2 ->
-            Collator.getInstance(Locale("")).compare(s1.name, s2.name)
-        }.toList()
-
         val bottomCountries = emptyList<CountryTO>().toMutableList()
         val topCountryItems = emptyList<CountryTO>().toMutableList()
 
-        providerCountries.forEach { countryTO ->
+        initialCountryList.forEach { countryTO ->
             if (priorityCountries.contains(countryTO.code)) {
                 topCountryItems += countryTO
             } else {
@@ -113,7 +109,9 @@ class ChooseCountryFragment : ThemeWrapperFragment() {
             }
         }
 
-        topCountryItems.addAll(bottomCountries)
+        topCountryItems.addAll(bottomCountries.sortedWith { s1, s2 ->
+            Collator.getInstance(Locale("")).compare(s1.name, s2.name)
+        }.toList())
 
         finalCountries = ArrayList(topCountryItems)
 

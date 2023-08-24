@@ -191,4 +191,7 @@
 
     <string name="verification_expired">Verification session expired. Please, try again.</string>
 
+    <string name="doc_verification_blurred_photo_title">Blurry photo</string>
+    <string name="doc_verification_blurred_photo_desc">Sorry, we can\'t verify due to blurry photo. Please take a clear picture of the document to continue.</string>
+
 </resources>

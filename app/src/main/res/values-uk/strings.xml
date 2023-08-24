@@ -181,4 +181,7 @@
 
     <string name="verification_expired">Сеанс верифікації закінчився. Будь ласка, спробуйте ще раз.</string>
 
+    <string name="doc_verification_blurred_photo_title">Розмите фото</string>
+    <string name="doc_verification_blurred_photo_desc">Вибачте, ми не можемо провести верифікацію через розмитість фотографії. Будь ласка, зробіть чітке зображення документа для продовження</string>
+
 </resources>

@@ -1,5 +1,6 @@
 package com.vcheck.sdk.core.presentation.check_doc_info_stage
 
+
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -10,14 +11,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
-import com.vcheck.sdk.core.databinding.FragmentDocVerificationNotSuccessfulBinding
+import com.vcheck.sdk.core.databinding.FragmentDocBlurBinding
 import com.vcheck.sdk.core.util.ThemeWrapperFragment
 
-class DocVerifErrorFragment : ThemeWrapperFragment() {
+class BlurryPhotoFragment : ThemeWrapperFragment() {
 
     private val args: DocVerifErrorFragmentArgs by navArgs()
 
-    private var _binding: FragmentDocVerificationNotSuccessfulBinding? = null
+    private var _binding: FragmentDocBlurBinding? = null
 
     override fun changeColorsToCustomIfPresent() {
         VCheckSDK.buttonsColorHex?.let {
@@ -49,7 +50,7 @@ class DocVerifErrorFragment : ThemeWrapperFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        _binding = FragmentDocVerificationNotSuccessfulBinding.bind(view)
+        _binding = FragmentDocBlurBinding.bind(view)
 
         changeColorsToCustomIfPresent()
 

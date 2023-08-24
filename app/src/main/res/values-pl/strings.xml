@@ -181,4 +181,7 @@
 
     <string name="verification_expired">Sesja weryfikacyjna wygasła. Proszę spróbuj ponownie.</string>
 
+    <string name="doc_verification_blurred_photo_title">Niewyraźne zdjęcie</string>
+    <string name="doc_verification_blurred_photo_desc">Przepraszamy, nie możemy zweryfikować ze względu na niewyraźne zdjęcie. Aby kontynuować, zrób wyraźne zdjęcie dokumentu.</string>
+
 </resources>
