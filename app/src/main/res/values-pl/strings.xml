@@ -181,7 +181,19 @@
 
     <string name="verification_expired">Sesja weryfikacyjna wygasła. Proszę spróbuj ponownie.</string>
 
-    <string name="doc_verification_blurred_photo_title">Niewyraźne zdjęcie</string>
-    <string name="doc_verification_blurred_photo_desc">Przepraszamy, nie możemy zweryfikować ze względu na niewyraźne zdjęcie. Aby kontynuować, zrób wyraźne zdjęcie dokumentu.</string>
+    <string name="doc_verification_verification_not_initialized">Weryfikacja nie została zainicjowana.</string>
+    <string name="doc_verification_user_interacted_completed">Użytkownik zakończył interakcję.</string>
+    <string name="doc_verification_stage_not_found">Nie znaleziono etapu.</string>
+    <string name="doc_verification_invalid_stage_type">Nieprawidłowy typ etapu.</string>
+    <string name="doc_verification_primary_document_exists">Istnieje dokument podstawowy.</string>
+    <string name="doc_verification_upload_attempts_exceeded">Przekroczono limit prób przesłania.</string>
+    <string name="doc_verification_invalid_document_type">Nieprawidłowy typ dokumentu.</string>
+    <string name="doc_verification_invalid_pages_count">Nieprawidłowa liczba stron.</string>
+    <string name="doc_verification_invalid_files">Nieprawidłowe pliki.</string>
+    <string name="doc_verification_photo_too_large">Zdjęcie jest zbyt duże.</string>
+    <string name="doc_verification_parsing_error">Błąd analizy.</string>
+    <string name="doc_verification_invalid_page">Nieprawidłowa strona.</string>
+    <string name="doc_verification_fraud">Oszustwo.</string>
+    <string name="doc_verification_blur">Przepraszamy, nie możemy zweryfikować ze względu na niewyraźne zdjęcie. Aby kontynuować, zrób wyraźne zdjęcie dokumentu.</string>
 
 </resources>

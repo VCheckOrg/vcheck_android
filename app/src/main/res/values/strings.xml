@@ -191,7 +191,19 @@
 
     <string name="verification_expired">Verification session expired. Please, try again.</string>
 
-    <string name="doc_verification_blurred_photo_title">Blurry photo</string>
-    <string name="doc_verification_blurred_photo_desc">Sorry, we can\'t verify due to blurry photo. Please take a clear picture of the document to continue.</string>
+    <string name="doc_verification_verification_not_initialized">Verification is not initialized.</string>
+    <string name="doc_verification_user_interacted_completed">User interacted completed.</string>
+    <string name="doc_verification_stage_not_found">Stage not found.</string>
+    <string name="doc_verification_invalid_stage_type">Invalid stage type.</string>
+    <string name="doc_verification_primary_document_exists">Primary document exists.</string>
+    <string name="doc_verification_upload_attempts_exceeded">Upload attempts exceeded.</string>
+    <string name="doc_verification_invalid_document_type">Invalid document type.</string>
+    <string name="doc_verification_invalid_pages_count">Invalid pages count.</string>
+    <string name="doc_verification_invalid_files">Invalid files.</string>
+    <string name="doc_verification_photo_too_large">Photo is too large.</string>
+    <string name="doc_verification_parsing_error">Parsing error.</string>
+    <string name="doc_verification_invalid_page">Invalid page.</string>
+    <string name="doc_verification_fraud">Fraud.</string>
+    <string name="doc_verification_blur">Sorry, we can\'t verify the document due to blurry photo. Please take a clear picture of the document to continue.</string>
 
 </resources>

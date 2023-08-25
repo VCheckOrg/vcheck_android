@@ -181,7 +181,18 @@
 
     <string name="verification_expired">Сеанс верифікації закінчився. Будь ласка, спробуйте ще раз.</string>
 
-    <string name="doc_verification_blurred_photo_title">Розмите фото</string>
-    <string name="doc_verification_blurred_photo_desc">Вибачте, ми не можемо провести верифікацію через розмитість фотографії. Будь ласка, зробіть чітке зображення документа для продовження</string>
-
+    <string name="doc_verification_verification_not_initialized">Верифікація не ініціалізована.</string>
+    <string name="doc_verification_user_interacted_completed">Користувач взаємодіяв завершено.</string>
+    <string name="doc_verification_stage_not_found">Етап не знайдено.</string>
+    <string name="doc_verification_invalid_stage_type">Недійсний тип етапу.</string>
+    <string name="doc_verification_primary_document_exists">Основний документ існує.</string>
+    <string name="doc_verification_upload_attempts_exceeded">Перевищено спроби завантаження.</string>
+    <string name="doc_verification_invalid_document_type">Недійсний тип документу.</string>
+    <string name="doc_verification_invalid_pages_count">Недійсна кількість сторінок.</string>
+    <string name="doc_verification_invalid_files">Недійсні файли.</string>
+    <string name="doc_verification_photo_too_large">Фото занадто велике.</string>
+    <string name="doc_verification_parsing_error">Помилка розбору.</string>
+    <string name="doc_verification_invalid_page">Недійсна сторінка.</string>
+    <string name="doc_verification_fraud">Шахрайство.</string>
+    <string name="doc_verification_blur">Вибачте, ми не можемо провести верифікацію через розмитість фотографії. Будь ласка, зробіть чітке зображення документа для продовження.</string>
 </resources>
