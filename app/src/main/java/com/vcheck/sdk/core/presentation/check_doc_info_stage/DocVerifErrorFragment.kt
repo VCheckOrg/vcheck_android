@@ -54,7 +54,10 @@ class DocVerifErrorFragment : ThemeWrapperFragment() {
 
         changeColorsToCustomIfPresent()
 
-        _binding!!.errorDescription.text = getCodeStringResource(args.checkDocInfoDataTO.verificationErrorCode)
+        _binding!!.errorTitle.text = getCodeStringTitleResource(
+            args.checkDocInfoDataTO.verificationErrorCode)
+        _binding!!.errorDescription.text = getCodeStringDescriptionResource(
+            args.checkDocInfoDataTO.verificationErrorCode)
 
         _binding!!.errorTryAgainButton.setOnClickListener {
             findNavController().popBackStack()
@@ -73,22 +76,42 @@ class DocVerifErrorFragment : ThemeWrapperFragment() {
         }
     }
 
-    private fun getCodeStringResource(code: DocumentVerificationCode?): String {
+    private fun getCodeStringTitleResource(code: DocumentVerificationCode?): String {
         return when (code) {
-            DocumentVerificationCode.VERIFICATION_NOT_INITIALIZED -> getString(R.string.doc_verification_verification_not_initialized)
-            DocumentVerificationCode.USER_INTERACTED_COMPLETED -> getString(R.string.doc_verification_user_interacted_completed)
-            DocumentVerificationCode.STAGE_NOT_FOUND -> getString(R.string.doc_verification_stage_not_found)
-            DocumentVerificationCode.INVALID_STAGE_TYPE -> getString(R.string.doc_verification_invalid_stage_type)
-            DocumentVerificationCode.PRIMARY_DOCUMENT_EXISTS -> getString(R.string.doc_verification_primary_document_exists)
-            DocumentVerificationCode.UPLOAD_ATTEMPTS_EXCEEDED -> getString(R.string.doc_verification_upload_attempts_exceeded)
-            DocumentVerificationCode.INVALID_DOCUMENT_TYPE -> getString(R.string.doc_verification_invalid_document_type)
-            DocumentVerificationCode.INVALID_PAGES_COUNT -> getString(R.string.doc_verification_invalid_pages_count)
-            DocumentVerificationCode.INVALID_FILES -> getString(R.string.doc_verification_invalid_files)
-            DocumentVerificationCode.PHOTO_TOO_LARGE -> getString(R.string.doc_verification_photo_too_large)
-            DocumentVerificationCode.PARSING_ERROR -> getString(R.string.doc_verification_parsing_error)
-            DocumentVerificationCode.INVALID_PAGE -> getString(R.string.doc_verification_invalid_page)
-            DocumentVerificationCode.FRAUD -> getString(R.string.doc_verification_fraud)
-            DocumentVerificationCode.BLUR -> getString(R.string.doc_verification_blur)
+            DocumentVerificationCode.VERIFICATION_NOT_INITIALIZED -> getString(R.string.doc_verif_default_title)
+            DocumentVerificationCode.USER_INTERACTED_COMPLETED -> getString(R.string.doc_verif_default_title)
+            DocumentVerificationCode.STAGE_NOT_FOUND -> getString(R.string.doc_verif_default_title)
+            DocumentVerificationCode.INVALID_STAGE_TYPE -> getString(R.string.doc_verif_default_title)
+            DocumentVerificationCode.PRIMARY_DOCUMENT_EXISTS -> getString(R.string.doc_verif_primary_already_exists_title)
+            DocumentVerificationCode.UPLOAD_ATTEMPTS_EXCEEDED -> getString(R.string.doc_verif_upload_attempts_exceeded_title)
+            DocumentVerificationCode.INVALID_DOCUMENT_TYPE -> getString(R.string.doc_verif_invalid_document_type_title)
+            DocumentVerificationCode.INVALID_PAGES_COUNT -> getString(R.string.doc_verif_invalid_pages_count_title)
+            DocumentVerificationCode.INVALID_FILES -> getString(R.string.doc_verif_invalid_files_title)
+            DocumentVerificationCode.PHOTO_TOO_LARGE -> getString(R.string.doc_verif_invalid_files_title)
+            DocumentVerificationCode.PARSING_ERROR -> getString(R.string.doc_verif_not_scanned_title)
+            DocumentVerificationCode.INVALID_PAGE -> getString(R.string.doc_verif_invalid_page_title)
+            DocumentVerificationCode.FRAUD -> getString(R.string.doc_verif_fraud_title)
+            DocumentVerificationCode.BLUR -> getString(R.string.doc_verif_blur_title)
+            else -> "Document Verification Error"
+        }
+    }
+
+    private fun getCodeStringDescriptionResource(code: DocumentVerificationCode?): String {
+        return when (code) {
+            DocumentVerificationCode.VERIFICATION_NOT_INITIALIZED -> getString(R.string.doc_verif_default_text)
+            DocumentVerificationCode.USER_INTERACTED_COMPLETED -> getString(R.string.doc_verif_default_text)
+            DocumentVerificationCode.STAGE_NOT_FOUND -> getString(R.string.doc_verif_default_text)
+            DocumentVerificationCode.INVALID_STAGE_TYPE -> getString(R.string.doc_verif_default_text)
+            DocumentVerificationCode.PRIMARY_DOCUMENT_EXISTS -> getString(R.string.doc_verif_primary_already_exists_text)
+            DocumentVerificationCode.UPLOAD_ATTEMPTS_EXCEEDED -> getString(R.string.doc_verif_upload_attempts_exceeded_text)
+            DocumentVerificationCode.INVALID_DOCUMENT_TYPE -> getString(R.string.doc_verif_invalid_document_type_text)
+            DocumentVerificationCode.INVALID_PAGES_COUNT -> getString(R.string.doc_verif_invalid_pages_count_text)
+            DocumentVerificationCode.INVALID_FILES -> getString(R.string.doc_verif_invalid_files_text)
+            DocumentVerificationCode.PHOTO_TOO_LARGE -> getString(R.string.doc_verif_invalid_files_text)
+            DocumentVerificationCode.PARSING_ERROR -> getString(R.string.doc_verif_not_scanned_text)
+            DocumentVerificationCode.INVALID_PAGE -> getString(R.string.doc_verif_invalid_page_text)
+            DocumentVerificationCode.FRAUD -> getString(R.string.doc_verif_fraud_text)
+            DocumentVerificationCode.BLUR -> getString(R.string.doc_verif_blur_text)
             else -> "Unknown code"
         }
     }

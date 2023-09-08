@@ -181,19 +181,27 @@
 
     <string name="verification_expired">Sesja weryfikacyjna wygasła. Proszę spróbuj ponownie.</string>
 
-    <string name="doc_verification_verification_not_initialized">Weryfikacja nie została zainicjowana.</string>
-    <string name="doc_verification_user_interacted_completed">Użytkownik zakończył interakcję.</string>
-    <string name="doc_verification_stage_not_found">Nie znaleziono etapu.</string>
-    <string name="doc_verification_invalid_stage_type">Nieprawidłowy typ etapu.</string>
-    <string name="doc_verification_primary_document_exists">Istnieje dokument podstawowy.</string>
-    <string name="doc_verification_upload_attempts_exceeded">Przekroczono limit prób przesłania.</string>
-    <string name="doc_verification_invalid_document_type">Nieprawidłowy typ dokumentu.</string>
-    <string name="doc_verification_invalid_pages_count">Nieprawidłowa liczba stron.</string>
-    <string name="doc_verification_invalid_files">Nieprawidłowe pliki.</string>
-    <string name="doc_verification_photo_too_large">Zdjęcie jest zbyt duże.</string>
-    <string name="doc_verification_parsing_error">Błąd analizy.</string>
-    <string name="doc_verification_invalid_page">Nieprawidłowa strona.</string>
-    <string name="doc_verification_fraud">Oszustwo.</string>
-    <string name="doc_verification_blur">Przepraszamy, nie możemy zweryfikować ze względu na niewyraźne zdjęcie. Aby kontynuować, zrób wyraźne zdjęcie dokumentu.</string>
+    <string name="doc_verif_camera_timeout_title">Nie zmogliśmy znaleźć dokumentu w określonym obszarze</string>
+    <string name="doc_verif_camera_timeout_text">Czas na przetworzenie dokumentu upłynął. Upewnij się, że wybrałeś właściwy rodzaj dokumentu i że jest on wyraźnie widoczny dla kamery</string>
+    <string name="doc_verif_not_scanned_title">Nie można zeskanować dokumentu</string>
+    <string name="doc_verif_not_scanned_text">Jeśli masz problemy ze skanowaniem dokumentu, radzimy przejść weryfikację na innym urządzeniu z dobrym aparatem. Możesz także spróbować zrobić zwykłe zdjęcie swojego dokumentu (bez automatycznego wykrywania dokumentu w ramce)</string>
+    <string name="doc_verif_invalid_document_type_title">Weryfikacja dokumentu nie powiodła się</string>
+    <string name="doc_verif_invalid_document_type_text">Dokument nie pasuje do wybranego typu. Zalecamy ponowne pobranie dokumentu.</string>
+    <string name="doc_verif_invalid_pages_count_title">Weryfikacja dokumentu nie powiodła się</string>
+    <string name="doc_verif_invalid_pages_count_text">Nieprawidłowa liczba przesłanych obrazów. Spróbuj ponownie przesłać dokument.</string>
+    <string name="doc_verif_invalid_files_title">Weryfikacja dokumentu nie powiodła się</string>
+    <string name="doc_verif_invalid_files_text">Przesłane zdjęcia dokumentu są zbyt duże lub mają niewłaściwy typ pliku. Proszę spróbuj ponownie.</string>
+    <string name="doc_verif_primary_already_exists_title">Kolejny dokument został już przesłany</string>
+    <string name="doc_verif_primary_already_exists_text">W ramach jednej weryfikacji nie ma możliwości wgrania kilku dokumentów. Kontynuuj weryfikację danych względem wcześniej przesłanego dokumentu</string>
+    <string name="doc_verif_upload_attempts_exceeded_title">Kolejny dokument został już przesłany</string>
+    <string name="doc_verif_upload_attempts_exceeded_text">W ramach jednej weryfikacji nie ma możliwości wgrania kilku dokumentów. Kontynuuj weryfikację danych względem wcześniej przesłanego dokumentu lub zakończ proces weryfikacji na urządzeniu mobilnym</string>
+    <string name="doc_verif_invalid_page_title">Weryfikacja dokumentu nie powiodła się</string>
+    <string name="doc_verif_invalid_page_text">Sprawdzenie zgodności dokumentów nie powiodło się. Proszę pobrać poprawny dokument</string>
+    <string name="doc_verif_fraud_title">Wykryto zdjęcie z ekranu</string>
+    <string name="doc_verif_fraud_text">Aby przejść weryfikację, musisz przesłać zdjęcie oryginalnego dokumentu</string>
+    <string name="doc_verif_blur_title">Nieostre zdjęcie</string>
+    <string name="doc_verif_blur_text">Przepraszamy, nie możemy zweryfikować z powodu niewyraźnego zdjęcia. Aby kontynuować, zrób wyraźne zdjęcie dokumentu.</string>
+    <string name="doc_verif_default_title">Weryfikacja dokumentu nie powiodła się</string>
+    <string name="doc_verif_default_text">Z jakiegoś powodu nie mogliśmy załadować zawartości tej strony. Spróbuj ponownie załadować stronę.</string>
 
 </resources>

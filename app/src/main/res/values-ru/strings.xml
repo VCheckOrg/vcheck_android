@@ -181,19 +181,27 @@
 
     <string name="verification_expired">Сеанс верификации истек. Пожалуйста, попробуйте еще раз.</string>
 
-    <string name="doc_verification_verification_not_initialized">Верификация не инициализирована.</string>
-    <string name="doc_verification_user_interacted_completed">Пользователь взаимодействовал завершено.</string>
-    <string name="doc_verification_stage_not_found">Этап не найден.</string>
-    <string name="doc_verification_invalid_stage_type">Недопустимый тип этапа.</string>
-    <string name="doc_verification_primary_document_exists">Основной документ существует.</string>
-    <string name="doc_verification_upload_attempts_exceeded">Превышено количество попыток загрузки.</string>
-    <string name="doc_verification_invalid_document_type">Недопустимый тип документа.</string>
-    <string name="doc_verification_invalid_pages_count">Недопустимое количество страниц.</string>
-    <string name="doc_verification_invalid_files">Недопустимые файлы.</string>
-    <string name="doc_verification_photo_too_large">Фотография слишком большая.</string>
-    <string name="doc_verification_parsing_error">Ошибка разбора.</string>
-    <string name="doc_verification_invalid_page">Недопустимая страница.</string>
-    <string name="doc_verification_fraud">Мошенничество.</string>
-    <string name="doc_verification_blur">Извините, мы не можем провести верификацию из-за размытости фотографии. Пожалуйста, сделайте четкое изображение документа для продолжения.</string>
+    <string name="doc_verif_camera_timeout_title">Мы не смогли обнаружить документ в заданной зоне</string>
+    <string name="doc_verif_camera_timeout_text">Время на считывание документа истекло. Убедитесь, что вы выбрали правильный тип документа и он хорошо виден в камеру.</string>
+    <string name="doc_verif_not_scanned_title">Не получается отсканировать документ</string>
+    <string name="doc_verif_not_scanned_text">Если у вас возникли проблемы при сканировании документа, советуем пройти верификацию на другом устройстве с хорошей камерой. Также вы можете попробовать сделать обычное фото своего документа (без автоопределения документа в рамке)</string>
+    <string name="doc_verif_invalid_document_type_title">Верификация документа неуспешна</string>
+    <string name="doc_verif_invalid_document_type_text">Документ не соответствует выбранному типу. Рекомендуем повторить загрузку документа.</string>
+    <string name="doc_verif_invalid_pages_count_title">Верификация документа неуспешна</string>
+    <string name="doc_verif_invalid_pages_count_text">Не корректное количество подгруженных изображений. Повторите загрузку документа.</string>
+    <string name="doc_verif_invalid_files_title">Верификация документа неуспешна</string>
+    <string name="doc_verif_invalid_files_text">Загруженные фотографии документа слишком велики или имеют неверный тип файла. Пожалуйста, попробуйте еще раз.</string>
+    <string name="doc_verif_primary_already_exists_title">Другой документ ранее уже был загружен</string>
+    <string name="doc_verif_primary_already_exists_text">В рамках одной верификации отсутствует возможность загружать несколько документов. Продолжите проверку данных по ранее подгруженному документу</string>
+    <string name="doc_verif_upload_attempts_exceeded_title">Другой документ ранее уже был загружен</string>
+    <string name="doc_verif_upload_attempts_exceeded_text">В рамках одной верификации отсутствует возможность загружать несколько документов. Продолжите проверку данных по ранее подгруженному документу</string>
+    <string name="doc_verif_invalid_page_title">Верификация документа неуспешна</string>
+    <string name="doc_verif_invalid_page_text">Не пройдена проверка соответствия данных документа. Пожалуйста, загрузите корректный документ</string>
+    <string name="doc_verif_fraud_title">Обнаружено фото с экрана</string>
+    <string name="doc_verif_fraud_text">Для прохождения верификации необходимо загрузить фото оригинала документа</string>
+    <string name="doc_verif_blur_title">Размытое фото</string>
+    <string name="doc_verif_blur_text">Извините, мы не можем провести верификацию из-за размытости фотографии. Пожалуйста, сделайте четкое изображение документа для продолжения</string>
+    <string name="doc_verif_default_title">Верификация документа неуспешна</string>
+    <string name="doc_verif_default_text">По какой-то причине мы не смогли загрузить контент данной страницы. Попробуйте перезагрузить страницу.</string>
 
 </resources>

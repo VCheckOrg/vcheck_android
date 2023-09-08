@@ -181,18 +181,27 @@
 
     <string name="verification_expired">Сеанс верифікації закінчився. Будь ласка, спробуйте ще раз.</string>
 
-    <string name="doc_verification_verification_not_initialized">Верифікація не ініціалізована.</string>
-    <string name="doc_verification_user_interacted_completed">Користувач взаємодіяв завершено.</string>
-    <string name="doc_verification_stage_not_found">Етап не знайдено.</string>
-    <string name="doc_verification_invalid_stage_type">Недійсний тип етапу.</string>
-    <string name="doc_verification_primary_document_exists">Основний документ існує.</string>
-    <string name="doc_verification_upload_attempts_exceeded">Перевищено спроби завантаження.</string>
-    <string name="doc_verification_invalid_document_type">Недійсний тип документу.</string>
-    <string name="doc_verification_invalid_pages_count">Недійсна кількість сторінок.</string>
-    <string name="doc_verification_invalid_files">Недійсні файли.</string>
-    <string name="doc_verification_photo_too_large">Фото занадто велике.</string>
-    <string name="doc_verification_parsing_error">Помилка розбору.</string>
-    <string name="doc_verification_invalid_page">Недійсна сторінка.</string>
-    <string name="doc_verification_fraud">Шахрайство.</string>
-    <string name="doc_verification_blur">Вибачте, ми не можемо провести верифікацію через розмитість фотографії. Будь ласка, зробіть чітке зображення документа для продовження.</string>
+    <string name="doc_verif_camera_timeout_title">Ми не змогли знайти документ у заданій зоні</string>
+    <string name="doc_verif_camera_timeout_text">Час на зчитування документа минув. Переконайтеся, що ви обрали правильний тип документа і його добре видно в камеру</string>
+    <string name="doc_verif_not_scanned_title">Неможливо відсканувати документ</string>
+    <string name="doc_verif_not_scanned_text">Якщо у вас виникли проблеми при скануванні документа, радимо пройти верифікацію на іншому пристрої з камерою хорошої якості. Також ви можете спробувати зробити звичайне фото свого документа (без автовизначення документа в рамці)</string>
+    <string name="doc_verif_invalid_document_type_title">Верифікація документа неуспішна</string>
+    <string name="doc_verif_invalid_document_type_text">Документ не відповідає вибраному типу. Рекомендуємо повторити завантаження документа.</string>
+    <string name="doc_verif_invalid_pages_count_title">Верифікація документа неуспішна</string>
+    <string name="doc_verif_invalid_pages_count_text">Некоректна кількість завантажених зображень. Повторіть завантаження документа.</string>
+    <string name="doc_verif_invalid_files_title">Верифікація документа неуспішна</string>
+    <string name="doc_verif_invalid_files_text">Завантажені фотографії документа завеликі або мають неправильний тип файлу. Будь ласка, спробуйте ще раз.</string>
+    <string name="doc_verif_primary_already_exists_title">Інший документ раніше вже був завантажений</string>
+    <string name="doc_verif_primary_already_exists_text">В рамках однієї верифікації немає можливості завантажувати кілька документів. Продовжте перевірку даних за раніше завантаженим документом</string>
+    <string name="doc_verif_upload_attempts_exceeded_title">Інший документ раніше вже був завантажений</string>
+    <string name="doc_verif_upload_attempts_exceeded_text">В рамках однієї верифікації немає можливості завантажувати кілька документів. Продовжте перевірку даних за раніше завантаженим документом або завершіть проходження верифікації на мобільному пристрої</string>
+    <string name="doc_verif_invalid_page_title">Верифікація документа неуспішна</string>
+    <string name="doc_verif_invalid_page_text">Не пройдено перевірку відповідності даних документа. Завантажте, будь ласка,  коректний документ</string>
+    <string name="doc_verif_fraud_title">Виявлено фото з екрана</string>
+    <string name="doc_verif_fraud_text">Щоб пройти перевірку, необхідно завантажити фотографію оригіналу документа</string>
+    <string name="doc_verif_blur_title">Розмите фото</string>
+    <string name="doc_verif_blur_text">Вибачте, ми не можемо провести верифікацію через розмитість фотографії. Будь ласка, зробіть чітке зображення документа для продовження</string>
+    <string name="doc_verif_default_title">Верифікація документа неуспішна</string>
+    <string name="doc_verif_default_text">З якоїсь причини ми не змогли завантажити вміст цієї сторінки. Спробуйте перезавантажити сторінку.</string>
+
 </resources>
