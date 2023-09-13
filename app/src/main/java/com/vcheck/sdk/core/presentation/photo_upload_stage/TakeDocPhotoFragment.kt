@@ -223,6 +223,7 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
                     getString(R.string.photo_upload_title_foreign)
 
                 if (docTypeWithData.country == "ua") {
+                    verifMethodIcon1.isVisible = true
                     verifMethodIcon1.setImageResource(R.drawable.doc_ua_international_passport)
                 } else {
                     verifMethodIcon1.isVisible = false
@@ -236,11 +237,12 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
 
                 verifMethodTitle1.text =
                     getString(R.string.photo_upload_title_common_forward)
-
                 verifMethodTitle2.text =
                     getString(R.string.photo_upload_title_common_back)
 
                 if (docTypeWithData.country == "ua") {
+                    verifMethodIcon1.isVisible = true
+                    verifMethodIcon2.isVisible = true
                     verifMethodIcon1.setImageResource(R.drawable.doc_ua_international_passport)
                     verifMethodIcon2.setImageResource(R.drawable.doc_ua_international_passport)
                 } else {

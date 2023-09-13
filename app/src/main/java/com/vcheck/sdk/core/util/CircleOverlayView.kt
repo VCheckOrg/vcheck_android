@@ -82,8 +82,3 @@ class CircleOverlayView : LinearLayout {
         drawTransparentCircle()
     }
 }
-
-//        val left: Int = (centerX - holeWidth / 2).toInt()
-//        val top: Int = (centerY - holeHeight / 2).toInt()
-//        val right: Int = (centerX + holeWidth / 2).toInt()
-//        val bottom: Int = (centerY + holeHeight / 2).toInt()

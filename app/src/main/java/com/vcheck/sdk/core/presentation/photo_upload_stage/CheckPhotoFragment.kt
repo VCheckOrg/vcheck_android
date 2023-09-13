@@ -239,6 +239,25 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
         }
     }
 
+    private fun handleDocUploadResponse(resource: Resource<DocumentUploadResponse>) {
+        if (resource.data?.data != null) {
+            if (resource.data.data.id != null) {
+                val action = CheckPhotoFragmentDirections
+                    .actionCheckPhotoFragmentToCheckInfoFragment(
+                        CheckDocInfoDataTO(
+                            args.checkPhotoDataTO.selectedDocType,
+                            resource.data.data.id,
+                            args.checkPhotoDataTO.photo1Path,
+                            args.checkPhotoDataTO.photo2Path,
+                            false),
+                        resource.data.data.id)
+                findNavController().navigate(action)
+            } else {
+                Toast.makeText(activity, getString(R.string.doc_verification_error_description), Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
     //obsolete logic
 //    private fun handleDocErrorResponse(response: BaseClientResponseModel?) {
 //        if (response != null) {
@@ -264,24 +283,4 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
 //            }
 //        }
 //    }
-
-    private fun handleDocUploadResponse(resource: Resource<DocumentUploadResponse>) {
-        if (resource.data?.data != null) {
-            if (resource.data.data.id != null) {
-                val action = CheckPhotoFragmentDirections
-                    .actionCheckPhotoFragmentToCheckInfoFragment(
-                        CheckDocInfoDataTO(
-                            args.checkPhotoDataTO.selectedDocType,
-                            resource.data.data.id,
-                            args.checkPhotoDataTO.photo1Path,
-                            args.checkPhotoDataTO.photo2Path,
-                            false),
-                        resource.data.data.id)
-                findNavController().navigate(action)
-            } else {
-                Toast.makeText(activity, getString(R.string.doc_verification_error_description), Toast.LENGTH_LONG).show()
-            }
-        }
-    }
-
 }
