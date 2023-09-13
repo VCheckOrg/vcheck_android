@@ -3,6 +3,7 @@ package com.vcheck.sdk.core.presentation.country_stage
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -96,24 +97,36 @@ class ChooseCountryFragment : ThemeWrapperFragment() {
     }
 
     private fun setContent(priorityCountries: List<String>) {
+
         val initialCountryList = args.countriesListTO.countriesList
 
-        val bottomCountries = emptyList<CountryTO>().toMutableList()
-        val topCountryItems = emptyList<CountryTO>().toMutableList()
+        val allCountryItems = emptyList<CountryTO>().toMutableList()
+
+        val bottomCountryItems = emptyList<CountryTO>().toMutableList()
 
         initialCountryList.forEach { countryTO ->
-            if (priorityCountries.contains(countryTO.code)) {
-                topCountryItems += countryTO
-            } else {
-                bottomCountries += countryTO
+            if (!priorityCountries.contains(countryTO.code)) {
+                bottomCountryItems += countryTO
             }
         }
 
-        topCountryItems.addAll(bottomCountries.sortedWith { s1, s2 ->
-            Collator.getInstance(Locale("")).compare(s1.name, s2.name)
-        }.toList())
+        val bottomCountryItemsSorted = bottomCountryItems.sortedWith { s1, s2 ->
+            Collator.getInstance(Locale("")).compare(s1.name, s2.name) }.toList()
 
-        finalCountries = ArrayList(topCountryItems)
+        var topCountryItems: List<CountryTO> = emptyList()
+
+        try {
+            topCountryItems = priorityCountries.map { code ->
+                initialCountryList.first { it.code == code }
+            }
+        } catch (e: NoSuchElementException) {
+            Log.d(VCheckSDK.TAG, "No country was found while doing comparison!")
+        }
+
+        allCountryItems.addAll(topCountryItems)
+        allCountryItems.addAll(bottomCountryItemsSorted)
+
+        finalCountries = ArrayList(allCountryItems)
 
         reloadData()
 

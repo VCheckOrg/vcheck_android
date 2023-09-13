@@ -109,7 +109,7 @@ internal class VCheckStartFragment : Fragment() {
 
                 verificationInitialized = true
 
-                if (it.data.data.status > VerificationStatuses.WAITING_USER_INTERACTION) {
+                if (it.data.data.status >= VerificationStatuses.WAITING_USER_INTERACTION) {
                     findNavController().navigate(R.id.action_demoStartFragment_to_verifSentFragment)
                 } else {
                     _viewModel.getProviders()
@@ -177,7 +177,8 @@ internal class VCheckStartFragment : Fragment() {
                     navigateToProviderSelection(providersList)
                 }
             } else {
-                Toast.makeText(activity, "Could not one or more retrieve valid providers", Toast.LENGTH_LONG).show()
+                //assuming that it's exceptional case:
+                Toast.makeText(activity, "Could not retrieve one or more valid providers", Toast.LENGTH_LONG).show()
             }
         }
     }
