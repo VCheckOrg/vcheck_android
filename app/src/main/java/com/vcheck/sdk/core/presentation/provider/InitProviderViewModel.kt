@@ -6,12 +6,13 @@ import com.vcheck.sdk.core.data.MainRepository
 import com.vcheck.sdk.core.data.Resource
 import com.vcheck.sdk.core.domain.ApiError
 import com.vcheck.sdk.core.domain.InitProviderRequestBody
+import com.vcheck.sdk.core.domain.ProviderInitResponse
 import com.vcheck.sdk.core.domain.StageResponse
 import retrofit2.Response
 
 class InitProviderViewModel (val repository: MainRepository) : ViewModel() {
 
-    var initProviderResponse: MutableLiveData<Resource<Response<Void>>?> = MutableLiveData(null)
+    var initProviderResponse: MutableLiveData<Resource<ProviderInitResponse>?> = MutableLiveData(null)
 
     var stageResponse: MutableLiveData<Resource<StageResponse>> = MutableLiveData()
 
@@ -19,7 +20,7 @@ class InitProviderViewModel (val repository: MainRepository) : ViewModel() {
 
     fun initProvider(initProviderRequestBody: InitProviderRequestBody) {
         repository.initProvider(initProviderRequestBody).observeForever {
-            processInitProviderResponse(it)
+            processInitProviderResponse((it ?: Resource.success(ProviderInitResponse())) as Resource<ProviderInitResponse>)
         }
     }
 
@@ -29,7 +30,7 @@ class InitProviderViewModel (val repository: MainRepository) : ViewModel() {
         }
     }
 
-    private fun processInitProviderResponse(response: Resource<Response<Void>>) {
+    private fun processInitProviderResponse(response: Resource<ProviderInitResponse>) {
         when (response.status) {
             Resource.Status.LOADING -> {
             }

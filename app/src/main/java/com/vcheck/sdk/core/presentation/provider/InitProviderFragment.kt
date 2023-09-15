@@ -57,10 +57,12 @@ class InitProviderFragment : Fragment() {
             VCheckSDK.getOptSelectedCountryCode()) // country is optional here, may be nullable
 
         _viewModel.initProviderResponse.observe(viewLifecycleOwner) {
-
-            //TODO ! 400 code check?
-
             if (it != null) {
+                if (it.data?.errorCode == InitProviderResponseCode.PROVIDER_ALREADY_INITIALIZED.toCodeIdx()) {
+                    //TODO figure out logic
+                } else {
+                    //TODO figure out logic
+                }
                 _viewModel.getCurrentStage()
             }
         }

@@ -25,8 +25,8 @@ class RemoteDatasource(private val verificationApiClient: VerificationApiClient)
     }
 
     fun initProvider(initProviderRequestBody: InitProviderRequestBody)
-    : MutableLiveData<Resource<Response<Void>>> {
-        return NetworkCall<Response<Void>>().makeCall(
+    : MutableLiveData<Resource<ProviderInitResponse?>> {
+        return NetworkCall<ProviderInitResponse?>().makeCall(
             verificationApiClient.initProvider(
                 VCheckSDK.getVerificationToken(), initProviderRequestBody))
     }
