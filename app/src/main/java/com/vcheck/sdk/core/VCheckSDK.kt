@@ -17,6 +17,9 @@ object VCheckSDK {
 
     private var partnerEndCallback: (() -> Unit)? = null
 
+    private var onVerificationExpired: (() -> Unit)? = null
+    private var isVerifExpired: Boolean = false
+
     private var verificationToken: String? = null
 
     private var selectedProvider: Provider? = null
@@ -66,6 +69,7 @@ object VCheckSDK {
     private fun resetVerification() {
         VCheckDIContainer.mainRepository.resetCache()
         this.optSelectedCountryCode = null
+        this.isVerifExpired = false
     }
 
     private fun performPreStartChecks() {
@@ -87,6 +91,11 @@ object VCheckSDK {
         if (partnerEndCallback == null) {
             throw IllegalArgumentException("VCheckSDK - error: partner application's callback function " +
                     "(invoked on SDK flow finish) must be provided by partner app | see VCheckSDK.partnerEndCallback(callback: (() -> Unit))")
+        }
+        if (onVerificationExpired == null) {
+            throw IllegalArgumentException("VCheckSDK - error: partner application's onVerificationExpired function " +
+                    "(invoked on SDK's current verification expiration case) must be provided by partner app | " +
+                    "see VCheckSDK.onVerificationExpired(callback: (() -> Unit))")
         }
         if (sdkLanguageCode == null) {
             Log.w(TAG, "VCheckSDK - warning: sdk language code is not set; using English (en) locale as default. " +
@@ -128,8 +137,25 @@ object VCheckSDK {
         this.partnerEndCallback?.invoke()
     }
 
+    internal fun executeOnVerificationExpired() {
+        this.onVerificationExpired?.invoke()
+    }
+
+    internal fun setIsVerificationExpired(isExpired: Boolean) {
+        this.isVerifExpired = isExpired
+    }
+
+    internal fun isVerificationExpired(): Boolean {
+        return this.isVerifExpired
+    }
+
     fun languageCode(langCode: String): VCheckSDK {
         this.sdkLanguageCode = langCode.lowercase()
+        return this
+    }
+
+    fun onVerificationExpired(callback: (() -> Unit)): VCheckSDK {
+        this.onVerificationExpired = callback
         return this
     }
 

@@ -31,9 +31,14 @@ internal class VCheckStartupActivity : AppCompatActivity() {
             repository.setFinishStartupActivity(false)
             repository.resetCache()
             finish()
-            if (repository.shouldFirePartnerCallback()) {
+            if (VCheckSDK.isVerificationExpired()) {
                 repository.setFirePartnerCallback(false)
-                VCheckSDK.executePartnerCallback()
+                VCheckSDK.executeOnVerificationExpired()
+            } else {
+                if (repository.shouldFirePartnerCallback()) {
+                    repository.setFirePartnerCallback(false)
+                    VCheckSDK.executePartnerCallback()
+                }
             }
         } else {
             startActivity(Intent(this@VCheckStartupActivity, VCheckMainActivity::class.java))

@@ -18,6 +18,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.getSystemService
 import com.vcheck.sdk.core.R
+import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.BaseClientErrors
 import com.vcheck.sdk.core.domain.StageErrorType
@@ -211,7 +212,8 @@ fun AppCompatActivity.closeSDKFlow(shouldExecuteEndCallback: Boolean) {
 
 fun AppCompatActivity.checkUserInteractionCompletedForResult(errorCode: Int?) {
     if (errorCode == BaseClientErrors.USER_INTERACTED_COMPLETED) {
-        (VCheckDIContainer).mainRepository.setFirePartnerCallback(true)
+        (VCheckDIContainer).mainRepository.setFirePartnerCallback(false)
+        VCheckSDK.setIsVerificationExpired(true) //!
         (VCheckDIContainer).mainRepository.setFinishStartupActivity(true)
         val intents = Intent(this, VCheckStartupActivity::class.java)
         intents.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -222,15 +224,15 @@ fun AppCompatActivity.checkUserInteractionCompletedForResult(errorCode: Int?) {
 fun AppCompatActivity.checkStageErrorForResult(errorCode: Int?) {
     if (errorCode != null &&
             errorCode >= StageErrorType.VERIFICATION_NOT_INITIALIZED.toTypeIdx()) {
-        //Toast.makeText(this, getString(R.string.verification_expired), Toast.LENGTH_LONG).show()
         // e.g.: (errorCode == StageObstacleErrorType.USER_INTERACTED_COMPLETED.toTypeIdx()
-        //    || errorCode == StageObstacleErrorType.VERIFICATION_EXPIRED.toTypeIdx()) //TODO: mb add info toast?
-        (VCheckDIContainer).mainRepository.setFirePartnerCallback(true)
+        //    || errorCode == StageObstacleErrorType.VERIFICATION_EXPIRED.toTypeIdx())
+        (VCheckDIContainer).mainRepository.setFirePartnerCallback(false)
+        VCheckSDK.setIsVerificationExpired(true)
         (VCheckDIContainer).mainRepository.setFinishStartupActivity(true)
         val intents = Intent(this, VCheckStartupActivity::class.java)
         intents.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         startActivity(intents)
     } else {
-        Toast.makeText(this, "Unknown stage error", Toast.LENGTH_LONG).show()
+        Toast.makeText(this, "Unknown stage check error", Toast.LENGTH_LONG).show()
     }
 }
