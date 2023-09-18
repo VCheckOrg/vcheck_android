@@ -1,6 +1,5 @@
 package com.vcheck.sdk.core.presentation.check_doc_info_stage
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.vcheck.sdk.core.data.MainRepository
@@ -20,6 +19,8 @@ class CheckDocInfoViewModel(val repository: MainRepository) : ViewModel() {
     var documentInfoResponse: MutableLiveData<Resource<PreProcessedDocumentResponse>> = MutableLiveData()
 
     var stageResponse: MutableLiveData<Resource<StageResponse>> = MutableLiveData()
+
+    val stageSpecificError: MutableLiveData<ApiError?> = MutableLiveData(null)
 
     fun getDocumentInfo(docId: Int) {
         repository.getDocumentInfo(docId).observeForever {
@@ -49,7 +50,9 @@ class CheckDocInfoViewModel(val repository: MainRepository) : ViewModel() {
                 confirmedDocResponse.value = response
             }
             Resource.Status.ERROR -> {
-                clientError.value = response.apiError
+                if (response.apiError != null) {
+                    clientError.value = response.apiError
+                }
             }
         }
     }
@@ -63,7 +66,7 @@ class CheckDocInfoViewModel(val repository: MainRepository) : ViewModel() {
             }
             Resource.Status.ERROR -> {
                 if (response.apiError != null) {
-                    stageResponse.value = response
+                    stageSpecificError.value = response.apiError
                 }
             }
         }

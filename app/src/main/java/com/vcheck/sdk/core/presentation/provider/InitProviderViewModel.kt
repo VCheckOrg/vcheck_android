@@ -6,21 +6,21 @@ import com.vcheck.sdk.core.data.MainRepository
 import com.vcheck.sdk.core.data.Resource
 import com.vcheck.sdk.core.domain.ApiError
 import com.vcheck.sdk.core.domain.InitProviderRequestBody
-import com.vcheck.sdk.core.domain.ProviderInitResponse
 import com.vcheck.sdk.core.domain.StageResponse
-import retrofit2.Response
 
 class InitProviderViewModel (val repository: MainRepository) : ViewModel() {
 
-    var initProviderResponse: MutableLiveData<Resource<ProviderInitResponse>?> = MutableLiveData(null)
+    var initProviderResponse: MutableLiveData<Resource<Void>> = MutableLiveData(null)
 
     var stageResponse: MutableLiveData<Resource<StageResponse>> = MutableLiveData()
 
     val clientError: MutableLiveData<ApiError?> = MutableLiveData(null)
 
+    val stageSpecificError: MutableLiveData<ApiError?> = MutableLiveData(null)
+
     fun initProvider(initProviderRequestBody: InitProviderRequestBody) {
         repository.initProvider(initProviderRequestBody).observeForever {
-            processInitProviderResponse((it ?: Resource.success(ProviderInitResponse())) as Resource<ProviderInitResponse>)
+            processInitProviderResponse(it)
         }
     }
 
@@ -30,7 +30,7 @@ class InitProviderViewModel (val repository: MainRepository) : ViewModel() {
         }
     }
 
-    private fun processInitProviderResponse(response: Resource<ProviderInitResponse>) {
+    private fun processInitProviderResponse(response: Resource<Void>) {
         when (response.status) {
             Resource.Status.LOADING -> {
             }
@@ -38,7 +38,9 @@ class InitProviderViewModel (val repository: MainRepository) : ViewModel() {
                 initProviderResponse.value = response
             }
             Resource.Status.ERROR -> {
-                clientError.value = response.apiError
+                //not handling any of possible custom codes here
+                //clientError.value = response.apiError
+                initProviderResponse.value = response
             }
         }
     }
@@ -51,7 +53,7 @@ class InitProviderViewModel (val repository: MainRepository) : ViewModel() {
                 stageResponse.value = response
             }
             Resource.Status.ERROR -> {
-                clientError.value = response.apiError
+                stageSpecificError.value = response.apiError
             }
         }
     }

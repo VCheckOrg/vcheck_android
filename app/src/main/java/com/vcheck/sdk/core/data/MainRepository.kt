@@ -26,7 +26,7 @@ class MainRepository(
     }
 
     fun initProvider(initProviderRequestBody: InitProviderRequestBody)
-            : MutableLiveData<Resource<ProviderInitResponse?>> {
+            : MutableLiveData<Resource<Void>> {
         return if (isTokenPresent()) remoteDatasource.initProvider(initProviderRequestBody)
         else MutableLiveData(Resource.error(ApiError(null, BaseClientErrors.NO_TOKEN_AVAILABLE_STR)))
     }

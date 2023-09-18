@@ -34,7 +34,7 @@
 
     <fragment
         android:id="@+id/inProcessFragment"
-        android:name="com.vcheck.sdk.core.presentation.liveness.ui.in_process.InProcessFragment"
+        android:name="com.vcheck.sdk.core.presentation.liveness.ui.in_process.PostProcessFragment"
         android:label="in_process_fragment"
         tools:layout="@layout/in_process_fragment" >
         <action

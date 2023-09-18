@@ -41,15 +41,8 @@ open class NetworkCall<T> {
                         Log.w("OkHttpClient", "Error parsing JSON on non-0 code")
                         BaseClientResponseModel(null, response.code(), "${response.code()}")
                     }
-                //exceptional logic for providers init check:
-                if (!call.request().url.toString().contains("providers/init")) {
-                    result.value = Resource.error(
-                        ApiError(errorResponse, "Error: [${response.code()}] | ${errorResponse.message}"))
-                } else {
-                    if (errorResponse.errorCode == BaseClientErrors.INVALID_STAGE_TYPE) {
-                        result.value = Resource.success(response.body()) //TODO test!
-                    }
-                }
+                result.value = Resource.error(
+                    ApiError(errorResponse, "Error: [${response.code()}] | ${errorResponse.message}"))
             }
         }
     }

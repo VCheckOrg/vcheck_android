@@ -24,10 +24,7 @@ import com.vcheck.sdk.core.domain.*
 import com.vcheck.sdk.core.presentation.VCheckMainActivity
 import com.vcheck.sdk.core.presentation.adapters.CheckDocInfoAdapter
 import com.vcheck.sdk.core.presentation.adapters.DocInfoEditCallback
-import com.vcheck.sdk.core.util.ThemeWrapperFragment
-import com.vcheck.sdk.core.util.checkUserInteractionCompletedForResult
-import com.vcheck.sdk.core.util.closeSDKFlow
-import com.vcheck.sdk.core.util.isValidDocRelatedDate
+import com.vcheck.sdk.core.util.*
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 
@@ -126,15 +123,17 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
         }
 
         viewModel.stageResponse.observe(viewLifecycleOwner) {
-            (requireActivity() as AppCompatActivity)
-                .checkUserInteractionCompletedForResult(it.data?.errorCode)
-
             if (it.data?.data?.config != null) {
                 viewModel.repository.setLivenessMilestonesList((it.data.data.config.gestures))
                 findNavController().navigate(R.id.action_checkDocInfoFragment_to_livenessInstructionsFragment)
             } else if (VCheckSDK.getVerificationType() == VerificationSchemeType.DOCUMENT_UPLOAD_ONLY) {
                 (activity as VCheckMainActivity).closeSDKFlow(true)
             }
+        }
+
+        viewModel.stageSpecificError.observe(viewLifecycleOwner) {
+            (requireActivity() as AppCompatActivity)
+                .checkStageErrorForResult(it?.errorData?.errorCode)
         }
 
         viewModel.clientError.observe(viewLifecycleOwner) {

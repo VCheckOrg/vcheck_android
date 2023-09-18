@@ -1,6 +1,5 @@
 package com.vcheck.sdk.core.presentation.provider
 
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -18,7 +17,7 @@ import com.vcheck.sdk.core.data.Resource
 import com.vcheck.sdk.core.databinding.FragmentInitProviderBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.*
-import com.vcheck.sdk.core.presentation.VCheckStartupActivity
+import com.vcheck.sdk.core.util.checkStageErrorForResult
 import com.vcheck.sdk.core.util.checkUserInteractionCompletedForResult
 
 class InitProviderFragment : Fragment() {
@@ -57,22 +56,17 @@ class InitProviderFragment : Fragment() {
             VCheckSDK.getOptSelectedCountryCode()) // country is optional here, may be nullable
 
         _viewModel.initProviderResponse.observe(viewLifecycleOwner) {
-            if (it != null) {
-                if (it.data?.errorCode == InitProviderResponseCode.PROVIDER_ALREADY_INITIALIZED.toCodeIdx()) {
-                    //TODO figure out logic
-                } else {
-                    //TODO figure out logic
-                }
-                _viewModel.getCurrentStage()
-            }
+            // ignoring any custom codes, also >= 0
+            _viewModel.getCurrentStage()
         }
 
         _viewModel.stageResponse.observe(viewLifecycleOwner) {
-
-            (requireActivity() as AppCompatActivity)
-                .checkUserInteractionCompletedForResult(it.data?.errorCode)
-
             processStageData(it)
+        }
+
+        _viewModel.stageSpecificError.observe(viewLifecycleOwner) {
+            (requireActivity() as AppCompatActivity)
+                .checkStageErrorForResult(it?.errorData?.errorCode)
         }
 
         _viewModel.clientError.observe(viewLifecycleOwner) {
@@ -91,12 +85,8 @@ class InitProviderFragment : Fragment() {
 
     private fun processStageData(response: Resource<StageResponse>) {
         if (response.data?.errorCode != null
-            && response.data.errorCode == StageObstacleErrorType.USER_INTERACTED_COMPLETED.toTypeIdx()) {
+            && response.data.errorCode == StageErrorType.USER_INTERACTED_COMPLETED.toTypeIdx()) {
             findNavController().navigate(R.id.action_providerChosenFragment_to_livenessInstructionsFragment)
-        } else if (response.data?.errorCode != null
-            && response.data.errorCode == StageObstacleErrorType.VERIFICATION_EXPIRED.toTypeIdx()) {
-            Toast.makeText(requireContext(), R.string.verification_expired, Toast.LENGTH_LONG).show()
-            closeSDKFlow(shouldExecuteEndCallback = false)
         } else {
             if (response.data?.data != null) {
                 val stageData = response.data.data
@@ -123,13 +113,5 @@ class InitProviderFragment : Fragment() {
             InitProviderFragmentDirections.actionProviderChosenFragmentToChooseDocMethodScreen()
         }
         findNavController().navigate(action)
-    }
-
-    private fun closeSDKFlow(shouldExecuteEndCallback: Boolean) {
-        (VCheckDIContainer).mainRepository.setFirePartnerCallback(shouldExecuteEndCallback)
-        (VCheckDIContainer).mainRepository.setFinishStartupActivity(true)
-        val intents = Intent(requireActivity(), VCheckStartupActivity::class.java)
-        intents.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        startActivity(intents)
     }
 }

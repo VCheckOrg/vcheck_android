@@ -1,6 +1,5 @@
 package com.vcheck.sdk.core.presentation.liveness.ui.in_process
 
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -25,12 +24,8 @@ import com.vcheck.sdk.core.data.Resource
 import com.vcheck.sdk.core.databinding.InProcessFragmentBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.*
-import com.vcheck.sdk.core.presentation.VCheckStartupActivity
 import com.vcheck.sdk.core.presentation.liveness.VCheckLivenessActivity
-import com.vcheck.sdk.core.util.ThemeWrapperFragment
-import com.vcheck.sdk.core.util.checkUserInteractionCompletedForResult
-import com.vcheck.sdk.core.util.getFolderSizeLabel
-import com.vcheck.sdk.core.util.sizeInKb
+import com.vcheck.sdk.core.util.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -39,10 +34,10 @@ import java.util.*
 import kotlin.time.Duration.Companion.milliseconds
 
 
-class InProcessFragment : ThemeWrapperFragment() {
+class PostProcessFragment : ThemeWrapperFragment() {
 
     private var _binding: InProcessFragmentBinding? = null
-    private lateinit var _viewModel: InProcessViewModel
+    private lateinit var _viewModel: PostProcessViewModel
 
     override fun changeColorsToCustomIfPresent() {
         VCheckSDK.buttonsColorHex?.let {
@@ -64,7 +59,7 @@ class InProcessFragment : ThemeWrapperFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _viewModel = InProcessViewModel(VCheckDIContainer.mainRepository)
+        _viewModel = PostProcessViewModel(VCheckDIContainer.mainRepository)
     }
 
     override fun onCreateView(
@@ -106,14 +101,29 @@ class InProcessFragment : ThemeWrapperFragment() {
                 }
             }
 
+            _viewModel.stageResponse.observe(viewLifecycleOwner) {
+                if (it.data?.errorCode == null
+                    || it.data.errorCode == StageErrorType.USER_INTERACTED_COMPLETED.toTypeIdx()) {
+                    (activity as VCheckLivenessActivity).closeSDKFlow(true)
+                }
+            }
+
+            _viewModel.stageSpecificError.observe(viewLifecycleOwner) {
+                (requireActivity() as AppCompatActivity)
+                    .checkStageErrorForResult(it?.errorData?.errorCode)
+            }
+
             _viewModel.clientError.observe(viewLifecycleOwner) {
                 if (it != null) {
                     (requireActivity() as AppCompatActivity)
                         .checkUserInteractionCompletedForResult(it.errorData?.errorCode)
 
+                    Toast.makeText(activity, it.errorText, Toast.LENGTH_LONG).show()
+
                     safeNavToFailFragment(R.id.action_inProcessFragment_to_failVideoUploadFragment)
                 }
             }
+
         } else {
             Toast.makeText((activity as VCheckLivenessActivity),
                 "Token is not present!", Toast.LENGTH_LONG).show()
@@ -136,36 +146,40 @@ class InProcessFragment : ThemeWrapperFragment() {
         }
     }
 
+    private fun onVideoUploadResponseSuccess() {
+        _viewModel.getCurrentStage()
+    }
+
     private fun onBackendObstacleMet(reason: LivenessFailureReason) {
         try {
             when(reason) {
                 LivenessFailureReason.FACE_NOT_FOUND -> {
-                    val action = InProcessFragmentDirections.actionInProcessFragmentToLookStraightErrorFragment()
+                    val action = PostProcessFragmentDirections.actionInProcessFragmentToLookStraightErrorFragment()
                     action.isFromUploadResponse = true
                     findNavController().navigate(action)
                 }
                 LivenessFailureReason.MULTIPLE_FACES -> {
-                    val action = InProcessFragmentDirections.actionInProcessFragmentToFrameInterferenceFragment()
+                    val action = PostProcessFragmentDirections.actionInProcessFragmentToFrameInterferenceFragment()
                     action.isFromUploadResponse = true
                     findNavController().navigate(action)
                 }
                 LivenessFailureReason.FAST_MOVEMENT -> {
-                    val action = InProcessFragmentDirections.actionInProcessFragmentToTooFastMovementsFragment()
+                    val action = PostProcessFragmentDirections.actionInProcessFragmentToTooFastMovementsFragment()
                     action.isFromUploadResponse = true
                     findNavController().navigate(action)
                 }
                 LivenessFailureReason.TOO_DARK -> {
-                    val action = InProcessFragmentDirections.actionInProcessFragmentToTooDarkFragment()
+                    val action = PostProcessFragmentDirections.actionInProcessFragmentToTooDarkFragment()
                     action.isFromUploadResponse = true
                     findNavController().navigate(action)
                 }
                 LivenessFailureReason.INVALID_MOVEMENTS -> {
-                    val action = InProcessFragmentDirections.actionInProcessFragmentToWrongMoveFragment()
+                    val action = PostProcessFragmentDirections.actionInProcessFragmentToWrongMoveFragment()
                     action.isFromUploadResponse = true
                     findNavController().navigate(action)
                 }
                 LivenessFailureReason.UNKNOWN -> {
-                    val action = InProcessFragmentDirections.actionInProcessFragmentToFrameInterferenceFragment()
+                    val action = PostProcessFragmentDirections.actionInProcessFragmentToFrameInterferenceFragment()
                     action.isFromUploadResponse = true
                     findNavController().navigate(action)
                 }
@@ -174,24 +188,6 @@ class InProcessFragment : ThemeWrapperFragment() {
             Log.d(VCheckLivenessActivity.TAG,
                 "Attempt of nav to success was made, but was already on another fragment")
         }
-    }
-
-    private fun onVideoUploadResponseSuccess() {
-        _viewModel.stageResponse.observe(viewLifecycleOwner) {
-            (requireActivity() as AppCompatActivity)
-                .checkUserInteractionCompletedForResult(it.data?.errorCode)
-
-            if (it.data?.errorCode == null || it.data.errorCode == StageObstacleErrorType.USER_INTERACTED_COMPLETED.toTypeIdx()) {
-                (activity as VCheckLivenessActivity).closeSDKFlow(true)
-            } else if (it.data.errorCode != null
-                && it.data.errorCode == StageObstacleErrorType.VERIFICATION_EXPIRED.toTypeIdx()) {
-                Toast.makeText(requireContext(), R.string.verification_expired, Toast.LENGTH_LONG).show()
-                closeSDKFlow(shouldExecuteEndCallback = false)
-            } else {
-                Toast.makeText(activity, "Stage Error", Toast.LENGTH_LONG).show()
-            }
-        }
-        _viewModel.getCurrentStage()
     }
 
     private fun safeNavToFailFragment(id: Int) {
@@ -271,13 +267,5 @@ class InProcessFragment : ThemeWrapperFragment() {
                     "Token is not present!", Toast.LENGTH_LONG).show()
             }
         }
-    }
-
-    private fun closeSDKFlow(shouldExecuteEndCallback: Boolean) {
-        (VCheckDIContainer).mainRepository.setFirePartnerCallback(shouldExecuteEndCallback)
-        (VCheckDIContainer).mainRepository.setFinishStartupActivity(true)
-        val intents = Intent(requireActivity(), VCheckStartupActivity::class.java)
-        intents.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        startActivity(intents)
     }
 }

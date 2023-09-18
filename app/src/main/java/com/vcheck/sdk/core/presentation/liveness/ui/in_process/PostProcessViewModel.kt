@@ -10,11 +10,15 @@ import com.vcheck.sdk.core.domain.StageResponse
 import okhttp3.MultipartBody
 
 
-class InProcessViewModel(val repository: MainRepository) : ViewModel() {
+class PostProcessViewModel(val repository: MainRepository) : ViewModel() {
 
     val clientError: MutableLiveData<ApiError> = MutableLiveData(null)
+
     var uploadResponse: MutableLiveData<Resource<LivenessUploadResponse>> = MutableLiveData(null)
+
     var stageResponse: MutableLiveData<Resource<StageResponse>> = MutableLiveData()
+
+    val stageSpecificError: MutableLiveData<ApiError?> = MutableLiveData(null)
 
     fun uploadLivenessVideo(video: MultipartBody.Part) {
         repository.uploadLivenessVideo(video)
@@ -51,7 +55,7 @@ class InProcessViewModel(val repository: MainRepository) : ViewModel() {
             }
             Resource.Status.ERROR -> {
                 if (response.apiError != null) {
-                    stageResponse.value = response
+                    stageSpecificError.value = response.apiError
                 }
             }
         }

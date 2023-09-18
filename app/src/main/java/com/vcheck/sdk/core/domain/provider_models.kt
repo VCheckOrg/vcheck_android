@@ -39,13 +39,14 @@ data class PriorityCountries (
     @SerializedName("message")
     var message: String = "")
 
-data class ProviderInitResponse(
-    @SerializedName("data")
-    val data: ProviderInitResponseData? = null,
-    @SerializedName("error_code")
-    var errorCode: Int = 0,
-    @SerializedName("message")
-    var message: String = ""
-)
-
-class ProviderInitResponseData {}
+//obsolete:
+//data class ProviderInitResponse(
+//    @SerializedName("data")
+//    val data: ProviderInitResponseData? = null,
+//    @SerializedName("error_code")
+//    var errorCode: Int = 0,
+//    @SerializedName("message")
+//    var message: String = ""
+//)
+//
+//class ProviderInitResponseData {}

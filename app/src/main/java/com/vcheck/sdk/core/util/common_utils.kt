@@ -14,10 +14,14 @@ import android.os.Vibrator
 import android.provider.MediaStore
 import android.util.Patterns
 import android.webkit.URLUtil
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.getSystemService
+import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.BaseClientErrors
+import com.vcheck.sdk.core.domain.StageErrorType
+import com.vcheck.sdk.core.domain.toTypeIdx
 import com.vcheck.sdk.core.presentation.VCheckStartupActivity
 import java.io.File
 import java.io.FileOutputStream
@@ -212,5 +216,21 @@ fun AppCompatActivity.checkUserInteractionCompletedForResult(errorCode: Int?) {
         val intents = Intent(this, VCheckStartupActivity::class.java)
         intents.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         startActivity(intents)
+    }
+}
+
+fun AppCompatActivity.checkStageErrorForResult(errorCode: Int?) {
+    if (errorCode != null &&
+            errorCode >= StageErrorType.VERIFICATION_NOT_INITIALIZED.toTypeIdx()) {
+        //Toast.makeText(this, getString(R.string.verification_expired), Toast.LENGTH_LONG).show()
+        // e.g.: (errorCode == StageObstacleErrorType.USER_INTERACTED_COMPLETED.toTypeIdx()
+        //    || errorCode == StageObstacleErrorType.VERIFICATION_EXPIRED.toTypeIdx()) //TODO: mb add info toast?
+        (VCheckDIContainer).mainRepository.setFirePartnerCallback(true)
+        (VCheckDIContainer).mainRepository.setFinishStartupActivity(true)
+        val intents = Intent(this, VCheckStartupActivity::class.java)
+        intents.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        startActivity(intents)
+    } else {
+        Toast.makeText(this, "Unknown stage error", Toast.LENGTH_LONG).show()
     }
 }

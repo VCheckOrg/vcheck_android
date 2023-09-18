@@ -6,7 +6,7 @@
     android:id="@+id/in_process_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.liveness.ui.in_process.InProcessFragment"
+    tools:context=".presentation.liveness.ui.in_process.PostProcessFragment"
     android:background="@color/vcheck_background_primary"
     android:theme="@style/Theme.VCheckAndroidSDKDemo">
 

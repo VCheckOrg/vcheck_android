@@ -29,26 +29,26 @@ data class LivenessStageConfig(
     val gestures: List<String>
 )
 
-enum class StageObstacleErrorType {
+enum class StageErrorType {
     VERIFICATION_NOT_INITIALIZED,
     USER_INTERACTED_COMPLETED,
     VERIFICATION_EXPIRED
 }
 
-fun StageObstacleErrorType.toTypeIdx(): Int {
+fun StageErrorType.toTypeIdx(): Int {
     return when(this) {
-        StageObstacleErrorType.VERIFICATION_NOT_INITIALIZED -> 0
-        StageObstacleErrorType.USER_INTERACTED_COMPLETED -> 1
-        StageObstacleErrorType.VERIFICATION_EXPIRED -> 2
+        StageErrorType.VERIFICATION_NOT_INITIALIZED -> 0
+        StageErrorType.USER_INTERACTED_COMPLETED -> 1
+        StageErrorType.VERIFICATION_EXPIRED -> 2
     }
 }
 
-fun stageObstacleTypeIdxToError(stageObstacleTypeIdx: Int): StageObstacleErrorType {
+fun stageObstacleTypeIdxToError(stageObstacleTypeIdx: Int): StageErrorType {
     return when(stageObstacleTypeIdx) {
-        0 -> StageObstacleErrorType.VERIFICATION_NOT_INITIALIZED
-        1 -> StageObstacleErrorType.USER_INTERACTED_COMPLETED
-        2 -> StageObstacleErrorType.VERIFICATION_EXPIRED
-        else -> StageObstacleErrorType.USER_INTERACTED_COMPLETED
+        0 -> StageErrorType.VERIFICATION_NOT_INITIALIZED
+        1 -> StageErrorType.USER_INTERACTED_COMPLETED
+        2 -> StageErrorType.VERIFICATION_EXPIRED
+        else -> StageErrorType.USER_INTERACTED_COMPLETED
     }
 }
 
