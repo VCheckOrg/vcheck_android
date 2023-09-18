@@ -55,7 +55,8 @@ class PostProcessViewModel(val repository: MainRepository) : ViewModel() {
             }
             Resource.Status.ERROR -> {
                 if (response.apiError != null) {
-                    stageSpecificError.value = response.apiError
+                    stageResponse.value = response
+                    //stageSpecificError.value = response.apiError
                 }
             }
         }

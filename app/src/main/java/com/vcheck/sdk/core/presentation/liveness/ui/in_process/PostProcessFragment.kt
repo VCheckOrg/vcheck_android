@@ -102,16 +102,19 @@ class PostProcessFragment : ThemeWrapperFragment() {
             }
 
             _viewModel.stageResponse.observe(viewLifecycleOwner) {
-                if (it.data?.errorCode == null
-                    || it.data.errorCode == StageErrorType.USER_INTERACTED_COMPLETED.toTypeIdx()) {
+                if (it.data?.errorCode == null || (it.data.errorCode != null &&
+                            it.data.errorCode!! > StageErrorType.VERIFICATION_NOT_INITIALIZED.toTypeIdx())) {
                     (activity as VCheckLivenessActivity).closeSDKFlow(true)
+                } else {
+                    Toast.makeText(requireContext(), "Unhandled end stage error", Toast.LENGTH_LONG).show()
                 }
             }
 
-            _viewModel.stageSpecificError.observe(viewLifecycleOwner) {
-                (requireActivity() as AppCompatActivity)
-                    .checkStageErrorForResult(it?.errorData?.errorCode)
-            }
+            //obsolete:
+//            _viewModel.stageSpecificError.observe(viewLifecycleOwner) {
+//                (requireActivity() as AppCompatActivity)
+//                    .checkStageErrorForResult(it?.errorData?.errorCode, executePartnerCallback = true)
+//            }
 
             _viewModel.clientError.observe(viewLifecycleOwner) {
                 if (it != null) {

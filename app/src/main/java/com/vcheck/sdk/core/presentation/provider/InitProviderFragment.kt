@@ -66,7 +66,7 @@ class InitProviderFragment : Fragment() {
 
         _viewModel.stageSpecificError.observe(viewLifecycleOwner) {
             (requireActivity() as AppCompatActivity)
-                .checkStageErrorForResult(it?.errorData?.errorCode)
+                .checkStageErrorForResult(it?.errorData?.errorCode, executePartnerCallback = false)
         }
 
         _viewModel.clientError.observe(viewLifecycleOwner) {

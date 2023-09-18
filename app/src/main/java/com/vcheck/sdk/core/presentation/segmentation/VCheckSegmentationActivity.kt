@@ -400,13 +400,13 @@ class VCheckSegmentationActivity : AppCompatActivity() {
         val image: MultipartBody.Part = try {
 
             val initSizeKb = file.sizeInKb
-            if (initSizeKb < 95.0) {
+            if (initSizeKb < 92.0) {
                 MultipartBody.Part.createFormData(
                     "image.jpg", file.name, file.asRequestBody("image/jpeg".toMediaType()))
             } else {
                 val compressedImageFile = Compressor.compress(this@VCheckSegmentationActivity, file) {
                     destination(file)
-                    size(95_000, stepSize = 20, maxIteration = 10)
+                    size(92_000, stepSize = 20, maxIteration = 10)
                 }
                 MultipartBody.Part.createFormData("image.jpg", compressedImageFile.name,
                     compressedImageFile.asRequestBody("image/jpeg".toMediaType()))
@@ -430,6 +430,10 @@ class VCheckSegmentationActivity : AppCompatActivity() {
                 checkedDocIdx.toString())
 
         if (response != null) {
+            if (response.errorCode != 0 && kotlin.random.Random.nextBoolean()) { // for test!
+                Toast.makeText(this@VCheckSegmentationActivity,
+                    "Segmentation processing error: [${response.errorCode}]", Toast.LENGTH_SHORT).show()
+            }
             processCheckResult(response, fullBitmap, checkedDocIdx)
         } else {
             blockRequestByProcessing = false
