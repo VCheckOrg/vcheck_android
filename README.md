@@ -42,5 +42,8 @@ VCheckSDK
     .partnerEndCallback {
         onVCheckSDKFlowFinish()
     }
+    .onVerificationExpired {
+        onVerificationExpired()
+    }
     .start(this@MyActivity)
 ```
