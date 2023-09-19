@@ -7,7 +7,7 @@ object BaseClientErrors {
     const val USER_INTERACTED_COMPLETED = 1
     const val STAGE_NOT_FOUND = 2
     const val INVALID_STAGE_TYPE = 3
-    const val PRIMARY_DOCUMENT_EXISTS = 4
+    const val PRIMARY_DOCUMENT_EXISTS_OR_USER_INTERACTION_COMPLETED = 4
     const val UPLOAD_ATTEMPTS_EXCEEDED = 5
     const val INVALID_DOCUMENT_TYPE = 6
     const val INVALID_PAGES_COUNT = 7

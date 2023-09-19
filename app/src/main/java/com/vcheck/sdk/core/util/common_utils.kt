@@ -210,6 +210,17 @@ fun AppCompatActivity.closeSDKFlow(shouldExecuteEndCallback: Boolean) {
     startActivity(intents)
 }
 
+fun AppCompatActivity.checkUserInteractionCompletedForDoc(errorCode: Int?) {
+    if (errorCode == BaseClientErrors.PRIMARY_DOCUMENT_EXISTS_OR_USER_INTERACTION_COMPLETED) {
+        (VCheckDIContainer).mainRepository.setFirePartnerCallback(true)
+        VCheckSDK.setIsVerificationExpired(false)
+        (VCheckDIContainer).mainRepository.setFinishStartupActivity(true)
+        val intents = Intent(this, VCheckStartupActivity::class.java)
+        intents.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        startActivity(intents)
+    }
+}
+
 fun AppCompatActivity.checkUserInteractionCompletedForResult(errorCode: Int?) {
     if (errorCode == BaseClientErrors.USER_INTERACTED_COMPLETED) {
         (VCheckDIContainer).mainRepository.setFirePartnerCallback(false)
@@ -238,9 +249,5 @@ fun AppCompatActivity.checkStageErrorForResult(errorCode: Int?, executePartnerCa
         val intents = Intent(this, VCheckStartupActivity::class.java)
         intents.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         startActivity(intents)
-    } else {
-        if (errorCode != null) {
-            Toast.makeText(this, "Unknown stage check error: [$errorCode]", Toast.LENGTH_LONG).show()
-        }
     }
 }

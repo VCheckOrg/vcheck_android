@@ -107,8 +107,9 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
         binding.docInfoList.adapter = adapter
 
         viewModel.documentInfoResponse.observe(viewLifecycleOwner) {
-            (requireActivity() as AppCompatActivity)
-                .checkUserInteractionCompletedForResult(it.data?.errorCode)
+            // obsolete logic:
+//            (requireActivity() as AppCompatActivity)
+//                .checkUserInteractionCompletedForResult(it.data?.errorCode)
 
             if (it.data?.data != null) {
                 populateDocImages(it.data.data)
@@ -123,9 +124,6 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
         }
 
         viewModel.stageResponse.observe(viewLifecycleOwner) {
-            if (it != null) Toast.makeText((activity as VCheckMainActivity),
-                "STAGE RESPONSE PROCESSING (no error!)", Toast.LENGTH_LONG).show()
-
             if (it.data?.data?.config != null) {
                 viewModel.repository.setLivenessMilestonesList((it.data.data.config.gestures))
                 findNavController().navigate(R.id.action_checkDocInfoFragment_to_livenessInstructionsFragment)
@@ -140,11 +138,13 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
         }
 
         viewModel.clientError.observe(viewLifecycleOwner) {
-            (requireActivity() as AppCompatActivity)
-                .checkUserInteractionCompletedForResult(it?.errorData?.errorCode)
-
-            if (it != null) Toast.makeText((activity as VCheckMainActivity),
-                "CUSTOM ERR. CODE: [${it.errorData?.errorCode}] | " + it.errorText, Toast.LENGTH_LONG).show()
+            if (it != null) {
+                if (it.errorData?.errorCode != BaseClientErrors.PRIMARY_DOCUMENT_EXISTS_OR_USER_INTERACTION_COMPLETED) {
+                    Toast.makeText((activity as VCheckMainActivity), it.errorText, Toast.LENGTH_LONG).show()
+                } else {
+                    viewModel.getCurrentStage()
+                }
+            }
         }
 
         binding.checkInfoConfirmButton.setOnClickListener {
