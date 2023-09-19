@@ -66,6 +66,7 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
                     findNavController().navigate(R.id.action_global_photoUploadScreen)
                 }
             } else {
+                //Stub
                 //Log.d(TAG, "Back press from SegmentationActivity")
             }
         }
@@ -257,30 +258,4 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
             }
         }
     }
-
-    //obsolete logic
-//    private fun handleDocErrorResponse(response: BaseClientResponseModel?) {
-//        if (response != null) {
-//            if (response.errorCode == DocumentVerificationCode.PARSING_ERROR.toCodeIdx() ||
-//                response.errorCode == DocumentVerificationCode.INVALID_PAGE.toCodeIdx()) {
-//                if (response.data?.id != null) {
-//                    val action = CheckPhotoFragmentDirections
-//                        .actionCheckPhotoFragmentToDocVerificationNotSuccessfulFragment(
-//                            CheckDocInfoDataTO(args.checkPhotoDataTO.selectedDocType,
-//                                response.data.id,
-//                                args.checkPhotoDataTO.photo1Path,
-//                                args.checkPhotoDataTO.photo2Path,
-//                                true,
-//                                codeIdxToVerificationCode(response.errorCode)))
-//                    findNavController().navigate(action)
-//                }
-//            } else {
-//                _binding!!.replacePhotoButton.isVisible = true
-//                _binding!!.confirmPhotoButton.isVisible = true
-//                _binding!!.uploadDocPhotosLoadingIndicator.isVisible = false
-//                _binding!!.tvProcessingDisclaimer.isVisible = false
-//                Toast.makeText(activity, "Error: [${codeIdxToVerificationCode(response.errorCode)}]", Toast.LENGTH_LONG).show()
-//            }
-//        }
-//    }
 }

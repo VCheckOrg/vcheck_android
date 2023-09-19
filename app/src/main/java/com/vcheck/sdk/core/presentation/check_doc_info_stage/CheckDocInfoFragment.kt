@@ -123,6 +123,9 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
         }
 
         viewModel.stageResponse.observe(viewLifecycleOwner) {
+            if (it != null) Toast.makeText((activity as VCheckMainActivity),
+                "STAGE RESPONSE PROCESSING (no error!)", Toast.LENGTH_LONG).show()
+
             if (it.data?.data?.config != null) {
                 viewModel.repository.setLivenessMilestonesList((it.data.data.config.gestures))
                 findNavController().navigate(R.id.action_checkDocInfoFragment_to_livenessInstructionsFragment)
@@ -140,7 +143,8 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
             (requireActivity() as AppCompatActivity)
                 .checkUserInteractionCompletedForResult(it?.errorData?.errorCode)
 
-            if (it != null) Toast.makeText(activity, it.errorText, Toast.LENGTH_LONG).show()
+            if (it != null) Toast.makeText((activity as VCheckMainActivity),
+                "CUSTOM ERR. CODE: [${it.errorData?.errorCode}] | " + it.errorText, Toast.LENGTH_LONG).show()
         }
 
         binding.checkInfoConfirmButton.setOnClickListener {

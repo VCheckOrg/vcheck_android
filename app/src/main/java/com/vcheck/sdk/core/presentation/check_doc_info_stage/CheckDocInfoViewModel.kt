@@ -28,12 +28,10 @@ class CheckDocInfoViewModel(val repository: MainRepository) : ViewModel() {
         }
     }
 
-    fun updateAndConfirmDocument(docId: Int,
-                                 userData: DocUserDataRequestBody) {
-        repository.updateAndConfirmDocInfo(docId, userData)
-            .observeForever {
-                processConfirmResponse(it)
-            }
+    fun updateAndConfirmDocument(docId: Int, userData: DocUserDataRequestBody) {
+        repository.updateAndConfirmDocInfo(docId, userData).observeForever {
+            processConfirmResponse(it)
+        }
     }
 
     fun getCurrentStage() {

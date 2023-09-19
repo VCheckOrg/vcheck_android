@@ -429,15 +429,12 @@ class VCheckSegmentationActivity : AppCompatActivity() {
                 docData.category.toString(),
                 checkedDocIdx.toString())
 
+        //TODO figure out why non-0 result while processing on some new devices. Mb compressing issue?
         if (response != null) {
-            if (response.errorCode != 0 && kotlin.random.Random.nextBoolean()) { // for test!
-                Toast.makeText(this@VCheckSegmentationActivity,
-                    "Segmentation processing error: [${response.errorCode}]", Toast.LENGTH_SHORT).show()
-            }
             processCheckResult(response, fullBitmap, checkedDocIdx)
         } else {
             blockRequestByProcessing = false
-            Log.d(TAG, "Segmentation: response for current index not containing data! Max image size may be exceeded")
+            Log.w(TAG, "Segmentation: response for current index not containing data! Max image size may be exceeded")
         }
     }
 

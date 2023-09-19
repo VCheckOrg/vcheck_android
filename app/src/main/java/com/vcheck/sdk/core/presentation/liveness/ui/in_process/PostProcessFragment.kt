@@ -110,18 +110,10 @@ class PostProcessFragment : ThemeWrapperFragment() {
                 }
             }
 
-            //obsolete:
-//            _viewModel.stageSpecificError.observe(viewLifecycleOwner) {
-//                (requireActivity() as AppCompatActivity)
-//                    .checkStageErrorForResult(it?.errorData?.errorCode, executePartnerCallback = true)
-//            }
-
             _viewModel.clientError.observe(viewLifecycleOwner) {
                 if (it != null) {
                     (requireActivity() as AppCompatActivity)
                         .checkUserInteractionCompletedForResult(it.errorData?.errorCode)
-
-                    Toast.makeText(activity, it.errorText, Toast.LENGTH_LONG).show()
 
                     safeNavToFailFragment(R.id.action_inProcessFragment_to_failVideoUploadFragment)
                 }

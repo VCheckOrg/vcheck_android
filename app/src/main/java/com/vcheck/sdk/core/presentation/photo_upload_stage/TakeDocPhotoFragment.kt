@@ -283,8 +283,17 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
                             _photo1Path = null
                             deletePhotoButton1.isVisible = false
                             verifMethodTitle1.isVisible = true
-                            verifMethodIcon1.isVisible = true
                             makePhotoButton1.isVisible = true
+                            val docTypeWithData = VCheckDIContainer.mainRepository.getSelectedDocTypeWithData()
+                            when(docCategoryIdxToType(docTypeWithData!!.category)) {
+                                DocType.FOREIGN_PASSPORT -> {
+                                    verifMethodIcon1.isVisible = true
+                                    verifMethodIcon1.setImageResource(R.drawable.doc_ua_international_passport)
+                                }
+                                else -> {
+                                    verifMethodIcon1.isVisible = false
+                                }
+                            }
                             checkPhotoCompletenessAndSetProceedClickListener()
                         }
                     }
@@ -304,8 +313,17 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
                             _photo2Path = null
                             deletePhotoButton2.isVisible = false
                             verifMethodTitle2.isVisible = true
-                            verifMethodIcon2.isVisible = true
                             makePhotoButton2.isVisible = true
+                            val docTypeWithData = VCheckDIContainer.mainRepository.getSelectedDocTypeWithData()
+                            when(docCategoryIdxToType(docTypeWithData!!.category)) {
+                                DocType.FOREIGN_PASSPORT -> {
+                                    verifMethodIcon2.isVisible = true
+                                    verifMethodIcon2.setImageResource(R.drawable.doc_ua_international_passport)
+                                }
+                                else -> {
+                                    verifMethodIcon2.isVisible = false
+                                }
+                            }
                             checkPhotoCompletenessAndSetProceedClickListener()
                         }
                     } else {
