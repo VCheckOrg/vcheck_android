@@ -1,6 +1,7 @@
 package com.vcheck.sdk.core.presentation.segmentation.flow_logic
 
 import android.graphics.Bitmap
+import android.util.Log
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.presentation.segmentation.VCheckSegmentationActivity
 import java.io.File
@@ -26,6 +27,9 @@ fun Bitmap.cropWithMask(): Bitmap {
 
     val originalWidth = this.width
     val originalHeight = this.height
+
+    Log.d(VCheckSegmentationActivity.TAG, "====== CROPPING BITMAP: W - $originalWidth | H - $originalHeight")
+
     val desiredWidth = (originalWidth * (maskDimens.widthPercent / 100)).toInt()
     val desiredHeight = (desiredWidth * maskDimens.ratio).toInt()
     val cropHeightFromEachSide = ((originalHeight - desiredHeight) / 2)

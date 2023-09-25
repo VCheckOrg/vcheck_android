@@ -56,8 +56,10 @@ class InitProviderFragment : Fragment() {
             VCheckSDK.getOptSelectedCountryCode()) // country is optional here, may be nullable
 
         _viewModel.initProviderResponse.observe(viewLifecycleOwner) {
-            // ignoring any custom codes, also >= 0
-            _viewModel.getCurrentStage()
+            // ignoring any custom codes!
+            if (it != null) {
+                _viewModel.getCurrentStage()
+            }
         }
 
         _viewModel.stageResponse.observe(viewLifecycleOwner) {

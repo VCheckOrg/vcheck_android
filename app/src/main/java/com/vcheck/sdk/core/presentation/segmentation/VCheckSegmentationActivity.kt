@@ -62,12 +62,13 @@ class VCheckSegmentationActivity : AppCompatActivity() {
         const val TAG = "SegmentationActivity"
         private const val LIVENESS_TIME_LIMIT_MILLIS: Long = 60000 //max is 60s
         private const val BLOCK_PIPELINE_TIME_MILLIS: Long = 3800 //may reduce a bit
-        private const val GESTURE_REQUEST_DEBOUNCE_MILLIS: Long = 410
-        private const val IMAGE_CAPTURE_DEBOUNCE_MILLIS: Long = 200
+        private const val GESTURE_REQUEST_DEBOUNCE_MILLIS: Long = 450
+        private const val IMAGE_CAPTURE_DEBOUNCE_MILLIS: Long = 300
         private const val STAGE_VIBRATION_DURATION_MILLIS: Long = 100
         private const val MASK_UI_MULTIPLY_FACTOR: Double = 1.1
-        private const val VIDEO_STREAM_WIDTH_LIMIT = 800
-        private const val VIDEO_STREAM_HEIGHT_LIMIT = 800
+        private const val VIDEO_STREAM_WIDTH_LIMIT = 1600
+        private const val VIDEO_STREAM_HEIGHT_LIMIT = 1200
+        private const val MAX_FRAME_FILE_SIZE_KB = 94.0
     }
 
     private val scope = CoroutineScope(newSingleThreadContext("segmentation"))
@@ -238,7 +239,7 @@ class VCheckSegmentationActivity : AppCompatActivity() {
                 @ExperimentalGetImage
                 override fun onCaptureSuccess(image: ImageProxy) {
                     // Use the image, then make sure to close it.
-                    //Log.d(TAG, "GOT PICTURE: W - ${image.width} | H - ${image.height}")
+                    //Log.d(TAG, "GOT DOC IMG CAPTURE: W - ${image.width} | H - ${image.height}")
                     if (image.width != streamSize.width || image.height != streamSize.height) {
                         streamSize = Size(image.width, image.height)
                     }
@@ -400,13 +401,13 @@ class VCheckSegmentationActivity : AppCompatActivity() {
         val image: MultipartBody.Part = try {
 
             val initSizeKb = file.sizeInKb
-            if (initSizeKb < 92.0) {
+            if (initSizeKb < MAX_FRAME_FILE_SIZE_KB) {
                 MultipartBody.Part.createFormData(
                     "image.jpg", file.name, file.asRequestBody("image/jpeg".toMediaType()))
             } else {
                 val compressedImageFile = Compressor.compress(this@VCheckSegmentationActivity, file) {
                     destination(file)
-                    size(92_000, stepSize = 20, maxIteration = 10)
+                    size(MAX_FRAME_FILE_SIZE_KB.toLong(), stepSize = 20, maxIteration = 10)
                 }
                 MultipartBody.Part.createFormData("image.jpg", compressedImageFile.name,
                     compressedImageFile.asRequestBody("image/jpeg".toMediaType()))
@@ -429,7 +430,6 @@ class VCheckSegmentationActivity : AppCompatActivity() {
                 docData.category.toString(),
                 checkedDocIdx.toString())
 
-        //TODO figure out why non-0 result while processing on some new devices. Mb compressing issue?
         if (response != null) {
             processCheckResult(response, fullBitmap, checkedDocIdx)
         } else {
@@ -438,11 +438,11 @@ class VCheckSegmentationActivity : AppCompatActivity() {
         }
     }
 
-    private fun processCheckResult(it: SegmentationGestureResponse,
-                                    fullBitmap: Bitmap,
-                                    currentPageIdx: Int) {
+    private fun processCheckResult(response: SegmentationGestureResponse,
+                                   fullBitmap: Bitmap,
+                                   currentPageIdx: Int) {
         runOnUiThread {
-            if (it.success) {
+            if (response.success) {
                 if (currentPageIdx == 0 && photo1FullBitmap == null) {
                     photo1FullBitmap = fullBitmap
                 }
@@ -458,8 +458,8 @@ class VCheckSegmentationActivity : AppCompatActivity() {
                 blockProcessingByUI = false
                 blockRequestByProcessing = false
             }
-            if (it.errorCode != 0) {
-                showSingleToast("Scan response error: [${it.errorCode}]")
+            if (response.errorCode != 0) {
+                showSingleToast("Scan response error: [${response.errorCode}]")
             }
         }
     }
@@ -711,7 +711,7 @@ class VCheckSegmentationActivity : AppCompatActivity() {
         if (mToast != null) {
             mToast?.cancel()
         }
-        mToast = Toast.makeText(this, message, Toast.LENGTH_LONG)
+        mToast = Toast.makeText(this@VCheckSegmentationActivity, message, Toast.LENGTH_LONG)
         mToast?.show()
     }
 

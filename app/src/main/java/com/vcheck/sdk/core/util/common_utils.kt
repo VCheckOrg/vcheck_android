@@ -137,88 +137,12 @@ val File.sizeInKb get() = size / 1024
 val File.sizeInMb get() = sizeInKb / 1024
 
 
-
-/// FOR TEST
-fun saveImageToGallery(bitmap: Bitmap, context: Context, folderName: String) {
-    if (Build.VERSION.SDK_INT >= 29) {
-        val values = contentValues()
-        values.put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/$folderName")
-        values.put(MediaStore.Images.Media.IS_PENDING, true)
-        // RELATIVE_PATH and IS_PENDING are introduced in API 29.
-
-        val uri: Uri? = context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
-        if (uri != null) {
-            saveImageToStream(bitmap, context.contentResolver.openOutputStream(uri))
-            values.put(MediaStore.Images.Media.IS_PENDING, false)
-            context.contentResolver.update(uri, values, null, null)
-        }
-    } else {
-        val directory = File(Environment.getExternalStorageDirectory().toString() + File.separator + folderName)
-        // getExternalStorageDirectory is deprecated in API 29
-
-        if (!directory.exists()) {
-            directory.mkdirs()
-        }
-        val fileName = System.currentTimeMillis().toString() + ".png"
-        val file = File(directory, fileName)
-        saveImageToStream(bitmap, FileOutputStream(file))
-        val values = contentValues()
-        values.put(MediaStore.Images.Media.DATA, file.absolutePath)
-        // .DATA is deprecated in API 29
-        context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
-    }
-}
-
-fun contentValues() : ContentValues {
-    val values = ContentValues()
-    values.put(MediaStore.Images.Media.MIME_TYPE, "image/png")
-    values.put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis() / 1000)
-    values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis())
-    return values
-}
-
-fun saveImageToStream(bitmap: Bitmap, outputStream: OutputStream?) {
-    if (outputStream != null) {
-        try {
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-            outputStream.close()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-}
-
-
-inline fun <T> List<T>.moveItemToFirstPosition(predicate: (T) -> Boolean): List<T> {
-    for (element in this.withIndex()) {
-        if (predicate(element.value)) {
-            return this.toMutableList().apply {
-                removeAt(element.index)
-                add(0, element.value)
-            }.toList()
-        }
-    }
-    return this
-}
-
-
 fun AppCompatActivity.closeSDKFlow(shouldExecuteEndCallback: Boolean) {
     (VCheckDIContainer).mainRepository.setFirePartnerCallback(shouldExecuteEndCallback)
     (VCheckDIContainer).mainRepository.setFinishStartupActivity(true)
     val intents = Intent(this, VCheckStartupActivity::class.java)
     intents.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
     startActivity(intents)
-}
-
-fun AppCompatActivity.checkUserInteractionCompletedForDoc(errorCode: Int?) {
-    if (errorCode == BaseClientErrors.PRIMARY_DOCUMENT_EXISTS_OR_USER_INTERACTION_COMPLETED) {
-        (VCheckDIContainer).mainRepository.setFirePartnerCallback(true)
-        VCheckSDK.setIsVerificationExpired(false)
-        (VCheckDIContainer).mainRepository.setFinishStartupActivity(true)
-        val intents = Intent(this, VCheckStartupActivity::class.java)
-        intents.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        startActivity(intents)
-    }
 }
 
 fun AppCompatActivity.checkUserInteractionCompletedForResult(errorCode: Int?) {

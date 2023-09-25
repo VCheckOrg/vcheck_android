@@ -222,8 +222,8 @@ public class BitmapUtils {
     private static boolean areUVPlanesNV21(Plane[] planes, int width, int height) {
         int imageSize = width * height;
 
-        ByteBuffer uBuffer = planes[1].getBuffer(); //!
-        ByteBuffer vBuffer = planes[2].getBuffer(); //!
+        ByteBuffer uBuffer = planes[1].getBuffer();
+        ByteBuffer vBuffer = planes[2].getBuffer();
 
         // Backup buffer properties.
         int vBufferPosition = vBuffer.position();
