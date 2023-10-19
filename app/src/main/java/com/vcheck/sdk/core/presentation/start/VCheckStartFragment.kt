@@ -26,7 +26,7 @@ import com.vcheck.sdk.core.domain.*
 import com.vcheck.sdk.core.presentation.VCheckMainActivity
 import com.vcheck.sdk.core.presentation.transferrable_objects.ChooseProviderLogicTO
 import com.vcheck.sdk.core.presentation.transferrable_objects.CountriesListTO
-import com.vcheck.sdk.core.presentation.transferrable_objects.ProviderLogicCase
+import com.vcheck.sdk.core.domain.ProviderLogicCase
 import com.vcheck.sdk.core.util.checkUserInteractionCompletedForResult
 import com.vcheck.sdk.core.util.toFlagEmoji
 import java.util.*

@@ -15,7 +15,7 @@ import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.databinding.FragmentChooseProviderBinding
 import com.vcheck.sdk.core.domain.Provider
 import com.vcheck.sdk.core.presentation.adapters.ProvidersListAdapter
-import com.vcheck.sdk.core.presentation.transferrable_objects.ProviderLogicCase
+import com.vcheck.sdk.core.domain.ProviderLogicCase
 
 class ChooseProviderFragment : Fragment(), ProvidersListAdapter.OnProviderItemClick {
 

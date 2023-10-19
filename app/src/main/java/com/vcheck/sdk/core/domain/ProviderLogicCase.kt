@@ -1,4 +1,4 @@
-package com.vcheck.sdk.core.presentation.transferrable_objects
+package com.vcheck.sdk.core.domain
 
 enum class ProviderLogicCase {
     ONE_PROVIDER_NO_COUNTRIES,

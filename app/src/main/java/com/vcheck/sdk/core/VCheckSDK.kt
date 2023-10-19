@@ -7,8 +7,7 @@ import com.vcheck.sdk.core.data.VCheckSDKConstantsProvider
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.*
 import com.vcheck.sdk.core.presentation.VCheckStartupActivity
-import com.vcheck.sdk.core.presentation.transferrable_objects.ProviderLogicCase
-import com.vcheck.sdk.core.util.isValidHexColor
+import com.vcheck.sdk.core.domain.ProviderLogicCase
 import java.lang.IllegalArgumentException
 
 object VCheckSDK {
@@ -38,18 +37,8 @@ object VCheckSDK {
     internal var showPartnerLogo: Boolean = false
     internal var showCloseSDKButton: Boolean = true
 
-    internal var buttonsColorHex: String? = null
-    internal var backgroundPrimaryColorHex: String? = null
-    internal var backgroundSecondaryColorHex: String? = null
-    internal var backgroundTertiaryColorHex: String? = null
-    internal var primaryTextColorHex: String? = null
-    internal var secondaryTextColorHex: String? = null
-    internal var borderColorHex: String? = null
-    internal var iconsColorHex: String? = null
-    //internal var colorButtonsText: String? = null
-
-    private const val wrongColorFormatPickDescr: String = "VCheckSDK - error: if provided, " +
-            "custom color should be a valid HEX string (RGB or ARGB). Ex.: '#2A2A2A' or '#abdbe3'"
+    //TODO think of default colors; mb use the default json asset for each platform
+    internal var designConfig: VCheckDesignConfig? = null
 
     fun start(partnerActivity: Activity) {
 
@@ -107,30 +96,11 @@ object VCheckSDK {
                     "You may set one of the next locales: ${VCheckSDKConstantsProvider.vcheckSDKAvailableLanguagesList}, " +
                     "or check out for the recent version of the SDK library")
         }
-        if (buttonsColorHex != null && !buttonsColorHex!!.isValidHexColor()) {
-            throw IllegalArgumentException(wrongColorFormatPickDescr)
-        }
-        if (backgroundPrimaryColorHex != null && !backgroundPrimaryColorHex!!.isValidHexColor()) {
-            throw IllegalArgumentException(wrongColorFormatPickDescr)
-        }
-        if (backgroundSecondaryColorHex != null && !backgroundSecondaryColorHex!!.isValidHexColor()) {
-            throw IllegalArgumentException(wrongColorFormatPickDescr)
-        }
-        if (backgroundTertiaryColorHex != null && !backgroundTertiaryColorHex!!.isValidHexColor()) {
-            throw IllegalArgumentException(wrongColorFormatPickDescr)
-        }
-        if (primaryTextColorHex != null && !primaryTextColorHex!!.isValidHexColor()) {
-            throw IllegalArgumentException(wrongColorFormatPickDescr)
-        }
-        if (secondaryTextColorHex != null && !secondaryTextColorHex!!.isValidHexColor()) {
-            throw IllegalArgumentException(wrongColorFormatPickDescr)
-        }
-        if (borderColorHex != null && !borderColorHex!!.isValidHexColor()) {
-            throw IllegalArgumentException(wrongColorFormatPickDescr)
-        }
-        if (iconsColorHex != null && !iconsColorHex!!.isValidHexColor()) {
-            throw IllegalArgumentException(wrongColorFormatPickDescr)
-        }
+        //TODO make additional non-null checks
+        //TODO figure our should json config be required property
+//        if (designConfig != null) {
+//            throw IllegalArgumentException(wrongColorFormatPickDescr)
+//        }
     }
 
     internal fun executePartnerCallback() {
@@ -189,68 +159,6 @@ object VCheckSDK {
         return sdkLanguageCode ?: "en"
     }
 
-    /// Color customization methods
-
-    fun colorActionButtons(colorHex: String): VCheckSDK {
-        this.buttonsColorHex = colorHex
-        return this
-    }
-
-    fun colorBackgroundPrimary(colorHex: String): VCheckSDK {
-        this.backgroundPrimaryColorHex = colorHex
-        return this
-    }
-
-    fun colorBackgroundSecondary(colorHex: String): VCheckSDK {
-        this.backgroundSecondaryColorHex = colorHex
-        return this
-    }
-
-    fun colorBackgroundTertiary(colorHex: String): VCheckSDK {
-        this.backgroundTertiaryColorHex = colorHex
-        return this
-    }
-
-    fun colorTextPrimary(colorHex: String): VCheckSDK {
-        this.primaryTextColorHex = colorHex
-        return this
-    }
-
-    fun colorTextSecondary(colorHex: String): VCheckSDK {
-        this.secondaryTextColorHex = colorHex
-        return this
-    }
-
-    fun colorBorders(colorHex: String): VCheckSDK {
-        this.borderColorHex = colorHex
-        return this
-    }
-
-    fun colorIcons(colorHex: String): VCheckSDK {
-        this.iconsColorHex = colorHex
-        return this
-    }
-
-    // needs additional implementation ATM:
-//    fun colorButtonsText(colorHex: String): VCheckSDK {
-//        this.colorButtonsText = colorHex
-//        return this
-//    }
-
-    fun resetCustomColors() {
-        this.buttonsColorHex = null
-        //this.colorButtonsText = null
-        this.backgroundPrimaryColorHex = null
-        this.backgroundSecondaryColorHex = null
-        this.backgroundTertiaryColorHex = null
-        this.primaryTextColorHex = null
-        this.secondaryTextColorHex = null
-        this.borderColorHex = null
-        this.iconsColorHex = null
-    }
-
-    /// Internal caching functions
-
     internal fun getEnvironment(): VCheckEnvironment {
         return this.environment ?: VCheckEnvironment.DEV
     }
@@ -294,6 +202,13 @@ object VCheckSDK {
 
     internal fun setOptSelectedCountryCode(code: String) {
         this.optSelectedCountryCode = code
+    }
+
+    /// Color customization methods
+
+    fun designConfig(config: VCheckDesignConfig): VCheckSDK {
+        this.designConfig = config
+        return this
     }
 
     /// Other public methods for customization

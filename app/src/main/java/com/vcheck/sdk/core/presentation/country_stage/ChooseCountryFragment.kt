@@ -19,7 +19,7 @@ import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.CountryTO
 import com.vcheck.sdk.core.presentation.transferrable_objects.ChooseProviderLogicTO
 import com.vcheck.sdk.core.presentation.transferrable_objects.CountriesListTO
-import com.vcheck.sdk.core.presentation.transferrable_objects.ProviderLogicCase
+import com.vcheck.sdk.core.domain.ProviderLogicCase
 import com.vcheck.sdk.core.util.ThemeWrapperFragment
 import com.vcheck.sdk.core.util.checkUserInteractionCompletedForResult
 import com.vcheck.sdk.core.util.toFlagEmoji
