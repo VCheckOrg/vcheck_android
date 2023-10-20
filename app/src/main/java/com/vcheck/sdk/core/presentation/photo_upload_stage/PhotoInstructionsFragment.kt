@@ -11,7 +11,7 @@ import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.databinding.PhotoInstructionsFragmentBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
-import com.vcheck.sdk.core.util.ThemeWrapperFragment
+import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
 
 class PhotoInstructionsFragment : ThemeWrapperFragment() {
 

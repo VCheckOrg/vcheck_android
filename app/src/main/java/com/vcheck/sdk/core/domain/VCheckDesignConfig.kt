@@ -1,6 +1,7 @@
 package com.vcheck.sdk.core.domain
 
 import com.google.gson.annotations.SerializedName
+import com.google.gson.Gson
 
 data class VCheckDesignConfig (
     @SerializedName("primary")
@@ -81,4 +82,12 @@ data class VCheckDesignConfig (
     var disabled: String? = null,
     @SerializedName("disabledContent")
     var disabledContent: String? = null
-)
+) {
+
+    companion object {
+        @JvmStatic
+        fun fromJsonStr(rawJsonStr: String) : VCheckDesignConfig {
+            return Gson().fromJson(rawJsonStr, VCheckDesignConfig::class.java)
+        }
+    }
+}

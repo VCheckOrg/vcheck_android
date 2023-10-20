@@ -1,4 +1,4 @@
-package com.vcheck.sdk.core.util
+package com.vcheck.sdk.core.util.custom_views
 
 import android.content.Context
 import android.graphics.*

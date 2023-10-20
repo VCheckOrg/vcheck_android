@@ -13,7 +13,7 @@ import com.squareup.picasso.Picasso
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.databinding.ZoomedPhotoFragmentBinding
-import com.vcheck.sdk.core.util.ThemeWrapperFragment
+import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
 import java.io.File
 
 class ZoomedPhotoFragment : ThemeWrapperFragment() {

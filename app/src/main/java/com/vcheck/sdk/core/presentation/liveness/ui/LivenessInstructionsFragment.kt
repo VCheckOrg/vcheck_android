@@ -18,7 +18,7 @@ import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.databinding.LivenessInstructionsFragmentBinding
 import com.vcheck.sdk.core.presentation.VCheckMainActivity
 import com.vcheck.sdk.core.presentation.liveness.VCheckLivenessActivity
-import com.vcheck.sdk.core.util.ThemeWrapperFragment
+import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
 import com.vcheck.sdk.core.util.setMargins
 import java.util.*
 

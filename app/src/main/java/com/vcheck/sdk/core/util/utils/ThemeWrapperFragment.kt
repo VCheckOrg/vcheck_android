@@ -1,4 +1,4 @@
-package com.vcheck.sdk.core.util
+package com.vcheck.sdk.core.util.utils
 
 import androidx.fragment.app.Fragment
 

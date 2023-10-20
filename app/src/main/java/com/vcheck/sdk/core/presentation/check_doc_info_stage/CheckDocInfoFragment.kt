@@ -25,6 +25,7 @@ import com.vcheck.sdk.core.presentation.VCheckMainActivity
 import com.vcheck.sdk.core.presentation.adapters.CheckDocInfoAdapter
 import com.vcheck.sdk.core.presentation.adapters.DocInfoEditCallback
 import com.vcheck.sdk.core.util.*
+import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 

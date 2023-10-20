@@ -18,7 +18,7 @@ import com.vcheck.sdk.core.databinding.CountryListFragmentBinding
 import com.vcheck.sdk.core.domain.CountryTO
 import com.vcheck.sdk.core.presentation.adapters.CountryListAdapter
 import com.vcheck.sdk.core.presentation.adapters.SearchCountryCallback
-import com.vcheck.sdk.core.util.ThemeWrapperFragment
+import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
 import java.util.*
 
 

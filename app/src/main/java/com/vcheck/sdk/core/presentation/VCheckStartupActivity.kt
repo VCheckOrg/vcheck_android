@@ -10,7 +10,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.di.VCheckDIContainer
-import com.vcheck.sdk.core.util.VCheckContextUtils
+import com.vcheck.sdk.core.util.utils.VCheckContextUtils
 import com.vcheck.sdk.core.util.changeStatusBarColor
 
 internal class VCheckStartupActivity : AppCompatActivity() {

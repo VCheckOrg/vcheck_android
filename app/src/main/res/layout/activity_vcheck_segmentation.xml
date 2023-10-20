@@ -81,7 +81,7 @@
             android:layout_gravity="center"
             app:scaleType="fitCenter"/>
 
-        <com.vcheck.sdk.core.util.RectOverlayView
+        <com.vcheck.sdk.core.util.custom_views.RectOverlayView
             android:id="@+id/segmentation_mask_wrapper"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

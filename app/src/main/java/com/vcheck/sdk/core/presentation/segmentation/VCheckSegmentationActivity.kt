@@ -41,6 +41,7 @@ import com.vcheck.sdk.core.presentation.segmentation.flow_logic.*
 import com.vcheck.sdk.core.presentation.transferrable_objects.CheckPhotoDataTO
 import com.vcheck.sdk.core.util.*
 import com.vcheck.sdk.core.util.images.BitmapUtils
+import com.vcheck.sdk.core.util.utils.VCheckContextUtils
 import id.zelory.compressor.Compressor
 import id.zelory.compressor.constraint.destination
 import id.zelory.compressor.constraint.size

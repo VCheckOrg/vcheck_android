@@ -37,7 +37,6 @@ object VCheckSDK {
     internal var showPartnerLogo: Boolean = false
     internal var showCloseSDKButton: Boolean = true
 
-    //TODO think of default colors; mb use the default json asset for each platform
     internal var designConfig: VCheckDesignConfig? = null
 
     fun start(partnerActivity: Activity) {
@@ -87,7 +86,7 @@ object VCheckSDK {
                     "see VCheckSDK.onVerificationExpired(callback: (() -> Unit))")
         }
         if (sdkLanguageCode == null) {
-            Log.w(TAG, "VCheckSDK - warning: sdk language code is not set; using English (en) locale as default. " +
+            Log.w(TAG, "VCheckSDK - warning: SDK language code is not set; using English (en) locale as default. " +
                     "| see VCheckSDK.sdkLanguageCode(langCode: String)")
         }
         if (sdkLanguageCode != null && !VCheckSDKConstantsProvider
@@ -96,10 +95,9 @@ object VCheckSDK {
                     "You may set one of the next locales: ${VCheckSDKConstantsProvider.vcheckSDKAvailableLanguagesList}, " +
                     "or check out for the recent version of the SDK library")
         }
-        //TODO make additional non-null checks
-        //TODO figure our should json config be required property
+        //TODO figure our should json config be required property (and then make additional non-null checks)
 //        if (designConfig != null) {
-//            throw IllegalArgumentException(wrongColorFormatPickDescr)
+//            throw IllegalArgumentException()
 //        }
     }
 

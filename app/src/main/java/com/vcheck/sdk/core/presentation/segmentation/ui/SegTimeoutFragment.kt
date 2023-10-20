@@ -14,7 +14,7 @@ import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.databinding.FragmentSegTimeoutBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.presentation.segmentation.VCheckSegmentationActivity
-import com.vcheck.sdk.core.util.ThemeWrapperFragment
+import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
 
 class SegTimeoutFragment : ThemeWrapperFragment() {
 

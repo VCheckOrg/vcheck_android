@@ -30,7 +30,7 @@ import com.vcheck.sdk.core.presentation.segmentation.VCheckSegmentationActivity
 import com.vcheck.sdk.core.presentation.transferrable_objects.CheckDocInfoDataTO
 import com.vcheck.sdk.core.presentation.transferrable_objects.PhotoUploadType
 import com.vcheck.sdk.core.presentation.transferrable_objects.ZoomPhotoTO
-import com.vcheck.sdk.core.util.ThemeWrapperFragment
+import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
 import com.vcheck.sdk.core.util.checkUserInteractionCompletedForResult
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody

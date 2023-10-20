@@ -10,8 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.databinding.FragmentVerifSentBinding
-import com.vcheck.sdk.core.presentation.VCheckMainActivity
-import com.vcheck.sdk.core.util.ThemeWrapperFragment
+import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
 import com.vcheck.sdk.core.util.closeSDKFlow
 
 class VerifSentFragment : ThemeWrapperFragment() {

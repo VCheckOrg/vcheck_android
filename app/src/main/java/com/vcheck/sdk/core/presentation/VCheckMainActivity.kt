@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.databinding.ActivityVcheckMainBinding
-import com.vcheck.sdk.core.util.VCheckContextUtils
+import com.vcheck.sdk.core.util.utils.VCheckContextUtils
 import com.vcheck.sdk.core.util.changeStatusBarColor
 import com.vcheck.sdk.core.util.closeSDKFlow
 

@@ -1,40 +1,20 @@
 package com.vcheck.sdk.core.util
 
-import android.app.Activity
 import android.content.Context
+import android.util.Patterns
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
-import androidx.core.graphics.ColorUtils
-import androidx.core.view.WindowInsetsControllerCompat
+import android.webkit.URLUtil
+import java.io.File
+import java.net.MalformedURLException
+import java.net.URL
 import java.util.*
+import java.util.regex.Pattern
 
-fun Activity.changeStatusBarColor(color: Int) {
-    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-    window.statusBarColor = color
-    WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = isDark(color)
-}
-
-fun isDark(color: Int): Boolean {
-    return ColorUtils.calculateLuminance(color) < 0.5
-}
-
-fun View.setMargins(
-    leftMarginDp: Int? = null,
-    topMarginDp: Int? = null,
-    rightMarginDp: Int? = null,
-    bottomMarginDp: Int? = null
-) {
-    if (layoutParams is ViewGroup.MarginLayoutParams) {
-        val params = layoutParams as ViewGroup.MarginLayoutParams
-        leftMarginDp?.run { params.leftMargin = this.dpToPx(context) }
-        topMarginDp?.run { params.topMargin = this.dpToPx(context) }
-        rightMarginDp?.run { params.rightMargin = this.dpToPx(context) }
-        bottomMarginDp?.run { params.bottomMargin = this.dpToPx(context) }
-        requestLayout()
-    }
-}
+val File.size get() = if (!exists()) 0.0 else length().toDouble()
+val File.sizeInKb get() = size / 1024
+val File.sizeInMb get() = sizeInKb / 1024
 
 fun Int.dpToPx(context: Context): Int {
     val metrics = context.resources.displayMetrics
@@ -58,4 +38,20 @@ fun String.toFlagEmoji(): String {
     }
 
     return String(Character.toChars(firstLetter)) + String(Character.toChars(secondLetter))
+}
+
+fun String.isValidHexColor(): Boolean {
+    val rgbColorPattern = Pattern.compile("^#(?:[0-9a-fA-F]{3}){1,2}\$")
+    val argbColorPattern = Pattern.compile("^#(?:[0-9a-fA-F]{3,4}){1,2}\$")
+    return (rgbColorPattern.matcher(this).matches() || argbColorPattern.matcher(this).matches())
+}
+
+
+fun String.isValidUrl(): Boolean  {
+    try {
+        val url = URL(this)
+        return URLUtil.isValidUrl(url.toString()) && Patterns.WEB_URL.matcher(url.toString()).matches()
+    } catch (ignored: MalformedURLException) {
+        throw ignored
+    }
 }
