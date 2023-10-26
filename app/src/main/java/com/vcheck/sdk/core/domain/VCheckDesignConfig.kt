@@ -146,3 +146,49 @@ data class VCheckDesignConfig (
             """
     }
 }
+
+/**
+{
+"primary": "#2E75FF",  -- bg of primary action buttons, all primary accent elements
+"primaryHover": "#2E96FF",  -- lighter primary color
+"primaryActive": "#3361EC",  -- darker primary color (on pressed etc.) (?)
+"primaryContent": "#FFFFFF",  -- text content, etc.
+"primaryBg": "#5D6884",
+"accent": "#6096FF",
+"accentHover": "#6ABFFF",
+"accentActive": "#4F79F7",
+"accentContent": "#FFFFFF",
+"accentBg": "#32404A",
+"neutral": "#FFFFFF",  -- e.g. borders of non-primary text buttons
+"neutralHover": "rgba(255, 255, 255, 0.4)",
+"neutralActive": "rgba(255, 255, 255, 0.1)",
+"neutralContent": "#000000",  -- e.g. text color inside non-primary text buttons (?)
+
+"success": "#6CFB93",  -- success variations (liveness UI etc.)
+"successHover": "#C8FDD2",  -- success variations (liveness UI etc.)
+"successActive": "#00DF53",  -- success variations (liveness UI etc.)
+"successBg": "#3A4B3F",  -- success variations (liveness UI etc.)
+"successContent": "#3B3B3B",  -- success variations (liveness UI etc.)
+"error": "#F47368",
+"errorHover": "#FF877C",
+"errorActive": "#DE473A",
+"errorBg": "#4B2A24",
+"errorContent": "#3B3B3B",
+"warning": "#FFB482",
+"warningHover": "#FFBF94",
+"warningActive": "#D3834E",
+"warningBg": "#3F3229",
+"warningContent": "#3B3B3B",
+
+"base": "#2A2A2A",  -- primary screen backgrounds
+"base_100": "#3C3C3C",  -- secondary screen backgrounds
+"base_200": "#555555", -- tertiary (card) backgrounds
+"base_300": "#6A6A6A", -- button cards borders
+"base_400": "#7F7F7F", -- sections borders (photo previews etc.) + text fields borders
+"base_500": "#949494",
+"baseContent": "#FFFFFF", -- texts and util icon buttons
+"baseSecondaryContent": "#D8D8D8", -- secondary texts
+"disabled": "#AAAAAA",  -- bg of disabled buttons
+"disabledContent": "#6A6A6A"  -- text/content of disabled buttons
+}
+ */
