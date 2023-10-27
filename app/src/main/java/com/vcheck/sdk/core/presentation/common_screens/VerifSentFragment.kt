@@ -1,4 +1,4 @@
-package com.vcheck.sdk.core.presentation.screens
+package com.vcheck.sdk.core.presentation.common_screens
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -11,26 +11,26 @@ import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.databinding.FragmentVerifSentBinding
 import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
-import com.vcheck.sdk.core.util.closeSDKFlow
+import com.vcheck.sdk.core.util.extensions.closeSDKFlow
 
 class VerifSentFragment : ThemeWrapperFragment() {
 
     private var _binding: FragmentVerifSentBinding? = null
 
     override fun changeColorsToCustomIfPresent() {
-        VCheckSDK.buttonsColorHex?.let {
+        VCheckSDK.designConfig!!.primary?.let {
             _binding!!.successButton.setBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.backgroundPrimaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundPrimaryColorHex?.let {
             _binding!!.inProcessBackground.background = ColorDrawable(Color.parseColor(it))
         }
-        VCheckSDK.backgroundSecondaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundSecondaryColorHex?.let {
             _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.primaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.primaryTextColorHex?.let {
             _binding!!.inProcessTitle.setTextColor(Color.parseColor(it))
         }
-        VCheckSDK.secondaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.secondaryTextColorHex?.let {
             _binding!!.inProcessSubtitle.setTextColor(Color.parseColor(it))
         }
     }

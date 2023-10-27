@@ -64,7 +64,7 @@ class CountryListAdapter(
             fun bind(country: CountryTO) {
                 binding.countryName.text = country.name
                 binding.flagEmoji.text = country.flag
-                VCheckSDK.primaryTextColorHex?.let {
+                VCheckSDK.designConfig!!.primaryTextColorHex?.let {
                     binding.countryName.setTextColor(Color.parseColor(it))
                 }
             }
@@ -82,7 +82,7 @@ class CountryListAdapter(
             binding.countryItem.setOnClickListener {
                 onCountryItemClick.onClick(country.code)
             }
-            VCheckSDK.primaryTextColorHex?.let {
+            VCheckSDK.designConfig!!.primaryTextColorHex?.let {
                 binding.countryName.setTextColor(Color.parseColor(it))
             }
         }

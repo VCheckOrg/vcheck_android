@@ -42,16 +42,16 @@ class ProvidersListAdapter(private val providersList: List<Provider>,
                 // other fields are not customizable yet
             }
 
-            VCheckSDK.backgroundTertiaryColorHex?.let {
+            VCheckSDK.designConfig!!.backgroundTertiaryColorHex?.let {
                 binding.cardVcheckBackground.setCardBackgroundColor(Color.parseColor(it))
             }
-            VCheckSDK.primaryTextColorHex?.let {
+            VCheckSDK.designConfig!!.primaryTextColorHex?.let {
                 binding.verifMethodTitleVcheck.setTextColor(Color.parseColor(it))
             }
-            VCheckSDK.secondaryTextColorHex?.let {
+            VCheckSDK.designConfig!!.secondaryTextColorHex?.let {
                 binding.verifMethodSubtitleVcheck.setTextColor(Color.parseColor(it))
             }
-            VCheckSDK.borderColorHex?.let {
+            VCheckSDK.designConfig!!.sectionBorderColorHex?.let {
                 binding.methodCardVcheck.setCardBackgroundColor(Color.parseColor(it))
             }
 

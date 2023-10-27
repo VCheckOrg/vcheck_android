@@ -4,6 +4,7 @@ import android.util.Log
 import com.google.gson.annotations.SerializedName
 import com.google.gson.Gson
 import com.vcheck.sdk.core.VCheckSDK
+import com.vcheck.sdk.core.data.VCheckSDKConstantsProvider
 
 data class VCheckDesignConfig (
     @SerializedName("primary")
@@ -34,6 +35,7 @@ data class VCheckDesignConfig (
     var neutralActive: String? = null,
     @SerializedName("neutralContent")
     var neutralContent: String? = null,
+
     @SerializedName("success")
     var success: String? = null,
     @SerializedName("successHover")
@@ -64,86 +66,44 @@ data class VCheckDesignConfig (
     var warningBg: String? = null,
     @SerializedName("warningContent")
     var warningContent: String? = null,
+
     @SerializedName("base")
-    var base: String? = null,
+    var backgroundPrimaryColorHex: String? = null,
     @SerializedName("base_100")
-    var base100: String? = null,
+    var backgroundSecondaryColorHex: String? = null,
     @SerializedName("base_200")
-    var base200: String? = null,
+    var backgroundTertiaryColorHex: String? = null,
     @SerializedName("base_300")
-    var base300: String? = null,
+    var buttonBorderColorHex: String? = null,
+    //TODO: review where section color hex should be replaced by button color hex!
     @SerializedName("base_400")
-    var base400: String? = null,
+    var sectionBorderColorHex: String? = null,
     @SerializedName("base_500")
     var base500: String? = null,
     @SerializedName("baseContent")
-    var baseContent: String? = null,
+    var primaryTextColorHex: String? = null,
     @SerializedName("baseSecondaryContent")
-    var baseSecondaryContent : String? = null,
+    var secondaryTextColorHex: String? = null,
     @SerializedName("disabled")
     var disabled: String? = null,
     @SerializedName("disabledContent")
     var disabledContent: String? = null
 ) {
 
+    //TODO: think about naming and file reading (considered as non-preferrable way)
+    //TODO: modify corr. logic for iOS
     companion object {
         @JvmStatic
-        fun fromJsonStr(rawJsonStr: String) : VCheckDesignConfig {
+        fun fromJSONStr(rawJsonStr: String) : VCheckDesignConfig {
             return try {
                 Gson().fromJson(rawJsonStr, VCheckDesignConfig::class.java)
             } catch (e: Exception) {
                 Log.w(VCheckSDK.TAG, "VCheckSDK - warning: Non-valid JSON was passed while " +
-                        "initializing VCheckDesignConfig instance; trying to set VCheck default theme...")
-                Gson().fromJson(defaultThemeJsonStr, VCheckDesignConfig::class.java)
+                        "initializing VCheckDesignConfig instance | trying to set VCheck default theme...")
+                Gson().fromJson(VCheckSDKConstantsProvider.vcheckDefaultThemeConfig,
+                    VCheckDesignConfig::class.java)
             }
         }
-
-        private const val defaultThemeJsonStr: String =
-            """
-            {
-               "primary": "#2E75FF",
-               "primaryHover": "#2E96FF",
-               "primaryActive": "#3361EC",
-               "primaryContent": "#FFFFFF",
-               "primaryBg": "#5D6884",
-               "accent": "#6096FF",
-               "accentHover": "#6ABFFF",
-               "accentActive": "#4F79F7",
-               "accentContent": "#FFFFFF",
-               "accentBg": "#32404A",
-               "neutral": "#FFFFFF",
-               "neutralHover": "rgba(255, 255, 255, 0.4)",
-               "neutralActive": "rgba(255, 255, 255, 0.1)",
-               "neutralContent": "#000000",
-        
-               "success": "#6CFB93",
-               "successHover": "#C8FDD2",
-               "successActive": "#00DF53",
-               "successBg": "#3A4B3F",
-               "successContent": "#3B3B3B",
-               "error": "#F47368",
-               "errorHover": "#FF877C",
-               "errorActive": "#DE473A",
-               "errorBg": "#4B2A24",
-               "errorContent": "#3B3B3B",
-               "warning": "#FFB482",
-               "warningHover": "#FFBF94",
-               "warningActive": "#D3834E",
-               "warningBg": "#3F3229",
-               "warningContent": "#3B3B3B",
-        
-               "base": "#2A2A2A",
-               "base_100": "#3C3C3C",
-               "base_200": "#555555",
-               "base_300": "#6A6A6A",
-               "base_400": "#7F7F7F",
-               "base_500": "#949494",
-               "baseContent": "#FFFFFF",
-               "baseSecondaryContent": "#D8D8D8",
-               "disabled": "#AAAAAA",
-               "disabledContent": "#6A6A6A"
-            }
-            """
     }
 }
 

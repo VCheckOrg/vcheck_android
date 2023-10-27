@@ -19,17 +19,17 @@ class PhotoInstructionsFragment : ThemeWrapperFragment() {
 
     override fun changeColorsToCustomIfPresent() {
 
-        VCheckSDK.backgroundPrimaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundPrimaryColorHex?.let {
             _binding!!.photoInstructionsBackground.background = ColorDrawable(Color.parseColor(it))
             _binding!!.photoInstructionsScrollBackground.background = ColorDrawable(Color.parseColor(it))
         }
-        VCheckSDK.backgroundSecondaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundSecondaryColorHex?.let {
             _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.buttonsColorHex?.let {
+        VCheckSDK.designConfig!!.primary?.let {
             _binding!!.photoInstructionsButton.setBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.primaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.primaryTextColorHex?.let {
             _binding!!.photoInstructionsTitle.setTextColor(Color.parseColor(it))
             _binding!!.seenAllText.setTextColor(Color.parseColor(it))
             _binding!!.seenFourCornersText.setTextColor(Color.parseColor(it))
@@ -42,10 +42,10 @@ class PhotoInstructionsFragment : ThemeWrapperFragment() {
             //_binding!!.photoInstructionsButton.setTextColor(Color.parseColor(it))
             //_binding!!.imageColorText.setTextColor(Color.parseColor(it))
         }
-        VCheckSDK.secondaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.secondaryTextColorHex?.let {
             _binding!!.photoInstructionsDescription.setTextColor(Color.parseColor(it))
         }
-        VCheckSDK.iconsColorHex?.let {
+        VCheckSDK.designConfig!!.primary?.let {
             //_binding!!.imageColorIcon.setColorFilter(Color.parseColor(it))
             _binding!!.seenAllIcon.setColorFilter(Color.parseColor(it))
             _binding!!.seenFourCornersIcon.setColorFilter(Color.parseColor(it))

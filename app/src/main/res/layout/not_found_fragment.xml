@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:scrollbars="none"
-    tools:context=".presentation.screens.NotFoundFragment"
+    tools:context=".presentation.common_screens.NotFoundFragment"
     android:theme="@style/Theme.VCheckAndroidSDKDemo">
 
     <androidx.constraintlayout.widget.ConstraintLayout

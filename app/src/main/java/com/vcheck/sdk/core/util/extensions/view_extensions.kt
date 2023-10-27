@@ -1,4 +1,4 @@
-package com.vcheck.sdk.core.util
+package com.vcheck.sdk.core.util.extensions
 
 import android.view.View
 import android.view.ViewGroup

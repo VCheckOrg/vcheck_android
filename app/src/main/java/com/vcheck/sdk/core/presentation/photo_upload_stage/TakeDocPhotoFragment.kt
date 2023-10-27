@@ -40,13 +40,13 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
     private var _photo2Path: String? = null
 
     override fun changeColorsToCustomIfPresent() {
-        VCheckSDK.backgroundPrimaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundPrimaryColorHex?.let {
             _binding!!.takePhotoBackground.background = ColorDrawable(Color.parseColor(it))
         }
-        VCheckSDK.backgroundSecondaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundSecondaryColorHex?.let {
             _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.primaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.primaryTextColorHex?.let {
             _binding!!.makeDocumentPhotoTitle.setTextColor(Color.parseColor(it))
             _binding!!.verifMethodTitle1.setTextColor(Color.parseColor(it))
             _binding!!.verifMethodTitle2.setTextColor(Color.parseColor(it))
@@ -55,19 +55,19 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
             _binding!!.backArrow.setColorFilter(Color.parseColor(it))
             //_binding!!.photoUploadContinueButton.setTextColor(Color.parseColor(it))
         }
-        VCheckSDK.backgroundTertiaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundTertiaryColorHex?.let {
             _binding!!.methodCard1Background.setCardBackgroundColor(Color.parseColor(it))
             _binding!!.makePhotoButton1Background.setCardBackgroundColor(Color.parseColor(it))
             _binding!!.methodCard2Background.setCardBackgroundColor(Color.parseColor(it))
             _binding!!.makePhotoButton2Background.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.borderColorHex?.let {
+        VCheckSDK.designConfig!!.sectionBorderColorHex?.let {
             _binding!!.methodCard1.setCardBackgroundColor(Color.parseColor(it))
             _binding!!.methodCard2.setCardBackgroundColor(Color.parseColor(it))
             _binding!!.makePhotoButton1.setCardBackgroundColor(Color.parseColor(it))
             _binding!!.makePhotoButton2.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.iconsColorHex?.let {
+        VCheckSDK.designConfig!!.primary?.let {
             _binding!!.takePhotoIcon.setColorFilter(Color.parseColor(it))
             _binding!!.takePhotoIcon2.setColorFilter(Color.parseColor(it))
         }
@@ -361,8 +361,8 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
     }
 
     private fun prepareForNavigation(resetSecondPhoto: Boolean) {
-        if (VCheckSDK.buttonsColorHex != null) {
-            _binding!!.photoUploadContinueButton.setBackgroundColor(Color.parseColor(VCheckSDK.buttonsColorHex))
+        if (VCheckSDK.designConfig!!.primary != null) {
+            _binding!!.photoUploadContinueButton.setBackgroundColor(Color.parseColor(VCheckSDK.designConfig!!.primary))
         } else {
             _binding!!.photoUploadContinueButton.setBackgroundColor(Color.parseColor("#2E75FF"))
         }

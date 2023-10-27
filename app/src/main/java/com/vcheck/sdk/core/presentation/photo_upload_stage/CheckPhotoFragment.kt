@@ -31,7 +31,7 @@ import com.vcheck.sdk.core.presentation.transferrable_objects.CheckDocInfoDataTO
 import com.vcheck.sdk.core.presentation.transferrable_objects.PhotoUploadType
 import com.vcheck.sdk.core.presentation.transferrable_objects.ZoomPhotoTO
 import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
-import com.vcheck.sdk.core.util.checkUserInteractionCompletedForResult
+import com.vcheck.sdk.core.util.extensions.checkUserInteractionCompletedForResult
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.MultipartBody.Part.Companion.createFormData
@@ -73,20 +73,20 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
     }
 
     override fun changeColorsToCustomIfPresent() {
-        VCheckSDK.buttonsColorHex?.let {
+        VCheckSDK.designConfig!!.primary?.let {
             _binding!!.confirmPhotoButton.setBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.backgroundPrimaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundPrimaryColorHex?.let {
             _binding!!.checkPhotoBackground.background = ColorDrawable(Color.parseColor(it))
         }
-        VCheckSDK.backgroundSecondaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundSecondaryColorHex?.let {
             _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.backgroundTertiaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundTertiaryColorHex?.let {
             _binding!!.photoCard1Background.setCardBackgroundColor(Color.parseColor(it))
             _binding!!.photoCard2Background.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.primaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.primaryTextColorHex?.let {
             _binding!!.checkPhotoTitle.setTextColor(Color.parseColor(it))
             _binding!!.tvProcessingDisclaimer.setTextColor(Color.parseColor(it))
             _binding!!.uploadDocPhotosLoadingIndicator.setIndicatorColor(Color.parseColor(it))
@@ -94,10 +94,10 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
             _binding!!.replacePhotoButton.setTextColor(Color.parseColor(it))
             _binding!!.replacePhotoButton.strokeColor = ColorStateList.valueOf(Color.parseColor(it))
         }
-        VCheckSDK.secondaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.secondaryTextColorHex?.let {
             _binding!!.checkPhotoDescription.setTextColor(Color.parseColor(it))
         }
-        VCheckSDK.borderColorHex?.let {
+        VCheckSDK.designConfig!!.sectionBorderColorHex?.let {
             _binding!!.photoCard1.setCardBackgroundColor(Color.parseColor(it))
             _binding!!.photoCard2.setCardBackgroundColor(Color.parseColor(it))
         }

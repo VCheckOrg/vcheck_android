@@ -8,20 +8,20 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.databinding.ActivityVcheckMainBinding
+import com.vcheck.sdk.core.util.extensions.changeStatusBarColor
 import com.vcheck.sdk.core.util.utils.VCheckContextUtils
-import com.vcheck.sdk.core.util.changeStatusBarColor
-import com.vcheck.sdk.core.util.closeSDKFlow
+import com.vcheck.sdk.core.util.extensions.closeSDKFlow
 
 internal class VCheckMainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityVcheckMainBinding
 
     private fun changeColorsToCustomIfPresent() {
-        VCheckSDK.backgroundPrimaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundPrimaryColorHex?.let {
             binding.activityMainBackground.setBackgroundColor(Color.parseColor(it))
-            changeStatusBarColor(Color.parseColor(it))
+            this@VCheckMainActivity.changeStatusBarColor(Color.parseColor(it))
         }
-        VCheckSDK.primaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.primaryTextColorHex?.let {
             binding.backArrow.setColorFilter(Color.parseColor(it))
             binding.popSdkTitle.setTextColor(Color.parseColor(it))
         }

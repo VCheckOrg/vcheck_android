@@ -74,13 +74,13 @@
 
     <fragment
         android:id="@+id/errorFragment"
-        android:name="com.vcheck.sdk.core.presentation.screens.ErrorFragment"
+        android:name="com.vcheck.sdk.core.presentation.common_screens.ErrorFragment"
         android:label="error_fragment"
         tools:layout="@layout/error_fragment" />
 
     <fragment
         android:id="@+id/noCameraFragment"
-        android:name="com.vcheck.sdk.core.presentation.screens.NoCameraFragment"
+        android:name="com.vcheck.sdk.core.presentation.common_screens.NoCameraFragment"
         android:label="no_camera_fragment"
         tools:layout="@layout/no_camera_fragment" />
 
@@ -218,7 +218,7 @@
     <action android:id="@+id/action_global_chooseDocMethodScreen" app:destination="@id/chooseDocMethodScreen"/>
     <fragment
         android:id="@+id/verifSentFragment"
-        android:name="com.vcheck.sdk.core.presentation.screens.VerifSentFragment"
+        android:name="com.vcheck.sdk.core.presentation.common_screens.VerifSentFragment"
         android:label="fragment_verif_sent"
         tools:layout="@layout/fragment_verif_sent" /><action android:id="@+id/action_global_photoUploadScreen" app:destination="@id/photoUploadScreen"/><action android:id="@+id/action_global_checkPhotoFragment" app:destination="@id/checkPhotoFragment"/>
     <fragment

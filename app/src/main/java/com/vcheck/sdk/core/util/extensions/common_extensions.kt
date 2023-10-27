@@ -1,10 +1,8 @@
-package com.vcheck.sdk.core.util
+package com.vcheck.sdk.core.util.extensions
 
 import android.content.Context
 import android.util.Patterns
 import android.util.TypedValue
-import android.view.View
-import android.view.ViewGroup
 import android.webkit.URLUtil
 import java.io.File
 import java.net.MalformedURLException

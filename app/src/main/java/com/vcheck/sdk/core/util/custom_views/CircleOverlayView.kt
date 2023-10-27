@@ -36,8 +36,9 @@ class CircleOverlayView : LinearLayout {
         val paint = Paint(Paint.ANTI_ALIAS_FLAG)
 
         paint.color = resources.getColor(R.color.vcheck_background_secondary)
-
-        VCheckSDK.backgroundSecondaryColorHex?.let {
+        
+        //backgroundSecondaryColorHex
+        VCheckSDK.designConfig!!.backgroundSecondaryColorHex?.let {
             paint.color = Color.parseColor(it)
         }
 

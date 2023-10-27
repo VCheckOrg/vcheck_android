@@ -14,7 +14,7 @@ import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.databinding.DocInfoRowBinding
 import com.vcheck.sdk.core.domain.DocFieldWitOptPreFilledData
 import com.vcheck.sdk.core.presentation.check_doc_info_stage.CheckDocInfoFragment
-import com.vcheck.sdk.core.util.isValidDocRelatedDate
+import com.vcheck.sdk.core.util.utils.isValidDocRelatedDate
 import java.util.*
 
 
@@ -58,16 +58,16 @@ class CheckDocInfoAdapter(
             binding.docFieldTitle.text = title
             binding.infoField.setText(fieldInfo.autoParsedValue)
 
-            VCheckSDK.backgroundSecondaryColorHex?.let {
+            VCheckSDK.designConfig!!.backgroundSecondaryColorHex?.let {
                 binding.docInfoRowBackground.background = ColorDrawable(Color.parseColor(it))
                 binding.infoField.background = ColorDrawable(Color.parseColor(it))
             }
-            VCheckSDK.primaryTextColorHex?.let {
+            VCheckSDK.designConfig!!.primaryTextColorHex?.let {
                 binding.docFieldTitle.setTextColor(Color.parseColor(it))
                 binding.infoField.setTextColor(Color.parseColor(it))
                 binding.infoField.setHintTextColor(Color.parseColor(it))
             }
-            VCheckSDK.borderColorHex?.let {
+            VCheckSDK.designConfig!!.sectionBorderColorHex?.let {
                 binding.infoFieldBorder.setCardBackgroundColor(Color.parseColor(it))
             }
 

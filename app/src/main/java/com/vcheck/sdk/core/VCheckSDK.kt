@@ -95,10 +95,11 @@ object VCheckSDK {
                     "You may set one of the next locales: ${VCheckSDKConstantsProvider.vcheckSDKAvailableLanguagesList}, " +
                     "or check out for the recent version of the SDK library")
         }
-        //TODO figure our should json config be required property (and then make additional non-null checks)
-//        if (designConfig != null) {
-//            throw IllegalArgumentException()
-//        }
+        if (designConfig == null) {
+            Log.w(TAG, "VCheckSDK - warning: No instance of VCheckDesignConfig was passed while " +
+                    "initializing SDK | setting VCheck default theme...")
+            designConfig = VCheckDesignConfig.fromJSONStr(VCheckSDKConstantsProvider.vcheckDefaultThemeConfig)
+        }
     }
 
     internal fun executePartnerCallback() {

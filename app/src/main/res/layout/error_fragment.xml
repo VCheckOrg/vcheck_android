@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:scrollbars="none"
     android:background="@color/vcheck_background_primary"
-    tools:context=".presentation.screens.ErrorFragment"
+    tools:context=".presentation.common_screens.ErrorFragment"
     android:theme="@style/Theme.VCheckAndroidSDKDemo">
 
         <androidx.cardview.widget.CardView

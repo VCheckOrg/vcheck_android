@@ -27,8 +27,8 @@ import com.vcheck.sdk.core.presentation.VCheckMainActivity
 import com.vcheck.sdk.core.presentation.transferrable_objects.ChooseProviderLogicTO
 import com.vcheck.sdk.core.presentation.transferrable_objects.CountriesListTO
 import com.vcheck.sdk.core.domain.ProviderLogicCase
-import com.vcheck.sdk.core.util.checkUserInteractionCompletedForResult
-import com.vcheck.sdk.core.util.toFlagEmoji
+import com.vcheck.sdk.core.util.extensions.checkUserInteractionCompletedForResult
+import com.vcheck.sdk.core.util.extensions.toFlagEmoji
 import java.util.*
 
 internal class VCheckStartFragment : Fragment() {
@@ -50,13 +50,14 @@ internal class VCheckStartFragment : Fragment() {
         }
 
     fun changeColorsToCustomIfPresent() {
-        VCheckSDK.buttonsColorHex?.let {
+        VCheckSDK.designConfig!!.primary?.let {
             _binding!!.btnStartDemoFlow.setBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.backgroundPrimaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundPrimaryColorHex?.let {
             _binding!!.fragmentDemoBackground.background = ColorDrawable(Color.parseColor(it))
         }
-        VCheckSDK.primaryTextColorHex?.let {
+        //primaryTextColorHex
+        VCheckSDK.designConfig!!.primaryTextColorHex?.let {
             _binding!!.startCallChainLoadingIndicator.setIndicatorColor(Color.parseColor(it))
             _binding!!.btnStartDemoFlow.setTextColor(Color.parseColor(it))
         }

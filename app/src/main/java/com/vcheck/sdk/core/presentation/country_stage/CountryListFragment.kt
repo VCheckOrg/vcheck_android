@@ -33,16 +33,16 @@ class CountryListFragment : ThemeWrapperFragment(),
     override fun changeColorsToCustomIfPresent() {
         val searchText = _binding!!.searchCountry
             .findViewById(androidx.appcompat.R.id.search_src_text) as TextView
-        VCheckSDK.backgroundPrimaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundPrimaryColorHex?.let {
             _binding!!.backgroundCountryList.background = ColorDrawable(Color.parseColor(it))
             _binding!!.searchCountry.background = ColorDrawable(Color.parseColor(it))
         }
-        VCheckSDK.primaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.primaryTextColorHex?.let {
             _binding!!.countryListBackArrow.setColorFilter(Color.parseColor(it))
             _binding!!.tvNoCountriesFoundPlaceholder.setTextColor(Color.parseColor(it))
             searchText.setTextColor(Color.parseColor(it))
         }
-        VCheckSDK.secondaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.secondaryTextColorHex?.let {
             searchText.setHintTextColor(Color.parseColor(it))
             val icon: ImageView = _binding!!.searchCountry
                 .findViewById(androidx.appcompat.R.id.search_mag_icon)
@@ -54,7 +54,7 @@ class CountryListFragment : ThemeWrapperFragment(),
                 .findViewById(androidx.appcompat.R.id.search_close_btn)
             clearBtn.setColorFilter(Color.parseColor(it))
         }
-        VCheckSDK.borderColorHex?.let {
+        VCheckSDK.designConfig!!.sectionBorderColorHex?.let {
             _binding!!.searchCountryBorder.setCardBackgroundColor(Color.parseColor(it))
         }
     }

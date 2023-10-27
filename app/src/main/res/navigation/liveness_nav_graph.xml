@@ -109,7 +109,7 @@
 
     <fragment
         android:id="@+id/failVerificationFragment"
-        android:name="com.vcheck.sdk.core.presentation.screens.FailVerificationFragment"
+        android:name="com.vcheck.sdk.core.presentation.common_screens.FailVerificationFragment"
         android:label="fail_verification_fragment"
         tools:layout="@layout/fail_verification_fragment" />
     <fragment

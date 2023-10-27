@@ -26,7 +26,10 @@ import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.*
 import com.vcheck.sdk.core.presentation.liveness.VCheckLivenessActivity
 import com.vcheck.sdk.core.util.*
+import com.vcheck.sdk.core.util.extensions.checkUserInteractionCompletedForResult
+import com.vcheck.sdk.core.util.extensions.sizeInKb
 import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
+import com.vcheck.sdk.core.util.utils.getFolderSizeLabel
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -41,16 +44,16 @@ class PostProcessFragment : ThemeWrapperFragment() {
     private lateinit var _viewModel: PostProcessViewModel
 
     override fun changeColorsToCustomIfPresent() {
-        VCheckSDK.buttonsColorHex?.let {
+        VCheckSDK.designConfig!!.primary?.let {
             _binding!!.successButton.setBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.backgroundPrimaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundPrimaryColorHex?.let {
             _binding!!.inProcessBackground.background = ColorDrawable(Color.parseColor(it))
         }
-        VCheckSDK.backgroundSecondaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundSecondaryColorHex?.let {
             _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.primaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.primaryTextColorHex?.let {
             _binding!!.inProcessTitle.setTextColor(Color.parseColor(it))
             _binding!!.inProcessSubtitle.setTextColor(Color.parseColor(it))
             _binding!!.uploadVideoLoadingIndicator.setIndicatorColor(Color.parseColor(it))
@@ -228,7 +231,8 @@ class PostProcessFragment : ThemeWrapperFragment() {
                     val compressedVideoFile = File(path!!)
 
                     Log.d(VCheckLivenessActivity.TAG, "COMPRESSED VIDEO SIZE: "
-                            + getFolderSizeLabel(compressedVideoFile))
+                            + getFolderSizeLabel(compressedVideoFile)
+                    )
 
                     uploadLivenessVideo(compressedVideoFile)
                 }

@@ -25,7 +25,10 @@ import com.vcheck.sdk.core.presentation.VCheckMainActivity
 import com.vcheck.sdk.core.presentation.adapters.CheckDocInfoAdapter
 import com.vcheck.sdk.core.presentation.adapters.DocInfoEditCallback
 import com.vcheck.sdk.core.util.*
+import com.vcheck.sdk.core.util.extensions.checkStageErrorForResult
+import com.vcheck.sdk.core.util.extensions.closeSDKFlow
 import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
+import com.vcheck.sdk.core.util.utils.isValidDocRelatedDate
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 
@@ -41,27 +44,27 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
     private var uploadedDocID: Int? = null
 
     override fun changeColorsToCustomIfPresent() {
-        VCheckSDK.buttonsColorHex?.let {
+        VCheckSDK.designConfig!!.primary?.let {
             binding.checkInfoConfirmButton.setBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.backgroundPrimaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundPrimaryColorHex?.let {
             binding.checkDocInfoBackground.setBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.backgroundSecondaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundSecondaryColorHex?.let {
             binding.card.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.backgroundTertiaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundTertiaryColorHex?.let {
             binding.photoCard1Background.setCardBackgroundColor(Color.parseColor(it))
             binding.photoCard2Background.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.primaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.primaryTextColorHex?.let {
             binding.checkFilledDataTitle.setTextColor(Color.parseColor(it))
             //binding.checkInfoConfirmButton.setTextColor(Color.parseColor(it))
         }
-        VCheckSDK.secondaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.secondaryTextColorHex?.let {
             binding.checkFilledDataDescription.setTextColor(Color.parseColor(it))
         }
-        VCheckSDK.borderColorHex?.let {
+        VCheckSDK.designConfig!!.sectionBorderColorHex?.let {
             binding.photoCard1.setCardBackgroundColor(Color.parseColor(it))
             binding.photoCard2.setCardBackgroundColor(Color.parseColor(it))
         }

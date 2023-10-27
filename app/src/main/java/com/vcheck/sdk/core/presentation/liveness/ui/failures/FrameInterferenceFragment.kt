@@ -22,16 +22,16 @@ class FrameInterferenceFragment : ThemeWrapperFragment() {
     private val args: FrameInterferenceFragmentArgs by navArgs()
 
     override fun changeColorsToCustomIfPresent() {
-        VCheckSDK.buttonsColorHex?.let {
+        VCheckSDK.designConfig!!.primary?.let {
             _binding!!.frameInterferenceButton.setBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.backgroundPrimaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundPrimaryColorHex?.let {
             _binding!!.frameInterferenceBackground.background = ColorDrawable(Color.parseColor(it))
         }
-        VCheckSDK.backgroundSecondaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundSecondaryColorHex?.let {
             _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.primaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.primaryTextColorHex?.let {
             _binding!!.frameInterferenceTitle.setTextColor(Color.parseColor(it))
             _binding!!.frameInterferenceDescription.setTextColor(Color.parseColor(it))
             //_binding!!.frameInterferenceButton.setTextColor(Color.parseColor(it))

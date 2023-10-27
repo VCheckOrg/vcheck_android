@@ -21,8 +21,8 @@ import com.vcheck.sdk.core.presentation.transferrable_objects.ChooseProviderLogi
 import com.vcheck.sdk.core.presentation.transferrable_objects.CountriesListTO
 import com.vcheck.sdk.core.domain.ProviderLogicCase
 import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
-import com.vcheck.sdk.core.util.checkUserInteractionCompletedForResult
-import com.vcheck.sdk.core.util.toFlagEmoji
+import com.vcheck.sdk.core.util.extensions.checkUserInteractionCompletedForResult
+import com.vcheck.sdk.core.util.extensions.toFlagEmoji
 import java.text.Collator
 import java.util.*
 import kotlin.collections.ArrayList
@@ -37,25 +37,25 @@ class ChooseCountryFragment : ThemeWrapperFragment() {
     private var finalCountries: List<CountryTO> = emptyList()
 
     override fun changeColorsToCustomIfPresent() {
-        VCheckSDK.buttonsColorHex?.let {
+        VCheckSDK.designConfig!!.primary?.let {
             binding.chooseCountryContinueButton.setBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.backgroundPrimaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundPrimaryColorHex?.let {
             binding.chooseCountryBackground.background = ColorDrawable(Color.parseColor(it))
         }
-        VCheckSDK.backgroundSecondaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundSecondaryColorHex?.let {
             binding.card.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.backgroundTertiaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundTertiaryColorHex?.let {
             binding.chooseCountryCard.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.primaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.primaryTextColorHex?.let {
             binding.chooseCountryTitle.setTextColor(Color.parseColor(it))
             binding.chooseCountryCardTitle.setTextColor(Color.parseColor(it))
             binding.countryTitle.setTextColor(Color.parseColor(it))
             //binding.chooseCountryContinueButton.setTextColor(Color.parseColor(it))
         }
-        VCheckSDK.secondaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.secondaryTextColorHex?.let {
             binding.chooseCountryDescription.setTextColor(Color.parseColor(it))
         }
     }

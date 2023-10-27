@@ -22,10 +22,10 @@ class ZoomedPhotoFragment : ThemeWrapperFragment() {
     private lateinit var _binding: ZoomedPhotoFragmentBinding
 
     override fun changeColorsToCustomIfPresent() {
-        VCheckSDK.backgroundPrimaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundPrimaryColorHex?.let {
             _binding.zoomedPhotoBackground.background = ColorDrawable(Color.parseColor(it))
         }
-        VCheckSDK.primaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.primaryTextColorHex?.let {
             _binding.crossIcon.setColorFilter(Color.parseColor(it))
         }
     }

@@ -19,16 +19,16 @@ class NoTimeFragment : ThemeWrapperFragment() {
     private var _binding: NoTimeFragmentBinding? = null
 
     override fun changeColorsToCustomIfPresent() {
-        VCheckSDK.buttonsColorHex?.let {
+        VCheckSDK.designConfig!!.primary?.let {
             _binding!!.tryAgainButton.setBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.backgroundPrimaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundPrimaryColorHex?.let {
             _binding!!.noTimeBackground.background = ColorDrawable(Color.parseColor(it))
         }
-        VCheckSDK.backgroundSecondaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundSecondaryColorHex?.let {
             _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.primaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.primaryTextColorHex?.let {
             _binding!!.noTimeTitle.setTextColor(Color.parseColor(it))
             _binding!!.noTimeSubtitle.setTextColor(Color.parseColor(it))
             //_binding!!.tryAgainButton.setTextColor(Color.parseColor(it))

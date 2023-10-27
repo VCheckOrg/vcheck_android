@@ -1,13 +1,22 @@
-package com.vcheck.sdk.core.util
+package com.vcheck.sdk.core.util.extensions
 
 import android.content.Intent
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowInsetsControllerCompat
 import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.BaseClientErrors
 import com.vcheck.sdk.core.domain.StageErrorType
 import com.vcheck.sdk.core.domain.toTypeIdx
 import com.vcheck.sdk.core.presentation.VCheckStartupActivity
+import com.vcheck.sdk.core.util.utils.isColorDark
+
+fun AppCompatActivity.changeStatusBarColor(color: Int) {
+    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+    window.statusBarColor = color
+    WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = isColorDark(color)
+}
 
 fun AppCompatActivity.closeSDKFlow(shouldExecuteEndCallback: Boolean) {
     (VCheckDIContainer).mainRepository.setFirePartnerCallback(shouldExecuteEndCallback)

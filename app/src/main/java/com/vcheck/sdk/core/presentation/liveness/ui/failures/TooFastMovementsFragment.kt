@@ -22,16 +22,16 @@ class TooFastMovementsFragment : ThemeWrapperFragment() {
     private val args: TooFastMovementsFragmentArgs by navArgs()
 
     override fun changeColorsToCustomIfPresent() {
-        VCheckSDK.buttonsColorHex?.let {
+        VCheckSDK.designConfig!!.primary?.let {
             _binding!!.tooFastMovementsRepeatButton.setBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.backgroundPrimaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundPrimaryColorHex?.let {
             _binding!!.tooFastMovementsBackground.background = ColorDrawable(Color.parseColor(it))
         }
-        VCheckSDK.backgroundSecondaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundSecondaryColorHex?.let {
             _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.primaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.primaryTextColorHex?.let {
             _binding!!.tooFastMovementsTitle.setTextColor(Color.parseColor(it))
             _binding!!.tooFastMovementsDescription.setTextColor(Color.parseColor(it))
             //_binding!!.tooFastMovementsRepeatButton.setTextColor(Color.parseColor(it))

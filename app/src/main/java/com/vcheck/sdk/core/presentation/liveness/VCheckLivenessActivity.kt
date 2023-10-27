@@ -30,7 +30,11 @@ import com.vcheck.sdk.core.domain.LivenessGestureResponse
 import com.vcheck.sdk.core.presentation.VCheckStartupActivity
 import com.vcheck.sdk.core.presentation.liveness.flow_logic.*
 import com.vcheck.sdk.core.util.*
+import com.vcheck.sdk.core.util.extensions.changeStatusBarColor
+import com.vcheck.sdk.core.util.extensions.setMargins
+import com.vcheck.sdk.core.util.extensions.sizeInKb
 import com.vcheck.sdk.core.util.utils.VCheckContextUtils
+import com.vcheck.sdk.core.util.utils.vibrateDevice
 import id.zelory.compressor.Compressor
 import id.zelory.compressor.constraint.destination
 import id.zelory.compressor.constraint.size
@@ -86,17 +90,17 @@ class VCheckLivenessActivity : AppCompatActivity() {
     private fun changeColorsToCustomIfPresent() {
         val animFrameDrawable = binding.cosmeticRoundedFrame.background as GradientDrawable
         val faceFrameDrawable = binding.livenessCircleFrame.background as GradientDrawable
-        VCheckSDK.backgroundPrimaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundPrimaryColorHex?.let {
             binding.livenessActivityBackground.setBackgroundColor(Color.parseColor(it))
             animFrameDrawable.setColor(Color.parseColor(it))
-            changeStatusBarColor(Color.parseColor(it))
+            this@VCheckLivenessActivity.changeStatusBarColor(Color.parseColor(it))
         }
-        VCheckSDK.primaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.primaryTextColorHex?.let {
             binding.backArrow.setColorFilter(Color.parseColor(it))
             binding.popSdkTitle.setTextColor(Color.parseColor(it))
             binding.checkFaceTitle.setTextColor(Color.parseColor(it))
         }
-        VCheckSDK.borderColorHex?.let {
+        VCheckSDK.designConfig!!.sectionBorderColorHex?.let {
             animFrameDrawable.setStroke(7, Color.parseColor(it))
             faceFrameDrawable.setStroke(7, Color.parseColor(it))
         }

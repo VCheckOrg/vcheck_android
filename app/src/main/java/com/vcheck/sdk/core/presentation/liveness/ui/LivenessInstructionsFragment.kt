@@ -19,7 +19,7 @@ import com.vcheck.sdk.core.databinding.LivenessInstructionsFragmentBinding
 import com.vcheck.sdk.core.presentation.VCheckMainActivity
 import com.vcheck.sdk.core.presentation.liveness.VCheckLivenessActivity
 import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
-import com.vcheck.sdk.core.util.setMargins
+import com.vcheck.sdk.core.util.extensions.setMargins
 import java.util.*
 
 class LivenessInstructionsFragment : ThemeWrapperFragment() {
@@ -37,20 +37,20 @@ class LivenessInstructionsFragment : ThemeWrapperFragment() {
 
     override fun changeColorsToCustomIfPresent() {
         val drawable = binding!!.cosmeticRoundedFrame.background as GradientDrawable
-        VCheckSDK.buttonsColorHex?.let {
+        VCheckSDK.designConfig!!.primary?.let {
             binding!!.livenessStartButton.setBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.backgroundPrimaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundPrimaryColorHex?.let {
             binding!!.livenessIstructionsBackground.background = ColorDrawable(Color.parseColor(it))
             drawable.setColor(Color.parseColor(it))
         }
-        VCheckSDK.borderColorHex?.let {
+        VCheckSDK.designConfig!!.sectionBorderColorHex?.let {
             drawable.setStroke(5, Color.parseColor(it))
         }
-        VCheckSDK.backgroundSecondaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundSecondaryColorHex?.let {
             binding!!.card.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.primaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.primaryTextColorHex?.let {
             binding!!.faceCheckTitle.setTextColor(Color.parseColor(it))
             binding!!.requestedMovementsText.setTextColor(Color.parseColor(it))
             binding!!.smoothMovementsText.setTextColor(Color.parseColor(it))
@@ -59,10 +59,10 @@ class LivenessInstructionsFragment : ThemeWrapperFragment() {
             binding!!.fixedCameraText.setTextColor(Color.parseColor(it))
             //binding!!.livenessStartButton.setTextColor(Color.parseColor(it))
         }
-        VCheckSDK.secondaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.secondaryTextColorHex?.let {
             binding!!.faceCheckDescription.setTextColor(Color.parseColor(it))
         }
-        VCheckSDK.iconsColorHex?.let {
+        VCheckSDK.designConfig!!.primary?.let {
             binding!!.requestedMovementsIcon.setColorFilter(Color.parseColor(it))
             binding!!.smoothMovementsIcon.setColorFilter(Color.parseColor(it))
             binding!!.noInterferenceIcon.setColorFilter(Color.parseColor(it))

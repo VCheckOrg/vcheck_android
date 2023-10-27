@@ -22,16 +22,16 @@ class WrongMoveFragment : ThemeWrapperFragment()  {
     private val args: WrongMoveFragmentArgs by navArgs()
 
     override fun changeColorsToCustomIfPresent() {
-        VCheckSDK.buttonsColorHex?.let {
+        VCheckSDK.designConfig!!.primary?.let {
             _binding!!.wrongMoveRepeatButton.setBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.backgroundPrimaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundPrimaryColorHex?.let {
             _binding!!.wrongMoveBackground.background = ColorDrawable(Color.parseColor(it))
         }
-        VCheckSDK.backgroundSecondaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundSecondaryColorHex?.let {
             _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.primaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.primaryTextColorHex?.let {
             _binding!!.wrongMoveTitle.setTextColor(Color.parseColor(it))
             _binding!!.wrongMoveDescription.setTextColor(Color.parseColor(it))
             //_binding!!.wrongMoveRepeatButton.setTextColor(Color.parseColor(it))

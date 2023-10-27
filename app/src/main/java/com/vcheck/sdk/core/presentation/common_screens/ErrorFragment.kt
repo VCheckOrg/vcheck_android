@@ -1,4 +1,4 @@
-package com.vcheck.sdk.core.presentation.screens
+package com.vcheck.sdk.core.presentation.common_screens
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -17,20 +17,20 @@ class ErrorFragment : ThemeWrapperFragment() {
     private var _binding: ErrorFragmentBinding? = null
 
     override fun changeColorsToCustomIfPresent() {
-        VCheckSDK.buttonsColorHex?.let {
+        VCheckSDK.designConfig!!.primary?.let {
             _binding!!.errorButton.setBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.backgroundPrimaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundPrimaryColorHex?.let {
             _binding!!.errorBackground.background = ColorDrawable(Color.parseColor(it))
         }
-        VCheckSDK.backgroundSecondaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundSecondaryColorHex?.let {
             _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.primaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.primaryTextColorHex?.let {
             _binding!!.errorTitle.setTextColor(Color.parseColor(it))
             //_binding!!.errorButton.setTextColor(Color.parseColor(it))
         }
-        VCheckSDK.secondaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.secondaryTextColorHex?.let {
             _binding!!.errorDescription.setTextColor(Color.parseColor(it))
         }
     }

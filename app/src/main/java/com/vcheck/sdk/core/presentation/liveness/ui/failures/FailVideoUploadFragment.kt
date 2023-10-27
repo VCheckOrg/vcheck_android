@@ -21,17 +21,17 @@ class FailVideoUploadFragment : ThemeWrapperFragment() {
     private var _binding: FragmentFailVideoUploadBinding? = null
 
     override fun changeColorsToCustomIfPresent() {
-        VCheckSDK.buttonsColorHex?.let {
+        VCheckSDK.designConfig!!.primary?.let {
             _binding!!.retryButton.setBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.backgroundPrimaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundPrimaryColorHex?.let {
             _binding!!.failVideoUploadBackground.background = ColorDrawable(Color.parseColor(it))
         }
-        VCheckSDK.backgroundSecondaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundSecondaryColorHex?.let {
             _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
             _binding!!.contactSupportButton.setBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.primaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.primaryTextColorHex?.let {
             _binding!!.failVerificationTitle.setTextColor(Color.parseColor(it))
             _binding!!.failVerificationDescription.setTextColor(Color.parseColor(it))
             _binding!!.contactSupportButton.setTextColor(Color.parseColor(it))
