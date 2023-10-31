@@ -62,7 +62,8 @@ object VCheckSDK {
 
     private fun performPreStartChecks() {
         if (environment == null) {
-            Log.i(TAG, "VCheckSDK - warning: sdk environment is not set | see VCheckSDK.environment(env: VCheckEnvironment)")
+            Log.i(TAG, "VCheckSDK - warning: sdk environment is not set by partner developer |" +
+                    " see VCheckSDK.environment(env: VCheckEnvironment)")
             environment = VCheckEnvironment.DEV
         }
         if (environment == VCheckEnvironment.DEV) {
@@ -78,12 +79,13 @@ object VCheckSDK {
         }
         if (partnerEndCallback == null) {
             throw IllegalArgumentException("VCheckSDK - error: partner application's callback function " +
-                    "(invoked on SDK flow finish) must be provided by partner app | see VCheckSDK.partnerEndCallback(callback: (() -> Unit))")
+                    "(invoked on SDK flow finish) must be provided by partner app |" +
+                    " see VCheckSDK.partnerEndCallback(callback: (() -> Unit))")
         }
         if (onVerificationExpired == null) {
             throw IllegalArgumentException("VCheckSDK - error: partner application's onVerificationExpired function " +
-                    "(invoked on SDK's current verification expiration case) must be provided by partner app | " +
-                    "see VCheckSDK.onVerificationExpired(callback: (() -> Unit))")
+                    "(invoked on SDK's current verification expiration case) must be provided by partner app |" +
+                    " see VCheckSDK.onVerificationExpired(callback: (() -> Unit))")
         }
         if (sdkLanguageCode == null) {
             Log.w(TAG, "VCheckSDK - warning: SDK language code is not set; using English (en) locale as default. " +

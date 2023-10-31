@@ -91,7 +91,6 @@ data class VCheckDesignConfig (
 ) {
 
     //TODO: think about naming and file reading (considered as non-preferrable way)
-    //TODO: modify corr. logic for iOS
     companion object {
         @JvmStatic
         fun fromJSONStr(rawJsonStr: String) : VCheckDesignConfig {
