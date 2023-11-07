@@ -13,12 +13,12 @@ import androidx.activity.addCallback
 import androidx.navigation.fragment.findNavController
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
-import com.vcheck.sdk.core.databinding.FragmentFailVideoUploadBinding
+import com.vcheck.sdk.core.databinding.FragmentErrorFailVideoUploadBinding
 import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
 
 class FailVideoUploadFragment : ThemeWrapperFragment() {
 
-    private var _binding: FragmentFailVideoUploadBinding? = null
+    private var _binding: FragmentErrorFailVideoUploadBinding? = null
 
     override fun changeColorsToCustomIfPresent() {
         VCheckSDK.designConfig!!.primary?.let {
@@ -37,6 +37,9 @@ class FailVideoUploadFragment : ThemeWrapperFragment() {
             _binding!!.contactSupportButton.setTextColor(Color.parseColor(it))
             _binding!!.contactSupportButton.strokeColor = ColorStateList.valueOf(Color.parseColor(it))
         }
+        VCheckSDK.designConfig!!.errorColorHex?.let {
+            _binding!!.errorImage.setColorFilter(Color.parseColor(it))
+        }
     }
 
     override fun onCreateView(
@@ -44,13 +47,13 @@ class FailVideoUploadFragment : ThemeWrapperFragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_fail_video_upload, container, false)
+        return inflater.inflate(R.layout.fragment_error_fail_video_upload, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        _binding = FragmentFailVideoUploadBinding.bind(view)
+        _binding = FragmentErrorFailVideoUploadBinding.bind(view)
 
         changeColorsToCustomIfPresent()
 

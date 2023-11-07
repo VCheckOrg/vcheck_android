@@ -11,13 +11,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
-import com.vcheck.sdk.core.databinding.WrongMoveFragmentBinding
+import com.vcheck.sdk.core.databinding.FragmentErrorWrongMoveBinding
 import com.vcheck.sdk.core.presentation.liveness.VCheckLivenessActivity
 import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
 
 class WrongMoveFragment : ThemeWrapperFragment()  {
 
-    private var _binding: WrongMoveFragmentBinding? = null
+    private var _binding: FragmentErrorWrongMoveBinding? = null
 
     private val args: WrongMoveFragmentArgs by navArgs()
 
@@ -36,19 +36,22 @@ class WrongMoveFragment : ThemeWrapperFragment()  {
             _binding!!.wrongMoveDescription.setTextColor(Color.parseColor(it))
             //_binding!!.wrongMoveRepeatButton.setTextColor(Color.parseColor(it))
         }
+        VCheckSDK.designConfig!!.errorColorHex?.let {
+            _binding!!.errorImage.setColorFilter(Color.parseColor(it))
+        }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.wrong_move_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_error_wrong_move, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        _binding = WrongMoveFragmentBinding.bind(view)
+        _binding = FragmentErrorWrongMoveBinding.bind(view)
 
         changeColorsToCustomIfPresent()
 

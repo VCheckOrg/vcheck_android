@@ -10,13 +10,13 @@ import androidx.activity.addCallback
 import androidx.navigation.fragment.findNavController
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
-import com.vcheck.sdk.core.databinding.NoTimeFragmentBinding
+import com.vcheck.sdk.core.databinding.FragmentErrorNoTimeBinding
 import com.vcheck.sdk.core.presentation.liveness.VCheckLivenessActivity
 import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
 
 class NoTimeFragment : ThemeWrapperFragment() {
 
-    private var _binding: NoTimeFragmentBinding? = null
+    private var _binding: FragmentErrorNoTimeBinding? = null
 
     override fun changeColorsToCustomIfPresent() {
         VCheckSDK.designConfig!!.primary?.let {
@@ -33,19 +33,22 @@ class NoTimeFragment : ThemeWrapperFragment() {
             _binding!!.noTimeSubtitle.setTextColor(Color.parseColor(it))
             //_binding!!.tryAgainButton.setTextColor(Color.parseColor(it))
         }
+        VCheckSDK.designConfig!!.errorColorHex?.let {
+            _binding!!.errorImage.setColorFilter(Color.parseColor(it))
+        }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.no_time_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_error_no_time, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        _binding = NoTimeFragmentBinding.bind(view)
+        _binding = FragmentErrorNoTimeBinding.bind(view)
 
         changeColorsToCustomIfPresent()
 

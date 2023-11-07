@@ -18,6 +18,6 @@
         android:id="@+id/segTimeoutFragment"
         android:name="com.vcheck.sdk.core.presentation.segmentation.ui.SegTimeoutFragment"
         android:label="SegTimeoutFragment"
-        tools:layout="@layout/fragment_seg_timeout"/>
+        tools:layout="@layout/fragment_error_seg_timeout"/>
 
 </navigation>

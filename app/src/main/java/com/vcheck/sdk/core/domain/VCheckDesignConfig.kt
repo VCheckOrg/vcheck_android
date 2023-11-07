@@ -37,7 +37,7 @@ data class VCheckDesignConfig (
     var neutralContent: String? = null,
 
     @SerializedName("success")
-    var success: String? = null,
+    var successColorHex: String? = null,
     @SerializedName("successHover")
     var successHover: String? = null,
     @SerializedName("successActive")
@@ -47,7 +47,7 @@ data class VCheckDesignConfig (
     @SerializedName("successContent")
     var successContent: String? = null,
     @SerializedName("error")
-    var error: String? = null,
+    var errorColorHex: String? = null,
     @SerializedName("errorHover")
     var errorHover: String? = null,
     @SerializedName("errorActive")
@@ -111,40 +111,40 @@ data class VCheckDesignConfig (
 "primary": "#2E75FF",  -- bg of primary action buttons, all primary accent elements
 "primaryHover": "#2E96FF",  -- lighter primary color
 "primaryActive": "#3361EC",  -- darker primary color (on pressed etc.) (?)
-"primaryContent": "#FFFFFF",  -- text content, etc.
-"primaryBg": "#5D6884",
-"accent": "#6096FF",
-"accentHover": "#6ABFFF",
-"accentActive": "#4F79F7",
-"accentContent": "#FFFFFF",
-"accentBg": "#32404A",
+"primaryContent": "#FFFFFF",  -- text content, etc. - content on primary buttons
+"primaryBg": "#5D6884", - on text form press
+"accent": "#6096FF", - n/u
+"accentHover": "#6ABFFF", - n/u
+"accentActive": "#4F79F7", - n/u
+"accentContent": "#FFFFFF", - n/u
+"accentBg": "#32404A", - n/u
 "neutral": "#FFFFFF",  -- e.g. borders of non-primary text buttons
-"neutralHover": "rgba(255, 255, 255, 0.4)",
-"neutralActive": "rgba(255, 255, 255, 0.1)",
-"neutralContent": "#000000",  -- e.g. text color inside non-primary text buttons (?)
+"neutralHover": "rgba(255, 255, 255, 0.4)", - for SDK, will use primary active color instead
+"neutralActive": "rgba(255, 255, 255, 0.1)", - for SDK, will use primary active color instead
+"neutralContent": "#000000",  -- e.g. text color inside non-primary text buttons
 
 "success": "#6CFB93",  -- success variations (liveness UI etc.)
-"successHover": "#C8FDD2",  -- success variations (liveness UI etc.)
-"successActive": "#00DF53",  -- success variations (liveness UI etc.)
-"successBg": "#3A4B3F",  -- success variations (liveness UI etc.)
-"successContent": "#3B3B3B",  -- success variations (liveness UI etc.)
-"error": "#F47368",
-"errorHover": "#FF877C",
-"errorActive": "#DE473A",
-"errorBg": "#4B2A24",
-"errorContent": "#3B3B3B",
-"warning": "#FFB482",
-"warningHover": "#FFBF94",
-"warningActive": "#D3834E",
-"warningBg": "#3F3229",
-"warningContent": "#3B3B3B",
+"successHover": "#C8FDD2", - n/u
+"successActive": "#00DF53", - n/u
+"successBg": "#3A4B3F", - n/u
+"successContent": "#3B3B3B", - n/u
+"error": "#F47368",  -- error common variations
+"errorHover": "#FF877C", - n/u
+"errorActive": "#DE473A", - n/u
+"errorBg": "#4B2A24", - n/u
+"errorContent": "#3B3B3B", - n/u
+"warning": "#FFB482", - n/u
+"warningHover": "#FFBF94", - n/u
+"warningActive": "#D3834E", - n/u
+"warningBg": "#3F3229", - n/u
+"warningContent": "#3B3B3B", - n/u
 
 "base": "#2A2A2A",  -- primary screen backgrounds
 "base_100": "#3C3C3C",  -- secondary screen backgrounds
 "base_200": "#555555", -- tertiary (card) backgrounds
 "base_300": "#6A6A6A", -- button cards borders
 "base_400": "#7F7F7F", -- sections borders (photo previews etc.) + text fields borders
-"base_500": "#949494",
+"base_500": "#949494", - n/u (for now)
 "baseContent": "#FFFFFF", -- texts and util icon buttons
 "baseSecondaryContent": "#D8D8D8", -- secondary texts
 "disabled": "#AAAAAA",  -- bg of disabled buttons

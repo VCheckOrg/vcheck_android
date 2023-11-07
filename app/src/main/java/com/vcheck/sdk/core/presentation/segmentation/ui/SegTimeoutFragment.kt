@@ -11,44 +11,14 @@ import androidx.activity.addCallback
 import androidx.navigation.fragment.findNavController
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
-import com.vcheck.sdk.core.databinding.FragmentSegTimeoutBinding
+import com.vcheck.sdk.core.databinding.FragmentErrorSegTimeoutBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.presentation.segmentation.VCheckSegmentationActivity
 import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
 
 class SegTimeoutFragment : ThemeWrapperFragment() {
 
-    private var _binding: FragmentSegTimeoutBinding? = null
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_seg_timeout, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        _binding = FragmentSegTimeoutBinding.bind(view)
-
-        changeColorsToCustomIfPresent()
-
-        requireActivity().onBackPressedDispatcher.addCallback {
-            //Stub; no back press needed here
-        }
-
-        _binding!!.replacePhotoButton.setOnClickListener {
-            VCheckDIContainer.mainRepository.setManualPhotoUpload()
-            findNavController().popBackStack()
-            (activity as VCheckSegmentationActivity).finishWithExtra(isTimeoutToManual = true, isBackPress = false)
-        }
-
-        _binding!!.tryAgainButton.setOnClickListener {
-            findNavController().popBackStack()
-            (activity as VCheckSegmentationActivity).recreate()
-        }
-    }
+    private var _binding: FragmentErrorSegTimeoutBinding? = null
 
     override fun changeColorsToCustomIfPresent() {
         VCheckSDK.designConfig!!.primary?.let {
@@ -68,6 +38,39 @@ class SegTimeoutFragment : ThemeWrapperFragment() {
         }
         VCheckSDK.designConfig!!.secondaryTextColorHex?.let {
             _binding!!.noTimeSubtitle.setTextColor(Color.parseColor(it))
+        }
+        VCheckSDK.designConfig!!.errorColorHex?.let {
+            _binding!!.errorImage.setColorFilter(Color.parseColor(it))
+        }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?, savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_error_seg_timeout, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        _binding = FragmentErrorSegTimeoutBinding.bind(view)
+
+        changeColorsToCustomIfPresent()
+
+        requireActivity().onBackPressedDispatcher.addCallback {
+            //Stub; no back press needed here
+        }
+
+        _binding!!.replacePhotoButton.setOnClickListener {
+            VCheckDIContainer.mainRepository.setManualPhotoUpload()
+            findNavController().popBackStack()
+            (activity as VCheckSegmentationActivity).finishWithExtra(isTimeoutToManual = true, isBackPress = false)
+        }
+
+        _binding!!.tryAgainButton.setOnClickListener {
+            findNavController().popBackStack()
+            (activity as VCheckSegmentationActivity).recreate()
         }
     }
 }

@@ -11,13 +11,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
-import com.vcheck.sdk.core.databinding.TooDarkFragmentBinding
+import com.vcheck.sdk.core.databinding.FragmentErrorTooDarkBinding
 import com.vcheck.sdk.core.presentation.liveness.VCheckLivenessActivity
 import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
 
 class TooDarkFragment : ThemeWrapperFragment() {
 
-    private var _binding: TooDarkFragmentBinding? = null
+    private var _binding: FragmentErrorTooDarkBinding? = null
 
     private val args: TooDarkFragmentArgs by navArgs()
 
@@ -36,19 +36,22 @@ class TooDarkFragment : ThemeWrapperFragment() {
             _binding!!.tooDarkDescription.setTextColor(Color.parseColor(it))
             //_binding!!.tooDarkRepeatButton.setTextColor(Color.parseColor(it))
         }
+        VCheckSDK.designConfig!!.errorColorHex?.let {
+            _binding!!.errorImage.setColorFilter(Color.parseColor(it))
+        }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.too_dark_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_error_too_dark, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        _binding = TooDarkFragmentBinding.bind(view)
+        _binding = FragmentErrorTooDarkBinding.bind(view)
 
         changeColorsToCustomIfPresent()
 

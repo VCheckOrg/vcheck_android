@@ -1,23 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/too_fast_movements_background"
+    android:id="@+id/fail_video_upload_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    tools:context=".presentation.liveness.ui.failures.FailVideoUploadFragment"
     android:background="@color/vcheck_background_primary"
-    android:scrollbars="none"
-    tools:context=".presentation.liveness.ui.failures.TooFastMovementsFragment"
     android:theme="@style/Theme.VCheckAndroidSDKDemo">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card"
         android:layout_width="match_parent"
-        android:layout_height="560dp"
+        android:layout_height="580dp"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="14dp"
+        android:layout_marginTop="34dp"
         android:layout_marginEnd="12dp"
-        android:layout_marginBottom="49dp"
+        android:layout_marginBottom="34dp"
         app:cardBackgroundColor="@color/vcheck_background_secondary"
         app:cardCornerRadius="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -30,58 +34,76 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:id="@+id/too_fast_movements_image"
+                android:id="@+id/error_image"
                 android:layout_width="240dp"
                 android:layout_height="240dp"
                 android:layout_marginStart="28dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginEnd="28dp"
-                android:src="@drawable/to_fast_movements_image"
+                android:paddingBottom="20dp"
+                android:src="@drawable/ic_error_common"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <TextView
-                android:id="@+id/too_fast_movements_title"
+                android:id="@+id/fail_verification_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="22dp"
+                android:layout_marginTop="2dp"
                 android:layout_marginEnd="16dp"
                 android:gravity="center"
-                android:text="@string/too_fast_movements_title"
+                android:text="@string/error_title"
                 android:textColor="@color/vcheck_text"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/too_fast_movements_image" />
+                app:layout_constraintTop_toBottomOf="@+id/error_image" />
 
             <TextView
-                android:id="@+id/too_fast_movements_description"
+                android:id="@+id/fail_verification_description"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:gravity="center"
-                android:text="@string/too_fast_movements_description"
+                android:text="@string/video_upload_error_descr"
                 android:textColor="#D8D8D8"
                 android:textSize="14sp"
                 android:textStyle="normal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/too_fast_movements_title" />
+                app:layout_constraintTop_toBottomOf="@+id/fail_verification_title" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/too_fast_movements_repeat_button"
+                android:id="@+id/contact_support_button"
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="44dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="20dp"
+                android:text="@string/fail_verification_support_button"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/vcheck_text"
+                android:textColor="@color/vcheck_text"
+                style="?attr/materialButtonOutlinedStyle"
+                app:layout_constraintBottom_toTopOf="@+id/retry_button"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/retry_button"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="24dp"
-                android:text="@string/wrong_move_repeat_button"
+                android:text="@string/retry"
                 android:textAllCaps="false"
                 android:textSize="16sp"
                 app:cornerRadius="4dp"
@@ -93,6 +115,6 @@
 
     </androidx.cardview.widget.CardView>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-
+</ScrollView>

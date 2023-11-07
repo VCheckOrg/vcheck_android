@@ -9,12 +9,13 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
-import com.vcheck.sdk.core.databinding.ErrorFragmentBinding
+import com.vcheck.sdk.core.databinding.FragmentErrorCommonBinding
 import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
+
 
 class ErrorFragment : ThemeWrapperFragment() {
 
-    private var _binding: ErrorFragmentBinding? = null
+    private var _binding: FragmentErrorCommonBinding? = null
 
     override fun changeColorsToCustomIfPresent() {
         VCheckSDK.designConfig!!.primary?.let {
@@ -33,19 +34,22 @@ class ErrorFragment : ThemeWrapperFragment() {
         VCheckSDK.designConfig!!.secondaryTextColorHex?.let {
             _binding!!.errorDescription.setTextColor(Color.parseColor(it))
         }
+        VCheckSDK.designConfig!!.errorColorHex?.let {
+            _binding!!.errorImage.setColorFilter(Color.parseColor(it))
+        }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.error_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_error_common, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        _binding = ErrorFragmentBinding.bind(view)
+        _binding = FragmentErrorCommonBinding.bind(view)
 
         changeColorsToCustomIfPresent()
 

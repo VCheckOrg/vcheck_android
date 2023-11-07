@@ -76,7 +76,7 @@
         android:id="@+id/errorFragment"
         android:name="com.vcheck.sdk.core.presentation.common_screens.ErrorFragment"
         android:label="error_fragment"
-        tools:layout="@layout/error_fragment" />
+        tools:layout="@layout/fragment_error_common" />
 
     <fragment
         android:id="@+id/noCameraFragment"
@@ -207,7 +207,7 @@
         android:id="@+id/segErrorFragment"
         android:name="com.vcheck.sdk.core.presentation.segmentation.ui.SegErrorFragment"
         android:label="SegErrorFragment"
-        tools:layout="@layout/fragment_seg_error">
+        tools:layout="@layout/fragment_error_seg_common">
         <action
             android:id="@+id/action_segErrorFragment_to_checkPhotoFragment"
             app:destination="@id/checkPhotoFragment" />

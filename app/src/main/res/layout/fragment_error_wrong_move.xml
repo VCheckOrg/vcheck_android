@@ -1,28 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/no_time_background"
+    android:id="@+id/wrong_move_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:scrollbars="none"
-    tools:context=".presentation.liveness.ui.failures.NoTimeFragment"
+    tools:context=".presentation.liveness.ui.failures.WrongMoveFragment"
     android:background="@color/vcheck_background_primary"
     android:theme="@style/Theme.VCheckAndroidSDKDemo">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/card"
             android:layout_width="match_parent"
-            android:layout_height="600dp"
+            android:layout_height="560dp"
             android:layout_marginStart="12dp"
-            android:layout_marginTop="34dp"
+            android:layout_marginTop="14dp"
             android:layout_marginEnd="12dp"
-            android:layout_marginBottom="34dp"
+            android:layout_marginBottom="49dp"
             app:cardBackgroundColor="@color/vcheck_background_secondary"
             app:cardCornerRadius="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -35,66 +31,65 @@
                 android:layout_height="match_parent">
 
                 <ImageView
-                    android:id="@+id/no_time_image"
+                    android:id="@+id/error_image"
                     android:layout_width="240dp"
                     android:layout_height="240dp"
                     android:layout_marginStart="28dp"
                     android:layout_marginTop="24dp"
                     android:layout_marginEnd="28dp"
-                    android:src="@drawable/no_time_image"
+                    android:paddingBottom="20dp"
+                    android:src="@drawable/ic_error_common"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"/>
 
                 <TextView
-                    android:id="@+id/no_time_subtitle"
+                    android:id="@+id/wrong_move_title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="40dp"
+                    android:layout_marginTop="22dp"
                     android:layout_marginEnd="16dp"
                     android:gravity="center"
-                    android:text="@string/fatal_error_seg"
+                    android:text="@string/wrong_move_title"
+                    android:textColor="@color/vcheck_text"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/error_image" />
+
+                <TextView
+                    android:id="@+id/wrong_move_description"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:gravity="center"
+                    android:text="@string/wrong_move_description"
                     android:textColor="#D8D8D8"
                     android:textSize="14sp"
                     android:textStyle="normal"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/no_time_image" />
+                    app:layout_constraintTop_toBottomOf="@+id/wrong_move_title" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/replace_photo_button"
+                    android:id="@+id/wrong_move_repeat_button"
                     android:layout_width="match_parent"
                     android:layout_height="70dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="44dp"
                     android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="10dp"
-                    android:text="@string/make_photo_by_hand"
-                    android:textAllCaps="false"
-                    android:textSize="16sp"
-                    app:strokeWidth="1dp"
-                    app:strokeColor="@color/vcheck_text"
-                    android:textColor="@color/vcheck_text"
-                    style="?attr/materialButtonOutlinedStyle"
-                    app:layout_constraintBottom_toTopOf="@id/try_again_button"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"/>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/try_again_button"
-                    android:layout_width="match_parent"
-                    android:layout_height="70dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
                     android:layout_marginBottom="24dp"
-                    android:text="@string/no_time_button"
+                    android:text="@string/wrong_move_repeat_button"
                     android:textAllCaps="false"
                     android:textSize="16sp"
                     app:cornerRadius="4dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -102,4 +97,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</ScrollView>
+

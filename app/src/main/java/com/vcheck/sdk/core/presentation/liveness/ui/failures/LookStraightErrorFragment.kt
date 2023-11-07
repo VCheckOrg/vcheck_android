@@ -11,19 +11,19 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
-import com.vcheck.sdk.core.databinding.LookStraightErrorFragmentBinding
+import com.vcheck.sdk.core.databinding.FragmentErrorLookStraightBinding
 import com.vcheck.sdk.core.presentation.liveness.VCheckLivenessActivity
 import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
 
 class LookStraightErrorFragment : ThemeWrapperFragment() {
 
-    private var _binding: LookStraightErrorFragmentBinding? = null
+    private var _binding: FragmentErrorLookStraightBinding? = null
 
     private val args: LookStraightErrorFragmentArgs by navArgs()
 
     override fun changeColorsToCustomIfPresent() {
         VCheckSDK.designConfig!!.primary?.let {
-            _binding!!.lookStratightErrorButton.setBackgroundColor(Color.parseColor(it))
+            _binding!!.lookStraightErrorButton.setBackgroundColor(Color.parseColor(it))
         }
         VCheckSDK.designConfig!!.backgroundPrimaryColorHex?.let {
             _binding!!.lookStraightErrorBackground.background = ColorDrawable(Color.parseColor(it))
@@ -32,9 +32,12 @@ class LookStraightErrorFragment : ThemeWrapperFragment() {
             _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
         }
         VCheckSDK.designConfig!!.primaryTextColorHex?.let {
-            _binding!!.lookStratightErrorTitle.setTextColor(Color.parseColor(it))
-            _binding!!.lookStratightErrorSubtitle.setTextColor(Color.parseColor(it))
+            _binding!!.lookStraightErrorTitle.setTextColor(Color.parseColor(it))
+            _binding!!.lookStraightErrorSubtitle.setTextColor(Color.parseColor(it))
             //_binding!!.lookStraightErrorButton.setTextColor(Color.parseColor(it))
+        }
+        VCheckSDK.designConfig!!.errorColorHex?.let {
+            _binding!!.errorImage.setColorFilter(Color.parseColor(it))
         }
     }
 
@@ -42,13 +45,13 @@ class LookStraightErrorFragment : ThemeWrapperFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.look_straight_error_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_error_look_straight, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        _binding = LookStraightErrorFragmentBinding.bind(view)
+        _binding = FragmentErrorLookStraightBinding.bind(view)
 
         changeColorsToCustomIfPresent()
 
@@ -56,7 +59,7 @@ class LookStraightErrorFragment : ThemeWrapperFragment() {
             //Stub; no back press needed here
         }
 
-        _binding!!.lookStratightErrorButton.setOnClickListener {
+        _binding!!.lookStraightErrorButton.setOnClickListener {
             if (args.isFromUploadResponse) {
                 findNavController().popBackStack()
             }

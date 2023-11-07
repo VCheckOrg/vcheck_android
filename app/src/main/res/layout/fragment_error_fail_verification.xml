@@ -3,11 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/frame_interference_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:scrollbars="none"
-    tools:context=".presentation.liveness.ui.failures.FrameInterferenceFragment"
+    tools:context=".presentation.common_screens.FailVerificationFragment"
     android:background="@color/vcheck_background_primary"
     android:theme="@style/Theme.VCheckAndroidSDKDemo">
 
@@ -16,13 +14,12 @@
         android:layout_height="wrap_content">
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/card"
             android:layout_width="match_parent"
-            android:layout_height="560dp"
+            android:layout_height="580dp"
             android:layout_marginStart="12dp"
             android:layout_marginTop="34dp"
-            android:layout_marginBottom="34dp"
             android:layout_marginEnd="12dp"
+            android:layout_marginBottom="49dp"
             app:cardBackgroundColor="@color/vcheck_background_secondary"
             app:cardCornerRadius="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -35,80 +32,79 @@
                 android:layout_height="match_parent">
 
                 <ImageView
-                    android:id="@+id/frame_interference_image"
+                    android:id="@+id/error_image"
                     android:layout_width="240dp"
                     android:layout_height="240dp"
                     android:layout_marginStart="28dp"
                     android:layout_marginTop="24dp"
                     android:layout_marginEnd="28dp"
-                    android:src="@drawable/frame_interference_image"
+                    android:paddingBottom="20dp"
+                    android:src="@drawable/ic_error_common"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"/>
 
                 <TextView
-                    android:id="@+id/frame_interference_title"
+                    android:id="@+id/fail_verification_title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="22dp"
+                    android:layout_marginTop="2dp"
                     android:layout_marginEnd="16dp"
                     android:gravity="center"
-                    android:text="@string/frame_interference_title"
+                    android:text="@string/fail_verification_title"
                     android:textColor="@color/vcheck_text"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/frame_interference_image" />
+                    app:layout_constraintTop_toBottomOf="@+id/error_image" />
 
                 <TextView
-                    android:id="@+id/frame_interference_description"
+                    android:id="@+id/fail_verification_description"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
                     android:gravity="center"
-                    android:text="@string/frame_interference_description"
+                    android:text="@string/fail_verification_description"
                     android:textColor="#D8D8D8"
                     android:textSize="14sp"
                     android:textStyle="normal"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/frame_interference_title" />
+                    app:layout_constraintTop_toBottomOf="@+id/fail_verification_title" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/frame_interference_button"
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/contact_support_button"
                     android:layout_width="match_parent"
-                    android:layout_height="70dp"
+                    android:layout_height="56dp"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="44dp"
                     android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="24dp"
-                    android:text="@string/frame_interference_button"
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/shape_for_outlined_button"
+                    android:text="@string/fail_verification_support_button"
                     android:textAllCaps="false"
                     android:textSize="16sp"
-                    app:cornerRadius="4dp"
+                    app:layout_constraintBottom_toTopOf="@+id/retry_button"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent" />
 
-<!--                <TextView-->
-<!--                    android:id="@+id/frame_interference_send_text"-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginStart="16dp"-->
-<!--                    android:layout_marginEnd="16dp"-->
-<!--                    android:layout_marginBottom="24dp"-->
-<!--                    android:gravity="center"-->
-<!--                    android:text="@string/frame_interference_send_text"-->
-<!--                    android:textColor="@color/white"-->
-<!--                    android:textSize="14sp"-->
-<!--                    android:textStyle="bold"-->
-<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                    app:layout_constraintEnd_toEndOf="parent"-->
-<!--                    app:layout_constraintStart_toStartOf="parent" />-->
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/retry_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="24dp"
+                    android:background="@drawable/shape_for_blue_button"
+                    android:text="@string/fail_verification_close_button"
+                    android:textAllCaps="false"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -117,6 +113,5 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
-
 
 
