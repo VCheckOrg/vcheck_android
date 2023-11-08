@@ -36,8 +36,9 @@
                 android:layout_marginStart="28dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginEnd="28dp"
-                android:paddingBottom="20dp"
-                android:src="@drawable/ic_error_common"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
+                android:src="@drawable/il_error_common"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>

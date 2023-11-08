@@ -46,6 +46,7 @@ class PostProcessFragment : ThemeWrapperFragment() {
     override fun changeColorsToCustomIfPresent() {
         VCheckSDK.designConfig!!.primary?.let {
             _binding!!.successButton.setBackgroundColor(Color.parseColor(it))
+            _binding!!.inProcessImage.setColorFilter(Color.parseColor(it))
         }
         VCheckSDK.designConfig!!.backgroundPrimaryColorHex?.let {
             _binding!!.inProcessBackground.background = ColorDrawable(Color.parseColor(it))
