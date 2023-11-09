@@ -182,7 +182,7 @@
         android:id="@+id/docVerificationNotSuccessfulFragment"
         android:name="com.vcheck.sdk.core.presentation.check_doc_info_stage.DocVerifErrorFragment"
         android:label="fragment_doc_verification_not_successful"
-        tools:layout="@layout/fragment_doc_verification_not_successful" >
+        tools:layout="@layout/fragment_error_doc_verification" >
         <action
             android:id="@+id/action_docVerificationNotSuccessfulFragment_to_checkDocInfoFragment"
             app:destination="@id/checkDocInfoFragment">

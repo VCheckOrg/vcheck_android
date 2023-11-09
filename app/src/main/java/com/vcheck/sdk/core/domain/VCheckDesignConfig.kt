@@ -3,6 +3,7 @@ package com.vcheck.sdk.core.domain
 import android.util.Log
 import com.google.gson.annotations.SerializedName
 import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
 import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.data.VCheckSDKConstantsProvider
 
@@ -96,7 +97,7 @@ data class VCheckDesignConfig (
         fun fromJSONStr(rawJsonStr: String) : VCheckDesignConfig {
             return try {
                 Gson().fromJson(rawJsonStr, VCheckDesignConfig::class.java)
-            } catch (e: Exception) {
+            } catch (e: JsonSyntaxException) {
                 Log.w(VCheckSDK.TAG, "VCheckSDK - warning: Non-valid JSON was passed while " +
                         "initializing VCheckDesignConfig instance | trying to set VCheck default theme...")
                 Gson().fromJson(VCheckSDKConstantsProvider.vcheckDefaultThemeConfig,

@@ -10,7 +10,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
-import com.vcheck.sdk.core.databinding.FragmentDocVerificationNotSuccessfulBinding
+import com.vcheck.sdk.core.databinding.FragmentErrorDocVerificationBinding
 import com.vcheck.sdk.core.domain.DocumentVerificationCode
 import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
 
@@ -18,7 +18,7 @@ class DocVerifErrorFragment : ThemeWrapperFragment() {
 
     private val args: DocVerifErrorFragmentArgs by navArgs()
 
-    private var _binding: FragmentDocVerificationNotSuccessfulBinding? = null
+    private var _binding: FragmentErrorDocVerificationBinding? = null
 
     override fun changeColorsToCustomIfPresent() {
         VCheckSDK.designConfig!!.primary?.let {
@@ -44,13 +44,13 @@ class DocVerifErrorFragment : ThemeWrapperFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_doc_verification_not_successful, container, false)
+        return inflater.inflate(R.layout.fragment_error_doc_verification, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        _binding = FragmentDocVerificationNotSuccessfulBinding.bind(view)
+        _binding = FragmentErrorDocVerificationBinding.bind(view)
 
         changeColorsToCustomIfPresent()
 
