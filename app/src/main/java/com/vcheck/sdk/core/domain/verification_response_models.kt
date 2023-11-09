@@ -19,7 +19,6 @@ data class VerificationInitResponseData(
     @SerializedName("locale")
     val locale: String?,
     @SerializedName("return_url")
-    val returnUrl: String?,
-    @SerializedName("theme")
-    val theme: String?
+    val returnUrl: String?
+    // removed "theme" property reading; not used in SDK ATM
 )
