@@ -17,9 +17,6 @@ data class VerificationInitResponseData(
     @SerializedName("status")
     val status: Int,
     @SerializedName("locale")
-    val locale: String?,
-    @SerializedName("return_url")
-    val returnUrl: String?,
-    @SerializedName("theme")
-    val theme: String?
+    val locale: String?
+    //removed "theme" property reading : not using in SDK
 )
