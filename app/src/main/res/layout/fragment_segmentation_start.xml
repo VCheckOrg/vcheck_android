@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:scrollbars="none"
-    tools:context=".presentation.liveness.ui.failures.NoTimeFragment"
+    tools:context=".presentation.segmentation.ui.SegmentationStartFragment"
     android:background="@color/vcheck_background_primary"
     android:theme="@style/Theme.VCheckAndroidSDKDemo">
 
@@ -49,13 +49,45 @@
                     tools:ignore="ContentDescription" />
 
                 <ImageView
-                    android:id="@+id/doc_image"
+                    android:id="@+id/doc_image_back_part_one"
                     android:layout_width="240dp"
                     android:layout_height="240dp"
                     android:layout_marginStart="28dp"
                     android:layout_marginTop="24dp"
                     android:layout_marginEnd="28dp"
-                    android:src="@drawable/img_ua_inner_passport_large"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/doc_image_back_part_two"
+                    android:layout_width="240dp"
+                    android:layout_height="240dp"
+                    android:layout_marginStart="28dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="28dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/doc_image_mid_part"
+                    android:layout_width="240dp"
+                    android:layout_height="240dp"
+                    android:layout_marginStart="28dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="28dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/doc_image_front_part"
+                    android:layout_width="240dp"
+                    android:layout_height="240dp"
+                    android:layout_marginStart="28dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="28dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -74,7 +106,7 @@
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/doc_image" />
+                    app:layout_constraintTop_toBottomOf="@+id/doc_image_back_part_one" />
 
                 <TextView
                     android:id="@+id/doc_subtitle"

@@ -163,7 +163,7 @@
             android:id="@+id/imgViewStaticStageIndication"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:src="@drawable/ic_success"
+            android:src="@drawable/ic_success_circle"
             app:layout_constraintEnd_toEndOf="@id/cosmetic_rounded_frame"
             app:layout_constraintTop_toTopOf="@id/cosmetic_rounded_frame"
             app:layout_constraintStart_toStartOf="@id/cosmetic_rounded_frame"
