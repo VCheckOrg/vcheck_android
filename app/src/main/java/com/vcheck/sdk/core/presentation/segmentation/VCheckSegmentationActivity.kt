@@ -491,18 +491,13 @@ class VCheckSegmentationActivity : AppCompatActivity() {
         }
 
         try {
-            when(docCategoryIdxToType(docData.category)) {
-                DocType.ID_CARD -> {
-                    binding.scalableDocHandView.background = AppCompatResources.getDrawable(
-                        this@VCheckSegmentationActivity, R.drawable.img_hand_id_card)
-                }
-                DocType.FOREIGN_PASSPORT -> {
-                    binding.scalableDocHandView.background = AppCompatResources.getDrawable(
-                        this@VCheckSegmentationActivity, R.drawable.img_hand_foreign_passport)
-                } else -> {
-                    binding.scalableDocHandView.background = AppCompatResources.getDrawable(
-                        this@VCheckSegmentationActivity, R.drawable.img_hand_inner_passport)
-                }
+            binding.scalableDocHandView.background = when(docCategoryIdxToType(docData.category)) {
+                DocType.ID_CARD -> AppCompatResources.getDrawable(
+                       this@VCheckSegmentationActivity, R.drawable.il_hand_id_neutral)
+                DocType.FOREIGN_PASSPORT -> AppCompatResources.getDrawable(
+                        this@VCheckSegmentationActivity, R.drawable.il_hand_int_neutral)
+                else -> AppCompatResources.getDrawable(
+                        this@VCheckSegmentationActivity, R.drawable.il_hand_ukr_neutral)
             }
         } catch (e: Exception) {
             Log.d(TAG, e.message ?: "Exception while setting hand & doc drawable")

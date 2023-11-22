@@ -138,7 +138,7 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
 
                 if (docTypeWithData.country == "ua") {
                     verifMethodIcon1.isVisible = true
-                    verifMethodIcon1.setImageResource(R.drawable.doc_id_card_front)
+                    verifMethodIcon1.setImageResource(R.drawable.il_doc_mini_id_card_front)
                 } else {
                     verifMethodIcon1.isVisible = false
                 }
@@ -155,8 +155,8 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
                 if (docTypeWithData.country == "ua") {
                     verifMethodIcon1.isVisible = true
                     verifMethodIcon2.isVisible = true
-                    verifMethodIcon1.setImageResource(R.drawable.doc_id_card_front)
-                    verifMethodIcon2.setImageResource(R.drawable.doc_id_card_back)
+                    verifMethodIcon1.setImageResource(R.drawable.il_doc_mini_id_card_front)
+                    verifMethodIcon2.setImageResource(R.drawable.il_doc_mini_id_card_back)
                 } else {
                     verifMethodIcon1.isVisible = false
                     verifMethodIcon2.isVisible = false
@@ -220,7 +220,7 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
 
                 if (docTypeWithData.country == "ua") {
                     verifMethodIcon1.isVisible = true
-                    verifMethodIcon1.setImageResource(R.drawable.doc_ua_international_passport)
+                    verifMethodIcon1.setImageResource(R.drawable.il_doc_mini_ukr)
                 } else {
                     verifMethodIcon1.isVisible = false
                 }
@@ -239,8 +239,8 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
                 if (docTypeWithData.country == "ua") {
                     verifMethodIcon1.isVisible = true
                     verifMethodIcon2.isVisible = true
-                    verifMethodIcon1.setImageResource(R.drawable.doc_ua_international_passport)
-                    verifMethodIcon2.setImageResource(R.drawable.doc_ua_international_passport)
+                    verifMethodIcon1.setImageResource(R.drawable.il_doc_mini_ukr)
+                    verifMethodIcon2.setImageResource(R.drawable.il_doc_mini_ukr)
                 } else {
                     verifMethodIcon1.isVisible = false
                     verifMethodIcon2.isVisible = false
@@ -284,7 +284,7 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
                             when(docCategoryIdxToType(docTypeWithData!!.category)) {
                                 DocType.FOREIGN_PASSPORT -> {
                                     verifMethodIcon1.isVisible = true
-                                    verifMethodIcon1.setImageResource(R.drawable.doc_ua_international_passport)
+                                    verifMethodIcon1.setImageResource(R.drawable.il_doc_mini_ukr)
                                 }
                                 else -> {
                                     verifMethodIcon1.isVisible = false
@@ -314,7 +314,7 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
                             when(docCategoryIdxToType(docTypeWithData!!.category)) {
                                 DocType.FOREIGN_PASSPORT -> {
                                     verifMethodIcon2.isVisible = true
-                                    verifMethodIcon2.setImageResource(R.drawable.doc_ua_international_passport)
+                                    verifMethodIcon2.setImageResource(R.drawable.il_doc_mini_ukr)
                                 }
                                 else -> {
                                     verifMethodIcon2.isVisible = false
@@ -329,13 +329,13 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
                     if (docPhotoFile != null) {
                         checkPhotoCompletenessAndSetProceedClickListener()
                     } else {
-                        Log.i("PHOTO", "BITMAP FILE IS NULL!")
+                        //Stub
                     }
                 }
             }
         } catch (e: Exception) {
             Toast.makeText(requireActivity(), e.localizedMessage, Toast.LENGTH_LONG).show()
-            Log.e("PHOTO_UPLOAD - ERROR", e.stackTraceToString())
+            //Log.e("PHOTO_UPLOAD - ERROR", e.stackTraceToString())
         }
     }
 
@@ -383,17 +383,11 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
 
     private fun dispatchTakePictureIntent(photoIdx: Int) {
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
-            // Ensure that there's a camera activity to handle the intent
             takePictureIntent.resolveActivity((activity as VCheckMainActivity).packageManager)?.also {
-                // Create the File where the photo should go
                 val photoFile = createImageFile(photoIdx)
-                // Continue only if the file was successfully created
                 photoFile.also {
                     val photoURI: Uri = FileProvider.getUriForFile(
-                        (activity as VCheckMainActivity),
-                        "com.vcheck.sdk.core",
-                        it)
-                    //val photoURI: Uri = photoFile.toUri()
+                        (activity as VCheckMainActivity), "com.vcheck.sdk.core", it)
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
                     startActivityForResult(takePictureIntent, photoIdx)
                 }
