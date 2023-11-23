@@ -1,23 +1,22 @@
 package com.vcheck.sdk.core.presentation.adapters
 
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.vcheck.sdk.core.VCheckSDK
-import com.vcheck.sdk.core.databinding.ProviderListItemBinding
+import com.vcheck.sdk.core.databinding.ListItemProviderBinding
 import com.vcheck.sdk.core.domain.Provider
 
 class ProvidersListAdapter(private val providersList: List<Provider>,
                            private val onProviderItemClick: OnProviderItemClick
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private lateinit var providerListItemBinding: ProviderListItemBinding
+    private lateinit var providerListItemBinding: ListItemProviderBinding
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        providerListItemBinding = ProviderListItemBinding.inflate(layoutInflater, parent, false)
+        providerListItemBinding = ListItemProviderBinding.inflate(layoutInflater, parent, false)
         return ProviderViewHolder(providerListItemBinding, onProviderItemClick)
     }
 
@@ -29,7 +28,7 @@ class ProvidersListAdapter(private val providersList: List<Provider>,
     override fun getItemCount(): Int = providersList.size
 
     class ProviderViewHolder(
-        private val binding: ProviderListItemBinding,
+        private val binding: ListItemProviderBinding,
         private val onProviderItemClick: OnProviderItemClick,
     ) :
         RecyclerView.ViewHolder(binding.root) {

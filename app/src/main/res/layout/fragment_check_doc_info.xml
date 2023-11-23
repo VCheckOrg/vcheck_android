@@ -168,7 +168,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/photo_card_2"
                     tools:itemCount="5"
-                    tools:listitem="@layout/doc_info_row" />
+                    tools:listitem="@layout/row_doc_info_field" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/check_info_confirm_button"
