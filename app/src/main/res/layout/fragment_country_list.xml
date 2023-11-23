@@ -9,16 +9,17 @@
     android:theme="@style/Theme.VCheckAndroidSDKDemo"
     tools:context=".presentation.country_stage.CountryListFragment">
 
-    <ImageView
-        android:id="@+id/country_list_back_arrow"
-        android:layout_width="36dp"
+    <TextView
+        android:id="@+id/country_list_back_arrow_text"
+        android:layout_width="wrap_content"
         android:layout_height="36dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="18dp"
         android:clickable="true"
         android:focusable="true"
         android:padding="10dp"
-        android:src="@drawable/back_arrow"
+        android:text="@string/cancel"
+        android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -26,14 +27,14 @@
         android:id="@+id/search_country_border"
         android:layout_width="0dp"
         android:layout_height="48dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="12dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="16dp"
         app:cardBackgroundColor="#7F7F7F"
         app:cardCornerRadius="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/country_list_back_arrow">
+        app:layout_constraintTop_toBottomOf="@+id/country_list_back_arrow_text">
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"

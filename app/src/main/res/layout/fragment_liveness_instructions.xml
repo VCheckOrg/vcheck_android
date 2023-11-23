@@ -81,38 +81,28 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"/>
 
-                    <com.airbnb.lottie.LottieAnimationView
-                        android:id="@+id/static_face_animation_view"
-                        android:layout_width="160dp"
-                        android:layout_height="160dp"
-                        android:scaleType="fitXY"
-                        android:scaleX="2"
-                        android:scaleY="2"
-                        app:lottie_repeatCount="0"
-                        app:lottie_rawRes="@raw/left"
-                        android:layout_marginBottom="1dp"
-                        android:layout_marginStart="7dp"
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/faceAnimHolder"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         app:layout_constraintEnd_toEndOf="@id/cosmetic_rounded_frame"
                         app:layout_constraintTop_toTopOf="@id/cosmetic_rounded_frame"
                         app:layout_constraintStart_toStartOf="@id/cosmetic_rounded_frame"
-                        app:layout_constraintBottom_toBottomOf="@id/cosmetic_rounded_frame" />
+                        app:layout_constraintBottom_toBottomOf="@id/cosmetic_rounded_frame">
 
-                    <com.airbnb.lottie.LottieAnimationView
-                        android:id="@+id/face_animation_view"
-                        android:layout_width="160dp"
-                        android:layout_height="160dp"
-                        android:scaleType="fitXY"
-                        android:scaleX="2"
-                        android:scaleY="2"
-                        android:layout_marginBottom="1dp"
-                        android:layout_marginStart="7dp"
-                        app:layout_constraintEnd_toEndOf="@id/cosmetic_rounded_frame"
-                        app:layout_constraintTop_toTopOf="@id/cosmetic_rounded_frame"
-                        app:layout_constraintStart_toStartOf="@id/cosmetic_rounded_frame"
-                        app:layout_constraintBottom_toBottomOf="@id/cosmetic_rounded_frame" />
+                        <com.airbnb.lottie.LottieAnimationView
+                            android:id="@+id/face_animation_view"
+                            android:layout_width="180dp"
+                            android:layout_height="180dp"
+                            android:scaleType="fitXY"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
-
 
                 <View
                     android:id="@+id/leftAnimBall"
@@ -303,6 +293,22 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>
+
+    <!--                    <com.airbnb.lottie.LottieAnimationView-->
+    <!--                        android:id="@+id/static_face_animation_view"-->
+    <!--                        android:layout_width="160dp"-->
+    <!--                        android:layout_height="160dp"-->
+    <!--                        android:scaleType="fitXY"-->
+    <!--                        android:scaleX="2"-->
+    <!--                        android:scaleY="2"-->
+    <!--                        app:lottie_repeatCount="0"-->
+    <!--                        app:lottie_rawRes="@raw/left"-->
+    <!--                        android:layout_marginBottom="1dp"-->
+    <!--                        android:layout_marginStart="7dp"-->
+    <!--                        app:layout_constraintEnd_toEndOf="@id/cosmetic_rounded_frame"-->
+    <!--                        app:layout_constraintTop_toTopOf="@id/cosmetic_rounded_frame"-->
+    <!--                        app:layout_constraintStart_toStartOf="@id/cosmetic_rounded_frame"-->
+    <!--                        app:layout_constraintBottom_toBottomOf="@id/cosmetic_rounded_frame" />-->
 
     <!--                <ImageView-->
     <!--                    android:id="@+id/back_arrow"-->

@@ -11,6 +11,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
+import android.view.animation.AlphaAnimation
+import android.view.animation.AnimationSet
 import android.view.animation.DecelerateInterpolator
 import androidx.core.view.isVisible
 import com.vcheck.sdk.core.R
@@ -27,13 +29,12 @@ class LivenessInstructionsFragment : ThemeWrapperFragment() {
     companion object {
         private const val HALF_BALL_ANIM_TIME: Long = 1000
         private const val PHONE_TO_FACE_CYCLE_INTERVAL: Long = 2000
+        private const val FACE_FADE_DURATION: Long = 550
     }
 
     private var binding: FragmentLivenessInstructionsBinding? = null
 
     private var currentCycleIdx = 1
-
-    private var isLeftTurnSubCycle: Boolean = true
 
     override fun changeColorsToCustomIfPresent() {
         val drawable = binding!!.cosmeticRoundedFrame.background as GradientDrawable
@@ -93,17 +94,10 @@ class LivenessInstructionsFragment : ThemeWrapperFragment() {
             override fun run() {
                 Handler(Looper.getMainLooper()).post {
                     when (currentCycleIdx) {
-                        1 -> {
-                            startPhoneAnimCycle()
-                        }
-                        2 -> {
-                            isLeftTurnSubCycle = true
-                            startFaceSidesAnimation()
-                        }
-                        else -> {
-                            isLeftTurnSubCycle = false
-                            startFaceSidesAnimation()
-                        }
+                        1 -> startPhoneAnimCycle()
+                        2 -> startFaceSidesAnimationCycle()
+                        3 -> startFaceSidesAnimationCycle()
+                        4 -> startMouthOpeningCycle()
                     }
                 }
             }
@@ -111,9 +105,10 @@ class LivenessInstructionsFragment : ThemeWrapperFragment() {
     }
 
     fun startPhoneAnimCycle() {
-        binding!!.faceAnimationView.cancelAnimation()
 
-        binding!!.staticFaceAnimationView.isVisible = false
+        binding!!.faceAnimHolder.isVisible = false
+
+        binding!!.faceAnimationView.cancelAnimation()
 
         binding!!.rightAnimBall.isVisible = false
         binding!!.leftAnimBall.isVisible = false
@@ -123,26 +118,32 @@ class LivenessInstructionsFragment : ThemeWrapperFragment() {
         binding!!.faceAnimationView.setAnimation(R.raw.face_plus_phone)
         binding!!.faceAnimationView.repeatCount = 1
 
-        binding!!.faceAnimationView.scaleX = 1F
-        binding!!.faceAnimationView.scaleY = 1F
+        binding!!.faceAnimationView.setMargins(null, 0,
+            null, 0)
 
         binding!!.faceAnimationView.playAnimation()
 
+        fadeFaceAnimInForTransition()
+        binding!!.faceAnimHolder.isVisible = true
+
         currentCycleIdx += 1
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            fadeFaceAnimOutForTransition()
+        }, PHONE_TO_FACE_CYCLE_INTERVAL - FACE_FADE_DURATION)
     }
 
-    fun startFaceSidesAnimation() {
+    fun startFaceSidesAnimationCycle() {
         binding!!.faceAnimationView.cancelAnimation()
 
-        if (isLeftTurnSubCycle) {
-            binding!!.staticFaceAnimationView.isVisible = true
+        if (currentCycleIdx == 2) {
+
             binding!!.faceAnimationView.setAnimation(R.raw.left)
+            binding!!.faceAnimationView.setMargins(null, 10,
+                null, -10)
 
             binding!!.faceAnimationView.repeatCount = 0
             binding!!.arrowAnimationView.rotation = 0F
-
-            binding!!.faceAnimationView.scaleX = 2F
-            binding!!.faceAnimationView.scaleY = 2F
 
             binding!!.arrowAnimationView.setMargins(-120, 60,
                 null, null)
@@ -151,25 +152,30 @@ class LivenessInstructionsFragment : ThemeWrapperFragment() {
             binding!!.rightAnimBall.isVisible = false
             binding!!.leftAnimBall.isVisible = true
 
-            binding!!.leftAnimBall.animate().alpha(1F).setDuration(HALF_BALL_ANIM_TIME).setInterpolator(
-                DecelerateInterpolator()
-            ).withEndAction {
-                binding!!.leftAnimBall.animate().alpha(0F).setDuration(HALF_BALL_ANIM_TIME)
-                    .setInterpolator(AccelerateInterpolator()).start()
-            }.start()
+            binding!!.leftAnimBall.animate().alpha(1F)
+                .setDuration(HALF_BALL_ANIM_TIME)
+                .setInterpolator(DecelerateInterpolator())
+                .withEndAction {
+                    binding!!.leftAnimBall.animate().alpha(0F)
+                        .setDuration(HALF_BALL_ANIM_TIME)
+                        .setInterpolator(AccelerateInterpolator()).start()
+                }.start()
+
+            fadeFaceAnimInForTransition()
 
             Handler(Looper.getMainLooper()).postDelayed({
-                binding!!.staticFaceAnimationView.isVisible = false
-            }, 300)
+                fadeFaceAnimOutForTransition()
+            }, PHONE_TO_FACE_CYCLE_INTERVAL - FACE_FADE_DURATION)
+
+            currentCycleIdx += 1
+
         } else {
-            binding!!.staticFaceAnimationView.isVisible = true
             binding!!.faceAnimationView.setAnimation(R.raw.right)
+            binding!!.faceAnimationView.setMargins(null, 10,
+                null, -10)
 
             binding!!.faceAnimationView.repeatCount = 0
             binding!!.arrowAnimationView.rotation = 180F
-
-            binding!!.faceAnimationView.scaleX = 2F
-            binding!!.faceAnimationView.scaleY = 2F
 
             binding!!.arrowAnimationView.setMargins(120, 100,
                 null, null)
@@ -178,22 +184,67 @@ class LivenessInstructionsFragment : ThemeWrapperFragment() {
             binding!!.rightAnimBall.isVisible = true
             binding!!.leftAnimBall.isVisible = false
 
-            binding!!.rightAnimBall.animate().alpha(1F).setDuration(HALF_BALL_ANIM_TIME).setInterpolator(
-                DecelerateInterpolator()
-            ).withEndAction {
-                binding!!.rightAnimBall.animate().alpha(0F).setDuration(HALF_BALL_ANIM_TIME)
-                    .setInterpolator(AccelerateInterpolator()).start()
-            }.start()
+            binding!!.rightAnimBall.animate().alpha(1F)
+                .setDuration(HALF_BALL_ANIM_TIME)
+                .setInterpolator(DecelerateInterpolator())
+                .withEndAction {
+                    binding!!.rightAnimBall.animate().alpha(0F)
+                        .setDuration(HALF_BALL_ANIM_TIME)
+                        .setInterpolator(AccelerateInterpolator()).start()
+                }.start()
+
+            fadeFaceAnimInForTransition()
 
             Handler(Looper.getMainLooper()).postDelayed({
-                binding!!.staticFaceAnimationView.isVisible = false
-            }, 300)
-        }
-        if (currentCycleIdx >= 3) {
-            currentCycleIdx = 1
-        } else {
+                fadeFaceAnimOutForTransition()
+            }, PHONE_TO_FACE_CYCLE_INTERVAL - FACE_FADE_DURATION)
+
             currentCycleIdx += 1
         }
     }
 
+    fun startMouthOpeningCycle() {
+        binding!!.faceAnimationView.cancelAnimation()
+
+        binding!!.rightAnimBall.isVisible = false
+        binding!!.leftAnimBall.isVisible = false
+
+        binding!!.arrowAnimationView.isVisible = false
+
+        binding!!.faceAnimationView.setAnimation(R.raw.mouth)
+        binding!!.faceAnimationView.repeatCount = 1
+
+        binding!!.faceAnimationView.setMargins(null, 0,
+            null, 0)
+
+        binding!!.faceAnimationView.playAnimation()
+
+        fadeFaceAnimInForTransition()
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            fadeFaceAnimOutForTransition()
+        }, PHONE_TO_FACE_CYCLE_INTERVAL - FACE_FADE_DURATION)
+
+        currentCycleIdx = 1
+    }
+
+    private fun fadeFaceAnimInForTransition() {
+        val fadeIn = AlphaAnimation(0f, 1f)
+        fadeIn.interpolator = DecelerateInterpolator() //add this
+        fadeIn.duration = FACE_FADE_DURATION
+
+        val animation = AnimationSet(false) //change to false
+        animation.addAnimation(fadeIn)
+        binding!!.faceAnimHolder.animation = animation
+    }
+
+    private fun fadeFaceAnimOutForTransition() {
+        val fadeOut = AlphaAnimation(1f, 0f)
+        fadeOut.interpolator = AccelerateInterpolator() //and this
+        fadeOut.duration = FACE_FADE_DURATION
+
+        val animation = AnimationSet(false) //change to false
+        animation.addAnimation(fadeOut)
+        binding!!.faceAnimHolder.animation = animation
+    }
 }

@@ -25,7 +25,6 @@ import com.vcheck.sdk.core.databinding.FragmentInProcessBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.*
 import com.vcheck.sdk.core.presentation.liveness.VCheckLivenessActivity
-import com.vcheck.sdk.core.util.*
 import com.vcheck.sdk.core.util.extensions.checkUserInteractionCompletedForResult
 import com.vcheck.sdk.core.util.extensions.sizeInKb
 import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
@@ -45,7 +44,6 @@ class PostProcessFragment : ThemeWrapperFragment() {
 
     override fun changeColorsToCustomIfPresent() {
         VCheckSDK.designConfig!!.primary?.let {
-            _binding!!.successButton.setBackgroundColor(Color.parseColor(it))
             _binding!!.inProcessImage.setColorFilter(Color.parseColor(it))
         }
         VCheckSDK.designConfig!!.backgroundPrimaryColorHex?.let {
@@ -85,9 +83,8 @@ class PostProcessFragment : ThemeWrapperFragment() {
             //Stub; no back press needed here
         }
 
-        _binding!!.successButton.isVisible = false
-        _binding!!.inProcessTitle.isVisible = false
-        _binding!!.inProcessSubtitle.isVisible = false
+        _binding!!.inProcessTitle.isVisible = true
+        _binding!!.inProcessSubtitle.isVisible = true
         _binding!!.uploadVideoLoadingIndicator.isVisible = true
 
         onVideoProcessed((activity as VCheckLivenessActivity).videoPath!!)

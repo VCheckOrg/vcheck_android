@@ -145,7 +145,7 @@ class VCheckLivenessActivity : AppCompatActivity() {
                 val outputSizes = map!!.getOutputSizes(SurfaceTexture::class.java)
 
                 previewSize = chooseOptimalSize(outputSizes, VIDEO_STREAM_WIDTH_LIMIT, VIDEO_STREAM_HEIGHT_LIMIT)
-                Log.d(TAG, "STREAM OPTIMAL SIZE: ${previewSize.width}x${previewSize.height}")
+                Log.d(TAG, "Stream optimal size: ${previewSize.width}x${previewSize.height}")
                 binding.cameraTextureView.setAspectRatio(previewSize.height, previewSize.width)
 
                 openCamera()
@@ -453,13 +453,6 @@ class VCheckLivenessActivity : AppCompatActivity() {
             else -> R.raw.face_plus_phone
         }
         binding.faceAnimationView.isVisible = true
-        if (nextMilestoneType == GestureMilestoneType.StraightHeadCheckMilestone) {
-            binding.faceAnimationView.scaleX = 1F
-            binding.faceAnimationView.scaleY = 1F
-        } else {
-            binding.faceAnimationView.scaleX = 2F
-            binding.faceAnimationView.scaleY = 2F
-        }
         binding.faceAnimationView.setAnimation(faceAnimeRes)
         binding.faceAnimationView.playAnimation()
 

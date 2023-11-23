@@ -73,9 +73,10 @@ class SegmentationStartFragment : ThemeWrapperFragment() {
         VCheckSDK.designConfig!!.backgroundSecondaryColorHex?.let {
             _binding!!.docImageBackPartOne.setColorFilter(Color.parseColor(it))
         }
-        VCheckSDK.designConfig!!.primaryBg?.let {
-            _binding!!.docImageBackPartTwo.setColorFilter(Color.parseColor(it))
-        }
+        //TODO: remove color setup for that doc part?
+//        VCheckSDK.designConfig!!.primaryBg?.let {
+//            _binding!!.docImageBackPartTwo.setColorFilter(Color.parseColor(it))
+//        }
     }
 
     override fun onCreateView(

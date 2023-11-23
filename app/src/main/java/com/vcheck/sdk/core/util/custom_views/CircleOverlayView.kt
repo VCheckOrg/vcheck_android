@@ -37,7 +37,6 @@ class CircleOverlayView : LinearLayout {
 
         paint.color = resources.getColor(R.color.vcheck_background_secondary)
         
-        //backgroundSecondaryColorHex
         VCheckSDK.designConfig!!.backgroundSecondaryColorHex?.let {
             paint.color = Color.parseColor(it)
         }
@@ -45,7 +44,6 @@ class CircleOverlayView : LinearLayout {
         osCanvas.drawRect(outerRectangle, paint)
 
         //paint.alpha = 99 // no need alpha setting here
-
         //osCanvas.drawRoundRect(outerRectangle, 10F, 10F, paint) - rounded corners option
     }
 

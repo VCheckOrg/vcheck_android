@@ -147,40 +147,29 @@
     <string name="user_ip_match">Верификация не пройдена. Для уточнения деталей обратитесь в службу поддержки.</string>
     <string name="age_restrictions">Верификация не пройдена. Для уточнения деталей обратитесь в службу поддержки.</string>
     <string name="expired">Срок действия верификации истек</string>
-
     <string name="segmentation_instr_inner_passport_title">Сделайте фото паспорта</string>
     <string name="segmentation_instr_foreign_passport_title">Сделайте фото загранпаспорта</string>
     <string name="segmentation_instr_id_card_title">Сделайте фото ID-карты</string>
-
     <string name="segmentation_instr_inner_passport_descr">Следуя инструкциям на экране, сделайте фото полного разворота паспорта (видны обе страницы)</string>
     <string name="segmentation_instr_foreign_passport_descr">Следуя инструкциям на экране, сделайте фото полного разворота загранпаспорта (видны обе страницы)</string>
     <string name="segmentation_instr_id_card_descr">Следуя инструкциям на экране, сделайте фото лицевой, а затем обратной сторон вашей ID-карты</string>
-
     <string name="segmentation_general_instruction">Приготовьте свой документ и разместите его в указанной зоне, как на примере выше.</string>
     <string name="im_ready">Я готов(а)</string>
-
     <string name="segmentation_single_page_hint">Поместите документ в указанную зону для автоматического считывания</string>
     <string name="segmentation_front_side_hint">Поместите переднюю сторону документа в указанную зону для автоматического считывания</string>
     <string name="segmentation_back_side_hint">Поместите обратную сторону документа в указанную зону для автоматического считывания</string>
     <string name="segmentation_stage_success">Документ считан успешно!</string>
-
     <string name="no_time_seg_title">Время на считывание документа истекло</string>
     <string name="pop_sdk_title">К началу верификации</string>
     <string name="no_time_seg_subtitle">Мы не смогли обнаружить документ в заданной зоне. Убедитесь, что вы выбрали правильный тип документа и он хорошо виден в камеру.</string>
     <string name="make_photo_by_hand">Сделать фото вручную</string>
     <string name="fatal_error_seg">Мы не смогли сделать полное сканирование документа. Для продолжения требуется сделать фото вручную.</string>
-
     <string name="segmentation_stage_success_first_page">Лицевая сторона успешно отсканирована. Пожалуйста, переверните документ/страницу.</string>
-
     <string name="error_make_two_photos">Пожалуйста, сделайте все необходимые фото документа</string>
-
     <string name="good_camera_text">снято на хорошую камеру</string>
     <string name="good_doc_light_text">хорошо освещенный</string>
-
     <string name="enter_valid_exp_date">Введите валидный срок действия документа</string>
-
     <string name="verification_expired">Сеанс верификации истек. Пожалуйста, попробуйте еще раз.</string>
-
     <string name="doc_verif_camera_timeout_title">Мы не смогли обнаружить документ в заданной зоне</string>
     <string name="doc_verif_camera_timeout_text">Время на считывание документа истекло. Убедитесь, что вы выбрали правильный тип документа и он хорошо виден в камеру.</string>
     <string name="doc_verif_not_scanned_title">Не получается отсканировать документ</string>
@@ -203,5 +192,5 @@
     <string name="doc_verif_blur_text">Извините, мы не можем провести верификацию из-за размытости фотографии. Пожалуйста, сделайте четкое изображение документа для продолжения</string>
     <string name="doc_verif_default_title">Верификация документа неуспешна</string>
     <string name="doc_verif_default_text">По какой-то причине мы не смогли загрузить контент данной страницы. Попробуйте перезагрузить страницу.</string>
-
+    <string name="cancel">Отмена</string>
 </resources>
