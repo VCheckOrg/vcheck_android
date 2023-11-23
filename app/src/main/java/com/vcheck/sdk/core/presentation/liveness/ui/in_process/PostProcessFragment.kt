@@ -21,7 +21,7 @@ import com.abedelazizshe.lightcompressorlibrary.config.Configuration
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.data.Resource
-import com.vcheck.sdk.core.databinding.InProcessFragmentBinding
+import com.vcheck.sdk.core.databinding.FragmentInProcessBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.*
 import com.vcheck.sdk.core.presentation.liveness.VCheckLivenessActivity
@@ -40,7 +40,7 @@ import kotlin.time.Duration.Companion.milliseconds
 
 class PostProcessFragment : ThemeWrapperFragment() {
 
-    private var _binding: InProcessFragmentBinding? = null
+    private var _binding: FragmentInProcessBinding? = null
     private lateinit var _viewModel: PostProcessViewModel
 
     override fun changeColorsToCustomIfPresent() {
@@ -71,13 +71,13 @@ class PostProcessFragment : ThemeWrapperFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.in_process_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_in_process, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        _binding = InProcessFragmentBinding.bind(view)
+        _binding = FragmentInProcessBinding.bind(view)
 
         changeColorsToCustomIfPresent()
 

@@ -22,7 +22,7 @@ import com.squareup.picasso.Picasso
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.data.Resource
-import com.vcheck.sdk.core.databinding.CheckPhotoFragmentBinding
+import com.vcheck.sdk.core.databinding.FragmentCheckDocPhotoBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.*
 import com.vcheck.sdk.core.presentation.VCheckMainActivity
@@ -42,7 +42,7 @@ import java.io.File
 class CheckPhotoFragment : ThemeWrapperFragment() {
 
     private lateinit var _viewModel: CheckPhotoViewModel
-    private var _binding: CheckPhotoFragmentBinding? = null
+    private var _binding: FragmentCheckDocPhotoBinding? = null
     private val args: CheckPhotoFragmentArgs by navArgs()
 
     private val firstMultipartFileName = "0.jpg"
@@ -112,13 +112,13 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.check_photo_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_check_doc_photo, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        _binding = CheckPhotoFragmentBinding.bind(view)
+        _binding = FragmentCheckDocPhotoBinding.bind(view)
 
         changeColorsToCustomIfPresent()
 

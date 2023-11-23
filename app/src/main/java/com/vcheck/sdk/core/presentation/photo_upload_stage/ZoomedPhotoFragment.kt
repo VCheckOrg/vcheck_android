@@ -12,14 +12,14 @@ import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.Picasso
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
-import com.vcheck.sdk.core.databinding.ZoomedPhotoFragmentBinding
+import com.vcheck.sdk.core.databinding.FragmentZoomedDocPhotoBinding
 import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
 import java.io.File
 
 class ZoomedPhotoFragment : ThemeWrapperFragment() {
 
     private val args: ZoomedPhotoFragmentArgs by navArgs()
-    private lateinit var _binding: ZoomedPhotoFragmentBinding
+    private lateinit var _binding: FragmentZoomedDocPhotoBinding
 
     override fun changeColorsToCustomIfPresent() {
         VCheckSDK.designConfig!!.backgroundPrimaryColorHex?.let {
@@ -34,13 +34,13 @@ class ZoomedPhotoFragment : ThemeWrapperFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.zoomed_photo_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_zoomed_doc_photo, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        _binding = ZoomedPhotoFragmentBinding.bind(view)
+        _binding = FragmentZoomedDocPhotoBinding.bind(view)
 
         changeColorsToCustomIfPresent()
 

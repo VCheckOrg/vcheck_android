@@ -14,7 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
-import com.vcheck.sdk.core.databinding.ChooseCountryFragmentBinding
+import com.vcheck.sdk.core.databinding.FragmentChooseCountryBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.CountryTO
 import com.vcheck.sdk.core.presentation.transferrable_objects.ChooseProviderLogicTO
@@ -29,7 +29,7 @@ import kotlin.collections.ArrayList
 
 class ChooseCountryFragment : ThemeWrapperFragment() {
 
-    private lateinit var binding: ChooseCountryFragmentBinding
+    private lateinit var binding: FragmentChooseCountryBinding
     private val args: ChooseCountryFragmentArgs by navArgs()
 
     private lateinit var _viewModel: ChooseCountryViewModel
@@ -64,7 +64,7 @@ class ChooseCountryFragment : ThemeWrapperFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.choose_country_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_choose_country, container, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,7 +75,7 @@ class ChooseCountryFragment : ThemeWrapperFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding = ChooseCountryFragmentBinding.bind(view)
+        binding = FragmentChooseCountryBinding.bind(view)
 
         changeColorsToCustomIfPresent()
 

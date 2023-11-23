@@ -15,7 +15,7 @@ import android.view.animation.DecelerateInterpolator
 import androidx.core.view.isVisible
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
-import com.vcheck.sdk.core.databinding.LivenessInstructionsFragmentBinding
+import com.vcheck.sdk.core.databinding.FragmentLivenessInstructionsBinding
 import com.vcheck.sdk.core.presentation.VCheckMainActivity
 import com.vcheck.sdk.core.presentation.liveness.VCheckLivenessActivity
 import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
@@ -29,7 +29,7 @@ class LivenessInstructionsFragment : ThemeWrapperFragment() {
         private const val PHONE_TO_FACE_CYCLE_INTERVAL: Long = 2000
     }
 
-    private var binding: LivenessInstructionsFragmentBinding? = null
+    private var binding: FragmentLivenessInstructionsBinding? = null
 
     private var currentCycleIdx = 1
 
@@ -75,13 +75,13 @@ class LivenessInstructionsFragment : ThemeWrapperFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.liveness_instructions_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_liveness_instructions, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding = LivenessInstructionsFragmentBinding.bind(view)
+        binding = FragmentLivenessInstructionsBinding.bind(view)
 
         changeColorsToCustomIfPresent()
 

@@ -36,7 +36,7 @@
         android:id="@+id/inProcessFragment"
         android:name="com.vcheck.sdk.core.presentation.liveness.ui.in_process.PostProcessFragment"
         android:label="in_process_fragment"
-        tools:layout="@layout/in_process_fragment" >
+        tools:layout="@layout/fragment_in_process" >
         <action
             android:id="@+id/action_inProcessFragment_to_failVerificationFragment"
             app:destination="@id/failVerificationFragment" />

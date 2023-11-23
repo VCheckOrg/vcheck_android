@@ -7,7 +7,6 @@ import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +18,7 @@ import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.Picasso
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
-import com.vcheck.sdk.core.databinding.PhotoUploadFragmentBinding
+import com.vcheck.sdk.core.databinding.FragmentPhotoUploadBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.DocType
 import com.vcheck.sdk.core.domain.DocTypeData
@@ -32,7 +31,7 @@ import java.io.File
 
 class TakeDocPhotoFragment : ThemeWrapperFragment() {
 
-    private var _binding: PhotoUploadFragmentBinding? = null
+    private var _binding: FragmentPhotoUploadBinding? = null
 
     private lateinit var _docType: DocType
 
@@ -77,13 +76,13 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.photo_upload_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_photo_upload, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        _binding = PhotoUploadFragmentBinding.bind(view)
+        _binding = FragmentPhotoUploadBinding.bind(view)
 
         changeColorsToCustomIfPresent()
 

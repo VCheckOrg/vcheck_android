@@ -11,7 +11,7 @@ import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
-import com.vcheck.sdk.core.databinding.ChooseDocMethodFragmentBinding
+import com.vcheck.sdk.core.databinding.FragmentChooseDocMethodBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.DocType
 import com.vcheck.sdk.core.domain.DocTypeData
@@ -22,7 +22,7 @@ import com.vcheck.sdk.core.util.extensions.checkUserInteractionCompletedForResul
 
 class ChooseDocMethodFragment : ThemeWrapperFragment() {
 
-    private var _binding: ChooseDocMethodFragmentBinding? = null
+    private var _binding: FragmentChooseDocMethodBinding? = null
 
     private lateinit var _viewModel: ChooseDocMethodViewModel
 
@@ -69,12 +69,12 @@ class ChooseDocMethodFragment : ThemeWrapperFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.choose_doc_method_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_choose_doc_method, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        _binding = ChooseDocMethodFragmentBinding.bind(view)
+        _binding = FragmentChooseDocMethodBinding.bind(view)
 
         changeColorsToCustomIfPresent()
 

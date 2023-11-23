@@ -18,7 +18,7 @@ import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.VCheckSDK.TAG
 import com.vcheck.sdk.core.data.VCheckSDKConstantsProvider
-import com.vcheck.sdk.core.databinding.CheckDocInfoFragmentBinding
+import com.vcheck.sdk.core.databinding.FragmentCheckDocInfoBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.*
 import com.vcheck.sdk.core.presentation.VCheckMainActivity
@@ -35,7 +35,7 @@ import okhttp3.OkHttpClient
 
 class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
 
-    private lateinit var binding: CheckDocInfoFragmentBinding
+    private lateinit var binding: FragmentCheckDocInfoBinding
     private lateinit var viewModel: CheckDocInfoViewModel
     private lateinit var dataList: MutableList<DocFieldWitOptPreFilledData>
 
@@ -79,13 +79,13 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
         inflater: LayoutInflater,
         container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.check_doc_info_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_check_doc_info, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding = CheckDocInfoFragmentBinding.bind(view)
+        binding = FragmentCheckDocInfoBinding.bind(view)
 
         changeColorsToCustomIfPresent()
 

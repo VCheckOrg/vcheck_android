@@ -14,7 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
-import com.vcheck.sdk.core.databinding.CountryListFragmentBinding
+import com.vcheck.sdk.core.databinding.FragmentCountryListBinding
 import com.vcheck.sdk.core.domain.CountryTO
 import com.vcheck.sdk.core.presentation.adapters.CountryListAdapter
 import com.vcheck.sdk.core.presentation.adapters.SearchCountryCallback
@@ -27,7 +27,7 @@ class CountryListFragment : ThemeWrapperFragment(),
 
     private lateinit var countriesList: List<CountryTO>
 
-    private var _binding: CountryListFragmentBinding? = null
+    private var _binding: FragmentCountryListBinding? = null
     private val args: CountryListFragmentArgs by navArgs()
 
     override fun changeColorsToCustomIfPresent() {
@@ -63,13 +63,13 @@ class CountryListFragment : ThemeWrapperFragment(),
         inflater: LayoutInflater,
         container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.country_list_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_country_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        _binding = CountryListFragmentBinding.bind(view)
+        _binding = FragmentCountryListBinding.bind(view)
 
         changeColorsToCustomIfPresent()
 
