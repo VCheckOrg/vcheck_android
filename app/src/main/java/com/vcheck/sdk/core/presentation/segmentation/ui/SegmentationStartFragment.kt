@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
@@ -71,12 +72,11 @@ class SegmentationStartFragment : ThemeWrapperFragment() {
             _binding!!.docSubtitle.setTextColor(Color.parseColor(it))
         }
         VCheckSDK.designConfig!!.backgroundSecondaryColorHex?.let {
+            _binding!!.docImageBackPartTwo.setColorFilter(Color.parseColor(it))
+        }
+        VCheckSDK.designConfig!!.primaryBg?.let {
             _binding!!.docImageBackPartOne.setColorFilter(Color.parseColor(it))
         }
-        //TODO: remove color setup for that doc part?
-//        VCheckSDK.designConfig!!.primaryBg?.let {
-//            _binding!!.docImageBackPartTwo.setColorFilter(Color.parseColor(it))
-//        }
     }
 
     override fun onCreateView(
@@ -104,14 +104,16 @@ class SegmentationStartFragment : ThemeWrapperFragment() {
         when (docCategoryIdxToType(VCheckDIContainer.mainRepository
             .getSelectedDocTypeWithData()?.category ?: 0)) {
             DocType.ID_CARD -> {
-                //skip 1st z-layer image setting for id card
-                _binding!!.docImageBackPartOne.setImageResource(R.drawable.il_doc_id_card_back_2)
+                //skip 1st z-layer image setting for id card doc type
+                _binding!!.docImageBackPartOne.isVisible = false
+                _binding!!.docImageBackPartTwo.setImageResource(R.drawable.il_doc_id_card_back_2)
                 _binding!!.docImageMidPart.setImageResource(R.drawable.il_doc_id_card_mid)
                 _binding!!.docImageFrontPart.setImageResource(R.drawable.il_doc_id_card_avatar)
                 _binding!!.docTitle.setText(R.string.segmentation_instr_id_card_title)
                 _binding!!.docSubtitle.setText(R.string.segmentation_instr_id_card_descr)
             }
             DocType.FOREIGN_PASSPORT -> {
+                _binding!!.docImageBackPartOne.isVisible = true
                 _binding!!.docImageBackPartOne.setImageResource(R.drawable.il_doc_int_back_1)
                 _binding!!.docImageBackPartTwo.setImageResource(R.drawable.il_doc_int_back_2)
                 _binding!!.docImageMidPart.setImageResource(R.drawable.il_doc_int_mid)
@@ -120,6 +122,7 @@ class SegmentationStartFragment : ThemeWrapperFragment() {
                 _binding!!.docSubtitle.setText(R.string.segmentation_instr_foreign_passport_descr)
             }
             else -> {
+                _binding!!.docImageBackPartOne.isVisible = true
                 _binding!!.docImageBackPartOne.setImageResource(R.drawable.il_doc_ukr_back_1)
                 _binding!!.docImageBackPartTwo.setImageResource(R.drawable.il_doc_ukr_back_2)
                 _binding!!.docImageMidPart.setImageResource(R.drawable.il_doc_ukr_mid)
