@@ -146,7 +146,7 @@
                     android:layout_height="22dp"
                     android:layout_marginStart="17dp"
                     android:layout_marginTop="30dp"
-                    android:src="@drawable/requested_movements_icon"
+                    android:src="@drawable/ic_requested_movements"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/animationsHolder"
                     tools:ignore="ContentDescription" />
@@ -172,7 +172,7 @@
                     android:layout_height="22dp"
                     android:layout_marginStart="17dp"
                     android:layout_marginTop="20dp"
-                    android:src="@drawable/smooth_movements_icon"
+                    android:src="@drawable/ic_smooth_movements"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/requested_movements_icon"
                     tools:ignore="ContentDescription" />
@@ -198,7 +198,7 @@
                     android:layout_height="22dp"
                     android:layout_marginStart="17dp"
                     android:layout_marginTop="20dp"
-                    android:src="@drawable/no_interference_icon"
+                    android:src="@drawable/ic_no_interference"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/smooth_movements_icon"
                     tools:ignore="ContentDescription" />
@@ -225,7 +225,7 @@
                     android:layout_height="22dp"
                     android:layout_marginStart="17dp"
                     android:layout_marginTop="20dp"
-                    android:src="@drawable/good_light_icon"
+                    android:src="@drawable/ic_good_light"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/no_interference_icon"
                     tools:ignore="ContentDescription" />
@@ -252,7 +252,7 @@
                     android:layout_height="22dp"
                     android:layout_marginStart="17dp"
                     android:layout_marginTop="28dp"
-                    android:src="@drawable/fixed_camera_icon"
+                    android:src="@drawable/ic_fixed_camera"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/good_light_icon"
                     tools:ignore="ContentDescription" />

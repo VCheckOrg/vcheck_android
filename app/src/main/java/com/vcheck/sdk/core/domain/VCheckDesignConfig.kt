@@ -91,8 +91,8 @@ data class VCheckDesignConfig (
     var disabledContent: String? = null
 ) {
 
-    //TODO: think about naming and file reading (considered as non-preferrable way)
     companion object {
+
         @JvmStatic
         fun fromJSONStr(rawJsonStr: String) : VCheckDesignConfig {
             return try {
@@ -100,9 +100,14 @@ data class VCheckDesignConfig (
             } catch (e: JsonSyntaxException) {
                 Log.w(VCheckSDK.TAG, "VCheckSDK - warning: Non-valid JSON was passed while " +
                         "initializing VCheckDesignConfig instance | trying to set VCheck default theme...")
-                Gson().fromJson(VCheckSDKConstantsProvider.vcheckDefaultThemeConfig,
-                    VCheckDesignConfig::class.java)
+                getDefaultThemeConfig()
             }
+        }
+
+        @JvmStatic
+        fun getDefaultThemeConfig(): VCheckDesignConfig {
+            return Gson().fromJson(VCheckSDKConstantsProvider.vcheckDefaultThemeConfig,
+                VCheckDesignConfig::class.java)
         }
     }
 }

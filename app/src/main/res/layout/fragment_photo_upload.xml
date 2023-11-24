@@ -42,7 +42,7 @@
                     android:layout_marginTop="16dp"
                     android:clickable="true"
                     android:focusable="true"
-                    android:src="@drawable/back_arrow"
+                    android:src="@drawable/ic_back_arrow"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="ContentDescription" />
@@ -101,7 +101,7 @@
                                 android:layout_height="36dp"
                                 android:layout_marginTop="8dp"
                                 android:layout_marginEnd="3dp"
-                                android:src="@drawable/delete_icon"
+                                android:src="@drawable/ic_delete"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -167,7 +167,7 @@
                                             android:layout_marginStart="50dp"
                                             android:layout_marginTop="11dp"
                                             android:layout_marginBottom="11dp"
-                                            android:src="@drawable/make_photo_icon"
+                                            android:src="@drawable/ic_make_photo"
                                             app:layout_constraintBottom_toBottomOf="parent"
                                             app:layout_constraintStart_toStartOf="parent"
                                             app:layout_constraintTop_toTopOf="parent"
@@ -243,7 +243,7 @@
                                 android:layout_height="36dp"
                                 android:layout_marginTop="8dp"
                                 android:layout_marginEnd="3dp"
-                                android:src="@drawable/delete_icon"
+                                android:src="@drawable/ic_delete"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -309,7 +309,7 @@
                                             android:layout_marginStart="50dp"
                                             android:layout_marginTop="11dp"
                                             android:layout_marginBottom="11dp"
-                                            android:src="@drawable/make_photo_icon"
+                                            android:src="@drawable/ic_make_photo"
                                             app:layout_constraintBottom_toBottomOf="parent"
                                             app:layout_constraintStart_toStartOf="parent"
                                             app:layout_constraintTop_toTopOf="parent"

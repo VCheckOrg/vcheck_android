@@ -41,7 +41,7 @@
                     android:padding="10dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="18dp"
-                    android:src="@drawable/back_arrow"
+                    android:src="@drawable/ic_back_arrow"
                     android:clickable="true"
                     android:focusable="true"
                     app:layout_constraintStart_toStartOf="parent"
@@ -82,7 +82,7 @@
                     android:layout_height="24dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="20dp"
-                    android:src="@drawable/seen_all_icon"
+                    android:src="@drawable/ic_seen_all"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/photo_instructions_description"
                     tools:ignore="ContentDescription" />
@@ -108,7 +108,7 @@
                     android:layout_height="24dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="20dp"
-                    android:src="@drawable/seen_four_corners_icon"
+                    android:src="@drawable/ic_seen_four_corners"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/seen_all_icon"
                     tools:ignore="ContentDescription" />
@@ -134,7 +134,7 @@
                     android:layout_height="24dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="20dp"
-                    android:src="@drawable/valid_dispatch_icon"
+                    android:src="@drawable/ic_valid_dispatch"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/seen_four_corners_icon"
                     tools:ignore="ContentDescription" />
@@ -160,7 +160,7 @@
                     android:layout_height="24dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="20dp"
-                    android:src="@drawable/no_foreign_objects_icon"
+                    android:src="@drawable/ic_no_foreign_objects"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/valid_dispatch_icon"
                     tools:ignore="ContentDescription" />
@@ -186,7 +186,7 @@
                     android:layout_height="24dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="20dp"
-                    android:src="@drawable/original_doc_icon"
+                    android:src="@drawable/ic_original_doc"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/no_foreign_objects_icon"
                     tools:ignore="ContentDescription" />
@@ -212,7 +212,7 @@
                     android:layout_height="24dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="20dp"
-                    android:src="@drawable/make_photo_icon"
+                    android:src="@drawable/ic_make_photo"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/original_doc_icon"
                     tools:ignore="ContentDescription" />
@@ -238,7 +238,7 @@
                     android:layout_height="24dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="20dp"
-                    android:src="@drawable/good_light_icon"
+                    android:src="@drawable/ic_good_light"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/good_camera_icon"
                     tools:ignore="ContentDescription" />

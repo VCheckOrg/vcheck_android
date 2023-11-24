@@ -43,7 +43,7 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:padding="10dp"
-                    android:src="@drawable/back_arrow"
+                    android:src="@drawable/ic_back_arrow"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="ContentDescription" />
