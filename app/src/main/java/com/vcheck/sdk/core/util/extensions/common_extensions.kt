@@ -43,13 +43,3 @@ fun String.isValidHexColor(): Boolean {
     val argbColorPattern = Pattern.compile("^#(?:[0-9a-fA-F]{3,4}){1,2}\$")
     return (rgbColorPattern.matcher(this).matches() || argbColorPattern.matcher(this).matches())
 }
-
-
-fun String.isValidUrl(): Boolean  {
-    try {
-        val url = URL(this)
-        return URLUtil.isValidUrl(url.toString()) && Patterns.WEB_URL.matcher(url.toString()).matches()
-    } catch (ignored: MalformedURLException) {
-        throw ignored
-    }
-}

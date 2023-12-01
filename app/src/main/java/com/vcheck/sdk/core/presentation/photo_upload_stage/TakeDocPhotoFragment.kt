@@ -363,6 +363,7 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
         if (VCheckSDK.designConfig!!.primary != null) {
             _binding!!.photoUploadContinueButton.setBackgroundColor(Color.parseColor(VCheckSDK.designConfig!!.primary))
         } else {
+            //default theme color
             _binding!!.photoUploadContinueButton.setBackgroundColor(Color.parseColor("#2E75FF"))
         }
         _binding!!.photoUploadContinueButton.setTextColor(Color.WHITE)

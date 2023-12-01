@@ -114,8 +114,6 @@ public class BitmapUtils {
         int rotationDegrees = 0;
         boolean flipX = false;
         boolean flipY = false;
-        // See e.g. https://magnushoff.com/articles/jpeg-orientation/ for a detailed explanation on each
-        // orientation.
         switch (orientation) {
             case ExifInterface.ORIENTATION_FLIP_HORIZONTAL:
                 flipX = true;
