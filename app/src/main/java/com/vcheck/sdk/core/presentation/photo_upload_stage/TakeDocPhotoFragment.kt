@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -374,9 +375,16 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
                     CheckPhotoDataTO(_docType, _photo1Path!!, _photo2Path), PhotoUploadType.MANUAL)
             findNavController().navigate(action)
 
-            _photo1Path = null
-            if (resetSecondPhoto) {
-                _photo2Path = null
+            //TODO: test
+            try {
+                File(_photo1Path!!).delete()
+                _photo1Path = null
+                if (resetSecondPhoto) {
+                    File(_photo2Path!!).delete()
+                    _photo2Path = null
+                }
+            } catch (e: Exception) {
+                Log.w(VCheckSDK.TAG, "Failed to delete temp photo file due to: ${e.message ?: "Unknown error"}")
             }
         }
     }
