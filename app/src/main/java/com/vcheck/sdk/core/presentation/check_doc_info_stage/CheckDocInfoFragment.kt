@@ -24,7 +24,6 @@ import com.vcheck.sdk.core.domain.*
 import com.vcheck.sdk.core.presentation.VCheckMainActivity
 import com.vcheck.sdk.core.presentation.adapters.CheckDocInfoAdapter
 import com.vcheck.sdk.core.presentation.adapters.DocInfoEditCallback
-import com.vcheck.sdk.core.util.*
 import com.vcheck.sdk.core.util.extensions.checkStageErrorForResult
 import com.vcheck.sdk.core.util.extensions.closeSDKFlow
 import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
@@ -77,8 +76,7 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
 
     override fun onCreateView(
         inflater: LayoutInflater,
-        container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
+        container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_check_doc_info, container, false)
     }
 
@@ -111,10 +109,6 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
         binding.docInfoList.adapter = adapter
 
         viewModel.documentInfoResponse.observe(viewLifecycleOwner) {
-            // obsolete logic:
-//            (requireActivity() as AppCompatActivity)
-//                .checkUserInteractionCompletedForResult(it.data?.errorCode)
-
             if (it.data?.data != null) {
                 populateDocImages(it.data.data)
                 populateDocFields(it.data.data, currentLocaleCode)
@@ -260,8 +254,7 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
                 optParsedData = parsedDocFieldsData.expirationDate!!
             }
             return DocFieldWitOptPreFilledData(
-                docField.name, docField.title, docField.type, docField.regex, optParsedData
-            )
+                docField.name, docField.title, docField.type, docField.regex, optParsedData)
         }
     }
 

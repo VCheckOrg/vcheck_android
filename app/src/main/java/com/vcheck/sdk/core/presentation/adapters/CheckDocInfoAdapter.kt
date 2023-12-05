@@ -43,9 +43,8 @@ class CheckDocInfoAdapter(
     class ViewHolder(
         private val binding: RowDocInfoFieldBinding,
         private val docInfoEditCallback: DocInfoEditCallback,
-        private val localeCode: String
-    ) :
-        RecyclerView.ViewHolder(binding.root) {
+        private val localeCode: String)
+        : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(fieldInfo: DocFieldWitOptPreFilledData) {
 

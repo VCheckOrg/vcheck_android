@@ -51,7 +51,8 @@
                 android:paddingEnd="16dp"
                 android:paddingBottom="12dp"
                 android:imeOptions="actionDone"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:textCursorDrawable="@null" />
 
         </androidx.cardview.widget.CardView>
 

@@ -119,7 +119,7 @@
     <string name="reload_photo">Try again</string>
     <string name="check_doc_fields_validation_error">Some document fields are not properly filled or empty</string>
     <string name="field_validation_error">Validation error: wrong format</string>
-    <string name="wait_for_liveness_start">Please, wait…</string>
+    <string name="wait_for_liveness_start">Please, wait</string>
     <string name="unavailable_country">Currently unavailable</string>
     <string name="launch_liveness_demo">Local Liveness Demo</string>
     <string name="application_success">Application success</string>

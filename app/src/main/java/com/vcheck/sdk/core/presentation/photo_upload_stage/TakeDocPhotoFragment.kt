@@ -70,6 +70,7 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
         VCheckSDK.designConfig!!.primary?.let {
             _binding!!.takePhotoIcon.setColorFilter(Color.parseColor(it))
             _binding!!.takePhotoIcon2.setColorFilter(Color.parseColor(it))
+            _binding!!.photoUploadContinueButton.setBackgroundColor(Color.parseColor(it))
         }
     }
 
@@ -375,7 +376,6 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
                     CheckPhotoDataTO(_docType, _photo1Path!!, _photo2Path), PhotoUploadType.MANUAL)
             findNavController().navigate(action)
 
-            //TODO: test
             try {
                 File(_photo1Path!!).delete()
                 _photo1Path = null
