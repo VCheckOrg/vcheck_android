@@ -31,8 +31,8 @@
 
             <ImageView
                 android:id="@+id/verif_method_icon_1"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="25dp"
                 android:layout_marginBottom="25dp"
@@ -46,7 +46,7 @@
                 android:id="@+id/verif_method_title_vcheck"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="56dp"
+                android:layout_marginStart="64dp"
                 android:layout_marginTop="13dp"
                 android:text="@string/verif_method_title_1"
                 android:textColor="@color/vcheck_text"
@@ -59,7 +59,7 @@
                 android:id="@+id/verif_method_subtitle_vcheck"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="56dp"
+                android:layout_marginStart="64dp"
                 android:layout_marginTop="33dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="13dp"

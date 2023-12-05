@@ -252,10 +252,22 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
                             args.checkPhotoDataTO.photo2Path,
                             false),
                         resource.data.data.id)
+                deleteDocFiles()
                 findNavController().navigate(action)
             } else {
                 Toast.makeText(activity, getString(R.string.doc_verification_error_description), Toast.LENGTH_LONG).show()
             }
+        }
+    }
+
+    private fun deleteDocFiles() {
+        try {
+            File(args.checkPhotoDataTO.photo1Path).delete()
+            if (args.checkPhotoDataTO.photo2Path != null) {
+                File(args.checkPhotoDataTO.photo2Path!!).delete()
+            }
+        } catch (e: Exception) {
+            Log.w(VCheckSDK.TAG, "Failed to delete temp photo file due to: ${e.message ?: "Unknown error"}")
         }
     }
 }

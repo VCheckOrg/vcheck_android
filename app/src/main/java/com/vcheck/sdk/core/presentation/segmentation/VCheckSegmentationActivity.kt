@@ -356,8 +356,8 @@ class VCheckSegmentationActivity : AppCompatActivity() {
                             * MASK_UI_MULTIPLY_FACTOR).toInt()
                     val frameHeight = (frameWidth * maskDimens.ratio).toInt()
 
-//            Log.d("SEG", "VIEW WIDTH: $dpWidth")
-//            Log.d("SEG", "FRAME WIDTH: $frameWidth | FRAME HEIGHT: $frameHeight")
+                    //Log.d("SEG", "VIEW WIDTH: $dpWidth")
+                    //Log.d("SEG", "FRAME WIDTH: $frameWidth | FRAME HEIGHT: $frameHeight")
 
                     frameSize = Size(frameWidth, frameHeight)
 

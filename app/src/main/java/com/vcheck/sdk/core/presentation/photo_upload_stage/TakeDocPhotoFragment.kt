@@ -375,17 +375,6 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
                 .actionPhotoUploadScreenToCheckPhotoFragment(
                     CheckPhotoDataTO(_docType, _photo1Path!!, _photo2Path), PhotoUploadType.MANUAL)
             findNavController().navigate(action)
-
-            try {
-                File(_photo1Path!!).delete()
-                _photo1Path = null
-                if (resetSecondPhoto) {
-                    File(_photo2Path!!).delete()
-                    _photo2Path = null
-                }
-            } catch (e: Exception) {
-                Log.w(VCheckSDK.TAG, "Failed to delete temp photo file due to: ${e.message ?: "Unknown error"}")
-            }
         }
     }
 
