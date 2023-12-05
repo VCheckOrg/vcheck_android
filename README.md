@@ -31,14 +31,7 @@ VCheckSDK
     .showPartnerLogo(false)
     .showCloseSDKButton(true)
     .environment(VCheckEnvironment.DEV)
-    .colorActionButtons(optionalColorHexStr)
-    .colorBorders(optionalColorHexStr)
-    .colorTextPrimary(optionalColorHexStr)
-    .colorTextSecondary(optionalColorHexStr)
-    .colorBackgroundPrimary(optionalColorHexStr)
-    .colorBackgroundSecondary(optionalColorHexStr)
-    .colorBackgroundTertiary(optionalColorHexStr)
-    .colorIcons(optionalColorHexStr)
+    .designConfig(yourDesignConfig)
     .partnerEndCallback {
         onVCheckSDKFlowFinish()
     }
