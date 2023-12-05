@@ -119,7 +119,7 @@
     <string name="reload_photo">Try again</string>
     <string name="check_doc_fields_validation_error">Some document fields are not properly filled or empty</string>
     <string name="field_validation_error">Validation error: wrong format</string>
-    <string name="wait_for_liveness_start">Please, wait…</string>
+    <string name="wait_for_liveness_start">Please, wait</string>
     <string name="unavailable_country">Currently unavailable</string>
     <string name="launch_liveness_demo">Local Liveness Demo</string>
     <string name="application_success">Application success</string>
@@ -157,40 +157,29 @@
     <string name="user_ip_match">Verification failed. Contact support for details.</string>
     <string name="age_restrictions">Verification failed. Contact support for details.</string>
     <string name="expired">Verification expired</string>
-
     <string name="segmentation_instr_inner_passport_title">Take a photo of your passport</string>
     <string name="segmentation_instr_foreign_passport_title">Take a photo of your foreign passport</string>
     <string name="segmentation_instr_id_card_title">Take a photo of your ID card</string>
-
     <string name="segmentation_instr_inner_passport_descr">Follow the on-screen instructions to take a full-page photo of your passport (both pages visible)</string>
     <string name="segmentation_instr_foreign_passport_descr">Following the instructions on the screen, take a photo of a full-page spread of your passport (both pages are visible)</string>
     <string name="segmentation_instr_id_card_descr">Follow the on-screen instructions to take a photo of the front and then the back of your ID card</string>
-
     <string name="segmentation_general_instruction">Prepare your document and place it in the specified zone as in the example above.</string>
     <string name="im_ready">I\'m ready</string>
-
     <string name="segmentation_single_page_hint">Put the document in the specified zone for automatic reading</string>
     <string name="segmentation_front_side_hint">Place the front side of the document in the specified zone for automatic reading</string>
     <string name="segmentation_back_side_hint">Place the back side of the document in the specified zone for automatic reading</string>
     <string name="segmentation_stage_success">Document scanned successfully!</string>
-
     <string name="no_time_seg_title">The time to take document photo(s) has expired</string>
     <string name="pop_sdk_title">To verification start</string>
     <string name="no_time_seg_subtitle">We could not find the document in the given zone. Make sure you have selected the correct document type and that it\'s clearly visible in the camera.</string>
     <string name="make_photo_by_hand">Make photo by hand</string>
     <string name="fatal_error_seg">We were unable to do a full scan of the document. To continue, you need to take a photo manually.</string>
-
     <string name="segmentation_stage_success_first_page">Front side scanned successfully. Please turn over the document/page.</string>
-
     <string name="error_make_two_photos">Please make all required photos of the document</string>
-
     <string name="good_camera_text">filmed with a good camera</string>
     <string name="good_doc_light_text">well lit</string>
-
     <string name="enter_valid_exp_date">Enter a valid expiration date of your document</string>
-
     <string name="verification_expired">Verification session expired. Please, try again.</string>
-
     <string name="doc_verif_camera_timeout_title">We weren\'t able to locate your document</string>
     <string name="doc_verif_camera_timeout_text">We could not find your document in time. Make sure you have selected the correct document type and that it is clearly visible on the camera.</string>
     <string name="doc_verif_not_scanned_title">Could not scan document</string>
@@ -213,5 +202,6 @@
     <string name="doc_verif_blur_text">Sorry, we can\'t verify due to blurry photo. Please take a clear picture of the document to continue.</string>
     <string name="doc_verif_default_title">Document verification is not successful</string>
     <string name="doc_verif_default_text">For some reason, we were unable to download the content of this page. Try reloading the page.</string>
+    <string name="cancel">Cancel</string>
 
 </resources>

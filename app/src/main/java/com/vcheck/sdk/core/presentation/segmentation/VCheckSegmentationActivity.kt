@@ -40,7 +40,12 @@ import com.vcheck.sdk.core.domain.docCategoryIdxToType
 import com.vcheck.sdk.core.presentation.segmentation.flow_logic.*
 import com.vcheck.sdk.core.presentation.transferrable_objects.CheckPhotoDataTO
 import com.vcheck.sdk.core.util.*
+import com.vcheck.sdk.core.util.extensions.changeStatusBarColor
+import com.vcheck.sdk.core.util.extensions.setMargins
+import com.vcheck.sdk.core.util.extensions.sizeInKb
 import com.vcheck.sdk.core.util.images.BitmapUtils
+import com.vcheck.sdk.core.util.utils.VCheckContextUtils
+import com.vcheck.sdk.core.util.utils.vibrateDevice
 import id.zelory.compressor.Compressor
 import id.zelory.compressor.constraint.destination
 import id.zelory.compressor.constraint.size
@@ -104,14 +109,14 @@ class VCheckSegmentationActivity : AppCompatActivity() {
     private var photo2FullBitmap: Bitmap? = null
 
     private fun changeColorsToCustomIfPresent() {
-        VCheckSDK.backgroundPrimaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundPrimaryColorHex?.let {
             binding.segActivityBackground.setBackgroundColor(Color.parseColor(it))
-            changeStatusBarColor(Color.parseColor(it))
+            this@VCheckSegmentationActivity.changeStatusBarColor(Color.parseColor(it))
         }
-        VCheckSDK.primaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.primaryTextColorHex?.let {
             binding.tvSegmentationInstruction.setTextColor(Color.parseColor(it))
         }
-        VCheckSDK.buttonsColorHex?.let {
+        VCheckSDK.designConfig!!.primary?.let {
             binding.readyButton.setBackgroundColor(Color.parseColor(it))
         }
     }
@@ -351,8 +356,8 @@ class VCheckSegmentationActivity : AppCompatActivity() {
                             * MASK_UI_MULTIPLY_FACTOR).toInt()
                     val frameHeight = (frameWidth * maskDimens.ratio).toInt()
 
-//            Log.d("SEG", "VIEW WIDTH: $dpWidth")
-//            Log.d("SEG", "FRAME WIDTH: $frameWidth | FRAME HEIGHT: $frameHeight")
+                    //Log.d("SEG", "VIEW WIDTH: $dpWidth")
+                    //Log.d("SEG", "FRAME WIDTH: $frameWidth | FRAME HEIGHT: $frameHeight")
 
                     frameSize = Size(frameWidth, frameHeight)
 
@@ -486,18 +491,13 @@ class VCheckSegmentationActivity : AppCompatActivity() {
         }
 
         try {
-            when(docCategoryIdxToType(docData.category)) {
-                DocType.ID_CARD -> {
-                    binding.scalableDocHandView.background = AppCompatResources.getDrawable(
-                        this@VCheckSegmentationActivity, R.drawable.img_hand_id_card)
-                }
-                DocType.FOREIGN_PASSPORT -> {
-                    binding.scalableDocHandView.background = AppCompatResources.getDrawable(
-                        this@VCheckSegmentationActivity, R.drawable.img_hand_foreign_passport)
-                } else -> {
-                    binding.scalableDocHandView.background = AppCompatResources.getDrawable(
-                        this@VCheckSegmentationActivity, R.drawable.img_hand_inner_passport)
-                }
+            binding.scalableDocHandView.background = when(docCategoryIdxToType(docData.category)) {
+                DocType.ID_CARD -> AppCompatResources.getDrawable(
+                       this@VCheckSegmentationActivity, R.drawable.il_hand_id_neutral)
+                DocType.FOREIGN_PASSPORT -> AppCompatResources.getDrawable(
+                        this@VCheckSegmentationActivity, R.drawable.il_hand_int_neutral)
+                else -> AppCompatResources.getDrawable(
+                        this@VCheckSegmentationActivity, R.drawable.il_hand_ukr_neutral)
             }
         } catch (e: Exception) {
             Log.d(TAG, e.message ?: "Exception while setting hand & doc drawable")

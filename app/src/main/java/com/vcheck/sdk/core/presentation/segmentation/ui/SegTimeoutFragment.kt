@@ -11,26 +11,50 @@ import androidx.activity.addCallback
 import androidx.navigation.fragment.findNavController
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
-import com.vcheck.sdk.core.databinding.FragmentSegTimeoutBinding
+import com.vcheck.sdk.core.databinding.FragmentErrorSegTimeoutBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.presentation.segmentation.VCheckSegmentationActivity
-import com.vcheck.sdk.core.util.ThemeWrapperFragment
+import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
 
 class SegTimeoutFragment : ThemeWrapperFragment() {
 
-    private var _binding: FragmentSegTimeoutBinding? = null
+    private var _binding: FragmentErrorSegTimeoutBinding? = null
+
+    override fun changeColorsToCustomIfPresent() {
+        VCheckSDK.designConfig!!.primary?.let {
+            _binding!!.tryAgainButton.setBackgroundColor(Color.parseColor(it))
+        }
+        VCheckSDK.designConfig!!.backgroundPrimaryColorHex?.let {
+            _binding!!.noTimeBackground.background = ColorDrawable(Color.parseColor(it))
+        }
+        VCheckSDK.designConfig!!.backgroundSecondaryColorHex?.let {
+            _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
+        }
+        VCheckSDK.designConfig!!.primaryTextColorHex?.let {
+            _binding!!.noTimeTitle.setTextColor(Color.parseColor(it))
+            _binding!!.replacePhotoButton.setTextColor(Color.parseColor(it))
+            _binding!!.replacePhotoButton.strokeColor = ColorStateList.valueOf(Color.parseColor(it))
+            //_binding!!.tryAgainButton.setTextColor(Color.parseColor(it))
+        }
+        VCheckSDK.designConfig!!.secondaryTextColorHex?.let {
+            _binding!!.noTimeSubtitle.setTextColor(Color.parseColor(it))
+        }
+        VCheckSDK.designConfig!!.errorColorHex?.let {
+            _binding!!.errorImage.setColorFilter(Color.parseColor(it))
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_seg_timeout, container, false)
+        return inflater.inflate(R.layout.fragment_error_seg_timeout, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        _binding = FragmentSegTimeoutBinding.bind(view)
+        _binding = FragmentErrorSegTimeoutBinding.bind(view)
 
         changeColorsToCustomIfPresent()
 
@@ -47,27 +71,6 @@ class SegTimeoutFragment : ThemeWrapperFragment() {
         _binding!!.tryAgainButton.setOnClickListener {
             findNavController().popBackStack()
             (activity as VCheckSegmentationActivity).recreate()
-        }
-    }
-
-    override fun changeColorsToCustomIfPresent() {
-        VCheckSDK.buttonsColorHex?.let {
-            _binding!!.tryAgainButton.setBackgroundColor(Color.parseColor(it))
-        }
-        VCheckSDK.backgroundPrimaryColorHex?.let {
-            _binding!!.noTimeBackground.background = ColorDrawable(Color.parseColor(it))
-        }
-        VCheckSDK.backgroundSecondaryColorHex?.let {
-            _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
-        }
-        VCheckSDK.primaryTextColorHex?.let {
-            _binding!!.noTimeTitle.setTextColor(Color.parseColor(it))
-            _binding!!.replacePhotoButton.setTextColor(Color.parseColor(it))
-            _binding!!.replacePhotoButton.strokeColor = ColorStateList.valueOf(Color.parseColor(it))
-            //_binding!!.tryAgainButton.setTextColor(Color.parseColor(it))
-        }
-        VCheckSDK.secondaryTextColorHex?.let {
-            _binding!!.noTimeSubtitle.setTextColor(Color.parseColor(it))
         }
     }
 }

@@ -36,7 +36,7 @@
         android:id="@+id/inProcessFragment"
         android:name="com.vcheck.sdk.core.presentation.liveness.ui.in_process.PostProcessFragment"
         android:label="in_process_fragment"
-        tools:layout="@layout/in_process_fragment" >
+        tools:layout="@layout/fragment_in_process" >
         <action
             android:id="@+id/action_inProcessFragment_to_failVerificationFragment"
             app:destination="@id/failVerificationFragment" />
@@ -68,7 +68,7 @@
         android:id="@+id/noTimeFragment"
         android:name="com.vcheck.sdk.core.presentation.liveness.ui.failures.NoTimeFragment"
         android:label="no_time_fragment"
-        tools:layout="@layout/no_time_fragment" >
+        tools:layout="@layout/fragment_error_no_time" >
         <action
             android:id="@+id/action_noTimeFragment_to_inProcessFragment"
             app:destination="@id/inProcessFragment" />
@@ -78,7 +78,7 @@
         android:id="@+id/lookStraightErrorFragment"
         android:name="com.vcheck.sdk.core.presentation.liveness.ui.failures.LookStraightErrorFragment"
         android:label="look_straight_error_fragment"
-        tools:layout="@layout/look_straight_error_fragment" >
+        tools:layout="@layout/fragment_error_look_straight" >
         <argument
             android:name="isFromUploadResponse"
             app:argType="boolean"
@@ -89,7 +89,7 @@
         android:id="@+id/frameInterferenceFragment"
         android:name="com.vcheck.sdk.core.presentation.liveness.ui.failures.FrameInterferenceFragment"
         android:label="frame_interference_fragment"
-        tools:layout="@layout/frame_interference_fragment" >
+        tools:layout="@layout/fragment_error_frame_interference" >
         <argument
             android:name="isFromUploadResponse"
             app:argType="boolean"
@@ -100,7 +100,7 @@
         android:id="@+id/wrongMoveFragment"
         android:name="com.vcheck.sdk.core.presentation.liveness.ui.failures.WrongMoveFragment"
         android:label="wrong_move_fragment"
-        tools:layout="@layout/wrong_move_fragment" >
+        tools:layout="@layout/fragment_error_wrong_move" >
         <argument
             android:name="isFromUploadResponse"
             app:argType="boolean"
@@ -109,14 +109,14 @@
 
     <fragment
         android:id="@+id/failVerificationFragment"
-        android:name="com.vcheck.sdk.core.presentation.screens.FailVerificationFragment"
+        android:name="com.vcheck.sdk.core.presentation.common_screens.FailVerificationFragment"
         android:label="fail_verification_fragment"
-        tools:layout="@layout/fail_verification_fragment" />
+        tools:layout="@layout/fragment_error_fail_verification" />
     <fragment
         android:id="@+id/failVideoUploadFragment"
         android:name="com.vcheck.sdk.core.presentation.liveness.ui.failures.FailVideoUploadFragment"
         android:label="FailVideoUploadFragment"
-        tools:layout="@layout/fragment_fail_video_upload">
+        tools:layout="@layout/fragment_error_fail_video_upload">
         <action
             android:id="@+id/action_failVideoUploadFragment_to_inProcessFragment2"
             app:destination="@id/inProcessFragment" />
@@ -125,7 +125,7 @@
         android:id="@+id/tooDarkFragment"
         android:name="com.vcheck.sdk.core.presentation.liveness.ui.failures.TooDarkFragment"
         android:label="too_dark_fragment"
-        tools:layout="@layout/too_dark_fragment" >
+        tools:layout="@layout/fragment_error_too_dark" >
         <argument
             android:name="isFromUploadResponse"
             app:argType="boolean"
@@ -135,7 +135,7 @@
         android:id="@+id/tooFastMovementsFragment"
         android:name="com.vcheck.sdk.core.presentation.liveness.ui.failures.TooFastMovementsFragment"
         android:label="too_fast_movements_fragment"
-        tools:layout="@layout/too_fast_movements_fragment" >
+        tools:layout="@layout/fragment_error_too_fast_movements" >
         <argument
             android:name="isFromUploadResponse"
             app:argType="boolean"

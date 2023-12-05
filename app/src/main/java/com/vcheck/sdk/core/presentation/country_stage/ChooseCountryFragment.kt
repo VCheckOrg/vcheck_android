@@ -14,22 +14,22 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
-import com.vcheck.sdk.core.databinding.ChooseCountryFragmentBinding
+import com.vcheck.sdk.core.databinding.FragmentChooseCountryBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.CountryTO
 import com.vcheck.sdk.core.presentation.transferrable_objects.ChooseProviderLogicTO
 import com.vcheck.sdk.core.presentation.transferrable_objects.CountriesListTO
-import com.vcheck.sdk.core.presentation.transferrable_objects.ProviderLogicCase
-import com.vcheck.sdk.core.util.ThemeWrapperFragment
-import com.vcheck.sdk.core.util.checkUserInteractionCompletedForResult
-import com.vcheck.sdk.core.util.toFlagEmoji
+import com.vcheck.sdk.core.domain.ProviderLogicCase
+import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
+import com.vcheck.sdk.core.util.extensions.checkUserInteractionCompletedForResult
+import com.vcheck.sdk.core.util.extensions.toFlagEmoji
 import java.text.Collator
 import java.util.*
 import kotlin.collections.ArrayList
 
 class ChooseCountryFragment : ThemeWrapperFragment() {
 
-    private lateinit var binding: ChooseCountryFragmentBinding
+    private lateinit var binding: FragmentChooseCountryBinding
     private val args: ChooseCountryFragmentArgs by navArgs()
 
     private lateinit var _viewModel: ChooseCountryViewModel
@@ -37,25 +37,25 @@ class ChooseCountryFragment : ThemeWrapperFragment() {
     private var finalCountries: List<CountryTO> = emptyList()
 
     override fun changeColorsToCustomIfPresent() {
-        VCheckSDK.buttonsColorHex?.let {
+        VCheckSDK.designConfig!!.primary?.let {
             binding.chooseCountryContinueButton.setBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.backgroundPrimaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundPrimaryColorHex?.let {
             binding.chooseCountryBackground.background = ColorDrawable(Color.parseColor(it))
         }
-        VCheckSDK.backgroundSecondaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundSecondaryColorHex?.let {
             binding.card.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.backgroundTertiaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundTertiaryColorHex?.let {
             binding.chooseCountryCard.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.primaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.primaryTextColorHex?.let {
             binding.chooseCountryTitle.setTextColor(Color.parseColor(it))
             binding.chooseCountryCardTitle.setTextColor(Color.parseColor(it))
             binding.countryTitle.setTextColor(Color.parseColor(it))
             //binding.chooseCountryContinueButton.setTextColor(Color.parseColor(it))
         }
-        VCheckSDK.secondaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.secondaryTextColorHex?.let {
             binding.chooseCountryDescription.setTextColor(Color.parseColor(it))
         }
     }
@@ -64,7 +64,7 @@ class ChooseCountryFragment : ThemeWrapperFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.choose_country_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_choose_country, container, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,7 +75,7 @@ class ChooseCountryFragment : ThemeWrapperFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding = ChooseCountryFragmentBinding.bind(view)
+        binding = FragmentChooseCountryBinding.bind(view)
 
         changeColorsToCustomIfPresent()
 

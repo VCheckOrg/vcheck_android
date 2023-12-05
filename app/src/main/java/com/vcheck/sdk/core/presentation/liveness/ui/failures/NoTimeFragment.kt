@@ -10,28 +10,31 @@ import androidx.activity.addCallback
 import androidx.navigation.fragment.findNavController
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
-import com.vcheck.sdk.core.databinding.NoTimeFragmentBinding
+import com.vcheck.sdk.core.databinding.FragmentErrorNoTimeBinding
 import com.vcheck.sdk.core.presentation.liveness.VCheckLivenessActivity
-import com.vcheck.sdk.core.util.ThemeWrapperFragment
+import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
 
 class NoTimeFragment : ThemeWrapperFragment() {
 
-    private var _binding: NoTimeFragmentBinding? = null
+    private var _binding: FragmentErrorNoTimeBinding? = null
 
     override fun changeColorsToCustomIfPresent() {
-        VCheckSDK.buttonsColorHex?.let {
+        VCheckSDK.designConfig!!.primary?.let {
             _binding!!.tryAgainButton.setBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.backgroundPrimaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundPrimaryColorHex?.let {
             _binding!!.noTimeBackground.background = ColorDrawable(Color.parseColor(it))
         }
-        VCheckSDK.backgroundSecondaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundSecondaryColorHex?.let {
             _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.primaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.primaryTextColorHex?.let {
             _binding!!.noTimeTitle.setTextColor(Color.parseColor(it))
             _binding!!.noTimeSubtitle.setTextColor(Color.parseColor(it))
             //_binding!!.tryAgainButton.setTextColor(Color.parseColor(it))
+        }
+        VCheckSDK.designConfig!!.errorColorHex?.let {
+            _binding!!.errorImage.setColorFilter(Color.parseColor(it))
         }
     }
 
@@ -39,13 +42,13 @@ class NoTimeFragment : ThemeWrapperFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.no_time_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_error_no_time, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        _binding = NoTimeFragmentBinding.bind(view)
+        _binding = FragmentErrorNoTimeBinding.bind(view)
 
         changeColorsToCustomIfPresent()
 

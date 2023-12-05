@@ -15,12 +15,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.fragment.findNavController
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
-import com.vcheck.sdk.core.databinding.FragmentSegErrorBinding
+import com.vcheck.sdk.core.databinding.FragmentErrorSegCommonBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.presentation.VCheckMainActivity
 import com.vcheck.sdk.core.presentation.segmentation.VCheckSegmentationActivity
 import com.vcheck.sdk.core.presentation.transferrable_objects.PhotoUploadType
-import com.vcheck.sdk.core.util.ThemeWrapperFragment
+import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
 
 class SegErrorFragment : ThemeWrapperFragment() {
 
@@ -46,19 +46,34 @@ class SegErrorFragment : ThemeWrapperFragment() {
         }
     }
 
-    private var _binding: FragmentSegErrorBinding? = null
+    private var _binding: FragmentErrorSegCommonBinding? = null
+
+    override fun changeColorsToCustomIfPresent() {
+        VCheckSDK.designConfig!!.primary?.let {
+            _binding!!.tryAgainButton.setBackgroundColor(Color.parseColor(it))
+        }
+        VCheckSDK.designConfig!!.backgroundPrimaryColorHex?.let {
+            _binding!!.noTimeBackground.background = ColorDrawable(Color.parseColor(it))
+        }
+        VCheckSDK.designConfig!!.backgroundSecondaryColorHex?.let {
+            _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
+        }
+        VCheckSDK.designConfig!!.errorColorHex?.let {
+            _binding!!.errorImage.setColorFilter(Color.parseColor(it))
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_seg_error, container, false)
+        return inflater.inflate(R.layout.fragment_error_seg_common, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        _binding = FragmentSegErrorBinding.bind(view)
+        _binding = FragmentErrorSegCommonBinding.bind(view)
 
         changeColorsToCustomIfPresent()
 
@@ -77,15 +92,5 @@ class SegErrorFragment : ThemeWrapperFragment() {
         }
     }
 
-    override fun changeColorsToCustomIfPresent() {
-        VCheckSDK.buttonsColorHex?.let {
-            _binding!!.tryAgainButton.setBackgroundColor(Color.parseColor(it))
-        }
-        VCheckSDK.backgroundPrimaryColorHex?.let {
-            _binding!!.noTimeBackground.background = ColorDrawable(Color.parseColor(it))
-        }
-        VCheckSDK.backgroundSecondaryColorHex?.let {
-            _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
-        }
-    }
+
 }

@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,15 +13,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.FileProvider
-import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.Picasso
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
-import com.vcheck.sdk.core.VCheckSDK.TAG
-import com.vcheck.sdk.core.databinding.PhotoUploadFragmentBinding
+import com.vcheck.sdk.core.databinding.FragmentPhotoUploadBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.DocType
 import com.vcheck.sdk.core.domain.DocTypeData
@@ -30,13 +27,12 @@ import com.vcheck.sdk.core.domain.docCategoryIdxToType
 import com.vcheck.sdk.core.presentation.VCheckMainActivity
 import com.vcheck.sdk.core.presentation.transferrable_objects.CheckPhotoDataTO
 import com.vcheck.sdk.core.presentation.transferrable_objects.PhotoUploadType
-import com.vcheck.sdk.core.util.ThemeWrapperFragment
+import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
 import java.io.File
-import java.io.IOException
 
 class TakeDocPhotoFragment : ThemeWrapperFragment() {
 
-    private var _binding: PhotoUploadFragmentBinding? = null
+    private var _binding: FragmentPhotoUploadBinding? = null
 
     private lateinit var _docType: DocType
 
@@ -44,13 +40,13 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
     private var _photo2Path: String? = null
 
     override fun changeColorsToCustomIfPresent() {
-        VCheckSDK.backgroundPrimaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundPrimaryColorHex?.let {
             _binding!!.takePhotoBackground.background = ColorDrawable(Color.parseColor(it))
         }
-        VCheckSDK.backgroundSecondaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundSecondaryColorHex?.let {
             _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.primaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.primaryTextColorHex?.let {
             _binding!!.makeDocumentPhotoTitle.setTextColor(Color.parseColor(it))
             _binding!!.verifMethodTitle1.setTextColor(Color.parseColor(it))
             _binding!!.verifMethodTitle2.setTextColor(Color.parseColor(it))
@@ -59,21 +55,22 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
             _binding!!.backArrow.setColorFilter(Color.parseColor(it))
             //_binding!!.photoUploadContinueButton.setTextColor(Color.parseColor(it))
         }
-        VCheckSDK.backgroundTertiaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundTertiaryColorHex?.let {
             _binding!!.methodCard1Background.setCardBackgroundColor(Color.parseColor(it))
             _binding!!.makePhotoButton1Background.setCardBackgroundColor(Color.parseColor(it))
             _binding!!.methodCard2Background.setCardBackgroundColor(Color.parseColor(it))
             _binding!!.makePhotoButton2Background.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.borderColorHex?.let {
+        VCheckSDK.designConfig!!.sectionBorderColorHex?.let {
             _binding!!.methodCard1.setCardBackgroundColor(Color.parseColor(it))
             _binding!!.methodCard2.setCardBackgroundColor(Color.parseColor(it))
             _binding!!.makePhotoButton1.setCardBackgroundColor(Color.parseColor(it))
             _binding!!.makePhotoButton2.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.iconsColorHex?.let {
+        VCheckSDK.designConfig!!.primary?.let {
             _binding!!.takePhotoIcon.setColorFilter(Color.parseColor(it))
             _binding!!.takePhotoIcon2.setColorFilter(Color.parseColor(it))
+            _binding!!.photoUploadContinueButton.setBackgroundColor(Color.parseColor(it))
         }
     }
 
@@ -81,13 +78,13 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.photo_upload_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_photo_upload, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        _binding = PhotoUploadFragmentBinding.bind(view)
+        _binding = FragmentPhotoUploadBinding.bind(view)
 
         changeColorsToCustomIfPresent()
 
@@ -142,7 +139,7 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
 
                 if (docTypeWithData.country == "ua") {
                     verifMethodIcon1.isVisible = true
-                    verifMethodIcon1.setImageResource(R.drawable.doc_id_card_front)
+                    verifMethodIcon1.setImageResource(R.drawable.il_doc_mini_id_card_front)
                 } else {
                     verifMethodIcon1.isVisible = false
                 }
@@ -159,8 +156,8 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
                 if (docTypeWithData.country == "ua") {
                     verifMethodIcon1.isVisible = true
                     verifMethodIcon2.isVisible = true
-                    verifMethodIcon1.setImageResource(R.drawable.doc_id_card_front)
-                    verifMethodIcon2.setImageResource(R.drawable.doc_id_card_back)
+                    verifMethodIcon1.setImageResource(R.drawable.il_doc_mini_id_card_front)
+                    verifMethodIcon2.setImageResource(R.drawable.il_doc_mini_id_card_back)
                 } else {
                     verifMethodIcon1.isVisible = false
                     verifMethodIcon2.isVisible = false
@@ -224,7 +221,7 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
 
                 if (docTypeWithData.country == "ua") {
                     verifMethodIcon1.isVisible = true
-                    verifMethodIcon1.setImageResource(R.drawable.doc_ua_international_passport)
+                    verifMethodIcon1.setImageResource(R.drawable.il_doc_mini_ukr)
                 } else {
                     verifMethodIcon1.isVisible = false
                 }
@@ -243,8 +240,8 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
                 if (docTypeWithData.country == "ua") {
                     verifMethodIcon1.isVisible = true
                     verifMethodIcon2.isVisible = true
-                    verifMethodIcon1.setImageResource(R.drawable.doc_ua_international_passport)
-                    verifMethodIcon2.setImageResource(R.drawable.doc_ua_international_passport)
+                    verifMethodIcon1.setImageResource(R.drawable.il_doc_mini_ukr)
+                    verifMethodIcon2.setImageResource(R.drawable.il_doc_mini_ukr)
                 } else {
                     verifMethodIcon1.isVisible = false
                     verifMethodIcon2.isVisible = false
@@ -288,7 +285,7 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
                             when(docCategoryIdxToType(docTypeWithData!!.category)) {
                                 DocType.FOREIGN_PASSPORT -> {
                                     verifMethodIcon1.isVisible = true
-                                    verifMethodIcon1.setImageResource(R.drawable.doc_ua_international_passport)
+                                    verifMethodIcon1.setImageResource(R.drawable.il_doc_mini_ukr)
                                 }
                                 else -> {
                                     verifMethodIcon1.isVisible = false
@@ -318,7 +315,7 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
                             when(docCategoryIdxToType(docTypeWithData!!.category)) {
                                 DocType.FOREIGN_PASSPORT -> {
                                     verifMethodIcon2.isVisible = true
-                                    verifMethodIcon2.setImageResource(R.drawable.doc_ua_international_passport)
+                                    verifMethodIcon2.setImageResource(R.drawable.il_doc_mini_ukr)
                                 }
                                 else -> {
                                     verifMethodIcon2.isVisible = false
@@ -333,13 +330,13 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
                     if (docPhotoFile != null) {
                         checkPhotoCompletenessAndSetProceedClickListener()
                     } else {
-                        Log.i("PHOTO", "BITMAP FILE IS NULL!")
+                        //Stub
                     }
                 }
             }
         } catch (e: Exception) {
             Toast.makeText(requireActivity(), e.localizedMessage, Toast.LENGTH_LONG).show()
-            Log.e("PHOTO_UPLOAD - ERROR", e.stackTraceToString())
+            //Log.e("PHOTO_UPLOAD - ERROR", e.stackTraceToString())
         }
     }
 
@@ -365,9 +362,10 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
     }
 
     private fun prepareForNavigation(resetSecondPhoto: Boolean) {
-        if (VCheckSDK.buttonsColorHex != null) {
-            _binding!!.photoUploadContinueButton.setBackgroundColor(Color.parseColor(VCheckSDK.buttonsColorHex))
+        if (VCheckSDK.designConfig!!.primary != null) {
+            _binding!!.photoUploadContinueButton.setBackgroundColor(Color.parseColor(VCheckSDK.designConfig!!.primary))
         } else {
+            //default theme color
             _binding!!.photoUploadContinueButton.setBackgroundColor(Color.parseColor("#2E75FF"))
         }
         _binding!!.photoUploadContinueButton.setTextColor(Color.WHITE)
@@ -377,27 +375,16 @@ class TakeDocPhotoFragment : ThemeWrapperFragment() {
                 .actionPhotoUploadScreenToCheckPhotoFragment(
                     CheckPhotoDataTO(_docType, _photo1Path!!, _photo2Path), PhotoUploadType.MANUAL)
             findNavController().navigate(action)
-
-            _photo1Path = null
-            if (resetSecondPhoto) {
-                _photo2Path = null
-            }
         }
     }
 
     private fun dispatchTakePictureIntent(photoIdx: Int) {
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
-            // Ensure that there's a camera activity to handle the intent
             takePictureIntent.resolveActivity((activity as VCheckMainActivity).packageManager)?.also {
-                // Create the File where the photo should go
                 val photoFile = createImageFile(photoIdx)
-                // Continue only if the file was successfully created
                 photoFile.also {
                     val photoURI: Uri = FileProvider.getUriForFile(
-                        (activity as VCheckMainActivity),
-                        "com.vcheck.sdk.core",
-                        it)
-                    //val photoURI: Uri = photoFile.toUri()
+                        (activity as VCheckMainActivity), "com.vcheck.sdk.core", it)
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
                     startActivityForResult(takePictureIntent, photoIdx)
                 }

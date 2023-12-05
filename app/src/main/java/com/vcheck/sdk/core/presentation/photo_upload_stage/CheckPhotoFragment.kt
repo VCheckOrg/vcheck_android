@@ -22,7 +22,7 @@ import com.squareup.picasso.Picasso
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.data.Resource
-import com.vcheck.sdk.core.databinding.CheckPhotoFragmentBinding
+import com.vcheck.sdk.core.databinding.FragmentCheckDocPhotoBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.*
 import com.vcheck.sdk.core.presentation.VCheckMainActivity
@@ -30,8 +30,8 @@ import com.vcheck.sdk.core.presentation.segmentation.VCheckSegmentationActivity
 import com.vcheck.sdk.core.presentation.transferrable_objects.CheckDocInfoDataTO
 import com.vcheck.sdk.core.presentation.transferrable_objects.PhotoUploadType
 import com.vcheck.sdk.core.presentation.transferrable_objects.ZoomPhotoTO
-import com.vcheck.sdk.core.util.ThemeWrapperFragment
-import com.vcheck.sdk.core.util.checkUserInteractionCompletedForResult
+import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
+import com.vcheck.sdk.core.util.extensions.checkUserInteractionCompletedForResult
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.MultipartBody.Part.Companion.createFormData
@@ -42,7 +42,7 @@ import java.io.File
 class CheckPhotoFragment : ThemeWrapperFragment() {
 
     private lateinit var _viewModel: CheckPhotoViewModel
-    private var _binding: CheckPhotoFragmentBinding? = null
+    private var _binding: FragmentCheckDocPhotoBinding? = null
     private val args: CheckPhotoFragmentArgs by navArgs()
 
     private val firstMultipartFileName = "0.jpg"
@@ -73,20 +73,20 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
     }
 
     override fun changeColorsToCustomIfPresent() {
-        VCheckSDK.buttonsColorHex?.let {
+        VCheckSDK.designConfig!!.primary?.let {
             _binding!!.confirmPhotoButton.setBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.backgroundPrimaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundPrimaryColorHex?.let {
             _binding!!.checkPhotoBackground.background = ColorDrawable(Color.parseColor(it))
         }
-        VCheckSDK.backgroundSecondaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundSecondaryColorHex?.let {
             _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.backgroundTertiaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundTertiaryColorHex?.let {
             _binding!!.photoCard1Background.setCardBackgroundColor(Color.parseColor(it))
             _binding!!.photoCard2Background.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.primaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.primaryTextColorHex?.let {
             _binding!!.checkPhotoTitle.setTextColor(Color.parseColor(it))
             _binding!!.tvProcessingDisclaimer.setTextColor(Color.parseColor(it))
             _binding!!.uploadDocPhotosLoadingIndicator.setIndicatorColor(Color.parseColor(it))
@@ -94,10 +94,10 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
             _binding!!.replacePhotoButton.setTextColor(Color.parseColor(it))
             _binding!!.replacePhotoButton.strokeColor = ColorStateList.valueOf(Color.parseColor(it))
         }
-        VCheckSDK.secondaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.secondaryTextColorHex?.let {
             _binding!!.checkPhotoDescription.setTextColor(Color.parseColor(it))
         }
-        VCheckSDK.borderColorHex?.let {
+        VCheckSDK.designConfig!!.sectionBorderColorHex?.let {
             _binding!!.photoCard1.setCardBackgroundColor(Color.parseColor(it))
             _binding!!.photoCard2.setCardBackgroundColor(Color.parseColor(it))
         }
@@ -112,13 +112,13 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.check_photo_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_check_doc_photo, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        _binding = CheckPhotoFragmentBinding.bind(view)
+        _binding = FragmentCheckDocPhotoBinding.bind(view)
 
         changeColorsToCustomIfPresent()
 
@@ -252,10 +252,22 @@ class CheckPhotoFragment : ThemeWrapperFragment() {
                             args.checkPhotoDataTO.photo2Path,
                             false),
                         resource.data.data.id)
+                deleteDocFiles()
                 findNavController().navigate(action)
             } else {
                 Toast.makeText(activity, getString(R.string.doc_verification_error_description), Toast.LENGTH_LONG).show()
             }
+        }
+    }
+
+    private fun deleteDocFiles() {
+        try {
+            File(args.checkPhotoDataTO.photo1Path).delete()
+            if (args.checkPhotoDataTO.photo2Path != null) {
+                File(args.checkPhotoDataTO.photo2Path!!).delete()
+            }
+        } catch (e: Exception) {
+            Log.w(VCheckSDK.TAG, "Failed to delete temp photo file due to: ${e.message ?: "Unknown error"}")
         }
     }
 }

@@ -21,11 +21,14 @@ import com.abedelazizshe.lightcompressorlibrary.config.Configuration
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.data.Resource
-import com.vcheck.sdk.core.databinding.InProcessFragmentBinding
+import com.vcheck.sdk.core.databinding.FragmentInProcessBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.*
 import com.vcheck.sdk.core.presentation.liveness.VCheckLivenessActivity
-import com.vcheck.sdk.core.util.*
+import com.vcheck.sdk.core.util.extensions.checkUserInteractionCompletedForResult
+import com.vcheck.sdk.core.util.extensions.sizeInKb
+import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
+import com.vcheck.sdk.core.util.utils.getFolderSizeLabel
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -36,20 +39,20 @@ import kotlin.time.Duration.Companion.milliseconds
 
 class PostProcessFragment : ThemeWrapperFragment() {
 
-    private var _binding: InProcessFragmentBinding? = null
+    private var _binding: FragmentInProcessBinding? = null
     private lateinit var _viewModel: PostProcessViewModel
 
     override fun changeColorsToCustomIfPresent() {
-        VCheckSDK.buttonsColorHex?.let {
-            _binding!!.successButton.setBackgroundColor(Color.parseColor(it))
+        VCheckSDK.designConfig!!.primary?.let {
+            _binding!!.inProcessImage.setColorFilter(Color.parseColor(it))
         }
-        VCheckSDK.backgroundPrimaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundPrimaryColorHex?.let {
             _binding!!.inProcessBackground.background = ColorDrawable(Color.parseColor(it))
         }
-        VCheckSDK.backgroundSecondaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundSecondaryColorHex?.let {
             _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.primaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.primaryTextColorHex?.let {
             _binding!!.inProcessTitle.setTextColor(Color.parseColor(it))
             _binding!!.inProcessSubtitle.setTextColor(Color.parseColor(it))
             _binding!!.uploadVideoLoadingIndicator.setIndicatorColor(Color.parseColor(it))
@@ -66,13 +69,13 @@ class PostProcessFragment : ThemeWrapperFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.in_process_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_in_process, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        _binding = InProcessFragmentBinding.bind(view)
+        _binding = FragmentInProcessBinding.bind(view)
 
         changeColorsToCustomIfPresent()
 
@@ -80,9 +83,8 @@ class PostProcessFragment : ThemeWrapperFragment() {
             //Stub; no back press needed here
         }
 
-        _binding!!.successButton.isVisible = false
-        _binding!!.inProcessTitle.isVisible = false
-        _binding!!.inProcessSubtitle.isVisible = false
+        _binding!!.inProcessTitle.isVisible = true
+        _binding!!.inProcessSubtitle.isVisible = true
         _binding!!.uploadVideoLoadingIndicator.isVisible = true
 
         onVideoProcessed((activity as VCheckLivenessActivity).videoPath!!)
@@ -227,7 +229,8 @@ class PostProcessFragment : ThemeWrapperFragment() {
                     val compressedVideoFile = File(path!!)
 
                     Log.d(VCheckLivenessActivity.TAG, "COMPRESSED VIDEO SIZE: "
-                            + getFolderSizeLabel(compressedVideoFile))
+                            + getFolderSizeLabel(compressedVideoFile)
+                    )
 
                     uploadLivenessVideo(compressedVideoFile)
                 }

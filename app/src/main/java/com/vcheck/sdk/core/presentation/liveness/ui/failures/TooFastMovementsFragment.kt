@@ -11,30 +11,33 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
-import com.vcheck.sdk.core.databinding.TooFastMovementsFragmentBinding
+import com.vcheck.sdk.core.databinding.FragmentErrorTooFastMovementsBinding
 import com.vcheck.sdk.core.presentation.liveness.VCheckLivenessActivity
-import com.vcheck.sdk.core.util.ThemeWrapperFragment
+import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
 
 class TooFastMovementsFragment : ThemeWrapperFragment() {
 
-    private var _binding: TooFastMovementsFragmentBinding? = null
+    private var _binding: FragmentErrorTooFastMovementsBinding? = null
 
     private val args: TooFastMovementsFragmentArgs by navArgs()
 
     override fun changeColorsToCustomIfPresent() {
-        VCheckSDK.buttonsColorHex?.let {
+        VCheckSDK.designConfig!!.primary?.let {
             _binding!!.tooFastMovementsRepeatButton.setBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.backgroundPrimaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundPrimaryColorHex?.let {
             _binding!!.tooFastMovementsBackground.background = ColorDrawable(Color.parseColor(it))
         }
-        VCheckSDK.backgroundSecondaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundSecondaryColorHex?.let {
             _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.primaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.primaryTextColorHex?.let {
             _binding!!.tooFastMovementsTitle.setTextColor(Color.parseColor(it))
             _binding!!.tooFastMovementsDescription.setTextColor(Color.parseColor(it))
             //_binding!!.tooFastMovementsRepeatButton.setTextColor(Color.parseColor(it))
+        }
+        VCheckSDK.designConfig!!.errorColorHex?.let {
+            _binding!!.errorImage.setColorFilter(Color.parseColor(it))
         }
     }
 
@@ -42,13 +45,13 @@ class TooFastMovementsFragment : ThemeWrapperFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.too_fast_movements_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_error_too_fast_movements, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        _binding = TooFastMovementsFragmentBinding.bind(view)
+        _binding = FragmentErrorTooFastMovementsBinding.bind(view)
 
         changeColorsToCustomIfPresent()
 

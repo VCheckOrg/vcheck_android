@@ -11,10 +11,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
-import com.vcheck.sdk.core.databinding.DocInfoRowBinding
+import com.vcheck.sdk.core.databinding.RowDocInfoFieldBinding
 import com.vcheck.sdk.core.domain.DocFieldWitOptPreFilledData
 import com.vcheck.sdk.core.presentation.check_doc_info_stage.CheckDocInfoFragment
-import com.vcheck.sdk.core.util.isValidDocRelatedDate
+import com.vcheck.sdk.core.util.utils.isValidDocRelatedDate
 import java.util.*
 
 
@@ -25,11 +25,11 @@ class CheckDocInfoAdapter(
 ) :
     RecyclerView.Adapter<CheckDocInfoAdapter.ViewHolder>() {
 
-    private lateinit var binding: DocInfoRowBinding
+    private lateinit var binding: RowDocInfoFieldBinding
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        binding = DocInfoRowBinding.inflate(layoutInflater, parent, false)
+        binding = RowDocInfoFieldBinding.inflate(layoutInflater, parent, false)
         return ViewHolder(binding, docInfoEditCallback, currentLocaleCode)
     }
 
@@ -41,11 +41,10 @@ class CheckDocInfoAdapter(
     override fun getItemCount(): Int = documentInfoList.size
 
     class ViewHolder(
-        private val binding: DocInfoRowBinding,
+        private val binding: RowDocInfoFieldBinding,
         private val docInfoEditCallback: DocInfoEditCallback,
-        private val localeCode: String
-    ) :
-        RecyclerView.ViewHolder(binding.root) {
+        private val localeCode: String)
+        : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(fieldInfo: DocFieldWitOptPreFilledData) {
 
@@ -58,16 +57,16 @@ class CheckDocInfoAdapter(
             binding.docFieldTitle.text = title
             binding.infoField.setText(fieldInfo.autoParsedValue)
 
-            VCheckSDK.backgroundSecondaryColorHex?.let {
+            VCheckSDK.designConfig!!.backgroundSecondaryColorHex?.let {
                 binding.docInfoRowBackground.background = ColorDrawable(Color.parseColor(it))
                 binding.infoField.background = ColorDrawable(Color.parseColor(it))
             }
-            VCheckSDK.primaryTextColorHex?.let {
+            VCheckSDK.designConfig!!.primaryTextColorHex?.let {
                 binding.docFieldTitle.setTextColor(Color.parseColor(it))
                 binding.infoField.setTextColor(Color.parseColor(it))
                 binding.infoField.setHintTextColor(Color.parseColor(it))
             }
-            VCheckSDK.borderColorHex?.let {
+            VCheckSDK.designConfig!!.sectionBorderColorHex?.let {
                 binding.infoFieldBorder.setCardBackgroundColor(Color.parseColor(it))
             }
 

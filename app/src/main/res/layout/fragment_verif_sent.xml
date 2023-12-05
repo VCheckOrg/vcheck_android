@@ -6,7 +6,7 @@
     android:id="@+id/in_process_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.screens.VerifSentFragment"
+    tools:context=".presentation.common_screens.VerifSentFragment"
     android:background="@color/vcheck_background_primary"
     android:theme="@style/Theme.VCheckAndroidSDKDemo">
 
@@ -38,9 +38,11 @@
                     android:layout_width="240dp"
                     android:layout_height="240dp"
                     android:layout_marginStart="28dp"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="36dp"
                     android:layout_marginEnd="28dp"
-                    android:src="@drawable/in_process"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:src="@drawable/il_in_process_common"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />

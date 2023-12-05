@@ -36,7 +36,7 @@
                 android:padding="10dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="28dp"
-                android:src="@drawable/back_arrow"
+                android:src="@drawable/ic_back_arrow"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="ContentDescription" />
@@ -80,7 +80,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/choose_method_description"
-                tools:listitem="@layout/country_row" />
+                tools:listitem="@layout/list_item_provider" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -10,32 +10,32 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
-import com.vcheck.sdk.core.databinding.FragmentDocVerificationNotSuccessfulBinding
+import com.vcheck.sdk.core.databinding.FragmentErrorDocVerificationBinding
 import com.vcheck.sdk.core.domain.DocumentVerificationCode
-import com.vcheck.sdk.core.util.ThemeWrapperFragment
+import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
 
 class DocVerifErrorFragment : ThemeWrapperFragment() {
 
     private val args: DocVerifErrorFragmentArgs by navArgs()
 
-    private var _binding: FragmentDocVerificationNotSuccessfulBinding? = null
+    private var _binding: FragmentErrorDocVerificationBinding? = null
 
     override fun changeColorsToCustomIfPresent() {
-        VCheckSDK.buttonsColorHex?.let {
+        VCheckSDK.designConfig!!.primary?.let {
             _binding!!.errorTryAgainButton.setBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.backgroundPrimaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundPrimaryColorHex?.let {
             _binding!!.docVerificationNotSuccessfulBackground.background = ColorDrawable(Color.parseColor(it))
         }
-        VCheckSDK.backgroundSecondaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundSecondaryColorHex?.let {
             _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.primaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.primaryTextColorHex?.let {
             _binding!!.errorTitle.setTextColor(Color.parseColor(it))
             //_binding!!.errorTryAgainButton.setTextColor(Color.parseColor(it))
             _binding!!.pseudoBtnProceedAnyway.setTextColor(Color.parseColor(it))
         }
-        VCheckSDK.secondaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.secondaryTextColorHex?.let {
             _binding!!.errorDescription.setTextColor(Color.parseColor(it))
         }
     }
@@ -44,13 +44,13 @@ class DocVerifErrorFragment : ThemeWrapperFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_doc_verification_not_successful, container, false)
+        return inflater.inflate(R.layout.fragment_error_doc_verification, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        _binding = FragmentDocVerificationNotSuccessfulBinding.bind(view)
+        _binding = FragmentErrorDocVerificationBinding.bind(view)
 
         changeColorsToCustomIfPresent()
 

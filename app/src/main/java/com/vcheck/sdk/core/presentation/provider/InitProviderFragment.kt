@@ -17,8 +17,8 @@ import com.vcheck.sdk.core.data.Resource
 import com.vcheck.sdk.core.databinding.FragmentInitProviderBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.*
-import com.vcheck.sdk.core.util.checkStageErrorForResult
-import com.vcheck.sdk.core.util.checkUserInteractionCompletedForResult
+import com.vcheck.sdk.core.util.extensions.checkStageErrorForResult
+import com.vcheck.sdk.core.util.extensions.checkUserInteractionCompletedForResult
 
 class InitProviderFragment : Fragment() {
 
@@ -27,10 +27,10 @@ class InitProviderFragment : Fragment() {
     private lateinit var _viewModel: InitProviderViewModel
 
     fun changeColorsToCustomIfPresent() {
-        VCheckSDK.backgroundPrimaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundPrimaryColorHex?.let {
             _binding!!.fragmentDemoBackground.background = ColorDrawable(Color.parseColor(it))
         }
-        VCheckSDK.primaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.primaryTextColorHex?.let {
             _binding!!.startCallChainLoadingIndicator.setIndicatorColor(Color.parseColor(it))
         }
     }

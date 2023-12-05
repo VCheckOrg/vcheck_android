@@ -9,27 +9,27 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
-import com.vcheck.sdk.core.databinding.PhotoInstructionsFragmentBinding
+import com.vcheck.sdk.core.databinding.FragmentPhotoInstructionsBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
-import com.vcheck.sdk.core.util.ThemeWrapperFragment
+import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
 
 class PhotoInstructionsFragment : ThemeWrapperFragment() {
 
-    private var _binding: PhotoInstructionsFragmentBinding? = null
+    private var _binding: FragmentPhotoInstructionsBinding? = null
 
     override fun changeColorsToCustomIfPresent() {
 
-        VCheckSDK.backgroundPrimaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundPrimaryColorHex?.let {
             _binding!!.photoInstructionsBackground.background = ColorDrawable(Color.parseColor(it))
             _binding!!.photoInstructionsScrollBackground.background = ColorDrawable(Color.parseColor(it))
         }
-        VCheckSDK.backgroundSecondaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundSecondaryColorHex?.let {
             _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.buttonsColorHex?.let {
+        VCheckSDK.designConfig!!.primary?.let {
             _binding!!.photoInstructionsButton.setBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.primaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.primaryTextColorHex?.let {
             _binding!!.photoInstructionsTitle.setTextColor(Color.parseColor(it))
             _binding!!.seenAllText.setTextColor(Color.parseColor(it))
             _binding!!.seenFourCornersText.setTextColor(Color.parseColor(it))
@@ -42,10 +42,10 @@ class PhotoInstructionsFragment : ThemeWrapperFragment() {
             //_binding!!.photoInstructionsButton.setTextColor(Color.parseColor(it))
             //_binding!!.imageColorText.setTextColor(Color.parseColor(it))
         }
-        VCheckSDK.secondaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.secondaryTextColorHex?.let {
             _binding!!.photoInstructionsDescription.setTextColor(Color.parseColor(it))
         }
-        VCheckSDK.iconsColorHex?.let {
+        VCheckSDK.designConfig!!.primary?.let {
             //_binding!!.imageColorIcon.setColorFilter(Color.parseColor(it))
             _binding!!.seenAllIcon.setColorFilter(Color.parseColor(it))
             _binding!!.seenFourCornersIcon.setColorFilter(Color.parseColor(it))
@@ -61,13 +61,13 @@ class PhotoInstructionsFragment : ThemeWrapperFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.photo_instructions_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_photo_instructions, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        _binding = PhotoInstructionsFragmentBinding.bind(view)
+        _binding = FragmentPhotoInstructionsBinding.bind(view)
 
         changeColorsToCustomIfPresent()
 

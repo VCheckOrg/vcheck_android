@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbars="none"
+    tools:context=".presentation.liveness.ui.LivenessInstructionsFragment"
+    android:theme="@style/Theme.VCheckAndroidSDKDemo">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/liveness_istructions_background"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/vcheck_background_primary">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card"
+            android:layout_width="match_parent"
+            android:layout_height="740dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="14dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginBottom="60dp"
+            app:cardBackgroundColor="@color/vcheck_background_secondary"
+            app:cardCornerRadius="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/face_check_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="17dp"
+                    android:layout_marginTop="25dp"
+                    android:text="@string/face_check_title"
+                    android:textColor="@color/vcheck_text"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <TextView
+                    android:id="@+id/face_check_description"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="17dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="17dp"
+                    android:text="@string/face_check_description"
+                    android:textColor="@color/vcheck_text"
+                    android:textSize="14sp"
+                    android:textStyle="normal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/face_check_title" />
+
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/animationsHolder"
+                    android:layout_width="210dp"
+                    android:layout_height="210dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/face_check_description"
+                    android:layout_marginTop="30dp">
+
+                    <View
+                        android:id="@+id/cosmetic_rounded_frame"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/rounded_shape_large"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/faceAnimHolder"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toEndOf="@id/cosmetic_rounded_frame"
+                        app:layout_constraintTop_toTopOf="@id/cosmetic_rounded_frame"
+                        app:layout_constraintStart_toStartOf="@id/cosmetic_rounded_frame"
+                        app:layout_constraintBottom_toBottomOf="@id/cosmetic_rounded_frame">
+
+                        <com.airbnb.lottie.LottieAnimationView
+                            android:id="@+id/face_animation_view"
+                            android:layout_width="180dp"
+                            android:layout_height="180dp"
+                            android:scaleType="fitXY"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <View
+                    android:id="@+id/leftAnimBall"
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/animationsHolder"
+                    app:layout_constraintBottom_toBottomOf="@id/animationsHolder"
+                    android:layout_marginStart="30dp"
+                    android:background="@drawable/shape_anim_ball" />
+
+                <View
+                    android:id="@+id/rightAnimBall"
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/animationsHolder"
+                    app:layout_constraintBottom_toBottomOf="@id/animationsHolder"
+                    android:layout_marginEnd="30dp"
+                    android:background="@drawable/shape_anim_ball" />
+
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/arrow_animation_view"
+                    android:layout_width="260dp"
+                    android:layout_height="140dp"
+                    app:lottie_rawRes="@raw/arrow"
+                    android:scaleX="2.8"
+                    android:scaleY="3.2"
+                    app:lottie_loop="true"
+                    app:lottie_autoPlay="true"
+                    android:layout_marginBottom="78dp"
+                    app:layout_constraintTop_toTopOf="@id/animationsHolder"
+                    app:layout_constraintStart_toStartOf="@id/animationsHolder"
+                    app:layout_constraintBottom_toBottomOf="@id/animationsHolder"
+                    app:layout_constraintEnd_toEndOf="@id/animationsHolder"/>
+
+                <ImageView
+                    android:id="@+id/requested_movements_icon"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_marginStart="17dp"
+                    android:layout_marginTop="30dp"
+                    android:src="@drawable/ic_requested_movements"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/animationsHolder"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:id="@+id/requested_movements_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="17dp"
+                    android:text="@string/requested_movements_text"
+                    android:textColor="@color/vcheck_text"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/requested_movements_icon"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/requested_movements_icon"
+                    app:layout_constraintTop_toTopOf="@+id/requested_movements_icon" />
+
+                <ImageView
+                    android:id="@+id/smooth_movements_icon"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_marginStart="17dp"
+                    android:layout_marginTop="20dp"
+                    android:src="@drawable/ic_smooth_movements"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/requested_movements_icon"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:id="@+id/smooth_movements_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="17dp"
+                    android:text="@string/smooth_movements_text"
+                    android:textColor="@color/vcheck_text"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/smooth_movements_icon"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/smooth_movements_icon"
+                    app:layout_constraintTop_toTopOf="@+id/smooth_movements_icon" />
+
+                <ImageView
+                    android:id="@+id/no_interference_icon"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_marginStart="17dp"
+                    android:layout_marginTop="20dp"
+                    android:src="@drawable/ic_no_interference"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/smooth_movements_icon"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:id="@+id/no_interference_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/const12"
+                    android:layout_marginEnd="@dimen/const17"
+                    android:text="@string/no_interference_text"
+                    android:textColor="@color/vcheck_text"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/no_interference_icon"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/no_interference_icon"
+                    app:layout_constraintTop_toTopOf="@+id/no_interference_icon" />
+
+
+                <ImageView
+                    android:id="@+id/good_light_icon"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_marginStart="17dp"
+                    android:layout_marginTop="20dp"
+                    android:src="@drawable/ic_good_light"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/no_interference_icon"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:id="@+id/good_light_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="17dp"
+                    android:text="@string/good_light_text"
+                    android:textColor="@color/vcheck_text"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/good_light_icon"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/good_light_icon"
+                    app:layout_constraintTop_toTopOf="@+id/good_light_icon" />
+
+
+                <ImageView
+                    android:id="@+id/fixed_camera_icon"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_marginStart="17dp"
+                    android:layout_marginTop="28dp"
+                    android:src="@drawable/ic_fixed_camera"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/good_light_icon"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:id="@+id/fixed_camera_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="17dp"
+                    android:text="@string/fixed_camera_text"
+                    android:textColor="@color/vcheck_text"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/fixed_camera_icon"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/fixed_camera_icon"
+                    app:layout_constraintTop_toTopOf="@+id/fixed_camera_icon" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/liveness_start_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="24dp"
+                    android:text="@string/liveness_start_button"
+                    android:textAllCaps="false"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.cardview.widget.CardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>
+
+    <!--                    <com.airbnb.lottie.LottieAnimationView-->
+    <!--                        android:id="@+id/static_face_animation_view"-->
+    <!--                        android:layout_width="160dp"-->
+    <!--                        android:layout_height="160dp"-->
+    <!--                        android:scaleType="fitXY"-->
+    <!--                        android:scaleX="2"-->
+    <!--                        android:scaleY="2"-->
+    <!--                        app:lottie_repeatCount="0"-->
+    <!--                        app:lottie_rawRes="@raw/left"-->
+    <!--                        android:layout_marginBottom="1dp"-->
+    <!--                        android:layout_marginStart="7dp"-->
+    <!--                        app:layout_constraintEnd_toEndOf="@id/cosmetic_rounded_frame"-->
+    <!--                        app:layout_constraintTop_toTopOf="@id/cosmetic_rounded_frame"-->
+    <!--                        app:layout_constraintStart_toStartOf="@id/cosmetic_rounded_frame"-->
+    <!--                        app:layout_constraintBottom_toBottomOf="@id/cosmetic_rounded_frame" />-->
+
+    <!--                <ImageView-->
+    <!--                    android:id="@+id/back_arrow"-->
+    <!--                    android:layout_width="16dp"-->
+    <!--                    android:layout_height="16dp"-->
+    <!--                    android:layout_marginStart="17dp"-->
+    <!--                    android:layout_marginTop="28dp"-->
+    <!--                    android:src="@drawable/back_arrow"-->
+    <!--                    app:layout_constraintStart_toStartOf="parent"-->
+    <!--                    app:layout_constraintTop_toTopOf="parent"-->
+    <!--                    tools:ignore="ContentDescription" />-->
+
+    <!--                <ImageView-->
+    <!--                    android:id="@+id/face_example"-->
+    <!--                    android:layout_width="218dp"-->
+    <!--                    android:layout_height="218dp"-->
+    <!--                    android:layout_marginTop="15dp"-->
+    <!--                    android:src="@drawable/face_example"-->
+    <!--                    app:layout_constraintEnd_toEndOf="parent"-->
+    <!--                    app:layout_constraintHorizontal_bias="0.45"-->
+    <!--                    app:layout_constraintStart_toStartOf="parent"-->
+    <!--                    app:layout_constraintTop_toBottomOf="@+id/face_check_description"-->
+    <!--                    tools:ignore="ContentDescription" />-->

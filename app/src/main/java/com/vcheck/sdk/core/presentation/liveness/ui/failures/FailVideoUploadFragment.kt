@@ -13,29 +13,32 @@ import androidx.activity.addCallback
 import androidx.navigation.fragment.findNavController
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
-import com.vcheck.sdk.core.databinding.FragmentFailVideoUploadBinding
-import com.vcheck.sdk.core.util.ThemeWrapperFragment
+import com.vcheck.sdk.core.databinding.FragmentErrorFailVideoUploadBinding
+import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
 
 class FailVideoUploadFragment : ThemeWrapperFragment() {
 
-    private var _binding: FragmentFailVideoUploadBinding? = null
+    private var _binding: FragmentErrorFailVideoUploadBinding? = null
 
     override fun changeColorsToCustomIfPresent() {
-        VCheckSDK.buttonsColorHex?.let {
+        VCheckSDK.designConfig!!.primary?.let {
             _binding!!.retryButton.setBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.backgroundPrimaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundPrimaryColorHex?.let {
             _binding!!.failVideoUploadBackground.background = ColorDrawable(Color.parseColor(it))
         }
-        VCheckSDK.backgroundSecondaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundSecondaryColorHex?.let {
             _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
             _binding!!.contactSupportButton.setBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.primaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.primaryTextColorHex?.let {
             _binding!!.failVerificationTitle.setTextColor(Color.parseColor(it))
             _binding!!.failVerificationDescription.setTextColor(Color.parseColor(it))
             _binding!!.contactSupportButton.setTextColor(Color.parseColor(it))
             _binding!!.contactSupportButton.strokeColor = ColorStateList.valueOf(Color.parseColor(it))
+        }
+        VCheckSDK.designConfig!!.errorColorHex?.let {
+            _binding!!.errorImage.setColorFilter(Color.parseColor(it))
         }
     }
 
@@ -44,13 +47,13 @@ class FailVideoUploadFragment : ThemeWrapperFragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_fail_video_upload, container, false)
+        return inflater.inflate(R.layout.fragment_error_fail_video_upload, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        _binding = FragmentFailVideoUploadBinding.bind(view)
+        _binding = FragmentErrorFailVideoUploadBinding.bind(view)
 
         changeColorsToCustomIfPresent()
 

@@ -11,30 +11,33 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
-import com.vcheck.sdk.core.databinding.FrameInterferenceFragmentBinding
+import com.vcheck.sdk.core.databinding.FragmentErrorFrameInterferenceBinding
 import com.vcheck.sdk.core.presentation.liveness.VCheckLivenessActivity
-import com.vcheck.sdk.core.util.ThemeWrapperFragment
+import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
 
 class FrameInterferenceFragment : ThemeWrapperFragment() {
 
-    private var _binding: FrameInterferenceFragmentBinding? = null
+    private var _binding: FragmentErrorFrameInterferenceBinding? = null
 
     private val args: FrameInterferenceFragmentArgs by navArgs()
 
     override fun changeColorsToCustomIfPresent() {
-        VCheckSDK.buttonsColorHex?.let {
+        VCheckSDK.designConfig!!.primary?.let {
             _binding!!.frameInterferenceButton.setBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.backgroundPrimaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundPrimaryColorHex?.let {
             _binding!!.frameInterferenceBackground.background = ColorDrawable(Color.parseColor(it))
         }
-        VCheckSDK.backgroundSecondaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundSecondaryColorHex?.let {
             _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.primaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.primaryTextColorHex?.let {
             _binding!!.frameInterferenceTitle.setTextColor(Color.parseColor(it))
             _binding!!.frameInterferenceDescription.setTextColor(Color.parseColor(it))
             //_binding!!.frameInterferenceButton.setTextColor(Color.parseColor(it))
+        }
+        VCheckSDK.designConfig!!.errorColorHex?.let {
+            _binding!!.errorImage.setColorFilter(Color.parseColor(it))
         }
     }
 
@@ -43,13 +46,13 @@ class FrameInterferenceFragment : ThemeWrapperFragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.frame_interference_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_error_frame_interference, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        _binding = FrameInterferenceFragmentBinding.bind(view)
+        _binding = FragmentErrorFrameInterferenceBinding.bind(view)
 
         changeColorsToCustomIfPresent()
 

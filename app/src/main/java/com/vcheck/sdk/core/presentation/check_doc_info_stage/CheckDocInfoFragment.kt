@@ -18,20 +18,23 @@ import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.VCheckSDK.TAG
 import com.vcheck.sdk.core.data.VCheckSDKConstantsProvider
-import com.vcheck.sdk.core.databinding.CheckDocInfoFragmentBinding
+import com.vcheck.sdk.core.databinding.FragmentCheckDocInfoBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.*
 import com.vcheck.sdk.core.presentation.VCheckMainActivity
 import com.vcheck.sdk.core.presentation.adapters.CheckDocInfoAdapter
 import com.vcheck.sdk.core.presentation.adapters.DocInfoEditCallback
-import com.vcheck.sdk.core.util.*
+import com.vcheck.sdk.core.util.extensions.checkStageErrorForResult
+import com.vcheck.sdk.core.util.extensions.closeSDKFlow
+import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
+import com.vcheck.sdk.core.util.utils.isValidDocRelatedDate
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 
 
 class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
 
-    private lateinit var binding: CheckDocInfoFragmentBinding
+    private lateinit var binding: FragmentCheckDocInfoBinding
     private lateinit var viewModel: CheckDocInfoViewModel
     private lateinit var dataList: MutableList<DocFieldWitOptPreFilledData>
 
@@ -40,27 +43,27 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
     private var uploadedDocID: Int? = null
 
     override fun changeColorsToCustomIfPresent() {
-        VCheckSDK.buttonsColorHex?.let {
+        VCheckSDK.designConfig!!.primary?.let {
             binding.checkInfoConfirmButton.setBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.backgroundPrimaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundPrimaryColorHex?.let {
             binding.checkDocInfoBackground.setBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.backgroundSecondaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundSecondaryColorHex?.let {
             binding.card.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.backgroundTertiaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundTertiaryColorHex?.let {
             binding.photoCard1Background.setCardBackgroundColor(Color.parseColor(it))
             binding.photoCard2Background.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.primaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.primaryTextColorHex?.let {
             binding.checkFilledDataTitle.setTextColor(Color.parseColor(it))
             //binding.checkInfoConfirmButton.setTextColor(Color.parseColor(it))
         }
-        VCheckSDK.secondaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.secondaryTextColorHex?.let {
             binding.checkFilledDataDescription.setTextColor(Color.parseColor(it))
         }
-        VCheckSDK.borderColorHex?.let {
+        VCheckSDK.designConfig!!.sectionBorderColorHex?.let {
             binding.photoCard1.setCardBackgroundColor(Color.parseColor(it))
             binding.photoCard2.setCardBackgroundColor(Color.parseColor(it))
         }
@@ -73,15 +76,14 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
 
     override fun onCreateView(
         inflater: LayoutInflater,
-        container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.check_doc_info_fragment, container, false)
+        container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_check_doc_info, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding = CheckDocInfoFragmentBinding.bind(view)
+        binding = FragmentCheckDocInfoBinding.bind(view)
 
         changeColorsToCustomIfPresent()
 
@@ -107,10 +109,6 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
         binding.docInfoList.adapter = adapter
 
         viewModel.documentInfoResponse.observe(viewLifecycleOwner) {
-            // obsolete logic:
-//            (requireActivity() as AppCompatActivity)
-//                .checkUserInteractionCompletedForResult(it.data?.errorCode)
-
             if (it.data?.data != null) {
                 populateDocImages(it.data.data)
                 populateDocFields(it.data.data, currentLocaleCode)
@@ -256,8 +254,7 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
                 optParsedData = parsedDocFieldsData.expirationDate!!
             }
             return DocFieldWitOptPreFilledData(
-                docField.name, docField.title, docField.type, docField.regex, optParsedData
-            )
+                docField.name, docField.title, docField.type, docField.regex, optParsedData)
         }
     }
 

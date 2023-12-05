@@ -11,49 +11,49 @@ import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
-import com.vcheck.sdk.core.databinding.ChooseDocMethodFragmentBinding
+import com.vcheck.sdk.core.databinding.FragmentChooseDocMethodBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.DocType
 import com.vcheck.sdk.core.domain.DocTypeData
 import com.vcheck.sdk.core.domain.docCategoryIdxToType
-import com.vcheck.sdk.core.util.ThemeWrapperFragment
-import com.vcheck.sdk.core.util.checkUserInteractionCompletedForResult
+import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
+import com.vcheck.sdk.core.util.extensions.checkUserInteractionCompletedForResult
 
 
 class ChooseDocMethodFragment : ThemeWrapperFragment() {
 
-    private var _binding: ChooseDocMethodFragmentBinding? = null
+    private var _binding: FragmentChooseDocMethodBinding? = null
 
     private lateinit var _viewModel: ChooseDocMethodViewModel
 
     override fun changeColorsToCustomIfPresent() {
-        VCheckSDK.backgroundPrimaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundPrimaryColorHex?.let {
             _binding!!.chooseDocMethodBackground.background = ColorDrawable(Color.parseColor(it))
         }
-        VCheckSDK.backgroundSecondaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundSecondaryColorHex?.let {
             _binding!!.card.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.backgroundTertiaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundTertiaryColorHex?.let {
             _binding!!.docMethodInnerPassportBackground.setCardBackgroundColor(Color.parseColor(it))
             _binding!!.docMethodForeignPassportBackground.setCardBackgroundColor(Color.parseColor(it))
             _binding!!.docMethodIdCardBackGround.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.primaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.primaryTextColorHex?.let {
             _binding!!.chooseDocMethodTitle.setTextColor(Color.parseColor(it))
             _binding!!.docMethodTitle1.setTextColor(Color.parseColor(it))
             _binding!!.docMethodTitle2.setTextColor(Color.parseColor(it))
             _binding!!.docMethodTitle3.setTextColor(Color.parseColor(it))
             _binding!!.backArrow.setColorFilter(Color.parseColor(it))
         }
-        VCheckSDK.secondaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.secondaryTextColorHex?.let {
             _binding!!.chooseDocMethodDescription.setTextColor(Color.parseColor(it))
         }
-        VCheckSDK.borderColorHex?.let {
+        VCheckSDK.designConfig!!.sectionBorderColorHex?.let {
             _binding!!.docMethodInnerPassport.setCardBackgroundColor(Color.parseColor(it))
             _binding!!.docMethodForeignPassport.setCardBackgroundColor(Color.parseColor(it))
             _binding!!.docMethodIdCard.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.iconsColorHex?.let {
+        VCheckSDK.designConfig!!.primary?.let {
             _binding!!.docMethodIcon1.setColorFilter(Color.parseColor(it))
             _binding!!.docMethodIcon2.setColorFilter(Color.parseColor(it))
             _binding!!.docMethodIcon3.setColorFilter(Color.parseColor(it))
@@ -69,12 +69,12 @@ class ChooseDocMethodFragment : ThemeWrapperFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.choose_doc_method_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_choose_doc_method, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        _binding = ChooseDocMethodFragmentBinding.bind(view)
+        _binding = FragmentChooseDocMethodBinding.bind(view)
 
         changeColorsToCustomIfPresent()
 

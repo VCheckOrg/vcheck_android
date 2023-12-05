@@ -9,14 +9,14 @@
         android:id="@+id/livenessInstructionsFragment"
         android:name="com.vcheck.sdk.core.presentation.liveness.ui.LivenessInstructionsFragment"
         android:label="fragment_main"
-        tools:layout="@layout/liveness_instructions_fragment">
+        tools:layout="@layout/fragment_liveness_instructions">
     </fragment>
 
     <fragment
         android:id="@+id/chooseCountryFragment"
         android:name="com.vcheck.sdk.core.presentation.country_stage.ChooseCountryFragment"
         android:label="choose_country_fragment"
-        tools:layout="@layout/choose_country_fragment">
+        tools:layout="@layout/fragment_choose_country">
         <argument
             android:name="countriesListTO"
             app:argType="com.vcheck.sdk.core.presentation.transferrable_objects.CountriesListTO" />
@@ -39,7 +39,7 @@
         android:id="@+id/chooseDocMethodScreen"
         android:name="com.vcheck.sdk.core.presentation.doc_type_stage.ChooseDocMethodFragment"
         android:label="choose_doc_method_screen"
-        tools:layout="@layout/choose_doc_method_fragment">
+        tools:layout="@layout/fragment_choose_doc_method">
         <action
             android:id="@+id/action_chooseDocMethodScreen_to_photoInstructionsFragment"
             app:destination="@id/photoInstructionsFragment" />
@@ -49,7 +49,7 @@
         android:id="@+id/photoUploadScreen"
         android:name="com.vcheck.sdk.core.presentation.photo_upload_stage.TakeDocPhotoFragment"
         android:label="photo_upload_screen"
-        tools:layout="@layout/photo_upload_fragment">
+        tools:layout="@layout/fragment_photo_upload">
         <action
             android:id="@+id/action_photoUploadScreen_to_checkPhotoFragment"
             app:destination="@id/checkPhotoFragment">
@@ -63,7 +63,7 @@
         android:id="@+id/photoInstructionsFragment"
         android:name="com.vcheck.sdk.core.presentation.photo_upload_stage.PhotoInstructionsFragment"
         android:label="photo_instructions_fragment"
-        tools:layout="@layout/photo_instructions_fragment">
+        tools:layout="@layout/fragment_photo_instructions">
         <action
             android:id="@+id/action_photoInstructionsFragment_to_photoUploadScreen"
             app:destination="@id/photoUploadScreen" />
@@ -74,21 +74,21 @@
 
     <fragment
         android:id="@+id/errorFragment"
-        android:name="com.vcheck.sdk.core.presentation.screens.ErrorFragment"
+        android:name="com.vcheck.sdk.core.presentation.common_screens.ErrorFragment"
         android:label="error_fragment"
-        tools:layout="@layout/error_fragment" />
+        tools:layout="@layout/fragment_error_common" />
 
     <fragment
         android:id="@+id/noCameraFragment"
-        android:name="com.vcheck.sdk.core.presentation.screens.NoCameraFragment"
+        android:name="com.vcheck.sdk.core.presentation.common_screens.NoCameraFragment"
         android:label="no_camera_fragment"
-        tools:layout="@layout/no_camera_fragment" />
+        tools:layout="@layout/fragment_no_camera" />
 
     <fragment
         android:id="@+id/checkPhotoFragment"
         android:name="com.vcheck.sdk.core.presentation.photo_upload_stage.CheckPhotoFragment"
         android:label="check_photo_fragment"
-        tools:layout="@layout/check_photo_fragment">
+        tools:layout="@layout/fragment_check_doc_photo">
         <argument
             android:name="checkPhotoDataTO"
             app:argType="com.vcheck.sdk.core.presentation.transferrable_objects.CheckPhotoDataTO" />
@@ -121,7 +121,7 @@
         android:id="@+id/checkDocInfoFragment"
         android:name="com.vcheck.sdk.core.presentation.check_doc_info_stage.CheckDocInfoFragment"
         android:label="check_doc_info_fragment"
-        tools:layout="@layout/check_doc_info_fragment">
+        tools:layout="@layout/fragment_check_doc_info">
         <argument
             android:name="checkDocInfoDataTO"
             app:argType="com.vcheck.sdk.core.presentation.transferrable_objects.CheckDocInfoDataTO"
@@ -138,7 +138,7 @@
         android:id="@+id/countryListFragment"
         android:name="com.vcheck.sdk.core.presentation.country_stage.CountryListFragment"
         android:label="country_list_fragment"
-        tools:layout="@layout/country_list_fragment">
+        tools:layout="@layout/fragment_country_list">
         <argument
             android:name="countriesListTO"
             app:argType="com.vcheck.sdk.core.presentation.transferrable_objects.CountriesListTO" />
@@ -172,7 +172,7 @@
         android:id="@+id/zoomedPhotoFragment"
         android:name="com.vcheck.sdk.core.presentation.photo_upload_stage.ZoomedPhotoFragment"
         android:label="zoomed_photo_fragment"
-        tools:layout="@layout/zoomed_photo_fragment">
+        tools:layout="@layout/fragment_zoomed_doc_photo">
         <argument
             android:name="zoomPhotoTO"
             app:argType="com.vcheck.sdk.core.presentation.transferrable_objects.ZoomPhotoTO" />
@@ -182,7 +182,7 @@
         android:id="@+id/docVerificationNotSuccessfulFragment"
         android:name="com.vcheck.sdk.core.presentation.check_doc_info_stage.DocVerifErrorFragment"
         android:label="fragment_doc_verification_not_successful"
-        tools:layout="@layout/fragment_doc_verification_not_successful" >
+        tools:layout="@layout/fragment_error_doc_verification" >
         <action
             android:id="@+id/action_docVerificationNotSuccessfulFragment_to_checkDocInfoFragment"
             app:destination="@id/checkDocInfoFragment">
@@ -207,7 +207,7 @@
         android:id="@+id/segErrorFragment"
         android:name="com.vcheck.sdk.core.presentation.segmentation.ui.SegErrorFragment"
         android:label="SegErrorFragment"
-        tools:layout="@layout/fragment_seg_error">
+        tools:layout="@layout/fragment_error_seg_common">
         <action
             android:id="@+id/action_segErrorFragment_to_checkPhotoFragment"
             app:destination="@id/checkPhotoFragment" />
@@ -218,7 +218,7 @@
     <action android:id="@+id/action_global_chooseDocMethodScreen" app:destination="@id/chooseDocMethodScreen"/>
     <fragment
         android:id="@+id/verifSentFragment"
-        android:name="com.vcheck.sdk.core.presentation.screens.VerifSentFragment"
+        android:name="com.vcheck.sdk.core.presentation.common_screens.VerifSentFragment"
         android:label="fragment_verif_sent"
         tools:layout="@layout/fragment_verif_sent" /><action android:id="@+id/action_global_photoUploadScreen" app:destination="@id/photoUploadScreen"/><action android:id="@+id/action_global_checkPhotoFragment" app:destination="@id/checkPhotoFragment"/>
     <fragment

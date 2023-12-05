@@ -8,8 +8,8 @@ import android.widget.Filter
 import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import com.vcheck.sdk.core.VCheckSDK
-import com.vcheck.sdk.core.databinding.CountryBlockedRowBinding
-import com.vcheck.sdk.core.databinding.CountryRowBinding
+import com.vcheck.sdk.core.databinding.ListItemCountryBinding
+import com.vcheck.sdk.core.databinding.ListItemCountryBlockedBinding
 import com.vcheck.sdk.core.domain.CountryTO
 import kotlin.collections.ArrayList
 
@@ -20,8 +20,8 @@ class CountryListAdapter(
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>(), Filterable {
 
-    private lateinit var availableCountryBinding: CountryRowBinding
-    private lateinit var unavailableCountryRowBinding: CountryBlockedRowBinding
+    private lateinit var availableCountryBinding: ListItemCountryBinding
+    private lateinit var unavailableCountryRowBinding: ListItemCountryBlockedBinding
     private val mainCountryList = ArrayList<CountryTO>(countryList)
     private val searchCountryList = ArrayList<CountryTO>(countryList)
 
@@ -38,10 +38,10 @@ class CountryListAdapter(
         val layoutInflater = LayoutInflater.from(parent.context)
 
         return if (viewType == 0) {
-            unavailableCountryRowBinding = CountryBlockedRowBinding.inflate(layoutInflater, parent, false)
+            unavailableCountryRowBinding = ListItemCountryBlockedBinding.inflate(layoutInflater, parent, false)
             UnavailableCountryViewHolder(unavailableCountryRowBinding)
         } else {
-            availableCountryBinding = CountryRowBinding.inflate(layoutInflater, parent, false)
+            availableCountryBinding = ListItemCountryBinding.inflate(layoutInflater, parent, false)
             AvailableCountryViewHolder(availableCountryBinding, onCountryItemClick)
         }
     }
@@ -59,19 +59,19 @@ class CountryListAdapter(
     override fun getItemCount(): Int = mainCountryList.size
 
     class UnavailableCountryViewHolder(
-        private val binding: CountryBlockedRowBinding) : RecyclerView.ViewHolder(binding.root) {
+        private val binding: ListItemCountryBlockedBinding) : RecyclerView.ViewHolder(binding.root) {
 
             fun bind(country: CountryTO) {
                 binding.countryName.text = country.name
                 binding.flagEmoji.text = country.flag
-                VCheckSDK.primaryTextColorHex?.let {
+                VCheckSDK.designConfig!!.primaryTextColorHex?.let {
                     binding.countryName.setTextColor(Color.parseColor(it))
                 }
             }
     }
 
     class AvailableCountryViewHolder(
-        private val binding: CountryRowBinding,
+        private val binding: ListItemCountryBinding,
         private val onCountryItemClick: OnCountryItemClick,
     ) :
         RecyclerView.ViewHolder(binding.root) {
@@ -82,7 +82,7 @@ class CountryListAdapter(
             binding.countryItem.setOnClickListener {
                 onCountryItemClick.onClick(country.code)
             }
-            VCheckSDK.primaryTextColorHex?.let {
+            VCheckSDK.designConfig!!.primaryTextColorHex?.let {
                 binding.countryName.setTextColor(Color.parseColor(it))
             }
         }

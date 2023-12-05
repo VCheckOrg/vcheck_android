@@ -15,7 +15,7 @@ import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.databinding.FragmentChooseProviderBinding
 import com.vcheck.sdk.core.domain.Provider
 import com.vcheck.sdk.core.presentation.adapters.ProvidersListAdapter
-import com.vcheck.sdk.core.presentation.transferrable_objects.ProviderLogicCase
+import com.vcheck.sdk.core.domain.ProviderLogicCase
 
 class ChooseProviderFragment : Fragment(), ProvidersListAdapter.OnProviderItemClick {
 
@@ -24,17 +24,17 @@ class ChooseProviderFragment : Fragment(), ProvidersListAdapter.OnProviderItemCl
     private val args: ChooseProviderFragmentArgs by navArgs()
 
     fun changeColorsToCustomIfPresent() {
-        VCheckSDK.backgroundPrimaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundPrimaryColorHex?.let {
             _binding!!.chooseProviderBackground.background = ColorDrawable(Color.parseColor(it))
         }
-        VCheckSDK.backgroundSecondaryColorHex?.let {
+        VCheckSDK.designConfig!!.backgroundSecondaryColorHex?.let {
             _binding!!.holderCard.setCardBackgroundColor(Color.parseColor(it))
         }
-        VCheckSDK.primaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.primaryTextColorHex?.let {
             _binding!!.chooseMethodTitle.setTextColor(Color.parseColor(it))
             _binding!!.backArrow.setColorFilter(Color.parseColor(it))
         }
-        VCheckSDK.secondaryTextColorHex?.let {
+        VCheckSDK.designConfig!!.secondaryTextColorHex?.let {
             _binding!!.chooseMethodDescription.setTextColor(Color.parseColor(it))
         }
     }
