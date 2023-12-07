@@ -17,7 +17,7 @@ import com.squareup.picasso.Picasso
 import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.VCheckSDK.TAG
-import com.vcheck.sdk.core.data.VCheckSDKConstantsProvider
+import com.vcheck.sdk.core.di.VCheckSDKConstantsProvider
 import com.vcheck.sdk.core.databinding.FragmentCheckDocInfoBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.*

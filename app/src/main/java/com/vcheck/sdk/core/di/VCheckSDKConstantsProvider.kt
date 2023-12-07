@@ -1,4 +1,4 @@
-package com.vcheck.sdk.core.data
+package com.vcheck.sdk.core.di
 
 class VCheckSDKConstantsProvider {
 

@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.vcheck.sdk.core.VCheckSDK
-import com.vcheck.sdk.core.data.VCheckSDKConstantsProvider
+import com.vcheck.sdk.core.di.VCheckSDKConstantsProvider
 
 data class VCheckDesignConfig (
     @SerializedName("primary")
@@ -106,7 +106,8 @@ data class VCheckDesignConfig (
 
         @JvmStatic
         fun getDefaultThemeConfig(): VCheckDesignConfig {
-            return Gson().fromJson(VCheckSDKConstantsProvider.vcheckDefaultThemeConfig,
+            return Gson().fromJson(
+                VCheckSDKConstantsProvider.vcheckDefaultThemeConfig,
                 VCheckDesignConfig::class.java)
         }
     }
