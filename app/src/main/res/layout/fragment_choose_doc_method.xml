@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/vcheck_background_primary"
     android:theme="@style/Theme.VCheckAndroidSDKDemo"
-    tools:context=".presentation.doc_type_stage.ChooseDocMethodFragment">
+    tools:context=".presentation.doc_type.ChooseDocMethodFragment">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card"

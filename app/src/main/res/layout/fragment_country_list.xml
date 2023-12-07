@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/vcheck_background_secondary"
     android:theme="@style/Theme.VCheckAndroidSDKDemo"
-    tools:context=".presentation.country_stage.CountryListFragment">
+    tools:context=".presentation.country.CountryListFragment">
 
     <TextView
         android:id="@+id/country_list_back_arrow_text"

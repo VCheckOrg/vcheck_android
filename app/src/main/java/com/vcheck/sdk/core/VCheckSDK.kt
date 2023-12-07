@@ -14,30 +14,26 @@ object VCheckSDK {
 
     const val TAG = "VCheckSDK"
 
-    private var partnerEndCallback: (() -> Unit)? = null
+    private var verificationToken: String? = null
 
+    private var partnerEndCallback: (() -> Unit)? = null
     private var onVerificationExpired: (() -> Unit)? = null
     private var isVerifExpired: Boolean = false
-
-    private var verificationToken: String? = null
 
     private var selectedProvider: Provider? = null
     private var providerLogicCase: ProviderLogicCase? = null
     private var allAvailableProviders: List<Provider>? = null
 
-    // optional; only when provider allows document check stage!
-    private var optSelectedCountryCode: String? = null
-
     private var verificationType: VerificationSchemeType? = null
-
     private var sdkLanguageCode: String? = null
-
     private var environment: VCheckEnvironment? = null
+    internal var designConfig: VCheckDesignConfig? = null
 
     internal var showPartnerLogo: Boolean = false
     internal var showCloseSDKButton: Boolean = true
 
-    internal var designConfig: VCheckDesignConfig? = null
+    private var optSelectedCountryCode: String? = null
+
 
     fun start(partnerActivity: Activity) {
 

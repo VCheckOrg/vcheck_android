@@ -1,4 +1,4 @@
-package com.vcheck.sdk.core.presentation.segmentation.ui
+package com.vcheck.sdk.core.presentation.doc_photo_auto_parsing.ui
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

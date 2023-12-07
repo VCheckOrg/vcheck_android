@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:scrollbars="none"
-    tools:context=".presentation.photo_upload_stage.PhotoInstructionsFragment"
+    tools:context=".presentation.doc_photo_manual.PhotoInstructionsFragment"
     android:theme="@style/Theme.VCheckAndroidSDKDemo">
 
     <androidx.constraintlayout.widget.ConstraintLayout

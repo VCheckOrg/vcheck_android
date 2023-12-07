@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/vcheck_background_primary"
     android:scrollbars="none"
-    tools:context=".presentation.photo_upload_stage.TakeDocPhotoFragment"
+    tools:context=".presentation.doc_photo_manual.TakeDocPhotoFragment"
     android:theme="@style/Theme.VCheckAndroidSDKDemo">
 
     <androidx.constraintlayout.widget.ConstraintLayout

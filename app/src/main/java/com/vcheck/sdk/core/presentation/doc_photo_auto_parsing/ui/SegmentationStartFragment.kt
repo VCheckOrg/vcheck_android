@@ -1,4 +1,4 @@
-package com.vcheck.sdk.core.presentation.segmentation.ui
+package com.vcheck.sdk.core.presentation.doc_photo_auto_parsing.ui
 
 import android.app.Activity
 import android.content.Intent
@@ -22,7 +22,7 @@ import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.DocType
 import com.vcheck.sdk.core.domain.docCategoryIdxToType
 import com.vcheck.sdk.core.presentation.VCheckMainActivity
-import com.vcheck.sdk.core.presentation.segmentation.VCheckSegmentationActivity
+import com.vcheck.sdk.core.presentation.doc_photo_auto_parsing.VCheckSegmentationActivity
 import com.vcheck.sdk.core.presentation.transferrable_objects.PhotoUploadType
 import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
 

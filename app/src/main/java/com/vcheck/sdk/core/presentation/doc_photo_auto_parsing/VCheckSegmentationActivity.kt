@@ -1,4 +1,4 @@
-package com.vcheck.sdk.core.presentation.segmentation
+package com.vcheck.sdk.core.presentation.doc_photo_auto_parsing
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
@@ -37,7 +37,7 @@ import com.vcheck.sdk.core.domain.DocType
 import com.vcheck.sdk.core.domain.DocTypeData
 import com.vcheck.sdk.core.domain.SegmentationGestureResponse
 import com.vcheck.sdk.core.domain.docCategoryIdxToType
-import com.vcheck.sdk.core.presentation.segmentation.flow_logic.*
+import com.vcheck.sdk.core.presentation.doc_photo_auto_parsing.flow_logic.*
 import com.vcheck.sdk.core.presentation.transferrable_objects.CheckPhotoDataTO
 import com.vcheck.sdk.core.util.*
 import com.vcheck.sdk.core.util.extensions.changeStatusBarColor

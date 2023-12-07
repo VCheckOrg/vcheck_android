@@ -1,4 +1,4 @@
-package com.vcheck.sdk.core.presentation.segmentation.ui
+package com.vcheck.sdk.core.presentation.doc_photo_auto_parsing.ui
 
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -13,7 +13,7 @@ import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.databinding.FragmentErrorSegTimeoutBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
-import com.vcheck.sdk.core.presentation.segmentation.VCheckSegmentationActivity
+import com.vcheck.sdk.core.presentation.doc_photo_auto_parsing.VCheckSegmentationActivity
 import com.vcheck.sdk.core.util.utils.ThemeWrapperFragment
 
 class SegTimeoutFragment : ThemeWrapperFragment() {

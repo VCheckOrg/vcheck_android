@@ -5,7 +5,7 @@
     android:id="@+id/zoomed_photo_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.photo_upload_stage.ZoomedPhotoFragment"
+    tools:context=".presentation.doc_photo_manual.ZoomedPhotoFragment"
     android:theme="@style/Theme.VCheckAndroidSDKDemo"
     android:background="@color/vcheck_background_primary">
 

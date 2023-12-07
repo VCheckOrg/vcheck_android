@@ -1,4 +1,4 @@
-package com.vcheck.sdk.core.presentation.doc_type_stage
+package com.vcheck.sdk.core.presentation.doc_type
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable

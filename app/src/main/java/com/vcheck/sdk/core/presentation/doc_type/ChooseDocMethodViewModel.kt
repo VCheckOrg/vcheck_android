@@ -1,4 +1,4 @@
-package com.vcheck.sdk.core.presentation.doc_type_stage
+package com.vcheck.sdk.core.presentation.doc_type
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

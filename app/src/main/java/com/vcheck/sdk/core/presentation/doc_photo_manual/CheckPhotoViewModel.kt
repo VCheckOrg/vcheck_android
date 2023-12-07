@@ -1,4 +1,4 @@
-package com.vcheck.sdk.core.presentation.photo_upload_stage
+package com.vcheck.sdk.core.presentation.doc_photo_manual
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

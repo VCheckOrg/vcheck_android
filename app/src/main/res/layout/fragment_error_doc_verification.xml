@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:scrollbars="none"
     android:background="@color/vcheck_background_primary"
-    tools:context=".presentation.check_doc_info_stage.DocVerifErrorFragment"
+    tools:context=".presentation.doc_check.DocVerifErrorFragment"
     android:theme="@style/Theme.VCheckAndroidSDKDemo">
 
     <androidx.constraintlayout.widget.ConstraintLayout

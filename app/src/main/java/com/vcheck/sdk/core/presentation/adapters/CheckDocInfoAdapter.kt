@@ -13,7 +13,7 @@ import com.vcheck.sdk.core.R
 import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.databinding.RowDocInfoFieldBinding
 import com.vcheck.sdk.core.domain.DocFieldWitOptPreFilledData
-import com.vcheck.sdk.core.presentation.check_doc_info_stage.CheckDocInfoFragment
+import com.vcheck.sdk.core.presentation.doc_check.CheckDocInfoFragment
 import com.vcheck.sdk.core.util.utils.isValidDocRelatedDate
 import java.util.*
 

@@ -1,8 +1,8 @@
-package com.vcheck.sdk.core.presentation.segmentation.flow_logic
+package com.vcheck.sdk.core.presentation.doc_photo_auto_parsing.flow_logic
 
 import android.graphics.Bitmap
 import com.vcheck.sdk.core.di.VCheckDIContainer
-import com.vcheck.sdk.core.presentation.segmentation.VCheckSegmentationActivity
+import com.vcheck.sdk.core.presentation.doc_photo_auto_parsing.VCheckSegmentationActivity
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream

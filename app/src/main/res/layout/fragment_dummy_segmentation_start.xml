@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/vcheck_transparent"
-    tools:context=".presentation.segmentation.VCheckSegmentationActivity"
+    tools:context=".presentation.doc_photo_auto_parsing.VCheckSegmentationActivity"
     android:theme="@style/Theme.VCheckAndroidSDKDemo">
 
 </androidx.constraintlayout.widget.ConstraintLayout>

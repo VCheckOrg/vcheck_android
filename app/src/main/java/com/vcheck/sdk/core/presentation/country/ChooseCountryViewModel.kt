@@ -1,4 +1,4 @@
-package com.vcheck.sdk.core.presentation.country_stage
+package com.vcheck.sdk.core.presentation.country
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

@@ -1,4 +1,4 @@
-package com.vcheck.sdk.core.presentation.photo_upload_stage
+package com.vcheck.sdk.core.presentation.doc_photo_manual
 
 import android.app.Activity
 import android.content.Intent
@@ -26,7 +26,7 @@ import com.vcheck.sdk.core.databinding.FragmentCheckDocPhotoBinding
 import com.vcheck.sdk.core.di.VCheckDIContainer
 import com.vcheck.sdk.core.domain.*
 import com.vcheck.sdk.core.presentation.VCheckMainActivity
-import com.vcheck.sdk.core.presentation.segmentation.VCheckSegmentationActivity
+import com.vcheck.sdk.core.presentation.doc_photo_auto_parsing.VCheckSegmentationActivity
 import com.vcheck.sdk.core.presentation.transferrable_objects.CheckDocInfoDataTO
 import com.vcheck.sdk.core.presentation.transferrable_objects.PhotoUploadType
 import com.vcheck.sdk.core.presentation.transferrable_objects.ZoomPhotoTO

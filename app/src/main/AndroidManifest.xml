@@ -28,7 +28,7 @@
         android:requestLegacyExternalStorage="true"
         android:supportsRtl="true">
         <activity
-            android:name="com.vcheck.sdk.core.presentation.segmentation.VCheckSegmentationActivity"
+            android:name="com.vcheck.sdk.core.presentation.doc_photo_auto_parsing.VCheckSegmentationActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="false"
             android:screenOrientation="portrait">
