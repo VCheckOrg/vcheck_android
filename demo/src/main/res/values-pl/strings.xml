@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sdk_name">VCheckSDKTestHolderApp</string>
+
+    <string name="confirm">OK</string>
+    <string name="cancel">Anulować</string>
+    <string name="demo_app_title">Aplikacja demonstracyjna VCheck SDK</string>
+    <string name="become_a_partner">Stać się partnerem</string>
+    <string name="repeat_demo">Powtórz jeszcze raz</string>
+
+    <string name="verification_in_process_title">Twoja aplikacja jest na etapie przetwarzania</string>
+    <string name="verification_in_process_subtitle">To może zająć troche czasu. Proszę nie zamykać ani nie umieszczać aplikacji w tle.</string>
+
+    <string name="verification_success_title">Weryfikacja przebiegła pomyślnie</string>
+    <string name="verification_success_descr">Pomyślnie przeszedłeś weryfikację. Dziękujemy za skorzystanie z naszego demo. Możesz ponownie zweryfikować, klikając poniższy przycisk.</string>
+
+    <string name="verification_failed_title">Weryfikacja nie powiodła się</string>
+    <string name="verification_failed_descr">Przepraszamy, weryfikacja nie powiodła się. Spróbuj ponownie zweryfikować, klikając poniższy przycisk.</string>
+
+    <string name="full_verification">Pełna weryfikacja</string>
+    <string name="verification_of_documents">Weryfikacja dokumentów</string>
+    <string name="verification_of_liveness">Weryfikacja na żywo</string>
+    <string name="choose_custom_sdk_ui_colors_optional">Wybierz kolory interfejsu użytkownika (opcjonalnie):</string>
+    <string name="background_primary_color">- Główny kolor tła</string>
+    <string name="background_color_for_main_cards_n_and_sections">- Kolor tła głównych kart/sekcji</string>
+    <string name="background_color_for_complex_n_buttons_and_smaller_cards">- Kolor tła małych klikalnych kart/sekcji</string>
+    <string name="primary_text_color">- Kolor tekstu głównego</string>
+    <string name="secondary_text_color">- Kolor tekstu pośredniego</string>
+    <string name="common_action_buttons_color">- Kolor głównych przycisków</string>
+    <string name="borders_color">- Kolor ramki</string>
+    <string name="icons_color">- Kolor ikon</string>
+    <string name="reset_colors">Zresetuj kolory</string>
+
+    <string name="partner_inv_title">Wypróbuj VCHECK w działaniu</string>
+    <string name="partner_inv_form_descr">Wypełnij poniższy formularz, aby poprosić o dostęp do wersji demonstracyjnej </string>
+    <string name="partner_inv_company">Firma</string>
+    <string name="partner_inv_email">E-mail</string>
+    <string name="partner_inv_name">Imię</string>
+    <string name="partner_inv_phone">Telefon</string>
+    <string name="partner_inv_agree">Wyrażam zgodę na przetwarzanie danych osobowych</string>
+    <string name="send">Wysłać</string>
+
+    <string name="partner_form_successfully_sent">Formularz został przesłany pomyślnie. Wkrótce skontaktujemy się z Tobą. Dziękujemy za zainteresowanie naszym produktem!</string>
+    <string name="partner_form_request_error">Błąd przesyłania formularza</string>
+
+    <string name="et_enter_valid_email">Proszę wpisać aktualny adres e-mail</string>
+    <string name="et_enter_valid_name">Musi mieć co najmniej 2 znaki</string>
+    <string name="et_enter_valid_company">Musi mieć co najmniej 2 znaki</string>
+    <string name="et_enter_valid_phone">Proszę wpisać poprawny numer telefonu</string>
+
+    <string name="agreement_not_checked">Aby kontynuować, musisz zaakceptować zgodę na przetwarzanie danych podanych w formularzu</string>
+
+    <string name="upload_design_config_descr">Możesz wkleić dane JSON z konfiguracją motywu wygenerowaną przez naszą usługę, aby dostosować wygląd interfejsu użytkownika/UX</string>
+    <string name="upload_design_config_file">Wklej</string>
+</resources>

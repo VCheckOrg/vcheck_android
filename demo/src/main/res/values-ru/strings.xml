@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sdk_name">VCheckSDKTestHolderApp</string>
+
+    <string name="confirm">ОК</string>
+    <string name="cancel">Отмена</string>
+    <string name="demo_app_title">Демо-приложение VCheck SDK</string>
+    <string name="become_a_partner">Стать партнером</string>
+    <string name="repeat_demo">Пройти заново</string>
+
+    <string name="verification_in_process_title">Ваша заявка находится в обработке</string>
+    <string name="verification_in_process_subtitle">Это может занять некоторое время. Пожалуйста, не закрывайте и не переводите приложение в фоновый режим.</string>
+
+    <string name="verification_success_title">Верификация успешна</string>
+    <string name="verification_success_descr">Вы успешно прошли верификацию. Спасибо, что воспользовались нашим демо. Вы можете пройти верификацию заново, нажав кнопку ниже.</string>
+
+    <string name="verification_failed_title">Верификация неуспешна</string>
+    <string name="verification_failed_descr">К сожалению, ваша верификация была неуспешной. Попробуйте пройти верификацию заново, нажав кнопку ниже.</string>
+
+    <string name="full_verification">Полная верификация</string>
+    <string name="verification_of_documents">Верификация документов</string>
+    <string name="verification_of_liveness">Проверка на живость</string>
+    <string name="choose_custom_sdk_ui_colors_optional">Выберите пользовательские цвета UI (опционально):</string>
+    <string name="background_primary_color">- Основной цвет фона</string>
+    <string name="background_color_for_main_cards_n_and_sections">- Цвет фона основных карточек/секций</string>
+    <string name="background_color_for_complex_n_buttons_and_smaller_cards">- Цвет фона кликабельных маленьких карточек/секций</string>
+    <string name="primary_text_color">- Цвет основного текста</string>
+    <string name="secondary_text_color">- Цвет дополнительного текста</string>
+    <string name="common_action_buttons_color">- Цвет основных кнопок</string>
+    <string name="borders_color">- Цвет рамок</string>
+    <string name="icons_color">- Цвет иконок</string>
+    <string name="reset_colors">Сбросить цвета</string>
+
+    <string name="partner_inv_title">Станьте партнером VCHECK</string>
+    <string name="partner_inv_form_descr">Заполните анкету и наш специалист свяжется с вами в ближайшее время</string>
+    <string name="partner_inv_company">Компания</string>
+    <string name="partner_inv_email">Email</string>
+    <string name="partner_inv_name">Имя</string>
+    <string name="partner_inv_phone">Телефон</string>
+    <string name="partner_inv_agree">Я согласен на обработку персональных данных</string>
+    <string name="send">Стать партнером</string>
+
+    <string name="partner_form_successfully_sent">Форма успешно отправлена. Мы свяжемся в Вами в ближайшее время. Благодарим Вас за интерес к нашему продукту!</string>
+    <string name="partner_form_request_error">Ошибка отправки формы</string>
+
+    <string name="et_enter_valid_email">Введите корректный email-адрес</string>
+    <string name="et_enter_valid_name">Должно быть не менее 2-х символов</string>
+    <string name="et_enter_valid_company">Должно быть не менее 2-х символов</string>
+    <string name="et_enter_valid_phone">Введите корректный номер телефона</string>
+
+    <string name="agreement_not_checked">Для продолжения требуется принять соглашение \nна обработку данных, указанных в форме</string>
+
+    <string name="upload_design_config_descr">Вы можете вставить текст json с конфигурацией темы, созданной нашим сервисом, чтобы настроить внешний вид пользовательского интерфейса/UX</string>
+    <string name="upload_design_config_file">Вставить</string>
+</resources>
