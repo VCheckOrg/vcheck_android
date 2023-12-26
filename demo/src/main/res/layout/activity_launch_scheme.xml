@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:background="@color/vcheck_background_primary"
     android:theme="@style/Theme.VCheckAndroidSDKDemo"
-    tools:context="com.vcheck.demo.activities.MainActivity">
+    tools:context="com.vcheck.demo.activities.LaunchSchemeActivity">
 
         <com.google.android.material.progressindicator.CircularProgressIndicator
             android:id="@+id/progress_indicator"
@@ -40,6 +40,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     android:layout_marginTop="90dp"
+                    android:textColor="@color/white"
                     android:backgroundTint="@color/vcheck_primary"
                     android:text="@string/full_verification"/>
 
@@ -53,6 +54,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     android:layout_marginTop="170dp"
+                    android:textColor="@color/white"
                     android:backgroundTint="@color/vcheck_primary"
                     android:text="@string/verification_of_documents"/>
 
@@ -66,43 +68,9 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     android:layout_marginTop="250dp"
+                    android:textColor="@color/white"
                     android:backgroundTint="@color/vcheck_primary"
                     android:text="@string/verification_of_liveness"/>
-
-                <View
-                    android:id="@+id/separator"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/purple_200"
-                    app:layout_constraintTop_toBottomOf="@id/launchSDKLivenessOnlyCommonBtn"
-                    android:layout_margin="30dp"/>
-
-                    <TextView
-                        android:id="@+id/sampleText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/upload_design_config_descr"
-                        android:layout_marginTop="20dp"
-                        android:textSize="16sp"
-                        android:textAlignment="center"
-                        android:paddingStart="30dp"
-                        android:paddingEnd="30dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/separator" />
-
-                    <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/uploadDesignConfigBtn"
-                        android:layout_width="match_parent"
-                        android:layout_height="70dp"
-                        android:layout_marginStart="30dp"
-                        android:layout_marginEnd="30dp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/sampleText"
-                        android:layout_marginTop="15dp"
-                        android:backgroundTint="@color/vcheck_background_tertiary"
-                        android:text="@string/upload_design_config_file"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -127,27 +95,6 @@
                     app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="ContentDescription" />
 
-                <ImageView
-                    android:id="@+id/lang_icon"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_marginTop="24dp"
-                    android:src="@drawable/ic_lang"
-                    app:layout_constraintBottom_toBottomOf="@+id/lang_spinner"
-                    app:layout_constraintEnd_toStartOf="@+id/lang_spinner"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="ContentDescription" />
-
-                <Spinner
-                    android:id="@+id/lang_spinner"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -137,7 +137,7 @@ class PartnerFormActivity : AppCompatActivity() {
     private fun backToStart() {
         val intent: Intent?
         try {
-            intent = Intent(this@PartnerFormActivity, MainActivity::class.java)
+            intent = Intent(this@PartnerFormActivity, StartConfigActivity::class.java)
             this@PartnerFormActivity.startActivity(intent)
         } catch (e: Exception) {
             Toast.makeText(applicationContext, "Error while returning to app: ${e.message}",

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="sdk_name">VCheckAndroidSDKDemo</string>
+    <string name="sdk_name">VCheck SDK</string>
     <string name="wrong_move_title">Неправильний рух</string>
     <string name="search">Пошук</string>
     <string name="choose_country_title">Оберіть країну</string>

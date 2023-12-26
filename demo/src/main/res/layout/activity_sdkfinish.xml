@@ -61,18 +61,6 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-<!--            <ImageView-->
-<!--                android:id="@+id/logo"-->
-<!--                android:layout_width="137dp"-->
-<!--                android:layout_height="20dp"-->
-<!--                android:layout_marginStart="12dp"-->
-<!--                android:layout_marginEnd="24dp"-->
-<!--                android:src="@drawable/logo"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintTop_toTopOf="parent"-->
-<!--                app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                tools:ignore="ContentDescription" />-->
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.cardview.widget.CardView
@@ -175,6 +163,7 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="20dp"
+                    android:backgroundTint="@color/vcheck_primary"
                     android:text="@string/become_a_partner"
                     android:textAllCaps="false"
                     android:textSize="16sp"

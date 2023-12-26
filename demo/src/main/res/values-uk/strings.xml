@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="sdk_name">VCheckSDKTestHolderApp</string>
+    <string name="sdk_name">VCheck SDK Demo</string>
 
     <string name="confirm">ОК</string>
     <string name="cancel">Відмінити</string>
@@ -20,16 +20,6 @@
     <string name="full_verification">Повна верифікація</string>
     <string name="verification_of_documents">Верифікація документів</string>
     <string name="verification_of_liveness">Перевірка на живість</string>
-    <string name="choose_custom_sdk_ui_colors_optional">Оберіть користувацькі кольори UI (опціонально):</string>
-    <string name="background_primary_color">- Колір основного фону</string>
-    <string name="background_color_for_main_cards_n_and_sections">- Колір фону основних карток/секцій</string>
-    <string name="background_color_for_complex_n_buttons_and_smaller_cards">- Колір фону маленьких клікабельних карток/секцій</string>
-    <string name="primary_text_color">- Колір основного тексту</string>
-    <string name="secondary_text_color">- Колір допоміжного тексту</string>
-    <string name="common_action_buttons_color">- Колір основних кнопок</string>
-    <string name="borders_color">- Колір рамок</string>
-    <string name="icons_color">- Колір іконок</string>
-    <string name="reset_colors">Скинути кольори</string>
 
     <string name="partner_inv_title">Станьте партнером VCHECK</string>
     <string name="partner_inv_form_descr">Заповніть анкету та наш спеціаліст зв\'яжеться з вами найближчим часом</string>
@@ -52,4 +42,16 @@
 
     <string name="upload_design_config_descr">Ви можете вставити текст json із конфігурацією теми, згенерованою нашою службою, щоб налаштувати зовнішній вигляд UI/UX</string>
     <string name="upload_design_config_file">Вставити</string>
+
+    <string name="partner_id">ID партнера</string>
+    <string name="partner_secret">Секрет партнера</string>
+    <string name="design_config_optional">Дизайн-конфігурація (опціонально)</string>
+    <string name="choose_scheme">Вибрати схему</string>
+
+    <string name="err_invalid_partner_id">Некоректний ID партнера</string>
+    <string name="err_invalid_partner_secret">Некоректний секрет партнера</string>
+    <string name="err_clipboard_has_no_data">Буфер обміну не має даних!</string>
+    <string name="clipboard_pasted">Дані буфера обміну вставлено</string>
+    <string name="err_verif_expired">Термін дії верифікації минув. Повторіть спробу</string>
+
 </resources>

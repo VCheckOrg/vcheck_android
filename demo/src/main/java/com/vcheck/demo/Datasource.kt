@@ -1,29 +1,55 @@
 package com.vcheck.demo
 
 import android.util.Log
-import com.vcheck.demo.app.*
-import com.vcheck.demo.ConstantsProvider.Companion.PARTNER_ID
-import com.vcheck.demo.ConstantsProvider.Companion.PARTNER_SECRET
 import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.domain.toStringRepresentation
 import retrofit2.Call
 import java.util.*
 
 class Datasource(private val verificationApiClient: VerifApiClient,
-                 private val partnerApiClient: PartnerApiClient
-) {
+                 private val partnerApiClient: PartnerApiClient) {
+
+    private var partnerId: Int? = null
+
+    private var secret: String? = null
 
     private var verificationId: Int? = null
+
+    private var langCode: String = "uk"
 
     fun setVerificationId(id: Int) {
         this.verificationId = id
     }
 
+    fun setPartnerId(id: Int) {
+        this.partnerId = id
+    }
+
+    fun getPartnerId(): Int? {
+        return this.partnerId
+    }
+
+    fun setSecret(secret: String) {
+        this.secret = secret
+    }
+
+    fun getSecret(): String? {
+        return this.secret
+    }
+
     fun getVerificationId(): Int {
         if (verificationId == null) {
-            throw RuntimeException("VCheck Demo - error: verification id not set!")
+            throw RuntimeException("VCheck Demo error: verification ID not set!")
         }
         return verificationId ?: -1
+    }
+
+    fun setLang(code: String) {
+        this.langCode = code
+    }
+
+    fun getLang(): String {
+        return this.langCode
     }
 
     fun getServiceTimestamp() : Call<String> {
@@ -40,10 +66,10 @@ class Datasource(private val verificationApiClient: VerifApiClient,
         val timestampResponse = getServiceTimestamp().execute()
         return if (timestampResponse.isSuccessful) {
             val timestamp = (timestampResponse.body() as String).toInt()
-            val strToSign = "$PARTNER_ID$timestamp${getVerificationId()}$PARTNER_SECRET"
+            val strToSign = "${getPartnerId()!!}$timestamp${getVerificationId()}${getSecret()!!}"
             val sign = generateSHA256Hash(strToSign)
             partnerApiClient.checkFinalVerificationStatus(
-                VCheckSDK.getVerificationToken(), getVerificationId(), PARTNER_ID, timestamp, sign)
+                VCheckSDK.getVerificationToken(), getVerificationId(), getPartnerId()!!, timestamp, sign)
         } else {
             Log.d("VCheck - error: ","Cannot get service timestamp for check verification call!")
             null

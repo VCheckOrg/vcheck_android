@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/vcheck_background_primary"
+    android:theme="@style/Theme.VCheckAndroidSDKDemo"
+    tools:context=".activities.StartConfigActivity">
+
+    <TextView
+        android:id="@+id/partnerIdTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/partner_id"
+        android:gravity="start"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="90dp"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/btnPartnerIdPaste"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="14dp"
+        android:background="@drawable/ic_action_paste"
+        app:layout_constraintTop_toTopOf="@id/partnerIdTitle"
+        app:layout_constraintBottom_toBottomOf="@id/partnerIdTitle"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <ImageButton
+        android:id="@+id/btnPartnerIdClear"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="54dp"
+        android:background="@drawable/ic_action_clear"
+        app:layout_constraintTop_toTopOf="@id/partnerIdTitle"
+        app:layout_constraintBottom_toBottomOf="@id/partnerIdTitle"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/partnerIdHolder"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="20dp"
+        app:cardCornerRadius="8dp"
+        app:layout_constraintTop_toBottomOf="@id/partnerIdTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/vcheck_background_tertiary"
+            android:layout_margin="1dp"
+            app:cardCornerRadius="8dp">
+
+            <EditText
+                android:id="@+id/etPartnerId"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/vcheck_background_tertiary"
+                android:layout_margin="1dp"
+                android:paddingStart="16dp"
+                android:paddingTop="12dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="12dp"
+                android:textColor="@color/white"
+                android:imeOptions="actionDone"
+                android:singleLine="true" />
+
+        </androidx.cardview.widget.CardView>
+
+    </androidx.cardview.widget.CardView>
+
+    <ImageButton
+        android:id="@+id/btnSecretPaste"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="14dp"
+        android:background="@drawable/ic_action_paste"
+        app:layout_constraintTop_toTopOf="@id/secretTitle"
+        app:layout_constraintBottom_toBottomOf="@id/secretTitle"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <ImageButton
+        android:id="@+id/btnSecretClear"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="54dp"
+        android:background="@drawable/ic_action_clear"
+        app:layout_constraintTop_toTopOf="@id/secretTitle"
+        app:layout_constraintBottom_toBottomOf="@id/secretTitle"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/secretTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/partner_secret"
+        android:gravity="start"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/partnerIdHolder" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/secretHolder"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="20dp"
+        app:cardCornerRadius="8dp"
+        app:layout_constraintTop_toBottomOf="@id/secretTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/vcheck_background_tertiary"
+            android:layout_margin="1dp"
+            app:cardCornerRadius="8dp">
+
+            <EditText
+                android:id="@+id/etSecret"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/vcheck_background_tertiary"
+                android:layout_margin="1dp"
+                android:paddingStart="16dp"
+                android:paddingTop="12dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="12dp"
+                android:textColor="@color/white"
+                android:imeOptions="actionDone"
+                android:singleLine="true"
+                android:inputType="textPassword" />
+
+        </androidx.cardview.widget.CardView>
+
+    </androidx.cardview.widget.CardView>
+
+    <ImageButton
+        android:id="@+id/btnDesignConfigPaste"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="14dp"
+        android:background="@drawable/ic_action_paste"
+        app:layout_constraintTop_toTopOf="@id/designConfigTitle"
+        app:layout_constraintBottom_toBottomOf="@id/designConfigTitle"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <ImageButton
+        android:id="@+id/btnDesignConfigClear"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="54dp"
+        android:background="@drawable/ic_action_clear"
+        app:layout_constraintTop_toTopOf="@id/designConfigTitle"
+        app:layout_constraintBottom_toBottomOf="@id/designConfigTitle"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/designConfigTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/design_config_optional"
+        android:gravity="start"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/secretHolder" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/designConfigHolder"
+        android:layout_width="0dp"
+        android:layout_height="160dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="20dp"
+        app:cardCornerRadius="8dp"
+        app:layout_constraintTop_toBottomOf="@id/designConfigTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/vcheck_background_tertiary"
+            android:layout_margin="1dp"
+            app:cardCornerRadius="8dp">
+
+            <EditText
+                android:id="@+id/etPartnerDesignConfig"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/vcheck_background_tertiary"
+                android:layout_margin="1dp"
+                android:paddingStart="16dp"
+                android:paddingTop="12dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="12dp"
+                android:textColor="@color/white"
+                android:imeOptions="actionDone"
+                android:singleLine="true"
+                android:inputType="textMultiLine"
+                android:lines="6" />
+
+        </androidx.cardview.widget.CardView>
+
+    </androidx.cardview.widget.CardView>
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/confirmPartnerDataBtn"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="14dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/designConfigHolder"
+        android:layout_marginTop="25dp"
+        android:backgroundTint="@color/vcheck_primary"
+        android:text="@string/choose_scheme"
+        android:textColor="@color/white"/>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="68dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@color/vcheck_background_primary">
+
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="137dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="24dp"
+            android:src="@drawable/logo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/lang_icon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="24dp"
+            android:src="@drawable/ic_action_lang"
+            app:layout_constraintBottom_toBottomOf="@+id/lang_spinner"
+            app:layout_constraintEnd_toStartOf="@+id/lang_spinner"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
+
+        <Spinner
+            android:id="@+id/lang_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="sdk_name">VCheckSDKTestHolderApp</string>
+    <string name="sdk_name">VCheck SDK Demo</string>
 
     <string name="confirm">OK</string>
     <string name="cancel">Anulować</string>
@@ -20,16 +20,6 @@
     <string name="full_verification">Pełna weryfikacja</string>
     <string name="verification_of_documents">Weryfikacja dokumentów</string>
     <string name="verification_of_liveness">Weryfikacja na żywo</string>
-    <string name="choose_custom_sdk_ui_colors_optional">Wybierz kolory interfejsu użytkownika (opcjonalnie):</string>
-    <string name="background_primary_color">- Główny kolor tła</string>
-    <string name="background_color_for_main_cards_n_and_sections">- Kolor tła głównych kart/sekcji</string>
-    <string name="background_color_for_complex_n_buttons_and_smaller_cards">- Kolor tła małych klikalnych kart/sekcji</string>
-    <string name="primary_text_color">- Kolor tekstu głównego</string>
-    <string name="secondary_text_color">- Kolor tekstu pośredniego</string>
-    <string name="common_action_buttons_color">- Kolor głównych przycisków</string>
-    <string name="borders_color">- Kolor ramki</string>
-    <string name="icons_color">- Kolor ikon</string>
-    <string name="reset_colors">Zresetuj kolory</string>
 
     <string name="partner_inv_title">Wypróbuj VCHECK w działaniu</string>
     <string name="partner_inv_form_descr">Wypełnij poniższy formularz, aby poprosić o dostęp do wersji demonstracyjnej </string>
@@ -52,4 +42,16 @@
 
     <string name="upload_design_config_descr">Możesz wkleić dane JSON z konfiguracją motywu wygenerowaną przez naszą usługę, aby dostosować wygląd interfejsu użytkownika/UX</string>
     <string name="upload_design_config_file">Wklej</string>
+
+    <string name="partner_id">ID partnera</string>
+    <string name="partner_secret">Sekret partnera</string>
+    <string name="design_config_optional">Konfiguracja projektu (opcjonalnie)</string>
+    <string name="choose_scheme">Wybierz schemat</string>
+
+    <string name="err_invalid_partner_id">Nieprawidłowy identyfikator partnera</string>
+    <string name="err_invalid_partner_secret">Nieprawidłowy sekret partnera</string>
+    <string name="err_clipboard_has_no_data">Schowek nie zawiera danych!</string>
+    <string name="clipboard_pasted">Wklejono dane ze schowka</string>
+    <string name="err_verif_expired">Weryfikacja wygasła. Spróbuj ponownie</string>
+
 </resources>

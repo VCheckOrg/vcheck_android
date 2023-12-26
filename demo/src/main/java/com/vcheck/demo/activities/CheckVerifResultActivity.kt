@@ -145,7 +145,7 @@ class CheckVerifResultActivity : AppCompatActivity() {
         val intent: Intent?
         try {
 
-            intent = Intent(this@CheckVerifResultActivity, MainActivity::class.java)
+            intent = Intent(this@CheckVerifResultActivity, LaunchSchemeActivity::class.java)
             this@CheckVerifResultActivity.startActivity(intent)
         } catch (e: Exception) {
             Toast.makeText(applicationContext, "Error while returning to app: ${e.message}",

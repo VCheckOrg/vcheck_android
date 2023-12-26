@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="sdk_name">VCheckSDKTestHolderApp</string>
+    <string name="sdk_name">VCheck SDK Demo</string>
 
     <string name="confirm">ОК</string>
     <string name="cancel">Отмена</string>
@@ -20,16 +20,6 @@
     <string name="full_verification">Полная верификация</string>
     <string name="verification_of_documents">Верификация документов</string>
     <string name="verification_of_liveness">Проверка на живость</string>
-    <string name="choose_custom_sdk_ui_colors_optional">Выберите пользовательские цвета UI (опционально):</string>
-    <string name="background_primary_color">- Основной цвет фона</string>
-    <string name="background_color_for_main_cards_n_and_sections">- Цвет фона основных карточек/секций</string>
-    <string name="background_color_for_complex_n_buttons_and_smaller_cards">- Цвет фона кликабельных маленьких карточек/секций</string>
-    <string name="primary_text_color">- Цвет основного текста</string>
-    <string name="secondary_text_color">- Цвет дополнительного текста</string>
-    <string name="common_action_buttons_color">- Цвет основных кнопок</string>
-    <string name="borders_color">- Цвет рамок</string>
-    <string name="icons_color">- Цвет иконок</string>
-    <string name="reset_colors">Сбросить цвета</string>
 
     <string name="partner_inv_title">Станьте партнером VCHECK</string>
     <string name="partner_inv_form_descr">Заполните анкету и наш специалист свяжется с вами в ближайшее время</string>
@@ -52,4 +42,16 @@
 
     <string name="upload_design_config_descr">Вы можете вставить текст json с конфигурацией темы, созданной нашим сервисом, чтобы настроить внешний вид пользовательского интерфейса/UX</string>
     <string name="upload_design_config_file">Вставить</string>
+
+    <string name="partner_id">ID партнера</string>
+    <string name="partner_secret">Секрет партнера</string>
+    <string name="design_config_optional">Дизайн-конфигурация (опционально)</string>
+    <string name="choose_scheme">Выбрать схему</string>
+
+    <string name="err_invalid_partner_id">Некорректный ID партнера</string>
+    <string name="err_invalid_partner_secret">Некорректный секрет партнера</string>
+    <string name="err_clipboard_has_no_data">В буфере обмена нет данных!</string>
+    <string name="clipboard_pasted">Данные из буфера обмена вставлены</string>
+    <string name="err_verif_expired">Срок верификации истек. Попробуйте еще раз</string>
+
 </resources>
