@@ -15,7 +15,7 @@ android {
         minSdk 21
         targetSdk 33
         versionCode 141
-        versionName "1.4.1"
+        versionName "1.4.1-dev"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.debug
@@ -85,7 +85,7 @@ afterEvaluate {
                 from components.release
                 groupId "com.vcheck"
                 artifactId "sdk"
-                version "1.4.1"
+                version "1.4.1-dev"
             }
         }
     }
