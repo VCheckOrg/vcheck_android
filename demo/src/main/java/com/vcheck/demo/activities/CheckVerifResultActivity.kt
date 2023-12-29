@@ -49,8 +49,6 @@ class CheckVerifResultActivity : AppCompatActivity() {
         val timer = fixedRateTimer("vcheck_verification_check", false, 0L, 2000) {
             val status = checkFinalVerificationStatus()
 
-            //Log.d("DEMO", "VERIF CHECK STATUS: $status")
-
             runOnUiThread {
                 if (status.isFinalizedAndSuccessful) {
                     roundIndicator.isVisible = false

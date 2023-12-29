@@ -15,7 +15,6 @@ import com.vcheck.sdk.core.VCheckSDK
 import com.vcheck.sdk.core.domain.VCheckEnvironment
 import com.vcheck.sdk.core.domain.VerificationSchemeType
 
-
 class LaunchSchemeActivity : AppCompatActivity() {
 
     private lateinit var datasource: Datasource

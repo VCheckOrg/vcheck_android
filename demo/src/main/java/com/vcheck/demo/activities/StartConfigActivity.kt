@@ -160,9 +160,9 @@ class StartConfigActivity : AppCompatActivity(), AdapterView.OnItemSelectedListe
             } catch (e: JsonSyntaxException) {
                 VCheckSDK.designConfig(VCheckDesignConfig.getDefaultThemeConfig())
                 //TODO may add stateful validation for TFs is needed
-                Toast.makeText(this@StartConfigActivity, "Non-valid JSON was passed while " +
-                        "initializing VCheckDesignConfig instance. Persisting VCheck default theme",
-                    Toast.LENGTH_LONG).show()
+//                Toast.makeText(this@StartConfigActivity, "Non-valid JSON was passed while " +
+//                        "initializing VCheckDesignConfig instance. Persisting VCheck default theme",
+//                    Toast.LENGTH_LONG).show()
                 true
             }
         } else {
