@@ -109,7 +109,7 @@ class StartConfigActivity : AppCompatActivity(), AdapterView.OnItemSelectedListe
         } else {
             Toast.makeText(this@StartConfigActivity, getString(R.string.clipboard_pasted),
                 Toast.LENGTH_SHORT).show()
-            data.toString()
+            data.text.toString()
         }
     }
 
@@ -117,7 +117,7 @@ class StartConfigActivity : AppCompatActivity(), AdapterView.OnItemSelectedListe
         if (validatePartnerId() && validateDesignConfig() && validateSecret()) {
 
             datasource.setSecret(etSecret.text!!.toString())
-            datasource.setPartnerId(etPartnerId.text?.toString()!!.toInt())
+            datasource.setPartnerId(etPartnerId.text!!.toString().toInt())
 
             val intent: Intent?
             intent = Intent(this@StartConfigActivity, LaunchSchemeActivity::class.java)
@@ -166,7 +166,8 @@ class StartConfigActivity : AppCompatActivity(), AdapterView.OnItemSelectedListe
                 true
             }
         } else {
-            return false
+            VCheckSDK.designConfig(VCheckDesignConfig.getDefaultThemeConfig())
+            return true
         }
     }
 

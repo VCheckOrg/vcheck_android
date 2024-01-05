@@ -91,8 +91,11 @@ class Datasource(private val verificationApiClient: VerifApiClient,
         val partnerUserId = vModel.partnerUserId ?: Date().time.toString()
         val partnerVerificationId = vModel.partnerVerificationId ?: Date().time.toString()
         val verifCallbackURL = "${ConstantsProvider.VERIFICATIONS_API_BASE_URL}ping"
-        val sign = generateSHA256Hash(
-            "$partnerId$partnerUserId$partnerVerificationId$scheme$serviceTS$partnerSecret")
+
+        val strToHash = "$partnerId$partnerUserId$partnerVerificationId$scheme$serviceTS$partnerSecret"
+        val sign = generateSHA256Hash(strToHash)
+
+        Log.d("VCheck", "SIGN HASH: $strToHash")
 
         return CreateVerificationRequestBody(
             partner_id = partnerId,

@@ -74,6 +74,7 @@
                 android:paddingBottom="12dp"
                 android:textColor="@color/white"
                 android:imeOptions="actionDone"
+                android:inputType="number"
                 android:singleLine="true" />
 
         </androidx.cardview.widget.CardView>
