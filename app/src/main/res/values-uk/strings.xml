@@ -192,6 +192,8 @@
     <string name="doc_verif_blur_text">Вибачте, ми не можемо провести верифікацію через розмитість фотографії. Будь ласка, зробіть чітке зображення документа для продовження</string>
     <string name="doc_verif_default_title">Верифікація документа неуспішна</string>
     <string name="doc_verif_default_text">З якоїсь причини ми не змогли завантажити вміст цієї сторінки. Спробуйте перезавантажити сторінку.</string>
+    <string name="doc_verif_print_title">Виявлено копію</string>
+    <string name="doc_verif_print_text">Будь ласка, завантажте оригінал Вашого документу</string>
     <string name="cancel">Відмінити</string>
 
 </resources>

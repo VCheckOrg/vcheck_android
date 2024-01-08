@@ -192,6 +192,8 @@
     <string name="doc_verif_blur_text">Przepraszamy, nie możemy zweryfikować z powodu niewyraźnego zdjęcia. Aby kontynuować, zrób wyraźne zdjęcie dokumentu.</string>
     <string name="doc_verif_default_title">Weryfikacja dokumentu nie powiodła się</string>
     <string name="doc_verif_default_text">Z jakiegoś powodu nie mogliśmy załadować zawartości tej strony. Spróbuj ponownie załadować stronę.</string>
+    <string name="doc_verif_print_title">Znaleziono kopię</string>
+    <string name="doc_verif_print_text">Prześlij oryginał dokumentu</string>
     <string name="cancel">Anulowanie</string>
 
 </resources>
