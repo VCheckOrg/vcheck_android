@@ -9,13 +9,13 @@ plugins {
 
 android {
 
-    compileSdk 34
+    compileSdk 33
 
     defaultConfig {
         minSdk 21
-        targetSdk 34
-        versionCode 142
-        versionName "1.4.2"
+        targetSdk 33
+        versionCode 143
+        versionName "1.4.3"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.debug
@@ -119,7 +119,7 @@ afterEvaluate {
                 from components.release
                 groupId "com.vcheck"
                 artifactId "sdk"
-                version "1.4.2"
+                version "1.4.3"
             }
         }
     }

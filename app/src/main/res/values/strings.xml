@@ -199,7 +199,7 @@
     <string name="doc_verif_fraud_title">Photo from screen detected</string>
     <string name="doc_verif_fraud_text">To pass verification, you must upload a photo of the original document</string>
     <string name="doc_verif_blur_title">Blurred photo</string>
-    <string name="doc_verif_blur_text">Sorry, we can\'t verify due to blurry photo. Please take a clear picture of the document to continue.</string>
+    <string name="doc_verif_blur_text">Please take a clear picture of the document to continue.</string>
     <string name="doc_verif_default_title">Document verification is not successful</string>
     <string name="doc_verif_default_text">For some reason, we were unable to download the content of this page. Try reloading the page.</string>
     <string name="doc_verif_print_title">Copy detected</string>
