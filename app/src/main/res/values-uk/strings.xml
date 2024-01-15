@@ -185,13 +185,15 @@
     <string name="doc_verif_upload_attempts_exceeded_title">Інший документ раніше вже був завантажений</string>
     <string name="doc_verif_upload_attempts_exceeded_text">В рамках однієї верифікації немає можливості завантажувати кілька документів. Продовжте перевірку даних за раніше завантаженим документом або завершіть проходження верифікації на мобільному пристрої</string>
     <string name="doc_verif_invalid_page_title">Верифікація документа неуспішна</string>
-    <string name="doc_verif_invalid_page_text">Не пройдено перевірку відповідності даних документа. Завантажте, будь ласка,  коректний документ</string>
+    <string name="doc_verif_invalid_page_text">Не пройдено перевірку відповідності даних документа. Завантажте, будь ласка, коректний документ</string>
     <string name="doc_verif_fraud_title">Виявлено фото з екрана</string>
     <string name="doc_verif_fraud_text">Щоб пройти перевірку, необхідно завантажити фотографію оригіналу документа</string>
     <string name="doc_verif_blur_title">Розмите фото</string>
-    <string name="doc_verif_blur_text">Вибачте, ми не можемо провести верифікацію через розмитість фотографії. Будь ласка, зробіть чітке зображення документа для продовження</string>
+    <string name="doc_verif_blur_text">Будь ласка, зробіть чітке зображення документа для продовження</string>
     <string name="doc_verif_default_title">Верифікація документа неуспішна</string>
     <string name="doc_verif_default_text">З якоїсь причини ми не змогли завантажити вміст цієї сторінки. Спробуйте перезавантажити сторінку.</string>
+    <string name="doc_verif_print_title">Виявлено копію</string>
+    <string name="doc_verif_print_text">Будь ласка, завантажте оригінал Вашого документу</string>
     <string name="cancel">Відмінити</string>
 
 </resources>

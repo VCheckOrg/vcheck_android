@@ -2,20 +2,21 @@ package com.vcheck.sdk.core.domain
 
 
 enum class DocumentVerificationCode {
-    VERIFICATION_NOT_INITIALIZED,// = 0
-    USER_INTERACTED_COMPLETED,// = 1
-    STAGE_NOT_FOUND,// = 2
-    INVALID_STAGE_TYPE,// = 3
-    PRIMARY_DOCUMENT_EXISTS,// = 4
-    UPLOAD_ATTEMPTS_EXCEEDED,// = 5
-    INVALID_DOCUMENT_TYPE,// = 6
-    INVALID_PAGES_COUNT,// = 7
-    INVALID_FILES,// = 8
-    PHOTO_TOO_LARGE,// = 9
-    PARSING_ERROR,// = 10
+    VERIFICATION_NOT_INITIALIZED, // = 0
+    USER_INTERACTED_COMPLETED, // = 1
+    STAGE_NOT_FOUND, // = 2
+    INVALID_STAGE_TYPE, // = 3
+    PRIMARY_DOCUMENT_EXISTS, // = 4
+    UPLOAD_ATTEMPTS_EXCEEDED, // = 5
+    INVALID_DOCUMENT_TYPE, // = 6
+    INVALID_PAGES_COUNT, // = 7
+    INVALID_FILES, // = 8
+    PHOTO_TOO_LARGE, // = 9
+    PARSING_ERROR, // = 10
     INVALID_PAGE, // = 11
     FRAUD, // = 12
-    BLUR // = 13
+    BLUR, // = 13
+    PRINT // = 14
 }
 
 fun DocumentVerificationCode.toCodeIdx(): Int {
@@ -34,11 +35,12 @@ fun DocumentVerificationCode.toCodeIdx(): Int {
         DocumentVerificationCode.INVALID_PAGE -> 11
         DocumentVerificationCode.FRAUD -> 12
         DocumentVerificationCode.BLUR -> 13
+        DocumentVerificationCode.PRINT -> 14
     }
 }
 
 fun codeIdxToVerificationCode(codeIdx: Int)
-    : DocumentVerificationCode {
+    : DocumentVerificationCode? {
     return when(codeIdx) {
         0 -> DocumentVerificationCode.VERIFICATION_NOT_INITIALIZED
         1 -> DocumentVerificationCode.USER_INTERACTED_COMPLETED
@@ -53,6 +55,8 @@ fun codeIdxToVerificationCode(codeIdx: Int)
         10 -> DocumentVerificationCode.PARSING_ERROR
         11 -> DocumentVerificationCode.INVALID_PAGE
         12 -> DocumentVerificationCode.FRAUD
-        else -> DocumentVerificationCode.BLUR
+        13 -> DocumentVerificationCode.BLUR
+        14 -> DocumentVerificationCode.PRINT
+        else -> null
     }
 }

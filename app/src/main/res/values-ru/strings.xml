@@ -189,8 +189,10 @@
     <string name="doc_verif_fraud_title">Обнаружено фото с экрана</string>
     <string name="doc_verif_fraud_text">Для прохождения верификации необходимо загрузить фото оригинала документа</string>
     <string name="doc_verif_blur_title">Размытое фото</string>
-    <string name="doc_verif_blur_text">Извините, мы не можем провести верификацию из-за размытости фотографии. Пожалуйста, сделайте четкое изображение документа для продолжения</string>
+    <string name="doc_verif_blur_text">Пожалуйста, сделайте четкое изображение документа для продолжения</string>
     <string name="doc_verif_default_title">Верификация документа неуспешна</string>
     <string name="doc_verif_default_text">По какой-то причине мы не смогли загрузить контент данной страницы. Попробуйте перезагрузить страницу.</string>
+    <string name="doc_verif_print_title">Обнаружена копия</string>
+    <string name="doc_verif_print_text">Пожалуйста, загрузите оригинал Вашего документа.</string>
     <string name="cancel">Отмена</string>
 </resources>

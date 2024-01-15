@@ -92,6 +92,7 @@ class DocVerifErrorFragment : ThemeWrapperFragment() {
             DocumentVerificationCode.INVALID_PAGE -> getString(R.string.doc_verif_invalid_page_title)
             DocumentVerificationCode.FRAUD -> getString(R.string.doc_verif_fraud_title)
             DocumentVerificationCode.BLUR -> getString(R.string.doc_verif_blur_title)
+            DocumentVerificationCode.PRINT -> getString(R.string.doc_verif_print_title)
             null -> "Document Verification Error"
         }
     }
@@ -112,6 +113,7 @@ class DocVerifErrorFragment : ThemeWrapperFragment() {
             DocumentVerificationCode.INVALID_PAGE -> getString(R.string.doc_verif_invalid_page_text)
             DocumentVerificationCode.FRAUD -> getString(R.string.doc_verif_fraud_text)
             DocumentVerificationCode.BLUR -> getString(R.string.doc_verif_blur_text)
+            DocumentVerificationCode.PRINT -> getString(R.string.doc_verif_print_text)
             null -> "Unknown code"
         }
     }
