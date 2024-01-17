@@ -1,9 +1,12 @@
 package com.vcheck.demo.activities
 
+import android.annotation.SuppressLint
 import android.content.*
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.MotionEvent
 import android.view.View
 import android.widget.*
@@ -26,6 +29,8 @@ class StartConfigActivity : AppCompatActivity(), AdapterView.OnItemSelectedListe
     private var wasLocaleSelectedByUser = false
     private var mLangReceiver: BroadcastReceiver? = null
 
+    private lateinit var scrollView: ScrollView
+
     private lateinit var etPartnerId: EditText
     private lateinit var btnPartnerIdClear: ImageButton
     private lateinit var btnPartnerIdPaste: ImageButton
@@ -46,6 +51,8 @@ class StartConfigActivity : AppCompatActivity(), AdapterView.OnItemSelectedListe
         datasource = (application as DemoApp).appContainer.datasource
 
         val confirmPartnerDataBtn = findViewById<AppCompatButton>(R.id.confirmPartnerDataBtn)
+
+        scrollView = findViewById(R.id.scrollView)
 
         etPartnerId = findViewById(R.id.etPartnerId)
         btnPartnerIdClear = findViewById(R.id.btnPartnerIdClear)
@@ -77,6 +84,8 @@ class StartConfigActivity : AppCompatActivity(), AdapterView.OnItemSelectedListe
         }
     }
 
+
+    @SuppressLint("ClickableViewAccessibility")
     private fun setFastPartnerDataActions() {
         btnPartnerIdClear.setOnClickListener {
             etPartnerId.text.clear()
@@ -96,19 +105,30 @@ class StartConfigActivity : AppCompatActivity(), AdapterView.OnItemSelectedListe
         btnDesignConfigPaste.setOnClickListener {
             etDesignConfig.setText(getClipboardData())
         }
+        etDesignConfig.setOnTouchListener { _, _ ->
+            Handler(Looper.getMainLooper()).postDelayed({
+                scrollView.smoothScrollTo(0, 1000)
+            }, 400)
+            false
+        }
     }
+
 
     private fun getClipboardData(): String {
         val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
         val data: ClipData.Item? = clipboard.primaryClip?.getItemAt(0)
 
         return if (data == null || data.toString().isEmpty()) {
-            Toast.makeText(this@StartConfigActivity, getString(R.string.err_clipboard_has_no_data),
-                Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                this@StartConfigActivity, getString(R.string.err_clipboard_has_no_data),
+                Toast.LENGTH_LONG
+            ).show()
             ""
         } else {
-            Toast.makeText(this@StartConfigActivity, getString(R.string.clipboard_pasted),
-                Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this@StartConfigActivity, getString(R.string.clipboard_pasted),
+                Toast.LENGTH_SHORT
+            ).show()
             data.text.toString()
         }
     }
@@ -130,8 +150,10 @@ class StartConfigActivity : AppCompatActivity(), AdapterView.OnItemSelectedListe
         val data = etPartnerId.text?.toString()?.toIntOrNull()
 
         if (data == null) {
-            Toast.makeText(this@StartConfigActivity, getString(R.string.err_invalid_partner_id),
-                Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                this@StartConfigActivity, getString(R.string.err_invalid_partner_id),
+                Toast.LENGTH_LONG
+            ).show()
         }
         return data != null
     }
@@ -141,8 +163,10 @@ class StartConfigActivity : AppCompatActivity(), AdapterView.OnItemSelectedListe
         val data = etSecret.text?.toString()
 
         if (data == null || data.isEmpty()) {
-            Toast.makeText(this@StartConfigActivity, getString(R.string.err_invalid_partner_secret),
-                Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                this@StartConfigActivity, getString(R.string.err_invalid_partner_secret),
+                Toast.LENGTH_LONG
+            ).show()
             return false
         }
         return true
@@ -154,8 +178,12 @@ class StartConfigActivity : AppCompatActivity(), AdapterView.OnItemSelectedListe
 
         if (possibleJsonData != null && possibleJsonData.isNotEmpty()) {
             return try {
-                VCheckSDK.designConfig(Gson().fromJson(etDesignConfig.text!!.toString(),
-                    VCheckDesignConfig::class.java))
+                VCheckSDK.designConfig(
+                    Gson().fromJson(
+                        etDesignConfig.text!!.toString(),
+                        VCheckDesignConfig::class.java
+                    )
+                )
                 true
             } catch (e: JsonSyntaxException) {
                 VCheckSDK.designConfig(VCheckDesignConfig.getDefaultThemeConfig())
@@ -181,7 +209,8 @@ class StartConfigActivity : AppCompatActivity(), AdapterView.OnItemSelectedListe
 
         val adapter = ArrayAdapter.createFromResource(
             this@StartConfigActivity,
-            R.array.languages, android.R.layout.simple_spinner_item)
+            R.array.languages, android.R.layout.simple_spinner_item
+        )
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
         langSpinner.adapter = adapter

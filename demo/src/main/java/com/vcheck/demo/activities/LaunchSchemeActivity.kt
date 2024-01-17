@@ -28,7 +28,8 @@ class LaunchSchemeActivity : AppCompatActivity() {
 
         val startFullSDKFlowBtn = findViewById<AppCompatButton>(R.id.launchSDKFullFlowCommonBtn)
         val startDocOnlySDKFlowBtn = findViewById<AppCompatButton>(R.id.launchSDKDocOnlyCommonBtn)
-        val startLivenessOnlySDKFlowBtn = findViewById<AppCompatButton>(R.id.launchSDKLivenessOnlyCommonBtn)
+        val startLivenessOnlySDKFlowBtn =
+            findViewById<AppCompatButton>(R.id.launchSDKLivenessOnlyCommonBtn)
 
         val indicator = findViewById<CircularProgressIndicator>(R.id.progress_indicator)
         val scrollView = findViewById<ScrollView>(R.id.content_scroll_view)
@@ -55,9 +56,11 @@ class LaunchSchemeActivity : AppCompatActivity() {
         }
     }
 
-    private fun launchSDK(verifScheme: VerificationSchemeType,
-                          indicator: CircularProgressIndicator,
-                          scrollView: ScrollView) {
+    private fun launchSDK(
+        verifScheme: VerificationSchemeType,
+        indicator: CircularProgressIndicator,
+        scrollView: ScrollView
+    ) {
         scrollView.isVisible = false
         indicator.isVisible = true
 
@@ -70,7 +73,8 @@ class LaunchSchemeActivity : AppCompatActivity() {
                     VerificationClientCreationModel(
                         datasource.getPartnerId()!!,
                         datasource.getSecret()!!,
-                        verifScheme)
+                        verifScheme
+                    )
                 )
                 val createResponse = datasource.createVerificationRequest(requestBody).execute()
                 if (createResponse.isSuccessful) {
@@ -88,17 +92,26 @@ class LaunchSchemeActivity : AppCompatActivity() {
                     runOnUiThread {
                         indicator.isVisible = false
                         scrollView.isVisible = true
+
+                        Toast.makeText(
+                            applicationContext, getString(R.string.err_invalid_partner_data),
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
-                    Log.d("VCheck Demo - error: ",
-                        "Verification creation failed with error code: ${createResponse.code()}")
+                    Log.d(
+                        "VCheck Demo - error: ",
+                        "Verification creation failed with error code: ${createResponse.code()}"
+                    )
                 }
             } else {
                 runOnUiThread {
                     indicator.isVisible = false
                     scrollView.isVisible = true
                 }
-                Log.d("VCheck Demo - error: ",
-                    "Cannot get service timestamp for check verification call: ${timestampResponse.code()}")
+                Log.d(
+                    "VCheck Demo - error: ",
+                    "Cannot get service timestamp for check verification call: ${timestampResponse.code()}"
+                )
             }
         }.start()
     }
@@ -116,8 +129,10 @@ class LaunchSchemeActivity : AppCompatActivity() {
             }
             .onVerificationExpired {
                 runOnUiThread {
-                    Toast.makeText(applicationContext, getString(R.string.err_verif_expired),
-                        Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        applicationContext, getString(R.string.err_verif_expired),
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
             .start(this@LaunchSchemeActivity)
@@ -129,8 +144,10 @@ class LaunchSchemeActivity : AppCompatActivity() {
             intent = Intent(this@LaunchSchemeActivity, CheckVerifResultActivity::class.java)
             this@LaunchSchemeActivity.startActivity(intent)
         } catch (e: Exception) {
-            Toast.makeText(applicationContext, "Error while returning to an app: ${e.message}",
-                Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                applicationContext, "Error while returning to an app: ${e.message}",
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 

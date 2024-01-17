@@ -53,5 +53,6 @@
     <string name="err_clipboard_has_no_data">Буфер обміну не має даних!</string>
     <string name="clipboard_pasted">Дані буфера обміну вставлено</string>
     <string name="err_verif_expired">Термін дії верифікації минув. Повторіть спробу</string>
+    <string name="err_invalid_partner_data">Неможливо створити верифікацію через невалідні дані партнера</string>
 
 </resources>
