@@ -137,7 +137,7 @@
     <string name="liveness_stage_check_face_pos">Trzymaj telefon na wysokości wzroku</string>
     <string name="liveness_stage_face_left">Odwróć głowę w lewo</string>
     <string name="liveness_stage_face_right">Odwróć głowę w prawo</string>
-    <string name="liveness_stage_open_mouth">Otwórz usta</string>
+    <string name="liveness_stage_blink_eyes">Mrugnij oczami</string>
     <string name="invalid_document">Nieprawidłowy dokument</string>
     <string name="liveness_not_passed">Sprawdzanie na żywo nie powiodło się</string>
     <string name="identity_verification_failed">Osoba nie jest potwierdzona</string>

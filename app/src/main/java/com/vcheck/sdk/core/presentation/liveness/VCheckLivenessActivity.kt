@@ -449,7 +449,7 @@ class VCheckLivenessActivity : AppCompatActivity() {
             GestureMilestoneType.DownHeadPitchMilestone -> R.raw.down
             GestureMilestoneType.OuterRightHeadYawMilestone -> R.raw.right
             GestureMilestoneType.OuterLeftHeadYawMilestone -> R.raw.left
-            GestureMilestoneType.MouthOpenMilestone -> R.raw.mouth
+            GestureMilestoneType.BlinkEyesMilestone -> R.raw.blink
             else -> R.raw.face_plus_phone
         }
         binding.faceAnimationView.isVisible = true
@@ -494,7 +494,7 @@ class VCheckLivenessActivity : AppCompatActivity() {
             GestureMilestoneType.DownHeadPitchMilestone -> getString(R.string.liveness_stage_face_down)
             GestureMilestoneType.OuterRightHeadYawMilestone -> getString(R.string.liveness_stage_face_right)
             GestureMilestoneType.OuterLeftHeadYawMilestone -> getString(R.string.liveness_stage_face_left)
-            GestureMilestoneType.MouthOpenMilestone -> getString(R.string.liveness_stage_open_mouth)
+            GestureMilestoneType.BlinkEyesMilestone -> getString(R.string.liveness_stage_blink_eyes)
             GestureMilestoneType.StraightHeadCheckMilestone -> getString(R.string.liveness_stage_check_face_pos)
         }
         blockProcessingByUI = false
