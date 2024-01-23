@@ -53,6 +53,6 @@
     <string name="err_clipboard_has_no_data">В буфере обмена нет данных!</string>
     <string name="clipboard_pasted">Данные из буфера обмена вставлены</string>
     <string name="err_verif_expired">Срок верификации истек. Попробуйте еще раз</string>
-    <string name="err_invalid_partner_data">Невозможно создать верификацию из-за невалидных данных партнера</string>
+    <string name="err_invalid_partner_data">Невалидные данные партнера</string>
 
 </resources>

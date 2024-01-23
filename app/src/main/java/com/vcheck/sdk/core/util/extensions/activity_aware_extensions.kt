@@ -38,8 +38,16 @@ fun AppCompatActivity.checkUserInteractionCompletedForResult(errorCode: Int?) {
 }
 
 fun AppCompatActivity.checkStageErrorForResult(errorCode: Int?, executePartnerCallback: Boolean) {
-    if (errorCode != null &&
-        errorCode > StageErrorType.VERIFICATION_NOT_INITIALIZED.toTypeIdx()) {
+    if (errorCode == BaseClientErrors.USER_INTERACTED_COMPLETED) {
+        (VCheckDIContainer).mainRepository.setFirePartnerCallback(true)
+        VCheckSDK.setIsVerificationExpired(false)
+        (VCheckDIContainer).mainRepository.setFinishStartupActivity(true)
+        val intents = Intent(this, VCheckStartupActivity::class.java)
+        intents.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        startActivity(intents)
+    } else if (errorCode != null &&
+        errorCode > StageErrorType.VERIFICATION_NOT_INITIALIZED.toTypeIdx()
+    ) {
         // e.g.: (errorCode == StageObstacleErrorType.USER_INTERACTED_COMPLETED.toTypeIdx()
         //    || errorCode == StageObstacleErrorType.VERIFICATION_EXPIRED.toTypeIdx())
         if (executePartnerCallback) {

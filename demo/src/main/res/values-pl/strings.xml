@@ -53,6 +53,6 @@
     <string name="err_clipboard_has_no_data">Schowek nie zawiera danych!</string>
     <string name="clipboard_pasted">Wklejono dane ze schowka</string>
     <string name="err_verif_expired">Weryfikacja wygasła. Spróbuj ponownie</string>
-    <string name="err_invalid_partner_data">Nie można utworzyć weryfikacji z powodu nieprawidłowych danych partnera</string>
+    <string name="err_invalid_partner_data">Nieprawidłowe dane partnera</string>
 
 </resources>

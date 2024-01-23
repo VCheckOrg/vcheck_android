@@ -61,6 +61,6 @@
     <string name="err_clipboard_has_no_data">Clipboard has no data!</string>
     <string name="clipboard_pasted">Clipboard data pasted</string>
     <string name="err_verif_expired">Verification expired. Try again</string>
-    <string name="err_invalid_partner_data">Unable to create verification due to invalid partner data</string>
+    <string name="err_invalid_partner_data">Invalid partner data</string>
 
 </resources>
