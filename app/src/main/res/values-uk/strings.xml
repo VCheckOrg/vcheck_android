@@ -137,7 +137,7 @@
     <string name="liveness_stage_check_face_pos">Тримайте телефон на рівні очей</string>
     <string name="liveness_stage_face_left">Поверніть голову ліворуч</string>
     <string name="liveness_stage_face_right">Поверніть голову праворуч</string>
-    <string name="liveness_stage_open_mouth">Відкрийте рота</string>
+    <string name="liveness_stage_blink_eyes">Моргніть очима</string>
     <string name="invalid_document">Неправильний документ</string>
     <string name="liveness_not_passed">Перевірку на жвавість не пройдено</string>
     <string name="identity_verification_failed">Особа не підтверджена</string>

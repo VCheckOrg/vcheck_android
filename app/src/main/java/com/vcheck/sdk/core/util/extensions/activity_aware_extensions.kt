@@ -38,8 +38,9 @@ fun AppCompatActivity.checkUserInteractionCompletedForResult(errorCode: Int?) {
 }
 
 fun AppCompatActivity.checkStageErrorForResult(errorCode: Int?, executePartnerCallback: Boolean) {
-    if (errorCode != null &&
-        errorCode > StageErrorType.VERIFICATION_NOT_INITIALIZED.toTypeIdx()) {
+   if (errorCode != null &&
+        errorCode > StageErrorType.VERIFICATION_NOT_INITIALIZED.toTypeIdx()
+    ) {
         // e.g.: (errorCode == StageObstacleErrorType.USER_INTERACTED_COMPLETED.toTypeIdx()
         //    || errorCode == StageObstacleErrorType.VERIFICATION_EXPIRED.toTypeIdx())
         if (executePartnerCallback) {

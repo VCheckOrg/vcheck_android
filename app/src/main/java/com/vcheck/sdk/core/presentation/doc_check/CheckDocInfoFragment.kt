@@ -132,7 +132,7 @@ class CheckDocInfoFragment : ThemeWrapperFragment(), DocInfoEditCallback {
 
         viewModel.stageSpecificError.observe(viewLifecycleOwner) {
             (requireActivity() as AppCompatActivity)
-                .checkStageErrorForResult(it?.errorData?.errorCode, executePartnerCallback = false)
+                .checkStageErrorForResult(it?.errorData?.errorCode, executePartnerCallback = true)
         }
 
         viewModel.clientError.observe(viewLifecycleOwner) {
