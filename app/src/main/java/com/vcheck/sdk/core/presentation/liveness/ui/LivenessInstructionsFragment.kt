@@ -97,7 +97,7 @@ class LivenessInstructionsFragment : ThemeWrapperFragment() {
                         1 -> startPhoneAnimCycle()
                         2 -> startFaceSidesAnimationCycle()
                         3 -> startFaceSidesAnimationCycle()
-                        4 -> startMouthOpeningCycle()
+                        4 -> startBlinkEyesCycle()
                     }
                 }
             }
@@ -203,7 +203,7 @@ class LivenessInstructionsFragment : ThemeWrapperFragment() {
         }
     }
 
-    fun startMouthOpeningCycle() {
+    fun startBlinkEyesCycle() {
         binding!!.faceAnimationView.cancelAnimation()
 
         binding!!.rightAnimBall.isVisible = false
@@ -211,7 +211,7 @@ class LivenessInstructionsFragment : ThemeWrapperFragment() {
 
         binding!!.arrowAnimationView.isVisible = false
 
-        binding!!.faceAnimationView.setAnimation(R.raw.mouth)
+        binding!!.faceAnimationView.setAnimation(R.raw.blink)
         binding!!.faceAnimationView.repeatCount = 1
 
         binding!!.faceAnimationView.setMargins(null, 0,
