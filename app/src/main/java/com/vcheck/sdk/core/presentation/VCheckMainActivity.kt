@@ -57,6 +57,7 @@ internal class VCheckMainActivity : AppCompatActivity() {
     }
 
     private fun setHeader() {
+        binding.logo.isVisible = VCheckSDK.showPartnerLogo
 
         if (VCheckSDK.showCloseSDKButton) {
             binding.closeSDKBtnHolder.isVisible = true

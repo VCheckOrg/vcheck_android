@@ -211,7 +211,7 @@ class LivenessInstructionsFragment : ThemeWrapperFragment() {
 
         binding!!.arrowAnimationView.isVisible = false
 
-        binding!!.faceAnimationView.setAnimation(R.raw.blink)
+        binding!!.faceAnimationView.setAnimation(R.raw.mouth)
         binding!!.faceAnimationView.repeatCount = 1
 
         binding!!.faceAnimationView.setMargins(null, 0,
