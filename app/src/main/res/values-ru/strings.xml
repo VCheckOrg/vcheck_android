@@ -137,6 +137,7 @@
     <string name="liveness_stage_check_face_pos">Держите телефон на уровне глаз</string>
     <string name="liveness_stage_face_left">Поверните голову влево</string>
     <string name="liveness_stage_face_right">Поверните голову вправо</string>
+    <string name="liveness_stage_open_mouth">Откройте рот</string>
     <string name="liveness_stage_blink_eyes">Моргните глазами</string>
     <string name="invalid_document">Неверный документ</string>
     <string name="liveness_not_passed">Проверка на живость не пройдена</string>

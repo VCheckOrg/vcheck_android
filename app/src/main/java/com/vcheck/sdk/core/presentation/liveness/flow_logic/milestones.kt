@@ -11,6 +11,7 @@ enum class GestureMilestoneType {
     UpHeadPitchMilestone,
     DownHeadPitchMilestone,
 
+    MouthOpenMilestone,
     BlinkEyesMilestone
 }
 
@@ -57,6 +58,7 @@ class StandardMilestoneFlow() {
             "right" -> GestureMilestoneType.OuterRightHeadYawMilestone
             "up" -> GestureMilestoneType.UpHeadPitchMilestone
             "down" -> GestureMilestoneType.DownHeadPitchMilestone
+            "mouth" -> GestureMilestoneType.MouthOpenMilestone
             "blink" -> GestureMilestoneType.BlinkEyesMilestone
             else -> GestureMilestoneType.StraightHeadCheckMilestone
         }
@@ -70,6 +72,7 @@ class StandardMilestoneFlow() {
                 GestureMilestoneType.OuterRightHeadYawMilestone -> "right"
                 GestureMilestoneType.UpHeadPitchMilestone -> "up"
                 GestureMilestoneType.DownHeadPitchMilestone -> "down"
+                GestureMilestoneType.MouthOpenMilestone-> "mouth"
                 GestureMilestoneType.BlinkEyesMilestone-> "blink"
                 else -> "straight"
             }
